@@ -1,5 +1,7 @@
 import mongoose from "mongoose";
 import app from './app.js';
+import dotenv from 'dotenv';
+dotenv.config();
 
 const connectDb = async () => {
     try{
@@ -11,7 +13,7 @@ const connectDb = async () => {
     }
 }
 
-connectDb.then(() => {
+connectDb().then(() => {
     app.listen(process.env.PORT, () => {
         console.log(`Server is running successfully on port ${process.env.PORT}`);
     });
