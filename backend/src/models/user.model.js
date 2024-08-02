@@ -17,21 +17,10 @@ const userSchema = new mongoose.Schema({
         type : String,
         required : true,
     },
-    isInvestor : {
-        type : Boolean,
-        required : true,
-    },
-    isFounder : {
-        type : Boolean,
-        required : true,
-    },    
-    isFreelancer : {
-        type : Boolean,
-        required : true,
-    },
-    isCommunityMember : {
-        type : Boolean,
-        required : true,
+    role : {
+        type: String,
+        enum: ['Investor', 'Founder', 'Freelancer', 'Community Member'],
+        default: 'Community Member'
     },
     profilePhoto : {
         type : String,
