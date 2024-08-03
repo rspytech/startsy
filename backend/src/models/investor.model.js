@@ -9,14 +9,18 @@ const investorSchema = new mongoose.Schema({
         type : Number,
         required: true,
     },
-    areaOfInterest : {
+    areaOfInterest : [{
         type : String,
         required: true,
-    },
+    },],
+    // Index is the hash of the original Pan card
     panCard : {
-        type : String,
-        unique : true,
-        required: true,
+        index: { type: String, required: true },
+        // Below is the encrypted Pan card information
+        pan: {
+            iv: { type: String, required: true },
+            data: { type: String, required: true },
+        }
     },
     startupStage : {
         type : String,
@@ -34,10 +38,6 @@ const investorSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : 'User',
     },
-    connections : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'Connection',
-    }
 },{timestamps : true});
 
 export const Investor = mongoose.model("Investor", investorSchema);
