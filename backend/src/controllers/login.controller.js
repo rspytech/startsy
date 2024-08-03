@@ -36,7 +36,6 @@ export const loginUser = async (req, res) => {
             sameSite: 'strict',
         });
 
-        // Respond with the access token
         return res.status(200).send({
             message: "Login Successful"
         })
