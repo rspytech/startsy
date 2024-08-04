@@ -36,7 +36,7 @@ export const InvestorInfo = async (req, res) => {
         const uploadedPhoto = await uploadOnCloudinary(profilePhoto.path);        /* Testing Required */
         const photoUrl = uploadedPhoto.secure_url;        /* Testing Required */
         currentUser.profilePhoto = photoUrl;         /* Testing Required */
-        currentUser.save();       /* Testing Required */
+        await currentUser.save();       /* Testing Required */
         await newInvestor.save();
 
         res.status(200).send({

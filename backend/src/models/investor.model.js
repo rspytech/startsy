@@ -23,7 +23,7 @@ const investorSchema = new mongoose.Schema({
         }
     },
     startupStage : {
-        type : String,
+        type : String, 
         required: true,
     },
     preferredSector : {
