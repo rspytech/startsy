@@ -1,9 +1,12 @@
 import { User } from '../models/user.model.js';
 
 export const registerUser = async (req, res) => {
-    const { userName, email, password, role, profilePhoto } = req.body;
-
     try {
+        const {userName, email, password, role} = req.body;
+        console.log(req.body);
+        if(!userName || !email || !password || !role){
+            return res.status(400).json({message: "Please fill in all fields."});
+        }
         // Check if user already exists
         const existingUser = await User.findOne({ email });
         if (existingUser) {
@@ -16,7 +19,6 @@ export const registerUser = async (req, res) => {
             email,
             password,
             role,
-            profilePhoto,
             refreshToken: ""
         });
 
