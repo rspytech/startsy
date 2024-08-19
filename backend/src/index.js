@@ -2,7 +2,7 @@ import mongoose from "mongoose";
 import app from './app.js';
 import dotenv from 'dotenv';
 dotenv.config({
-    path: './.env.example'
+    path: './.env'
 });
 
 const startServer = async () => {
@@ -11,6 +11,7 @@ const startServer = async () => {
     });
 };
 
+console.log(process.env.MONGODB_URI)
 // Connect to MongoDB and start server
 mongoose.connect(`${process.env.MONGODB_URI}/${process.env.DB_NAME}`)
     .then(() => {

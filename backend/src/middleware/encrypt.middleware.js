@@ -10,10 +10,10 @@ const encryptPan = async(req, res, next) => {
         const { panCard } = req.body;
 
         const hashedPan = hashPan(panCard);
-        req.hashedPan = hashedPan;
-
+        req.hashedPan = hashedPan;   // ismai index rahega
+        
         const encryptedPanCardInfo = aesEncrypt(panCard, aesKey);
-        req.pan = encryptedPanCardInfo
+        req.pan = encryptedPanCardInfo    // ismai iv and data rahega
 
         next();
 

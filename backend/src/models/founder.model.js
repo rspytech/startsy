@@ -1,14 +1,14 @@
 import mongoose from "mongoose";
 
-const founderSchema = new mongoose.model({
+const founderSchema = new mongoose.Schema({
     contactInfo : {
         type: String,
         required: true,
     },
-    // name : {                 /* According to UI Decision to be taken */
-    //     type : String,
-    //     required: true,
-    // },
+    name : {                 
+        type : String,
+        required: true,
+    },
     previousWorkExperience : {
         company : {
             type: String,
