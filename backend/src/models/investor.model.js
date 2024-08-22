@@ -34,6 +34,9 @@ const investorSchema = new mongoose.Schema({
         type : Number,
         required: true,
     },
+    panCardPhoto : {
+        type : String,
+    },
     user_id : {
         type : mongoose.Schema.Types.ObjectId,
         ref : 'User',

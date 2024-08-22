@@ -11,7 +11,10 @@ const router = express.Router();
 
 router.post('/register', registerUser);
 router.post('/authenticate', loginUser);
-router.post('/investorInfo', verifyUser, upload.single('profilePhoto'), encryptPan, InvestorInfo);
-router.post('/founderInfo', verifyUser, FounderInfo);
+router.post('/investorInfo', verifyUser, upload.fields([
+    { name: 'profilePhoto', maxCount: 1 },
+    { name: 'panCardPhoto', maxCount: 1 },
+]), encryptPan, InvestorInfo);
+router.post('/founderInfo', verifyUser, upload.single('profilePhoto'), FounderInfo);
 
 export default router;

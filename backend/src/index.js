@@ -6,8 +6,8 @@ dotenv.config({
 });
 
 const startServer = async () => {
-    app.listen(5000, () => {
-        console.log('Server started on port 5000');
+    app.listen(5003, () => {
+        console.log('Server started on port 5003');
     });
 };
 
