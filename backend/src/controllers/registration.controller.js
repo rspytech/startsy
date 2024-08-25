@@ -2,13 +2,13 @@ import { User } from '../models/user.model.js';
 
 export const registerUser = async (req, res) => {
     try {
-        const {userName, email, password, role} = req.body;
+        const {userName, password, role} = req.body;
         console.log(req.body);
-        if(!userName || !email || !password || !role){
+        if(!userName || !password || !role){
             return res.status(400).json({message: "Please fill in all fields."});
         }
         // Check if user already exists
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({ userName });
         if (existingUser) {
             return res.status(400).json({ message: 'User already exists' });
         }
@@ -16,7 +16,7 @@ export const registerUser = async (req, res) => {
         // Create a new user
         const newUser = new User({
             userName,
-            email,
+            email: "",
             password,
             role,
             refreshToken: ""

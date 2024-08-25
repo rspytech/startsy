@@ -5,6 +5,11 @@ import { User } from "../models/user.model.js";
 export const InvestorInfo = async (req, res) => {
     try {
         const { 
+            fullName,
+            email,
+            country,
+            age,
+            gender,
             contactInfo,
             previousExperience,
             areaOfInterest,
@@ -16,7 +21,9 @@ export const InvestorInfo = async (req, res) => {
         const profilePhoto = req.files.profilePhoto;
         const pancardPhoto = req.files.panCardPhoto;
 
-        if (!contactInfo || !previousExperience || !areaOfInterest || !startupStage || !preferredSector || !investmentRange) {
+        if (!contactInfo || !previousExperience || !areaOfInterest || !startupStage || !preferredSector || !investmentRange || 
+            !fullName || !email || !country || !age || !gender
+        ) {
             return res.status(400).json({ message: "Please fill in all the fields" });
         }
         
@@ -30,6 +37,10 @@ export const InvestorInfo = async (req, res) => {
         const encryptedPanCard = req.pan;
         
         const newInvestor = new Investor({
+            fullName,
+            country,
+            age,
+            gender,
             contactInfo,
             previousExperience,
             areaOfInterest,
@@ -43,9 +54,11 @@ export const InvestorInfo = async (req, res) => {
             user_id: req.user._id
         });
 
+        // set profile photo link and email of the current user in the User Model
         const uploadedPhoto = await uploadOnCloudinary(profilePhoto[0].path);
         const photoUrl = uploadedPhoto.secure_url;
         currentUser.profilePhoto = photoUrl;
+        currentUser.email = email;
         
         const pancardUploadedPhoto = await uploadOnCloudinary(pancardPhoto[0].path);
         const pancardPhotoUrl = pancardUploadedPhoto.secure_url;
