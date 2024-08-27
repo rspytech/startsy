@@ -6,12 +6,16 @@ const userSchema = new mongoose.Schema({
     userName : {
         type : String,
         required : true,
+        unique : true,
     },
     email:{
         type : String,
-        required : true,
         unique : true,
         lowercase : true,
+    },
+    contactInfo : {
+        type: String,
+        unique : true,
     },
     password : {
         type : String,
@@ -45,11 +49,8 @@ userSchema.methods.generateAccessToken = function(){
         {
             _id : this._id,
             userName : this.userName,
-            email : this.email,
-            isInvestor : this.isInvestor,
-            isFounder : this.isFounder,
-            isFreelancer : this.isFreelancer,
-            isCommunityMember : this.isCommunityMember,
+            // email : this.email,
+            role : this.role,
         },
             process.env.ACCESS_TOKEN_SECRET,
         {

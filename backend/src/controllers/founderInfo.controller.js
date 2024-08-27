@@ -5,16 +5,21 @@ import { uploadOnCloudinary } from "../../cloudinary.js";
 export const FounderInfo = async (req, res) => {
 
     const {
+        email,
+        country,
+        age,
+        gender,
         contactInfo,
-        name,
+        fullName,
         previousWorkExperience,
         education,
         skills,
         nameOfStartup,
         goal,
+        description,
         teamInfo,  // Raw teamInfo data from req.body
-        targetAudience,
-        timeline,
+        // targetAudience,
+        // timeline,
         sector,
         fundingStatus,
         stageOfStartup,
@@ -46,17 +51,22 @@ export const FounderInfo = async (req, res) => {
         const currentUser = await User.findById(currentUserId);
 
         const newFounder = new Founder({
+            email,
+            country,
+            age,
+            gender,
             contactInfo,
-            name,
+            fullName,
             previousWorkExperience,
             education,
             skills,
             nameOfStartup,
             goal,
+            description,
             teamInfo,
             hiddenInfo: {
-                targetAudience,
-                timeline,
+                // targetAudience,
+                // timeline,
                 sector,
                 fundingStatus,
                 stageOfStartup,
@@ -64,6 +74,14 @@ export const FounderInfo = async (req, res) => {
             },
             user_id: req.user._id
         });
+
+        if(email){
+            currentUser.email = email;
+        }
+
+        if(contactInfo){
+            currentUser.contactInfo = contactInfo;
+        }
 
         const uploadedPhoto = await uploadOnCloudinary(profilePhoto.path);
         const photoUrl = uploadedPhoto.secure_url;

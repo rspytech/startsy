@@ -2,21 +2,26 @@ import { User } from '../models/user.model.js';
 
 export const registerUser = async (req, res) => {
     try {
-        const {userName, email, password, role} = req.body;
+        const {userName, password, role, confirmPassword} = req.body;
         console.log(req.body);
-        if(!userName || !email || !password || !role){
+        if(!userName || !password || !role || !confirmPassword){
             return res.status(400).json({message: "Please fill in all fields."});
         }
         // Check if user already exists
-        const existingUser = await User.findOne({ email });
+        const existingUser = await User.findOne({ userName });
         if (existingUser) {
             return res.status(400).json({ message: 'User already exists' });
+        }
+        
+        // Check if password and confirm password match
+        
+        if (password !== confirmPassword) {
+            return res.status(400).json({ message: 'Passwords do not match' });
         }
 
         // Create a new user
         const newUser = new User({
             userName,
-            email,
             password,
             role,
             refreshToken: ""
@@ -48,7 +53,7 @@ export const registerUser = async (req, res) => {
         });
 
         await User.updateOne(
-            { email: email },
+            { userName: userName },
             {
                 $set: {
                     refreshToken: refreshToken

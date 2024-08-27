@@ -1,9 +1,26 @@
 import mongoose from "mongoose";
 
 const investorSchema = new mongoose.Schema({
+
+    fullName : {
+        type: String,
+    },
+    email : {
+        type: String,
+    },
+    country : {
+        type: String,
+    },
+    age : {
+        type: Number,
+    },
+    gender : {
+        type: String,
+    },
+
     contactInfo : {
         type: String,
-        required: true,
+        unique : true,
     },
     previousExperience : {
         type : Number,
