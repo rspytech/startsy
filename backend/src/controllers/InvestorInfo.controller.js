@@ -54,11 +54,13 @@ export const InvestorInfo = async (req, res) => {
             user_id: req.user._id
         });
 
-        // set profile photo link and email of the current user in the User Model
         const uploadedPhoto = await uploadOnCloudinary(profilePhoto[0].path);
         const photoUrl = uploadedPhoto.secure_url;
+        
+        // set profile photo link, email, contactInfo of the current user in the User Model
         currentUser.profilePhoto = photoUrl;
         currentUser.email = email;
+        currentUser.contactInfo = contactInfo;
         
         const pancardUploadedPhoto = await uploadOnCloudinary(pancardPhoto[0].path);
         const pancardPhotoUrl = pancardUploadedPhoto.secure_url;

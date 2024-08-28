@@ -8,13 +8,13 @@ export const DoesUserExists = async (req, res) => {
         
         if (await User.findOne({email})) {
             return res.status(409).send({
-                message: "Email Already Associated with a different User, try different Logging In"
+                message: "Email Already Associated with a different User, try Logging In"
             });
         }
 
         if (await User.findOne({contactInfo})) {
             return res.status(409).send({
-                message: "Phone Number Already Associated with a different User, try different Loggin In"
+                message: "Phone Number Already Associated with a different User, try Loggin In"
             });
         }
 
