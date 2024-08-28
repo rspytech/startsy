@@ -17,6 +17,6 @@ router.post('/investorInfo', verifyUser, upload.fields([
     { name: 'panCardPhoto', maxCount: 1 },
 ]), encryptPan, InvestorInfo);
 router.post('/founderInfo', verifyUser, upload.single('profilePhoto'), FounderInfo);
-router.post('/checkEmail', DoesUserExists);
+router.post('/doesUserExists', DoesUserExists);
 
 export default router;
