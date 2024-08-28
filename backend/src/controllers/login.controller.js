@@ -2,21 +2,27 @@ import { User } from '../models/user.model.js';
 
 export const loginUser = async (req, res) => {
     try {
-        const { email, password } = req.body;
+        const { identifier, password } = req.body;
 
-        if(!email || !password){
+        if(!identifier || !password){
             return res.status(400).json({message : 'Please fill in all the fields'});
         }
         // Check if user exists
-        const user = await User.findOne({ email });
+        const user = await User.findOne({
+            $or: [
+                { userName: identifier },
+                { email: identifier },
+                { contactInfo: identifier }
+            ]
+        });
         if (!user) {
-            return res.status(401).json({ message: 'Invalid email or password' });
+            return res.status(401).json({ message: 'Invalid credentials' });
         }
 
         // Verify the password
         const isPasswordCorrect = await user.isPasswordCorrect(password);
         if (!isPasswordCorrect) {
-            return res.status(401).json({ message: 'Invalid email or password' });
+            return res.status(401).json({ message: 'Invalid credentials' });
         }
 
         // Generate tokens

@@ -6,7 +6,7 @@ import { verifyUser } from '../middleware/user.auth.middleware.js';
 import { InvestorInfo } from '../controllers/InvestorInfo.controller.js';
 import upload from '../middleware/upload.middleware.js';
 import { FounderInfo } from '../controllers/founderInfo.controller.js';
-import { CheckEmail } from '../controllers/checkEmail.controller.js';
+import { DoesUserExists } from '../controllers/doesUserExists.controller.js';
 
 const router = express.Router();
 
@@ -17,6 +17,6 @@ router.post('/investorInfo', verifyUser, upload.fields([
     { name: 'panCardPhoto', maxCount: 1 },
 ]), encryptPan, InvestorInfo);
 router.post('/founderInfo', verifyUser, upload.single('profilePhoto'), FounderInfo);
-router.post('/checkEmail', CheckEmail);
+router.post('/checkEmail', DoesUserExists);
 
 export default router;

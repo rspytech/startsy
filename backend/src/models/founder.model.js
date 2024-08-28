@@ -1,15 +1,28 @@
 import mongoose from "mongoose";
 
 const founderSchema = new mongoose.Schema({
+    fullName : {                 
+        type : String,
+        required: true,
+    },
+    email : {
+        type: String,
+    },
+    country : {
+        type: String,
+    },
+    age : {
+        type: Number,
+    },
+    gender : {
+        type: String,
+    },
+    
     contactInfo : {
         type: String,
         required: true,
     },
-    name : {                 
-        type : String,
-        required: true,
-    },
-    previousWorkExperience : {
+    previousWorkExperience : [{
         company : {
             type: String,
             required: true,
@@ -22,7 +35,7 @@ const founderSchema = new mongoose.Schema({
             type: Number,
             required: true,
         }
-    },
+    }],
     education : {
         type: String,
         required: true,
@@ -39,6 +52,9 @@ const founderSchema = new mongoose.Schema({
         type: String,
         required: true,
     },
+    description :{
+        type: String,
+    },
     teamInfo : [{
         tag : {
             type: mongoose.Schema.Types.ObjectId,
@@ -46,22 +62,20 @@ const founderSchema = new mongoose.Schema({
         },
         name: {
             type : String,
-            required: true,
         },
         role : {                    /* Team member */
             type : String,  
-            required: true,
         }
     }],
     hiddenInfo : {
-        targetAudience:{ 
-            type: String,
-            required: true,
-        },
-        timeline : {
-            type: String,
-            required: true,
-        },
+        // targetAudience:{ 
+        //     type: String,
+        //     required: true,
+        // },
+        // timeline : {
+        //     type: String,
+        //     required: true,
+        // },
         sector: {
             type: String,
             enum: ['Horizontal', 'Vertical'],

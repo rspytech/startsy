@@ -1,8 +1,6 @@
 import crypto from 'crypto';
 import dotenv from 'dotenv';
-dotenv.config({
-    path: './.env.example'
-});
+dotenv.config();
 
 // Load AES key from environment variable
 const aesKey = Buffer.from(process.env.AES_KEY, 'hex');
