@@ -60,6 +60,6 @@ export const registerUser = async (req, res) => {
         // Respond with the new user and tokens
     } catch (error) {
         console.error('Error registering user:', error);
-        res.status(500).json({ message: 'Server error' });
+        res.status(500).json({ message: 'Server error while registering' });
     }
 };

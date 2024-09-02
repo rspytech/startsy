@@ -14,15 +14,15 @@ export const FreelancerInfo = async (req, res) => {
             tagline,
             skills,
             education,
-            certification,
+            name,
+            url,
             portfolio,
             services,
             currentAvailability,
             pricing,
         } = req.body;
 
-        const profilePhoto = req.files.profilePhoto;
-        
+        const profilePhoto = req.file;
         const currentUserId = req.user._id;
         const currentUser = await User.findById(currentUserId);
         
@@ -36,7 +36,10 @@ export const FreelancerInfo = async (req, res) => {
             tagline,
             skills,
             education,
-            certification,
+            certification : {
+                name,
+                url,
+            },
             portfolio,
             services,
             currentAvailability,
@@ -44,7 +47,7 @@ export const FreelancerInfo = async (req, res) => {
             user_id: req.user._id
         });
 
-        const uploadedPhoto = await uploadOnCloudinary(profilePhoto[0].path);
+        const uploadedPhoto = await uploadOnCloudinary(profilePhoto.path);
         const photoUrl = uploadedPhoto.secure_url;
         
         // set profile photo link, email, contactInfo of the current user in the User Model
@@ -58,7 +61,8 @@ export const FreelancerInfo = async (req, res) => {
         res.status(200).send({
             message: "Freelancer Details uploaded successfully"
         });
-    } catch (error) {
+    }
+    catch (error) {
         console.log(error);
         res.status(500).send({
             message: "Internal Server Error"
