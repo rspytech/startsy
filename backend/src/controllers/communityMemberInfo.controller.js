@@ -1,0 +1,54 @@
+import { uploadOnCloudinary } from "../../cloudinary.js";
+import { CommunityMemeber } from "../models/communityMember.model.js";
+import { User } from "../models/user.model.js";
+
+export const CommunityMemeberInfo = async (req, res) => {
+    try{
+        const {
+            fullName,
+            email,
+            country,
+            age,
+            gender,
+            contactInfo,
+            communityMemberRole,
+            areaOfInterest,
+            contentPrefrence
+        } = req.body;
+
+        const profilePhoto = req.file;
+        const currentUserId = req.user._id;
+        const currentUser = await User.findById(currentUserId);
+
+        const newCommunityMember = new CommunityMemeber({
+            fullName,
+            email,
+            country,
+            age,
+            gender,
+            contactInfo,
+            communityMemberRole,
+            areaOfInterest,
+            contentPrefrence,
+            user_id: req.user._id
+        });
+
+        const uploadedPhoto = await uploadOnCloudinary(profilePhoto.path);
+        const photoUrl = uploadedPhoto.secure_url;
+
+        currentUser.profilePhoto = photoUrl;
+        currentUser.email = email;
+        currentUser.contactInfo = contactInfo;
+
+        await currentUser.save();
+        await newCommunityMember.save();
+
+        res.status(201).json({message: "Community Member created successfully"});
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).send({
+            message: "Internal Server Error"
+        });
+    }
+}
