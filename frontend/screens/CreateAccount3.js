@@ -1,17 +1,24 @@
+
 import * as React from "react";
-import { StyleSheet, View, Text } from "react-native";
+import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
+import { useNavigation } from "@react-navigation/native";
 import { Color, FontFamily, FontSize, Border } from "../GlobalStyles";
 
 const CreateAccount3 = () => {
+  const navigation = useNavigation(); // Hook to manage navigation
+
   return (
     <View style={styles.createAccount31}>
       <View style={styles.createAccount31Child} />
-      <View style={[styles.button, styles.buttonLayout]}>
+      <Pressable
+        style={[styles.button, styles.buttonLayout]}
+        onPress={() => navigation.navigate("Login1")} // Navigate to Login1 screen
+      >
         <View style={[styles.buttonChild, styles.startsy53Position]} />
         <Text style={styles.chooseAnotherRole}>Choose another role</Text>
-      </View>
+      </Pressable>
       <Text style={styles.thankYouForContainer}>
         <Text style={styles.thankYouFor}>
           Thank you for your interest in joining Startsy as an investor. To
@@ -92,7 +99,7 @@ const styles = StyleSheet.create({
   },
   textTypo: {
     textAlign: "left",
-    color: Color.colorSpringgreen_200,
+    color: "#ffffff",
     fontFamily: FontFamily.montserratRegular,
     fontSize: FontSize.size_mini,
     top: 48,
@@ -101,7 +108,7 @@ const styles = StyleSheet.create({
   createAccount31Child: {
     top: 118,
     borderTopLeftRadius: Border.br_41xl,
-    backgroundColor: Color.colorGray_100,
+    backgroundColor: "#24272A",
     width: 360,
     height: 680,
     left: 0,
@@ -109,19 +116,21 @@ const styles = StyleSheet.create({
   },
   buttonChild: {
     borderRadius: Border.br_xl,
-    backgroundColor: Color.colorSpringgreen_100,
+    backgroundColor: Color.colorSpringgreen_300,
     height: 48,
     width: 266,
     position: "absolute",
+    paddingTop: 20,
   },
   chooseAnotherRole: {
     top: 14,
     left: 22,
     fontSize: 22,
     lineHeight: 16,
-    color: Color.colorGray_100,
+    color: "#000000",
     height: 28,
     width: 222,
+    lineHeight: 23,
     textAlign: "center",
     fontFamily: FontFamily.alataRegular,
     position: "absolute",
@@ -140,7 +149,7 @@ const styles = StyleSheet.create({
     top: 161,
     left: 29,
     lineHeight: 26,
-    color: Color.colorGainsboro,
+    color: "#ffffff",
     width: 303,
     height: 377,
     textAlign: "center",
@@ -221,7 +230,7 @@ const styles = StyleSheet.create({
     width: 322,
   },
   createAccount31: {
-    backgroundColor: Color.colorGray_200,
+    backgroundColor: "#16181A",
     flex: 1,
     width: "100%",
     height: 798,
@@ -230,3 +239,4 @@ const styles = StyleSheet.create({
 });
 
 export default CreateAccount3;
+

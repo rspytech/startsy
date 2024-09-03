@@ -5,7 +5,7 @@ import { LinearGradient } from "expo-linear-gradient";
 import { useNavigation } from "@react-navigation/native";
 import { Color, FontFamily, FontSize, Border } from "../GlobalStyles";
 
-const CreateAccount41 = () => {
+const CreateAccount5 = () => {
   const navigation = useNavigation();
 
   return (
@@ -452,4 +452,4 @@ const styles = StyleSheet.create({
   },
 });
 
-export default CreateAccount41;
+export default CreateAccount5;

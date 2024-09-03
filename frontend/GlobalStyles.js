@@ -12,8 +12,13 @@ export const FontFamily = {
 export const FontSize = {
   size_5xl: 24,
   previewthemeforestnetKumbhSansRegular14_size: 14,
+
+  size_sm: 14,
+
+
   size_45xl: 64,
   previewthemeforestnetKumbhSansRegular16_size: 16,
+  size_base: 16,
   size_xl: 20,
   size_13xl: 32,
   size_lg_8: 19,

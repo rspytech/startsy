@@ -1,0 +1,153 @@
+import * as React from "react";
+import { Image } from "expo-image";
+import { StyleSheet, Text, View } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { Color, FontFamily, FontSize, Border } from "../GlobalStyles";
+
+const ProgressBar3 = () => {
+  return (
+    <View style={[styles.progressBar, styles.startsy53Layout]}>
+      <Image
+        style={[styles.progressBarChild, styles.progressChildLayout]}
+        contentFit="cover"
+        source={require("../assets/ellipse-52.png")}
+      />
+      <Image
+        style={[styles.progressBarItem, styles.progressChildLayout]}
+        contentFit="cover"
+        source={require("../assets/ellipse-52.png")}
+      />
+      <Image
+        style={[styles.progressBarInner, styles.progressChildLayout]}
+        contentFit="cover"
+        source={require("../assets/ellipse-52.png")}
+      />
+      <Image
+        style={[styles.ellipseIcon, styles.progressChildLayout]}
+        contentFit="cover"
+        source={require("../assets/ellipse-52.png")}
+      />
+      <Image
+        style={[styles.progressBarChild1, styles.progressChildLayout]}
+        contentFit="cover"
+        source={require("../assets/ellipse-52.png")}
+      />
+      <Text style={[styles.text, styles.textTypo]}>1</Text>
+      <Text style={[styles.text1, styles.textTypo]}>2</Text>
+      <Text style={[styles.text2, styles.textTypo]}>3</Text>
+      <Text style={[styles.text3, styles.textTypo]}>4</Text>
+      <View style={[styles.lineView, styles.lineViewBorder]} />
+      <LinearGradient
+        style={[styles.rectangleLineargradient, styles.lineViewBorder]}
+        locations={[0, 1]}
+        colors={["rgba(255, 255, 255, 0.6)", "rgba(153, 153, 153, 0.4)"]}
+      />
+      <Image
+        style={[styles.startsy53, styles.startsy53Layout]}
+        contentFit="cover"
+        source={require("../assets/startsy-5-3.png")}
+      />
+    </View>
+  );
+};
+
+const styles = StyleSheet.create({
+  startsy53Layout: {
+    height: 83,
+    position: "absolute",
+  },
+  progressChildLayout: {
+    height: 12,
+    top: 34,
+  },
+  textTypo: {
+    textAlign: "left",
+    color: Color.colorSpringgreen_200,
+    fontFamily: FontFamily.montserratRegular,
+    fontSize: FontSize.size_mini,
+    top: 48,
+    position: "absolute",
+  },
+  lineViewBorder: {
+    borderStyle: "solid",
+    position: "absolute",
+  },
+  progressBarChild: {
+    width: 12,
+    height: 12,
+    top: 34,
+    position: "absolute",
+    left: 90,
+  },
+  progressBarItem: {
+    left: 145,
+    width: 12,
+    height: 12,
+    top: 34,
+    position: "absolute",
+  },
+  progressBarInner: {
+    left: 200,
+    width: 12,
+    height: 12,
+    top: 34,
+    position: "absolute",
+  },
+  ellipseIcon: {
+    left: 255,
+    width: 12,
+    height: 12,
+    top: 34,
+    position: "absolute",
+  },
+  progressBarChild1: {
+    left: 310,
+    width: 12,
+    height: 12,
+    top: 34,
+    position: "absolute",
+  },
+  text: {
+    left: 148,
+  },
+  text1: {
+    left: 202,
+  },
+  text2: {
+    left: 257,
+  },
+  text3: {
+    left: 311,
+  },
+  lineView: {
+    top: 40,
+    left: 95,
+    borderColor: Color.colorSpringgreen_200,
+    borderTopWidth: 3,
+    width: 222,
+    height: 3,
+  },
+  rectangleLineargradient: {
+    borderRadius: Border.br_11xl,
+    borderColor: Color.colorGray_100,
+    borderWidth: 0.2,
+    width: 67,
+    backgroundColor: "transparent",
+    height: 12,
+    top: 34,
+    left: 90,
+    borderStyle: "solid",
+  },
+  startsy53: {
+    top: 0,
+    left: 0,
+    width: 83,
+  },
+  progressBar: {
+    top: 16,
+    left: 12,
+    width: 322,
+  },
+});
+
+export default ProgressBar3;

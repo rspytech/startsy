@@ -1,12 +1,34 @@
 
 import * as React from "react";
 import { Image } from "expo-image";
-import { StyleSheet, View, Pressable, Text } from "react-native";
-import { useNavigation } from "@react-navigation/native";
+import { StyleSheet, View, Pressable, Text,TextInput } from "react-native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { FontFamily, Border, Color, FontSize } from "../GlobalStyles";
+import { useState } from "react";
+import { Input } from "@rneui/themed";
 
 const CreateAccount1 = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+ 
+  const {role, userName } = route.params || {};
+ 
+  const [password, setPassword] = useState('');
+  const [confirmPassword, setConfirmPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
+
+  const handleNext = () => {
+    if (password !== confirmPassword) {
+      setErrorMessage("please check your password and confirm password again");
+    } else {
+      setErrorMessage(""); // Clear error if passwords match
+      if (role === "Founder") {
+        navigation.navigate("CreateFounder1", { role, userName, password });
+      } else {
+        navigation.navigate("CreateAccount2", { role, userName, password });
+      }
+    }
+  };
 
   return (
     <View style={styles.createAccountContainer}>
@@ -50,24 +72,41 @@ const CreateAccount1 = () => {
 
       <View style={styles.createAPasswordParent}>
         <Text style={[styles.createAPassword, styles.nextTypo]}>
-          Create a password
+        {`Create your ${role} password`}
         </Text>
-        <View style={[styles.passwordWrapper, styles.passwordWrapperPosition]}>
-          <Text style={[styles.password, styles.passwordFlexBox]}>
-            Password
-          </Text>
+      <View style={[styles.passwordWrapper, styles.passwordWrapperPosition]}>
+       <Input
+          placeholder="Password"
+          inputStyle={styles.inputText}
+          containerStyle={styles.inputContainer}
+          leftIcon={{ type: "font-awesome",  color: "#828282" }}
+          secureTextEntry
+          value={password}
+          onChangeText={(text) => setPassword(text)}
+           
+        />
         </View>
-        <View style={[styles.confirmPasswordWrapper, styles.passwordWrapperPosition]}>
-          <Text style={[styles.confirmPassword, styles.passwordFlexBox]}>
-            Confirm password
-          </Text>
+      <View style={[styles.confirmPasswordWrapper, styles.passwordWrapperPosition]}>
+        <Input
+              placeholder="Confirm password"
+              inputStyle={styles.inputText}
+              containerStyle={styles.inputContainer}
+              leftIcon={{ type: "font-awesome", color: "#828282" }}
+              secureTextEntry
+              value={confirmPassword}
+              onChangeText={(text) => setConfirmPassword(text)}
+            />
+        
+        {errorMessage ? (
+          <Text style={styles.errorMessage}>{errorMessage}</Text>
+        ) : null}
         </View>
         <Text style={[styles.useAStrong, styles.passwordFlexBox]}>
           Use a strong password
         </Text>
         <Pressable
           style={[styles.rectangleParent, styles.groupInnerLayout]}
-          onPress={() => navigation.navigate("CreateAccount2")}
+          onPress={handleNext}
         >
           <View style={[styles.groupInner, styles.groupInnerLayout]} />
           <Text style={[styles.next, styles.nextTypo]}>Next</Text>
@@ -88,6 +127,16 @@ const CreateAccount1 = () => {
 };
 
 const styles = StyleSheet.create({
+  inputText:{
+     color:"white"
+  },
+  
+  errorMessage: {
+    color: "red",
+   top:-28,
+   width:273,
+    textAliign: "center",
+  },
   childLayout: {
     height: 890,
     width: 360,
@@ -189,7 +238,7 @@ const styles = StyleSheet.create({
   },
   passwordWrapper: {
     top: 91,
-    width: 91,
+    width: 105,
   },
   confirmPassword: {
     color: Color.colorDarkgray_200,
@@ -204,7 +253,8 @@ const styles = StyleSheet.create({
     width: 172,
   },
   useAStrong: {
-    top: 38,
+    top: 52
+    ,
     left: 52,
     fontSize: FontSize.size_mini,
     fontFamily: FontFamily.roboto,
@@ -258,4 +308,3 @@ const styles = StyleSheet.create({
 });
 
 export default CreateAccount1;
-

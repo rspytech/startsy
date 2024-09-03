@@ -1,14 +1,21 @@
 
+
 import * as React from "react";
+import { useState } from "react";
 import { Image } from "expo-image";
 import { StyleSheet, View, Pressable, Text, Dimensions } from "react-native";
 import { Input } from "@rneui/themed";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 
 const { width, height } = Dimensions.get("window");
 
 const CreateAccount = () => {
   const navigation = useNavigation();
+  const route = useRoute();
+  
+  // Get the userType from the route params
+  const { role } = route.params;
+  const [userName, setUserName] = useState("");
 
   return (
     <View style={styles.createAccount1}>
@@ -42,20 +49,22 @@ const CreateAccount = () => {
         />
       </Pressable>
       <View style={styles.contentWrapper}>
-        <Text style={styles.chooseUsername}>Choose username</Text>
+        <Text style={styles.chooseUsername}> {`Create your ${role} account`}</Text>
         <Text style={styles.subText}>You can always change it later.</Text>
         <View style={styles.inputWrapper}>
           
           <Input
-          placeholder="Username"
+          placeholder="UserName"
           inputStyle={styles.inputText}
           containerStyle={styles.inputContainer}
+          value={userName}
+          onChangeText={(text) => setUserName(text)}
           
         />
         </View>
         <Pressable
           style={styles.buttonWrapper}
-          onPress={() => navigation.navigate("CreateAccount1")}
+          onPress={() => navigation.navigate("CreateAccount1", {role, userName })}
         >
           <Text style={styles.nextButtonText}>Next</Text>
         </Pressable>
@@ -160,14 +169,3 @@ const styles = StyleSheet.create({
 });
 
 export default CreateAccount;
-
-
-
-
-
-
-
-
-
-
-
