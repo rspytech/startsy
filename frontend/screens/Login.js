@@ -6,6 +6,12 @@ import { Image } from "expo-image";
 import { StyleSheet, View, Text, Pressable, Dimensions, Alert } from "react-native";
 import { Input } from "@rneui/themed";
 import { useNavigation } from "@react-navigation/native";
+import * as WebBrowser from 'expo-web-browser';
+import * as Google from 'expo-auth-session/providers/google';
+import { ResponseType } from 'expo-auth-session';
+
+
+WebBrowser.maybeCompleteAuthSession();
 
 const { width, height } = Dimensions.get("window");
 
@@ -14,6 +20,16 @@ const Login = () => {
   
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [request, response, promptAsync] = Google.useAuthRequest({
+    expoClientId: 'YOUR_EXPO_CLIENT_ID',
+    iosClientId: 'YOUR_IOS_CLIENT_ID',
+    androidClientId: 'YOUR_ANDROID_CLIENT_ID',
+    webClientId: 'YOUR_WEB_CLIENT_ID',
+    responseType: ResponseType.Token,
+  });
+
+
+
 
   const handleLogin = async () => {
     try {
@@ -30,6 +46,20 @@ const Login = () => {
     } catch (error) {
       console.error("Login failed", error);
       Alert.alert("Login failed", "Invalid email or password. Please try again.");
+    }
+  };
+
+  const handleGoogleAuth = async () => {
+    const result = await promptAsync();
+
+    if (result.type === 'success') {
+      // Handle successful Google authentication here
+      console.log("Google authentication successful", result.authentication);
+      
+      // Example: Navigate to another screen upon success
+      navigation.navigate("HomeScreen");
+    } else {
+      Alert.alert("Google Sign-In failed", "Please try again.");
     }
   };
 
@@ -65,7 +95,8 @@ const Login = () => {
           <Text style={styles.loginButtonText}>Login</Text>
         </Pressable>
         <Text style={styles.orContinueWith}>Or continue with</Text>
-        <Pressable style={styles.googleAuth}>
+        <Pressable style={styles.googleAuth} onPress={handleGoogleAuth}>
+       
           <Image
             style={styles.googleIcon}
             contentFit="cover"

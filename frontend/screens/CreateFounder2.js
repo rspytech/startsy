@@ -1,183 +1,57 @@
-/*import * as React from "react";
-import { StyleSheet, View, Pressable, Text } from "react-native";
-import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation } from "@react-navigation/native";
-import { Color, Border, FontFamily, FontSize } from "../GlobalStyles";
-
-const CreateFounder2 = () => {
-  const navigation = useNavigation();
-
-  return (
-    <View style={styles.createAccountFounder4}>
-      <View style={styles.createAccountFounder4Child} />
-      <View style={styles.icons}>
-        <Pressable
-          style={[styles.icon, styles.iconLayout]}
-          onPress={() => navigation.navigate("CreateAccountFounder1")}
-        >
-          <Image
-            style={styles.icon1}
-            contentFit="cover"
-            //source={require("../assets/icon.png")}
-          />
-        </Pressable>
-        <Pressable
-          style={[styles.expandLeft, styles.iconLayout]}
-          onPress={() => navigation.navigate("CreateAccountFounder5")}
-        >
-          <Image
-            style={styles.icon1}
-            contentFit="cover"
-            //source={require("../assets/icons.png")}
-          />
-        </Pressable>
-      </View>
-      <View style={styles.workExp}>
-        <View style={[styles.expCard, styles.expCardLayout]}>
-          <View style={[styles.expCardChild, styles.childBorder]} />
-          <Image
-            style={styles.plus02Icon}
-            contentFit="cover"
-            //source={require("../assets/plus02.png")}
-          />
-          <View style={styles.groupParent}>
-            <View
-              style={[styles.companyOrganisationParent, styles.parentLayout]}
-            >
-              <Text style={[styles.companyOrganisation, styles.roleTypo]}>
-                Company / Organisation
-              </Text>
-              <View style={styles.groupChild} />
-            </View>
-            <View style={[styles.roleParent, styles.parentLayout]}>
-              <Text style={[styles.role, styles.roleTypo]}>Role</Text>
-              <View style={styles.groupChild} />
-            </View>
-            <View style={[styles.yearParent, styles.parentLayout]}>
-              <Text style={[styles.role, styles.roleTypo]}>Year</Text>
-              <View style={styles.groupChild} />
-            </View>
-          </View>
-        </View>
-        <Text style={[styles.detailAnyRelevant, styles.listYourHighestTypo]}>
-          Detail any relevant industry experience, particularly if you’ve worked
-          in a specific company or held roles that have prepared you for your
-          current venture.
-        </Text>
-        <Text style={[styles.previousWorkExperience, styles.skills1Typo]}>
-          Previous Work Experience
-        </Text>
-      </View>
-      <View style={[styles.education, styles.skillsLayout1]}>
-        <View style={[styles.select, styles.selectLayout]}>
-          <View style={[styles.selectChild, styles.selectLayout]} />
-          <Text style={[styles.select1, styles.roleTypo]}>Select</Text>
-          <Image
-            style={styles.chevronDownIcon}
-            contentFit="cover"
-            //source={require("../assets/chevrondown1.png")}
-          />
-        </View>
-        <Text style={[styles.listYourHighest, styles.listYourHighestTypo]}>
-          List your highest degree achieved, which helps to establish your
-          academic background and qualifications.
-        </Text>
-        <Text style={[styles.previousWorkExperience, styles.skills1Typo]}>
-          Education
-        </Text>
-      </View>
-      <View style={[styles.skills, styles.skillsLayout1]}>
-        <Text style={[styles.skills1, styles.skills1Typo]}>Skills</Text>
-        <View style={[styles.skills2, styles.skillsLayout1]}>
-          <Text style={[styles.writeAnyTop, styles.roleTypo]}>
-            Write any Top 3
-          </Text>
-          <View style={[styles.skillsChild, styles.skillsChildLayout]} />
-          <View style={[styles.skillsItem, styles.skillsChildLayout]} />
-        </View>
-      </View>
-      <View style={[styles.progressBar, styles.startsy54Layout]}>
-        <View style={[styles.progressBarChild, styles.skillsChildLayout]} />
-        <Image
-          style={[styles.progressBarItem, styles.progressChildPosition]}
-          contentFit="cover"
-          source={require("../assets/ellipse-52.png")}
-        />
-        <Image
-          style={[styles.progressBarInner, styles.progressChildPosition]}
-          contentFit="cover"
-          source={require("../assets/ellipse-52.png")}
-        />
-        <Image
-          style={[styles.ellipseIcon, styles.progressChildPosition]}
-          contentFit="cover"
-          source={require("../assets/ellipse-52.png")}
-        />
-        <Image
-          style={[styles.progressBarChild1, styles.progressChildPosition]}
-          contentFit="cover"
-          source={require("../assets/ellipse-52.png")}
-        />
-        <Image
-          style={[styles.progressBarChild2, styles.progressChildPosition]}
-          contentFit="cover"
-          source={require("../assets/ellipse-52.png")}
-        />
-        <LinearGradient
-          style={[styles.rectangleLineargradient, styles.progressChildPosition]}
-          locations={[0, 1]}
-          colors={["rgba(255, 255, 255, 0.6)", "rgba(153, 153, 153, 0.4)"]}
-        />
-        <Text style={[styles.text, styles.textTypo]}>1</Text>
-        <Text style={[styles.text1, styles.textTypo]}>2</Text>
-        <Text style={[styles.text2, styles.textTypo]}>3</Text>
-        <Text style={[styles.text3, styles.textTypo]}>4</Text>
-        <Image
-          style={[styles.startsy54, styles.startsy54Layout]}
-          contentFit="cover"
-          source={require("../assets/startsy-5-3.png")}
-        />
-      </View>
-    </View>
-  );
-};*/
+//professional information of founder
 import React, { useState } from "react";
 import { StyleSheet, View, Pressable, Text, ScrollView,TextInput } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import { Color, Border, FontFamily, FontSize } from "../GlobalStyles";
 import { Icon } from '@rneui/themed';
 import { Input } from '@rneui/themed';
 
 const CreateFounder2 = () => {
+
+  const route = useRoute();
+  const { fullName, email, contactInfo, age, gender, Country, profileImageUri } = route.params; 
+
+  // Check if props are received successfully
+  console.log("Received props:", { fullName, email, contactInfo, age, gender, Country, profileImageUri });
+
   const navigation = useNavigation();
-  const [companyname, setCompanyName] = React.useState("");
-  const [year, setYear] = React.useState("");
-  const [role, setRole] = React.useState("");
-  const [skills, setSkills] = React.useState("");
+  const [company, setcompany] = React.useState("");
+  const [year, setyear] = React.useState("");
+  const [role, setrole] = React.useState("");
+  const [skills, setskills] = React.useState("");
   const [showDropdown, setShowDropdown] = useState(false);
-  const [selectedEducation, setSelectedEducation] = useState(null);
+  const [education, seteducation] = useState(null);
 
 
   const toggleDropdown = () => {
     setShowDropdown(!showDropdown); // Toggle dropdown visibility
   };
-  const handleEducationSelect = (Education) => {
-    setSelectedEducation(Education);
+  const handleEducationSelect = (education) => {
+    seteducation(education);
     setShowDropdown(false); 
   };
+
+ 
 
 
   return (
     <ScrollView style={styles.container} contentContainerStyle={styles.scrollContent}>
       <View style={styles.createAccountFounder4}>
+      <Text>fullName:{fullName}</Text>
+      <Text>email:{email}</Text>
+      <Text>contactInfo:{contactInfo}</Text>
+      <Text>age:{age}</Text>
+      <Text>gender:{gender}</Text>
+      <Text> Country:{ Country}</Text>
+      <Text> profileImageUri:{ profileImageUri}</Text>
+      
         <View style={styles.createAccountFounder4Child} />
         <View style={styles.icons}>
           <Pressable
             style={[styles.icon, styles.iconLayout]}
-            onPress={() => navigation.navigate("CreateFounder1")}
+            onPress={() => navigation.navigate("CreateFounder1",{fullName, email, contactInfo, age, gender, Country, profileImageUri})}
           >
             <Image
               style={styles.navigationIcon}
@@ -185,7 +59,9 @@ const CreateFounder2 = () => {
             />
           </Pressable>
           <Pressable style={styles.navigationButton1} 
-          onPress={() => navigation.navigate("CreateFounder3")}>
+          onPress={() => navigation.navigate("CreateFounder3",{fullName, email, contactInfo, age, gender, Country, profileImageUri,
+            company,year,role,skills,education
+          })}>
             <Image
               style={styles.navigationIcon}
               source={require("../assets/expand-right.png")}
@@ -209,8 +85,8 @@ const CreateFounder2 = () => {
                 <TextInput
                  style={[styles.companyOrganisation, styles.roleTypo]}
                  placeholder="  Company / Organisation"
-                v alue={companyname}
-                 onChangeText={(text) => setCompanyName(text)}
+                 value={company}
+                 onChangeText={(text) => setcompany(text)}
               />
                 <View style={styles.groupChild} />
               </View>
@@ -220,7 +96,7 @@ const CreateFounder2 = () => {
                    style={[styles.role, styles.roleTypo]}
                   placeholder="Role"
                   value={role}
-                  onChangeText={(text) => setRole(text)}
+                  onChangeText={(text) => setrole(text)}
                />
                 <View style={styles.groupChild} />
               </View>
@@ -230,7 +106,7 @@ const CreateFounder2 = () => {
                  style={[styles.name1, styles.name1Typo]}
                  placeholder="year"
                  value={year}
-                 onChangeText={(text) => setYear(text)}
+                 onChangeText={(text) => setyear(text)}
               />
                 <View style={styles.groupChild} />
               </View>
@@ -252,7 +128,7 @@ const CreateFounder2 = () => {
         
         {/* Display selected education or default 'Select' text */}
         <Text style={[styles.select1, styles.roleTypo]}>
-          {selectedEducation ? selectedEducation : "Select"}
+          {education ? education : "Select"}
         </Text>
             
             <Icon
@@ -268,20 +144,20 @@ const CreateFounder2 = () => {
           {showDropdown && (
            <View style={styles.dropdownContent}>
            <ScrollView style={styles.dropdownItem}>
-             {["India", "United States", "United Kingdom", "Canada", "Germany", "Australia", "Singapore", "Israel", "Brazil", "Sweden"].map((Education) => (
+             {["10th" ,"12th" , "Graduate","post-Graduate","P.H.D"].map((education) => (
                <Pressable
-                 key={Education}
+                 key={education}
                  style={[styles.ind, styles.indLayout]}
-                 onPress={() => handleEducationSelect(Education)}
+                 onPress={() => handleEducationSelect(education)}
                >
                  <View style={[styles.indChild, styles.indLayout]} />
                  <Text
                    style={[
                      styles.dropdownItemText,
-                     selectedEducation === Education && styles.selectedEducation
+                     education === education && styles.selectedEducation
                    ]}
                  >
-                   {Education}
+                   {education}
                  </Text>
                </Pressable>
              ))}
@@ -306,8 +182,9 @@ const CreateFounder2 = () => {
             <TextInput
             style={[styles.writeAnyTop, styles.roleTypo]}
             placeholder="write any top 3"
+            placeholderTextColor={"silver"}
             value={skills}
-            onChangeText={(text) => setSkills(text)}
+            onChangeText={(text) => setskills(text)}
           />
             <View style={[styles.skillsChild, styles.skillsChildLayout]} />
             <View style={[styles.skillsItem, styles.skillsChildLayout]} />
@@ -385,7 +262,7 @@ const styles = StyleSheet.create({
     marginTop: 150,
     zIndex: 1,
     gap:20,
-    height:420,
+    height:150,
     left: 0,
     width: 284,
   },
@@ -436,13 +313,13 @@ const styles = StyleSheet.create({
     color: Color.colorLightslategray,
     fontFamily: FontFamily.robotoRegular,
     fontSize: FontSize.size_smi,
-    top: 33,
+    top: 25,
     textAlign: "left",
     position: "absolute",
   },
   skills1Typo: {
     textAlign: "center",
-    color: Color.colorGainsboro,
+    color: "white",
     fontFamily: FontFamily.alataRegular,
     lineHeight: 26,
     fontSize: FontSize.size_5xl,
@@ -487,7 +364,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: Border.br_41xl,
     width: 360,
     height: 771,
-    backgroundColor: Color.colorGray_100,
+    backgroundColor: "#24272A",//in am here
     left: 0,
     position: "absolute",
   },
@@ -536,7 +413,7 @@ const styles = StyleSheet.create({
     width: 242,
     height: 2,
     top: 40,
-    borderColor: Color.colorGray_200,
+    borderColor:"black",
     borderStyle: "solid",
     left: 0,
     position: "absolute",
@@ -546,7 +423,7 @@ const styles = StyleSheet.create({
   },
   role: {
     width: 88,
-    color: Color.colorSilver_200,
+    fcolor: Color.colorSilver_200,
     left: 8,
     textAlign: "left",
     fontFamily: FontFamily.sansSerifCollection,
@@ -587,7 +464,7 @@ const styles = StyleSheet.create({
   },
   selectChild: {
     borderWidth: 3,
-    borderColor: Color.colorGray_200,
+    borderColor: "black",
     borderStyle: "solid",
     borderRadius: Border.br_3xs,
     top: 0,
@@ -615,7 +492,7 @@ const styles = StyleSheet.create({
   listYourHighest: {
     left: 18,
     width: 232,
-    height: 45,
+    height: 65,
   },
   education: {
     top: 312,
@@ -627,7 +504,7 @@ const styles = StyleSheet.create({
   },
   writeAnyTop: {
     fontSize: FontSize.size_xl,
-    color: Color.colorSilver_200,
+    color:"silver",
     left: 8,
     textAlign: "left",
     fontFamily: FontFamily.sansSerifCollection,
@@ -638,7 +515,7 @@ const styles = StyleSheet.create({
     width: 287,
     height: 3,
     borderTopWidth: 3,
-    borderColor: Color.colorGray_200,
+    borderColor: "black",
     left: 0,
   },
   skillsItem: {
@@ -646,7 +523,7 @@ const styles = StyleSheet.create({
     width: 287,
     height: 3,
     borderTopWidth: 3,
-    borderColor: Color.colorGray_200,
+    borderColor: "black",
     left: 0,
   },
   skills2: {
@@ -662,6 +539,7 @@ const styles = StyleSheet.create({
   progressBarChild: {
     left: 95,
     borderColor: Color.colorSpringgreen_200,
+   
     width: 222,
     height: 3,
     borderTopWidth: 3,
@@ -699,7 +577,7 @@ const styles = StyleSheet.create({
   },
   rectangleLineargradient: {
     borderRadius: Border.br_11xl,
-    borderColor: Color.colorGray_100,
+    borderColor: "black",
     borderWidth: 0.2,
     width: 122,
     backgroundColor: "transparent",
@@ -731,7 +609,8 @@ const styles = StyleSheet.create({
     width: 322,
   },
   createAccountFounder4: {
-    backgroundColor: Color.colorGray_200,
+   
+    backgroundColor: "#16181A",
     flex: 1,
     height: 889,
     overflow: "hidden",

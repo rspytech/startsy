@@ -1,19 +1,85 @@
+//team information page
 import * as React from "react";
 import { StyleSheet, View, Text, Pressable ,TextInput} from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
+import axios from "axios"; // Import Axios
 import { Color, FontFamily, FontSize, Border } from "../GlobalStyles";
 
 const CreateFounder4 = () => {
   const navigation = useNavigation();
-  const [username, setUserName] = React.useState("");
-  const [name, setName] = React.useState("");
-  const [role, setRole] = React.useState("");
+ 
+  const route = useRoute();
+  const  {fullName, email, contactInfo, age, gender, Country, profileImageUri,
+    company,year,role,skills,education,nameOfStartup,
+    goal,fundingStatus,socialProof,description,sector,stageOfStartup} = route.params;
+
+
+  const [tag, settag] = React.useState("");
+  const [name, setname] = React.useState("");
+  const [teamrole, setteamrole] = React.useState("");
+// Axios API request function
+const handleSubmit = async () => {
+  try {
+    const response = await axios.post("http://192.168.43.217:5000/api/founderInfo", {
+      fullName,
+      email,
+      contactInfo,
+      age,
+      gender,
+      Country,
+      profileImageUri,
+      company,
+      year,
+      role,
+      skills,
+      education,
+      nameOfStartup,
+      goal,
+      fundingStatus,
+      socialProof,
+      description,
+      sector,
+      stageOfStartup,
+      tag,
+      name,
+      teamrole
+    });
+
+    // Handle the response here (e.g., navigate to another screen or display success message)
+    console.log("Response:", response.data);
+    navigation.navigate("SuccessScreen"); // Replace with your success screen
+  } catch (error) {
+    console.error("Error submitting form:", error);
+    // You can show an error message or alert here
+  }
+};
+
 
 
   return (
     <View style={styles.createAccountFounder6}>
+      <Text>fullName:{fullName}</Text>
+      <Text>email:{email}</Text>
+      <Text>contactInfo:{contactInfo}</Text>
+      <Text>age:{age}</Text>
+      <Text>gender:{gender}</Text>
+      <Text> Country:{ Country}</Text>
+      <Text> profileImageUri:{ profileImageUri}</Text>
+      <Text> company:{ company}</Text>
+      <Text> year:{ year}</Text>
+      <Text> role:{ role}</Text>
+      <Text> skills:{ skills}</Text>
+      <Text> education:{ education}</Text>
+      <Text>nameOfStartup:{ nameOfStartup}</Text>
+      <Text>goal:{ goal}</Text>
+      <Text>fundingStatus:{ fundingStatus}</Text>
+      <Text>socialProof:{ socialProof}</Text>
+      <Text>description:{description}</Text>
+      <Text>sector:{ sector}</Text>
+      <Text>stageOfStartup:{ stageOfStartup}</Text>
+      
       <View style={styles.createAccountFounder6Child} />
       <View style={styles.teamMemberCard}>
         <View style={[styles.teamMemberCardChild, styles.childBorder]} />
@@ -23,8 +89,9 @@ const CreateFounder4 = () => {
           <TextInput
             style={[styles.username1, styles.name1Typo]}
             placeholder="@Username"
-            value={username}
-            onChangeText={(text) => setUserName(text)}
+            placeholderTextColor={"silver"}
+            value={tag}
+            onChangeText={(text) => settag(text)}
           />
         </View>
         <View style={[styles.name, styles.nameLayout]}>
@@ -33,8 +100,9 @@ const CreateFounder4 = () => {
           <TextInput
             style={[styles.name1, styles.name1Typo]}
             placeholder="Name"
+            placeholderTextColor={"silver"}
             value={name}
-            onChangeText={(text) => setName(text)}
+            onChangeText={(text) => setname(text)}
           />
         </View>
         <View style={[styles.role, styles.nameLayout]}>
@@ -43,8 +111,9 @@ const CreateFounder4 = () => {
           <TextInput
             style={[styles.name1, styles.name1Typo]}
             placeholder="Role"
-            value={role}
-            onChangeText={(text) => setRole(text)}
+            placeholderTextColor={"silver"}
+            value={teamrole}
+            onChangeText={(text) => setteamrole(text)}
           />
         </View>
         <Image
@@ -100,7 +169,9 @@ const CreateFounder4 = () => {
       </View>
       <View style={[styles.submitButton, styles.submitLayout]}>
         <View style={[styles.submitButtonChild, styles.submitLayout]} />
+        <Pressable onPress={handleSubmit}>
         <Text style={[styles.submit, styles.submitTypo]}>Submit</Text>
+        </Pressable>
       </View>
       <Pressable
         style={styles.expandLeft}
@@ -118,7 +189,7 @@ const CreateFounder4 = () => {
 
 const styles = StyleSheet.create({
   childBorder: {
-    borderColor: Color.colorGray_200,
+    borderColor: "black",
     left: 0,
   },
   nameLayout: {
@@ -174,7 +245,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: Border.br_41xl,
     width: 360,
     height: 700,
-    backgroundColor: Color.colorGray_100,
+    backgroundColor: "#24272A",
     left: 0,
     position: "absolute",
   },
@@ -182,7 +253,7 @@ const styles = StyleSheet.create({
     borderRadius: Border.br_3xs,
     borderWidth: 3,
     borderStyle: "solid",
-    borderColor: Color.colorGray_200,
+    borderColor: "black",
     top: 0,
     height: 194,
     width: 284,
@@ -193,7 +264,7 @@ const styles = StyleSheet.create({
     borderTopWidth: 2,
     width: 242,
     height: 2,
-    borderColor: Color.colorGray_200,
+    borderColor: "black",
     left: 0,
   },
   username1: {
@@ -229,7 +300,7 @@ const styles = StyleSheet.create({
     top: 168,
     left: 82,
     lineHeight: 26,
-    color: Color.colorGainsboro,
+    color: "white",
   },
   progressChild: {
     left: 95,
@@ -249,6 +320,7 @@ const styles = StyleSheet.create({
     width: 12,
     height: 12,
     top: 34,
+    
   },
   ellipseIcon: {
     left: 200,
@@ -270,7 +342,7 @@ const styles = StyleSheet.create({
   },
   rectangleLineargradient: {
     borderRadius: Border.br_11xl,
-    borderColor: Color.colorGray_100,
+    borderColor: "black",
     borderWidth: 0.2,
     width: 232,
     backgroundColor: "transparent",
@@ -331,7 +403,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   createAccountFounder6: {
-    backgroundColor: Color.colorGray_200,
+    backgroundColor: "#16181A",
     flex: 1,
     height: 800,
     overflow: "hidden",

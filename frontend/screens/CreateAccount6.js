@@ -1,5 +1,5 @@
 
-
+//investing information
 
 import React, { useState } from "react";
 import { StyleSheet, View, Text,  TouchableOpacity,Pressable, ScrollView } from "react-native";

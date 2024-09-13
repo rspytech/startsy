@@ -1,4 +1,4 @@
-
+//choose another account page for investor who don't 2cr
 import * as React from "react";
 import { StyleSheet, View, Text, Pressable } from "react-native";
 import { Image } from "expo-image";

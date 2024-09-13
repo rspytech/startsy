@@ -1,4 +1,4 @@
-
+//create password page of investor 
 import * as React from "react";
 import { Image } from "expo-image";
 import { StyleSheet, View, Pressable, Text,TextInput } from "react-native";
@@ -24,7 +24,12 @@ const CreateAccount1 = () => {
       setErrorMessage(""); // Clear error if passwords match
       if (role === "Founder") {
         navigation.navigate("CreateFounder1", { role, userName, password });
-      } else {
+      } else if (role === "Freelancer") {
+        navigation.navigate("CreateFreelancer", { role, userName, password });
+      } else if (role === "Community Member") {
+        navigation.navigate("CreateCommunity1", { role, userName, password });
+      } 
+      else {
         navigation.navigate("CreateAccount2", { role, userName, password });
       }
     }

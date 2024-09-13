@@ -1,166 +1,10 @@
-/*import * as React from "react";
-import { StyleSheet, View, Pressable, Text } from "react-native";
-import { Image } from "expo-image";
-import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation } from "@react-navigation/native";
-import { Color, FontFamily, FontSize, Border } from "../GlobalStyles";
 
-const CreateFounder3 = () => {
-  const navigation = useNavigation();
-
-  return (
-    <View style={styles.createAccountFounder5}>
-      <View style={styles.createAccountFounder5Child} />
-      <View style={styles.icons}>
-        <Pressable
-          style={[styles.icon, styles.iconLayout]}
-          onPress={() => navigation.navigate("CreateAccountFounder2")}
-        >
-          <Image
-            style={styles.icon1}
-            contentFit="cover"
-           // source={require("../assets/icon.png")}
-          />
-        </Pressable>
-        <Pressable
-          style={[styles.expandLeft, styles.iconLayout]}
-          onPress={() => navigation.navigate("CreateAccountFounder")}
-        >
-          <Image
-            style={styles.icon1}
-            contentFit="cover"
-           // source={require("../assets/icons.png")}
-          />
-        </Pressable>
-      </View>
-      <View style={[styles.socialProof, styles.startupPosition]}>
-        <Text style={styles.socialProof1}>Social proof</Text>
-        <Text style={[styles.url, styles.urlTypo]}>URL</Text>
-        <View style={[styles.socialProofChild, styles.childLayout]} />
-        <Image
-          style={styles.plus02Icon}
-          contentFit="cover"
-         // source={require("../assets/plus02.png")}
-        />
-      </View>
-      <View style={[styles.fundingStatus, styles.startupPosition]}>
-        <View style={[styles.number, styles.numberPosition]}>
-          <View style={styles.numberChild} />
-          <Text style={styles.thousand}>2 thousand</Text>
-        </View>
-        <Text style={[styles.indicateTheAmount, styles.textTypo1]}>
-          Indicate the amount of funding your startup has received so far. This
-          information will only be visible to verified investors and helps them
-          assess your startup's financial backing and growth potential.
-        </Text>
-        <Text style={styles.socialProof1}>Funding Status</Text>
-        <Image
-          style={styles.barIcon}
-          contentFit="cover"
-          source={require("../assets/group-34.png")}
-        />
-      </View>
-      <View style={[styles.startupStage, styles.startupPosition]}>
-        <View style={styles.dropdown2}>
-          <View style={[styles.dropdown2Child, styles.childBorder]} />
-          <Text style={[styles.select, styles.selectTypo]}>Select</Text>
-          <Image
-            style={[styles.chevronDownIcon, styles.chevronIconLayout]}
-            contentFit="cover"
-            //source={require("../assets/chevrondown1.png")}
-          />
-        </View>
-        <Text style={[styles.identifyWhereYour, styles.yourTypo]}>
-          Identify where your startup is in its journey—whether you’re in
-          ideation, have a prototype, or are generating revenue.
-        </Text>
-        <Text style={styles.socialProof1}>{`Startup stage `}</Text>
-      </View>
-      <View style={[styles.startupSector, styles.startupPosition]}>
-        <View style={[styles.dropdown1, styles.chevronIconLayout]}>
-          <View style={[styles.dropdown1Child, styles.chevronIconLayout]} />
-          <Text style={[styles.select1, styles.selectTypo]}>Select</Text>
-          <Image
-            style={[styles.chevronDownIcon1, styles.chevronIconLayout]}
-            contentFit="cover"
-           // source={require("../assets/chevrondown1.png")}
-          />
-        </View>
-        <Text style={[styles.defineYourStartups, styles.yourTypo]}>
-          Define your startup’s focus: horizontal sectors serve multiple
-          industries, while vertical sectors target a specific niche.
-        </Text>
-        <Text style={styles.socialProof1}>{`Startup sector `}</Text>
-      </View>
-      <View style={[styles.aboutStartup, styles.startupPosition]}>
-        <View style={[styles.description, styles.descriptionLayout]}>
-          <View style={[styles.description1, styles.descriptionLayout]}>
-            <Text style={[styles.text, styles.textTypo1]}>0/1000</Text>
-          </View>
-          <Text style={[styles.description2, styles.urlTypo]}>
-            Description:
-          </Text>
-        </View>
-        <View style={[styles.goal, styles.descriptionLayout]}>
-          <View style={[styles.goalChild, styles.childLayout]} />
-          <Text style={[styles.description2, styles.urlTypo]}>Goal</Text>
-        </View>
-        <View style={[styles.name, styles.descriptionLayout]}>
-          <View style={[styles.goalChild, styles.childLayout]} />
-          <Text style={[styles.description2, styles.urlTypo]}>Name</Text>
-        </View>
-        <Text style={styles.socialProof1}>About Startup/Organisation</Text>
-      </View>
-      <View style={[styles.progressBar, styles.startsy54Layout]}>
-        <View style={[styles.progressBarChild, styles.childLayout]} />
-        <Image
-          style={[styles.progressBarItem, styles.progressChildPosition]}
-          contentFit="cover"
-          source={require("../assets/ellipse-52.png")}
-        />
-        <Image
-          style={[styles.progressBarInner, styles.progressChildPosition]}
-          contentFit="cover"
-          source={require("../assets/ellipse-52.png")}
-        />
-        <Image
-          style={[styles.ellipseIcon, styles.progressChildPosition]}
-          contentFit="cover"
-          source={require("../assets/ellipse-52.png")}
-        />
-        <Image
-          style={[styles.progressBarChild1, styles.progressChildPosition]}
-          contentFit="cover"
-          source={require("../assets/ellipse-52.png")}
-        />
-        <Image
-          style={[styles.progressBarChild2, styles.progressChildPosition]}
-          contentFit="cover"
-          source={require("../assets/ellipse-52.png")}
-        />
-        <LinearGradient
-          style={[styles.rectangleLineargradient, styles.progressChildPosition]}
-          locations={[0, 1]}
-          colors={["rgba(255, 255, 255, 0.6)", "rgba(153, 153, 153, 0.4)"]}
-        />
-        <Text style={[styles.text1, styles.textTypo]}>1</Text>
-        <Text style={[styles.text2, styles.textTypo]}>2</Text>
-        <Text style={[styles.text3, styles.textTypo]}>3</Text>
-        <Text style={[styles.text4, styles.textTypo]}>4</Text>
-        <Image
-          style={[styles.startsy54, styles.startsy54Layout]}
-          contentFit="cover"
-          source={require("../assets/startsy-5-3.png")}
-        />
-      </View>
-    </View>
-  );
-};*/
-import * as React from "react";
+//information about startup
+import React, { useState } from "react";
 import { StyleSheet, View, Pressable, Text, ScrollView, TextInput } from "react-native";
 import { Image } from "expo-image";
 import { LinearGradient } from "expo-linear-gradient";
-import { useNavigation } from "@react-navigation/native";
+import { useNavigation, useRoute } from "@react-navigation/native";
 import Slider from '@react-native-community/slider';
 import { Color, FontFamily, FontSize, Border } from "../GlobalStyles";
 import { Icon } from "@rneui/themed";
@@ -168,24 +12,68 @@ import { Icon } from "@rneui/themed";
 const CreateFounder3 = () => {
   const navigation = useNavigation();
 
-  const handleSliderChange = (value) => {
-    setProgress(value);
+
+  const route = useRoute();
+  const  {fullName, email, contactInfo, age, gender, Country, profileImageUri,
+    company,year,role,skills,education} = route.params;
+
+
+  const handleSliderChange = (fundingStatus) => {
+    setfundingStatus(fundingStatus);
   };
 
-  const [name, setName] = React.useState("");
+  const [nameOfStartup, setnameOfStartup] = React.useState("");
   const [goal, setGoal] = React.useState("");
-  const [progress, setProgress] = React.useState(1);
-  const [url, setUrl] = React.useState("");
+  const [fundingStatus, setfundingStatus] = React.useState(1);
+  const [socialProof, setsocialProof] = React.useState("");
   const[description, setDescription] = React.useState("");
+  const [showDropdown, setShowDropdown] = useState(false);
+  const [openDropdown, setOpenDropdown] = useState(false);
+  const [sector, setsector] = useState(null);
+  const [stageOfStartup, setstageOfStartup] = useState(null);
+
+
+
+  const toggleDropdown = () => {
+    setShowDropdown(!showDropdown); // Toggle dropdown visibility
+  };
+  const handletoggleDropdown = () =>{
+    setOpenDropdown(!openDropdown);
+  };
+  const handleStartupselect = (stageOfStartup) => {
+    setstageOfStartup(stageOfStartup);
+      setOpenDropdown(false);
+  };
+  const handleSectorSelect = (sector) => {
+    setsector(sector);
+    setShowDropdown(false); 
+  };
+
+
 
   return (
     <ScrollView contentContainerStyle={styles.scrollContainer}>
       <View style={styles.createAccountFounder5}>
+      <Text>fullName:{fullName}</Text>
+      <Text>email:{email}</Text>
+      <Text>contactInfo:{contactInfo}</Text>
+      <Text>age:{age}</Text>
+      <Text>gender:{gender}</Text>
+      <Text> Country:{ Country}</Text>
+      <Text> company:{ company}</Text>
+      <Text> year:{ year}</Text>
+      <Text> role:{ role}</Text>
+      <Text> skills:{ skills}</Text>
+      <Text>education:{ education}</Text>
+      
         <View style={styles.createAccountFounder5Child} />
         <View style={styles.icons}>
           <Pressable
             style={[styles.icon, styles.iconLayout]}
-            onPress={() => navigation.navigate("CreateFounder4")}
+            onPress={() => navigation.navigate("CreateFounder4",{fullName, email, contactInfo, age, gender, Country, profileImageUri,
+              company,year,role,skills,education,nameOfStartup,
+              goal,fundingStatus,socialProof,description,sector,stageOfStartup
+            })}
           >
             <Image
               style={styles.icon1}
@@ -196,7 +84,8 @@ const CreateFounder3 = () => {
           </Pressable>
           <Pressable
             style={[styles.expandLeft, styles.iconLayout]}
-            onPress={() => navigation.navigate("CreateFounder2")}
+            onPress={() => navigation.navigate("CreateFounder2",{fullName, email, contactInfo, age, gender, Country, profileImageUri,
+              company,year,role,skills,education})}
           >
             <Image
               style={styles.icon1}
@@ -215,8 +104,9 @@ const CreateFounder3 = () => {
           <TextInput
             style={[styles.url, styles.urlTypo]}
             placeholder="URL"
-            value={url}
-            onChangeText={(text) => setUrl(text)}
+            placeholderTextColor={"silver"}
+            value={socialProof}
+            onChangeText={(text) => setsocialProof(text)}
           />
           </Pressable>
           
@@ -248,7 +138,7 @@ const CreateFounder3 = () => {
           minimumValue={1000}
           maximumValue={1000000}
           step={1}
-          value={progress}
+          value={fundingStatus}
           onValueChange={handleSliderChange}
           thumbTintColor="white"
           minimumTrackTintColor="#00DE62"
@@ -257,15 +147,42 @@ const CreateFounder3 = () => {
          
         </View>
         <View style={[styles.startupStage, styles.startupPosition]}>
-          <View style={styles.dropdown2}>
+          <Pressable style={styles.dropdown2} onPress={handletoggleDropdown}>
             <View style={[styles.dropdown2Child, styles.childBorder]} />
-            <Text style={[styles.select, styles.selectTypo]}>Select</Text>
-            <Image
-              style={[styles.chevronDownIcon, styles.chevronIconLayout]}
-              contentFit="cover"
-              // source={require("../assets/chevrondown1.png")}
+            <Text style={[styles.select, styles.selectTypo]}>{stageOfStartup ? stageOfStartup : "Select"}</Text>
+            <Icon
+              name={openDropdown ? "chevron-up" : "chevron-down"} // Conditionally rendering icon based on dropdown state
+              type="feather" // You can use other icon sets as well
+              size={34}
+              color="#00DE62"
+              style={styles.dropdownIcon} // Custom style for icon
             />
-          </View>
+          </Pressable>
+          {openDropdown && (
+           <View style={styles.dropdownContent}>
+           <ScrollView style={styles.dropdownItem}>
+             {["Ideation Stage","pre-Seed Stage" ,"Seed Stage", "Early Stage", "Growth Stage", "Mature Stage"].map((Startup) => (
+               <Pressable
+                 key={stageOfStartup}
+                 style={[styles.ind, styles.indLayout]}
+                 onPress={() => handleStartupselect(Startup)}
+               >
+                 <View style={[styles.indChild, styles.indLayout]} />
+                 <Text
+                   style={[
+                     styles.dropdownItemText,
+                     stageOfStartup=== stageOfStartup && styles.SelectedStartup
+                   ]}
+                 >
+                   {stageOfStartup}
+                 </Text>
+               </Pressable>
+             ))}
+           </ScrollView>
+         </View>
+       )}
+ 
+ 
           <Text style={[styles.identifyWhereYour, styles.yourTypo]}>
             Identify where your startup is in its journey—whether you’re in
             ideation, have a prototype, or are generating revenue.
@@ -273,15 +190,43 @@ const CreateFounder3 = () => {
           <Text style={styles.socialProof1}>{`Startup stage `}</Text>
         </View>
         <View style={[styles.startupSector, styles.startupPosition]}>
-          <View style={[styles.dropdown1, styles.chevronIconLayout]}>
+          <Pressable style={[styles.dropdown1, styles.chevronIconLayout]}onPress={toggleDropdown}>
             <View style={[styles.dropdown1Child, styles.chevronIconLayout]} />
-            <Text style={[styles.select1, styles.selectTypo]}>Select</Text>
-            <Image
-              style={[styles.chevronDownIcon1, styles.chevronIconLayout]}
-              contentFit="cover"
-              // source={require("../assets/chevrondown1.png")}
+            <Text style={[styles.select1, styles.selectTypo]}>{sector ? sector : "Select"}</Text>
+            <Icon
+              name={showDropdown ? "chevron-up" : "chevron-down"} // Conditionally rendering icon based on dropdown state
+              type="feather" // You can use other icon sets as well
+              size={34}
+              color="#00DE62"
+              style={styles.dropdownIcon} // Custom style for icon
             />
-          </View>
+          </Pressable>
+          {/* Dropdown content (you can modify this part as needed) */}
+          {showDropdown && (
+           <View style={styles.dropdownContent}>
+           <ScrollView style={styles.dropdownItem}>
+             {["Vertical Sector" ,"Horizontal Sector"].map((sector) => (
+               <Pressable
+                 key={sector}
+                 style={[styles.ind, styles.indLayout]}
+                 onPress={() => handleSectorSelect(sector)}
+               >
+                 <View style={[styles.indChild, styles.indLayout]} />
+                 <Text
+                   style={[
+                     styles.dropdownItemText,
+                     sector === sector && styles.selectedEducation
+                   ]}
+                 >
+                   {sector}
+                 </Text>
+               </Pressable>
+             ))}
+           </ScrollView>
+         </View>
+       )}
+ 
+ 
           <Text style={[styles.defineYourStartups, styles.yourTypo]}>
             Define your startup’s focus: horizontal sectors serve multiple
             industries, while vertical sectors target a specific niche.
@@ -295,6 +240,7 @@ const CreateFounder3 = () => {
               <TextInput
             style={[styles.description2, styles.urlTypo]}
             placeholder="write here"
+            placeholderTextColor={"silver"}
             value={description}
             onChangeText={(text) => setDescription(text)}
           />
@@ -309,6 +255,7 @@ const CreateFounder3 = () => {
             <TextInput
             style={[styles.description2, styles.urlTypo]}
             placeholder="Goal"
+            placeholderTextColor={"silver"}
             value={goal}
             onChangeText={(text) => setGoal(text)}
           />
@@ -319,8 +266,9 @@ const CreateFounder3 = () => {
             <TextInput
             style={[styles.description2, styles.urlTypo]}
             placeholder="Name"
-            value={name}
-            onChangeText={(text) => setName(text)}
+            placeholderTextColor={"silver"}
+            value={nameOfStartup}
+            onChangeText={(text) => setnameOfStartup(text)}
           />
             
           </View>
@@ -382,6 +330,28 @@ const styles = StyleSheet.create({
     height: 76,
     position: "absolute",
   },
+  dropdownContent: {
+    backgroundColor: "rgba(128, 128, 128, 0.6)",
+    paddingHorizontal: 15,
+    paddingVertical: 15,
+    borderRadius: 10,
+    marginTop: 150,
+    zIndex: 1,
+    gap:20,
+    height:130,
+    left: 0,
+    width: 284,
+  },
+  dropdownIcon: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingLeft:240, // Corrected from 'paddingleft' to 'paddingLeft'
+    justifyContent: 'space-between',
+   paddingTop:4,
+     top:0,
+     
+    
+  },
   startupPosition: {
     left: 26,
     position: "absolute",
@@ -413,7 +383,7 @@ const styles = StyleSheet.create({
   childBorder: {
     borderRadius: Border.br_3xs,
     borderWidth: 3,
-    borderColor: Color.colorGray_200,
+    borderColor: "black",
     borderStyle: "solid",
     left: 0,
   },
@@ -463,7 +433,7 @@ const styles = StyleSheet.create({
     borderTopLeftRadius: Border.br_41xl,
     width: 360,
     height: 1249,
-    backgroundColor: Color.colorGray_100,
+    backgroundColor: "#24272A",
     left: 0,
     position: "absolute",
   },
@@ -485,7 +455,7 @@ const styles = StyleSheet.create({
     position: "absolute",
   },
   socialProof1: {
-    color: Color.colorGainsboro,
+    color: "white",//
     textAlign: "center",
     fontFamily: FontFamily.alataRegular,
     lineHeight: 24,
@@ -502,7 +472,7 @@ const styles = StyleSheet.create({
     top: 67,
     left: 11,
     width: 287,
-    borderColor: Color.colorGray_200,
+    borderColor: "black",
     height: 3,
     borderTopWidth: 3,
   },
@@ -523,7 +493,7 @@ const styles = StyleSheet.create({
     borderWidth: 3,
     height: 49,
     width: 280,
-    borderColor: Color.colorGray_200,
+    borderColor: "black",
     borderStyle: "solid",
     top: 0,
     backgroundColor: Color.colorGray_100,
@@ -603,7 +573,7 @@ const styles = StyleSheet.create({
   dropdown1Child: {
     borderRadius: Border.br_3xs,
     borderWidth: 3,
-    borderColor: Color.colorGray_200,
+    borderColor:"black",
     borderStyle: "solid",
     left: 0,
     width: 280,
@@ -648,7 +618,7 @@ const styles = StyleSheet.create({
     height: 194,
     borderRadius: Border.br_3xs,
     borderWidth: 3,
-    borderColor: Color.colorGray_200,
+    borderColor: "black",
     borderStyle: "solid",
     left: 0,
     overflow: "hidden",
@@ -665,7 +635,7 @@ const styles = StyleSheet.create({
   goalChild: {
     top: 44,
     width: 287,
-    borderColor: Color.colorGray_200,
+    borderColor: "black",
     height: 3,
     borderTopWidth: 3,
     left: 0,
@@ -752,7 +722,7 @@ const styles = StyleSheet.create({
     height: 83,
   },
   createAccountFounder5: {
-    backgroundColor: Color.colorGray_200,
+    backgroundColor: "#16181A",
     flex: 1,
     height: 1344,
     overflow: "hidden",

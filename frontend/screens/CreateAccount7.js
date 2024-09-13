@@ -1,4 +1,4 @@
-
+//uploding the pan image 
 import React, { useEffect, useState } from "react";
 import { StyleSheet, TextInput, View, Text, Pressable, Alert, Image as RNImage } from "react-native";
 import { Image } from "expo-image";
