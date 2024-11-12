@@ -54,6 +54,23 @@ const investorSchema = new mongoose.Schema({
     panCardPhoto : {
         type : String,
     },
+
+    requestedFounders : [{
+        founder : {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+        requestDate : {
+            type : Date,
+            default : Date.now,
+        }
+    }],
+
+    chatUsers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    }],
+
     user_id : {
         type : mongoose.Schema.Types.ObjectId,
         ref : 'User',

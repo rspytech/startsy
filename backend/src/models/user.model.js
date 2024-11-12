@@ -28,6 +28,15 @@ const userSchema = new mongoose.Schema({
     profilePhoto : {
         type : String,
     },
+    /* To connect from user model to the specific userType model */
+    roleId : {                      
+        type: mongoose.Schema.Types.ObjectId,
+        refPath: 'role',
+    },
+    communityList:[{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Community',
+    }],
     refreshToken : {
         type : String,
     }

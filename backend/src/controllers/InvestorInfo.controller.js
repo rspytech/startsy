@@ -61,7 +61,9 @@ export const InvestorInfo = async (req, res) => {
         currentUser.profilePhoto = photoUrl;
         currentUser.email = email;
         currentUser.contactInfo = contactInfo;
-        
+
+        currentUser.roleId = newInvestor._id;           /* NOTE : Adding the roleId to the base user model */ 
+
         const pancardUploadedPhoto = await uploadOnCloudinary(pancardPhoto[0].path);
         const pancardPhotoUrl = pancardUploadedPhoto.secure_url;
         newInvestor.panCardPhoto = pancardPhotoUrl;

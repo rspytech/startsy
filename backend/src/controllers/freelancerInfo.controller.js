@@ -54,6 +54,7 @@ export const FreelancerInfo = async (req, res) => {
         currentUser.profilePhoto = photoUrl;
         currentUser.email = email;
         currentUser.contactInfo = contactInfo;
+        currentUser.roleId = newFreelancer._id;
 
         await currentUser.save();
         await newFreelancer.save();

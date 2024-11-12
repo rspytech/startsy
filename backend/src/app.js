@@ -5,6 +5,10 @@ import bodyParser from "body-parser";
 import cookieSession from "cookie-session";
 
 import authRoute from './routes/auth.routes.js';
+import investorRoute from './routes/investor.routes.js';
+import founderRoute from './routes/founder.routes.js';
+import postRoute from './routes/post.routes.js';
+import chatRoute from './routes/chat.routes.js';
 import googleAuthRoute from "./routes/google.auth.routes.js";
 
 const app = express();
@@ -23,6 +27,10 @@ app.use(cookieSession({
 }));
 
 app.use('/api', authRoute);
+app.use('/investor', investorRoute);
+app.use('/founder', founderRoute);
+app.use('/posts', postRoute);
+app.use('/chats', chatRoute);
 app.use('/auth', googleAuthRoute);
 
 export default app;

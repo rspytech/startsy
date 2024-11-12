@@ -39,7 +39,8 @@ export const CommunityMemeberInfo = async (req, res) => {
         currentUser.profilePhoto = photoUrl;
         currentUser.email = email;
         currentUser.contactInfo = contactInfo;
-
+        currentUser.roleId = newCommunityMember._id;
+        
         await currentUser.save();
         await newCommunityMember.save();
 

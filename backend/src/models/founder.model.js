@@ -17,7 +17,6 @@ const founderSchema = new mongoose.Schema({
     gender : {
         type: String,
     },
-    
     contactInfo : {
         type: String,
         required: true,
@@ -67,18 +66,43 @@ const founderSchema = new mongoose.Schema({
             type : String,  
         }
     }],
+
+    // Founder Account Total Upvotes
+    totalUpvotes: {
+        type: Number,
+        default : 0,
+    },
+    investorUpvotes: {
+        type: Number,
+        default : 0,
+    },
+
+    posts : [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post'
+    }],
+
+    requestNotifications: [{
+        investor: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+        requestDate: {
+            type: Date,
+            default: Date.now,
+        }
+    }],
+
+    // !! Revisit chatUsers either make here or may be a separate model for it !!
+
+    chatUsers: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    }],
+
     hiddenInfo : {
-        // targetAudience:{ 
-        //     type: String,
-        //     required: true,
-        // },
-        // timeline : {
-        //     type: String,
-        //     required: true,
-        // },
         sector: {
             type: String,
-            enum: ['Horizontal', 'Vertical'],
             required: true,
         },
         fundingStatus: {

@@ -87,6 +87,8 @@ export const FounderInfo = async (req, res) => {
         const photoUrl = uploadedPhoto.secure_url;
 
         currentUser.profilePhoto = photoUrl;
+        currentUser.roleId = newFounder._id;
+        
         await currentUser.save();
         await newFounder.save();
 
