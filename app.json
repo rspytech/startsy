@@ -6,19 +6,24 @@
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
     "scheme": "myapp",
-    "userInterfaceStyle": "automatic",
+    "userInterfaceStyle": "dark",
+    
+    
     "splash": {
       "image": "./assets/images/splash.png",
       "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
+      "backgroundColor": "#000000" 
     },
     "ios": {
       "supportsTablet": true
     },
     "android": {
+
+      "softInputMode" : "adjustResize",
+      "softwareKeyboardLayoutMode" : "pan",
       "adaptiveIcon": {
         "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#ffffff"
+        "backgroundColor": "#000000"
       }
     },
     "web": {
@@ -27,7 +32,10 @@
       "favicon": "./assets/images/favicon.png"
     },
     "plugins": [
-      "expo-router"
+      "expo-router",
+      "expo-asset",
+      "expo-font",
+       "./withAndroidSoftInputMode"
     ],
     "experiments": {
       "typedRoutes": true

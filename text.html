@@ -1,0 +1,43 @@
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+<body>
+    
+</body>
+</html>
+<style>
+    span {
+        font-size: 20px;
+        opacity: 0;
+        transition: 0.8;
+    }
+</style>
+
+<script>
+    var text = "welcome daksh patel welcome daksh patel welcome daksh patel"
+    for(items of text){
+        console.log(items);
+        
+        var span = document.createElement("span")
+        span.innerHTML = items
+        document.querySelector("body").appendChild(span)
+    }
+    var allspan = [...document.querySelectorAll("span")]
+    function animate(index){
+        setTimeout(function(){
+            if(index > allspan.length)return
+            allspan[index].style.opacity = 1
+            animate(index + 1)
+        } , 50)
+
+    }
+
+    animate(0)
+
+    
+</script>

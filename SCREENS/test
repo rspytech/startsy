@@ -1,0 +1,28 @@
+
+// 4.4 last of community
+import React, { useState, useRef, useEffect } from "react";
+import {
+
+    SafeAreaView,
+    View,
+    Text,
+    TextInput,
+    Image,
+    Animated,
+    Pressable,
+    StyleSheet,
+    Dimensions,
+    ScrollView,
+    FlatList,
+    TouchableWithoutFeedback
+} from "react-native";
+// import { FlatList, ScrollView } from 'react-native-gesture-handler';
+
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import { LinearGradient } from "expo-linear-gradient";
+import signup3styles from "../styles/signup3styles.js";
+import Drop from "./dropdown.js";
+import Line2 from "./line2.js";
+import Line from "./line.js"
+import Line3 from "./line3.js"
+import Entypo from '@expo/vector-icons/Entypo';

@@ -1,70 +1,112 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import * as React from "react";
+import { DarkTheme, NavigationContainer } from "@react-navigation/native";
+// import { createStackNavigator } from "@react-navigation/stack";
+import { createNativeStackNavigator } from "@react-navigation/native-stack";
+import Green from "../../SCREENS/greenscreen.js"; //page 1
+import Login1 from "../../SCREENS/logintrial.js"; // login page
+import ReadMore1 from "../../SCREENS/trial-1.js"; // read more page
+import { SafeAreaView } from "react-native";
+import Signup1 from "../../SCREENS/signup-1.js";
+import Signup2 from "../../SCREENS/signup2.js";
+import Signup3 from "../../SCREENS/signup3.js";
+import Signup4 from "../../SCREENS/signup4.js";
+import Signup5 from "../../SCREENS/signup5.js";
+import Line from "../../SCREENS/line.js";
+import Line2 from "../../SCREENS/line2.js";
+import Line3 from "../../SCREENS/line3.js";
+import Signup6 from "../../SCREENS/signup6.js";
+import Signup7 from "../../SCREENS/signup7.js";
+import Signup8 from "../../SCREENS/signup8.js";
+import Signup9 from "../../SCREENS/Signup9.js";
+import Signup10 from "../../SCREENS/Signup10.js";
+import Signup11 from "../../SCREENS/Signup11.js";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import Login2 from "../../SCREENS/login2.js";
+// import drop from "../../SCREENS/dropdown.js"
+// import Login1 from "../../SCREENS/logintrial.js";
+import F1 from "../../SCREENS/test.js";
+import F2 from "../../SCREENS/F2.js";
+import Blur from "../../SCREENS/blur.js"; // trial blur page
+import { useEffect } from "react";
+import { ActivityIndicator, View, StyleSheet } from "react-native";
+// import { setNavigationBarColorAsync } from 'expo-navigation-bar';
+import useLoadFonts from "../../hooks/useLoadFonts.js";
+import {setBackgroundColorAsync} from  "expo-system-ui"
 
-export default function HomeScreen() {
+import { StatusBar, Platform } from "react-native";
+// import ReadMore1 from "../../SCREENS/trial-1.js";
+
+const Stack = createNativeStackNavigator();
+
+export default function App() {
+  const fontsLoaded = useLoadFonts();
+  // setBackgroundColorAsync("red")
+
+  if (!fontsLoaded) {
+    return (
+      <View style={styles.loadingContainer}>
+        <ActivityIndicator size="large" color="#0000ff" />
+      </View>
+    );
+  }
+  // console.log(fontsLoaded, "fontd status");
+
   return (
-    <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
-      headerImage={
-        <Image
-          source={require('@/assets/images/partial-react-logo.png')}
-          style={styles.reactLogo}
-        />
-      }>
-      <ThemedView style={styles.titleContainer}>
-        <ThemedText type="title">Welcome!</ThemedText>
-        <HelloWave />
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 1: Try it</ThemedText>
-        <ThemedText>
-          Edit <ThemedText type="defaultSemiBold">app/(tabs)/index.tsx</ThemedText> to see changes.
-          Press{' '}
-          <ThemedText type="defaultSemiBold">
-            {Platform.select({ ios: 'cmd + d', android: 'cmd + m' })}
-          </ThemedText>{' '}
-          to open developer tools.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 2: Explore</ThemedText>
-        <ThemedText>
-          Tap the Explore tab to learn more about what's included in this starter app.
-        </ThemedText>
-      </ThemedView>
-      <ThemedView style={styles.stepContainer}>
-        <ThemedText type="subtitle">Step 3: Get a fresh start</ThemedText>
-        <ThemedText>
-          When you're ready, run{' '}
-          <ThemedText type="defaultSemiBold">npm run reset-project</ThemedText> to get a fresh{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> directory. This will move the current{' '}
-          <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
-          <ThemedText type="defaultSemiBold">app-example</ThemedText>.
-        </ThemedText>
-      </ThemedView>
-    </ParallaxScrollView>
+    <View style={styles.container}>
+      <NavigationContainer theme={DarkTheme}  independent={true}>
+        <StatusBar backgroundColor="#1E1E1E" barStyle={"light-content"} />
+        <Stack.Navigator
+          initialRouteName="Green"
+          screenOptions={{
+            // headerStyle: {
+            //   backgroundColor: "#000000", // Set the background color of the header to black
+            // },
+            // cardStyle: {backgroundColor: "red"},
+            keyboardHandlingEnabled : true,
+            headerShown: false, // Hide the header
+            animation: "slide_from_right", // Set the default animation to slide from the right
+          }}
+        >
+          <Stack.Screen name="Green" component={Green} />
+          <Stack.Screen name="LoginTrial" component={Login1} />
+          <Stack.Screen name="ReadMore1" component={ReadMore1} />
+
+          <Stack.Screen name="Signup1" component={Signup1} />
+          <Stack.Screen name="Signup2" component={Signup2} />
+          <Stack.Screen name="Signup3" component={Signup3} />
+          <Stack.Screen name="Signup4" component={Signup4} />
+          <Stack.Screen name="Signup5" component={Signup5} />
+          <Stack.Screen name="Signup6" component={Signup6} />
+          <Stack.Screen name="Signup7" component={Signup7} />
+          <Stack.Screen name="Signup8" component={Signup8} />
+          <Stack.Screen name="Signup9" component={Signup9} />
+          <Stack.Screen name="Signup10" component={Signup10} />
+          <Stack.Screen name="Signup11" component={Signup11} />
+          <Stack.Screen name="Login2" component={Login2} />
+
+          <Stack.Screen name="F1" component={F1} />
+          {/* <Stack.Screen name="F2" component={F2} /> */}
+
+          {/* <Stack.Screen name="Line" component={Line} /> */}
+          {/* <Stack.Screen name="Line2" component={Line2} /> */}
+          {/* <Stack.Screen name="Line3" component={Line3} /> */}
+          {/* <Stack.Screen name="drop" component={drop} /> */}
+        </Stack.Navigator>
+      </NavigationContainer>
+    </View>
   );
 }
 
 const styles = StyleSheet.create({
-  titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
-    gap: 8,
+  container: {
+    flex: 1,
+    // zIndex : 1000000,
+    backgroundColor: "#1E1E1E", // Set your desired background color here
   },
-  stepContainer: {
-    gap: 8,
-    marginBottom: 8,
-  },
-  reactLogo: {
-    height: 178,
-    width: 290,
-    bottom: 0,
-    left: 0,
-    position: 'absolute',
+  loadingContainer: {
+    flex: 1,
+    justifyContent: "center",
+    alignItems: "center",
+    backgroundColor : "#1E1E1E", // Set your desired background color here
   },
 });
