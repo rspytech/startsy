@@ -1,26 +1,23 @@
-// NOTE : The info of groupId, isGroup, receiverId should be passed from frontend.
-
 import { Conversation } from "../../models/conversation.model.js";
 import { Message } from "../../models/message.model.js";
 import { getReceiverSocketId } from "../../socket/socketIo.js";
 
 const sendMessage = async (req, res, io) => {
     try {
-        const { message, groupId, isGroup } = req.body;
+        const { message, isGroup } = req.body;
         const senderId = req.user._id;
         const receiverId = req.params.id;
 
         let conversation;
 
         if (isGroup) {
-            // Find a group conversation
-            conversation = await Conversation.findOne({ _id: groupId, isGroup: true });
+            // Find the group conversation
+            conversation = await Conversation.findOne({ communityId: receiverId, isGroup: true });
             if (!conversation) {
                 return res.status(404).json({ error: "Group not found" });
             }
-        }
-        else {
-            // Find or create one-to-one conversation
+        } else {
+            // Find or create a one-to-one conversation
             conversation = await Conversation.findOne({
                 members: { $all: [senderId, receiverId] },
                 isGroup: false,
@@ -45,18 +42,16 @@ const sendMessage = async (req, res, io) => {
 
         // Emit message to users
         if (isGroup) {
-            io.to(groupId).emit("newGroupMessage", newMessage);
-        } 
-        else {
+            io.to(receiverId).emit("groupMessage", newMessage);  // Updated to match the event name
+        } else {
             const receiverSocketId = getReceiverSocketId(receiverId);
             if (receiverSocketId) {
-                io.to(receiverSocketId).emit("newMessage", newMessage);
+                io.to(receiverSocketId).emit("privateMessage", newMessage);  // Updated to match the event name
             }
         }
 
         return res.status(201).json(newMessage);
-    }
-    catch (error) {
+    } catch (error) {
         console.log(`Error sending message: ${error.message}`);
         res.status(500).json({ error: "Failed to send message" });
     }

@@ -1,10 +1,9 @@
-// socket/socketIo.js
 import { Server } from "socket.io";
 
 const userSocketMap = {};  // Mapping of user IDs to their socket IDs
-
+let io;
 export const configureSocketIO = (server) => {
-    const io = new Server(server, {
+    io = new Server(server, {
         cors: {
             origin: "*",
         },
@@ -19,10 +18,39 @@ export const configureSocketIO = (server) => {
             console.log(`User ${userId} registered with socket ID ${socket.id}`);
         });
 
+        // Handle one-to-one private messages
+        socket.on("privateMessage", ({ senderId, receiverId, message }) => {
+            const receiverSocketId = userSocketMap[receiverId];
+            if (receiverSocketId) {
+                io.to(receiverSocketId).emit("privateMessage", { senderId, message });
+                console.log(`Private message from ${senderId} to ${receiverId}: ${message}`);
+            } else {
+                console.log(`User ${receiverId} is not connected`);
+            }
+        });
+
         // Handle group joining logic
-        socket.on("joinGroup", (groupId) => {
-            socket.join(groupId);
-            console.log(`User joined group: ${groupId}`);
+        socket.on("joinGroup", async (groupId) => {
+            try {
+                const group = await Conversation.findById(groupId);
+                if (!group || !group.isGroup) {
+                    console.error("Invalid group");
+                    return;
+                }
+                socket.join(groupId);
+                console.log(`User ${socket.id} joined group: ${groupId}`);
+                io.to(groupId).emit("systemMessage", { message: "A new user has joined the group." });
+            }
+            catch (error) {
+                console.error("Error joining group:", error.message);
+                socket.emit("error", { error: "Failed to join group" });
+            }
+        });
+
+        // Handle group messages
+        socket.on("groupMessage", ({ senderId, groupId, message }) => {
+            io.to(groupId).emit("groupMessage", { senderId, message });
+            console.log(`Group message from ${senderId} to group ${groupId}: ${message}`);
         });
 
         // Remove the user from the map on disconnect
@@ -43,4 +71,12 @@ export const configureSocketIO = (server) => {
 // Utility function to get a user's socket ID
 export const getReceiverSocketId = (userId) => {
     return userSocketMap[userId];
+};
+
+
+export const getSocketInstance = () => {
+    if (!io) {
+        throw new Error("Socket.IO is not initialized");
+    }
+    return io;
 };

@@ -1,6 +1,7 @@
 import { Community } from "../../models/community.model.js"
 import { Post } from "../../models/post.model.js";
 import { User } from "../../models/user.model.js";
+import { Conversation } from "../../models/conversation.model.js";
 
 export const createCommunityPost = async (req, res) => {
     try {
@@ -31,6 +32,10 @@ export const createCommunityPost = async (req, res) => {
             user.roleId.posts.push(newPost._id);
             user.communityList.push(community._id);
             community.communityMembers.push(user_id);
+            await Conversation.create({
+                communityId : community._id,
+                isGroup : true,
+            });
             await user.save();
             await user.roleId.save();
             await community.save();

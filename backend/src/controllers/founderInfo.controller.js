@@ -17,9 +17,7 @@ export const FounderInfo = async (req, res) => {
         nameOfStartup,
         goal,
         description,
-        teamInfo,  // Raw teamInfo data from req.body
-        // targetAudience,
-        // timeline,
+        teamInfo,  
         sector,
         fundingStatus,
         stageOfStartup,

@@ -1,4 +1,6 @@
 import express from "express";
+import http from "http";
+import { configureSocketIO } from "./socket/socketIo.js";
 import cors from 'cors';
 import cookieParser from "cookie-parser";
 import bodyParser from "body-parser";
@@ -11,7 +13,10 @@ import postRoute from './routes/post.routes.js';
 import chatRoute from './routes/chat.routes.js';
 import googleAuthRoute from "./routes/google.auth.routes.js";
 
+
 const app = express();
+const server = http.createServer(app);
+configureSocketIO(server);
 
 app.use(cors());
 app.use(bodyParser.json());

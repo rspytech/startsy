@@ -72,6 +72,16 @@ const founderSchema = new mongoose.Schema({
         type: Number,
         default : 0,
     },
+
+    upvotesPerDay : {
+        type: Number,
+        default : 0,
+    },
+
+    currentUpvoteDate: {
+        type : String,
+    },
+
     investorUpvotes: {
         type: Number,
         default : 0,

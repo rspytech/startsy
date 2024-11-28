@@ -10,6 +10,7 @@ export const updateFounderUpvoteCounter = async(req, res) => {
                 $inc: {
                     totalUpvotes: 1,
                     investorUpvotes : 1,
+                    upvotesPerDay : 1,
                 },
             },{new : true});
 

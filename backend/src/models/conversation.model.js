@@ -9,6 +9,10 @@ const conversationSchema = new mongoose.Schema({
         type: Boolean,
         default: false,
     },
+    communityId : {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Community",
+    },
     messages: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: "Message",
