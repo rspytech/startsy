@@ -44,7 +44,7 @@ export const CommunityMemeberInfo = async (req, res) => {
         await currentUser.save();
         await newCommunityMember.save();
 
-        res.status(201).json({message: "Community Member created successfully"});
+        res.status(200).json({message: "Community Member created successfully"});
     }
     catch (error) {
         console.log(error);

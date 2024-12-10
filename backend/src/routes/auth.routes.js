@@ -9,11 +9,20 @@ import { FounderInfo } from '../controllers/founderInfo.controller.js';
 import { FreelancerInfo } from '../controllers/freelancerInfo.controller.js';
 import { CommunityMemeberInfo } from '../controllers/communityMemberInfo.controller.js';
 import { DoesUserExists } from '../controllers/doesUserExists.controller.js';
+import { checkUserName } from '../controllers/authenticateUser/checkUserName.js';
+import { checkEmail } from '../controllers/authenticateUser/checkEmail.js';
+import { checkCurrentPassword } from '../controllers/authenticateUser/checkCurrentPassword.js';
+import { changePassword } from '../controllers/changePassword.controller.js';
 
 const router = express.Router();
 
 router.post('/register', registerUser);
+router.post('/checkusername', checkUserName);
+router.post('/checkemail', checkEmail);
+router.post('/checkCurrentPassword', verifyUser, checkCurrentPassword);
+router.post('/changePassword', verifyUser, changePassword);
 router.post('/authenticate', loginUser);
+
 router.post('/investorInfo', verifyUser, upload.fields([
     { name: 'profilePhoto', maxCount: 1 },
     { name: 'panCardPhoto', maxCount: 1 },
