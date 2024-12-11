@@ -37,6 +37,14 @@ const userSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Community',
     }],
+    followers : [{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "User"
+    }],
+    following: [{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "User"
+    }],
     refreshToken : {
         type : String,
     }

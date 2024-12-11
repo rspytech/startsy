@@ -12,7 +12,7 @@ import founderRoute from './routes/founder.routes.js';
 import postRoute from './routes/post.routes.js';
 import chatRoute from './routes/chat.routes.js';
 import googleAuthRoute from "./routes/google.auth.routes.js";
-
+import connectionsRoute from "./routes/connection.routes.js"
 
 const app = express();
 const server = http.createServer(app);
@@ -37,5 +37,6 @@ app.use('/founder', founderRoute);
 app.use('/posts', postRoute);
 app.use('/chats', chatRoute);
 app.use('/auth', googleAuthRoute);
+app.use('/connections', connectionsRoute);
 
 export default app;

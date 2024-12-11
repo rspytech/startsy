@@ -3,33 +3,34 @@ import { User } from '../models/user.model.js';
 
 const verifyUser = async (req, res, next) => {
     try {
-        const token = req.cookies.accessToken;  /* Use accessToken as name in login controller */
-    
-        if(!token){
-            return res.status(404).json({
-                message : "Unauthorised Request. Token not found",
+        const authHeader = req.headers.authorization;
+
+        if (!authHeader || !authHeader.startsWith("Bearer ")) {
+            return res.status(401).json({
+                message: "Unauthorized Request. Token not found",
             });
         }
 
+        const token = authHeader.split(" ")[1]; // Extract the token
+
         const decodedToken = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
-        
+
         const user = await User.findOne({ _id: decodedToken._id });
 
-        if(!user){
+        if (!user) {
             return res.status(400).json({
-                message : "Invalid decoded token",
-            })
+                message: "Invalid decoded token",
+            });
         }
 
         req.user = user;
-        
-        next();    
-    }
-    catch(error){
-        return res.status(404).json({
-            message : `Invalid user. Authentication Failed ! ERROR : ${error.message}`,
-        })
-    }
-}
 
-export {verifyUser};
+        next();
+    } catch (error) {
+        return res.status(401).json({
+            message: `Invalid user. Authentication Failed! ERROR: ${error.message}`,
+        });
+    }
+};
+
+export { verifyUser };

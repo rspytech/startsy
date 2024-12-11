@@ -1,63 +1,85 @@
+import { User } from "../../models/user.model.js";
 import { Founder } from "../../models/founder.model.js";
+import { Freelancer } from "../../models/freelancer.model.js";
+import {CommunityMemeber} from "../../models/communityMember.model.js";
+
 import { Post } from "../../models/post.model.js";
+import mongoose from "mongoose";
 
 export const getFounderProfileDetails = async (req, res) => {
     try {
+        // Map roles to their respective models
+        const roleMap = {
+            Founder: Founder,
+            Freelancer: Freelancer,
+            CommunityMember: CommunityMemeber,
+        };
+
         const userId = req.user._id;
+        console.log("User ID:", userId);
 
-        // Step 1: Fetch founder's profile with basic `posts` population
-        const userProfile = await Founder.findOne({ user_id: userId })
-            .populate('user_id')  // populate user information
-            .populate({ path: 'posts' })  // basic population for `posts`
-            .lean();
-
-        if (!userProfile) {
-            return res.status(404).json({ message: "Founder not found" });
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: "User not found." });
         }
 
-        // Step 2: Conditionally populate `jobPosts` or `communityPost` in each post based on `type`
+        const userRole = user.role;
+        console.log("User Role:", userRole);
+
+        const role = roleMap[userRole];
+        if (!role) {
+            return res.status(400).json({ message: "Invalid user role." });
+        }
+
+        // Fetch the user's profile with basic `posts` population
+        const userProfile = await role.findOne({ user_id: userId })
+            .populate("user_id") // Populate user details
+            .populate({ path: "posts" }) // Basic population for `posts`
+            .lean();
+
+        console.log("User Profile:", userProfile);
+
+        if (!userProfile) {
+            return res.status(404).json({ message: "Profile not found. Ensure the user_id is correctly linked in the role-specific collection." });
+        }
+
+        // Conditionally populate `jobPosts` or `communityPost` in each post
         const populatedPosts = await Promise.all(
             userProfile.posts.map(async (post) => {
-                if (post.type === 'jobPost') {
+                if (post.type === "jobPost") {
                     return await Post.findById(post._id)
-                        .populate('jobPosts')
+                        .populate("jobPosts")
                         .lean();
-                } else if (post.type === 'communityPost') {
+                } else if (post.type === "communityPost") {
                     return await Post.findById(post._id)
-                        .populate('communityPost')
+                        .populate("communityPost")
                         .lean();
                 }
-                return post;  // Return the post as-is if type doesn't match
+                return post; // Return the post as-is if type doesn't match
             })
         );
 
         // Update `userProfile.posts` with the conditionally populated posts
         userProfile.posts = populatedPosts;
 
+        // Fetch follower and following counts
+        const counts = await User.aggregate([
+            { $match: { _id: new mongoose.Types.ObjectId(userId) } },
+            {
+                $project: {
+                    followersCount: { $size: { $ifNull: ["$followers", []] } }, // Default to empty array if missing
+                    followingCount: { $size: { $ifNull: ["$following", []] } }, // Default to empty array if missing
+                },
+            },
+        ]);
+
         return res.status(200).json({
-            message: "Founder profile details fetched successfully",
+            message: "Profile details fetched successfully.",
             data: userProfile,
+            connectionCount: counts[0] || { followersCount: 0, followingCount: 0 },
         });
     } catch (error) {
-        console.error(error);
-        return res.status(500).json({ message: "Error while fetching the profile details" });
+        console.error("Error:", error.message);
+        return res.status(500).json({ message: "Error while fetching profile details.", error: error.message });
     }
 };
-
-
-// export const getFounderProfileDetails = async (req, res) => {
-//     try {
-//         const userId = req.user._id;
-//         const userProfile = await Founder.findOne({user_id : userId}).populate('user_id').populate("posts");
-//         if (!userProfile) {
-//             return res.status(404).json({ message: "Founder not found" });
-//         }
-//         return res.status(200).json({
-//             message: "Founder profile details fetched successfully",
-//             data: userProfile,
-//         })
-//     }
-//     catch (error) {
-//         return res.status(500).json({ message: "Error while fetching the profile details" });
-//     }
-// }
