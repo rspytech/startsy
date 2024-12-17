@@ -1,29 +1,41 @@
 import { Founder } from "../../models/founder.model.js";
+import { User } from "../../models/user.model.js";
 
 export const getFounderNotifications = async (req, res) => {
     try {
         const founderId = req.user._id;
-        const founder = await Founder.findOne({user_id : founderId});
+
+        // Find the user and populate roleId
+        const user = await User.findById(founderId).populate({
+            path: "roleId",
+            populate: {
+                path: "requestNotifications.investor", // Populate nested investor field
+            },
+        });
+
+        const founder = user.roleId;
         if (!founder) {
             return res.status(404).json({ message: "Founder not found" });
         }
-        
-        const investorRequestNotifications = founder.populate('requestNotifications.investor');
-        
-        if(!investorRequestNotifications){
+
+        // Extract populated notifications
+        const investorRequestNotifications = founder.requestNotifications;
+        if (!investorRequestNotifications || investorRequestNotifications.length === 0) {
             return res.status(404).json({ message: "No notifications found" });
         }
-        
-        return res.status(200).json({
-            message : "Request notifications fetched successfully",
-            data : investorRequestNotifications,
-        });
 
+        // Return the notifications
+        return res.status(200).json({
+            message: "Request notifications fetched successfully",
+            data: investorRequestNotifications,
+        });
+    } catch (error) {
+        console.error(`Error fetching notifications: ${error.message}`);
+        return res.status(500).json({
+            message: "Error during fetching request notifications",
+        });
     }
-    catch (error) {
-        return res.status(500).json({ message: "Error duting fetching request notifications "});
-    }
-}
+};
 
 /* 
     NOTE 

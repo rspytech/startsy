@@ -13,12 +13,17 @@ import postRoute from './routes/post.routes.js';
 import chatRoute from './routes/chat.routes.js';
 import googleAuthRoute from "./routes/google.auth.routes.js";
 import connectionsRoute from "./routes/connection.routes.js"
+import adminRoute from "./routes/admin.routes.js";
 
 const app = express();
 const server = http.createServer(app);
 configureSocketIO(server);
 
-app.use(cors());
+app.use(cors(
+    {
+        origin: ["*"],
+    }
+));
 app.use(bodyParser.json());
 
 app.use(express.json());
@@ -38,5 +43,5 @@ app.use('/posts', postRoute);
 app.use('/chats', chatRoute);
 app.use('/auth', googleAuthRoute);
 app.use('/connections', connectionsRoute);
-
+app.use('/admin', adminRoute);
 export default app;

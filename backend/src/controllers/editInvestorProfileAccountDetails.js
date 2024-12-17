@@ -13,6 +13,9 @@ export const editInvestorAccountProfileDetails = async (req, res) => {
         areaOfInterest,
         startupStage,
         preferredSector,
+        linkedInUrl,
+        websiteUrl,
+        domainEmail,
         investmentRange
     } = req.body;
 
@@ -41,6 +44,9 @@ export const editInvestorAccountProfileDetails = async (req, res) => {
             areaOfInterest,
             startupStage,
             preferredSector,
+            linkedInUrl,
+            websiteUrl,
+            domainEmail,
             investmentRange
         };
 

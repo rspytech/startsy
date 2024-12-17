@@ -51,6 +51,15 @@ const investorSchema = new mongoose.Schema({
         type : Number,
         required: true,
     },
+    linkedInUrl : {
+        type: String,
+    },
+    websiteUrl : {
+        type: String,
+    },
+    domainEmail : {
+        type: String,
+    },
     panCardPhoto : {
         type : String,
     },

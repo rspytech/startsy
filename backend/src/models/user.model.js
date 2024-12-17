@@ -22,8 +22,8 @@ const userSchema = new mongoose.Schema({
     },
     role : {
         type: String,
-        enum: ['Investor', 'Founder', 'Freelancer', 'Community Member'],
-        default: 'Community Member'
+        enum: ['Admin', 'Investor', 'Founder', 'Freelancer', 'CommunityMember'],
+        default: 'CommunityMember'
     },
     profilePhoto : {
         type : String,
@@ -44,6 +44,10 @@ const userSchema = new mongoose.Schema({
     following: [{
         type : mongoose.Schema.Types.ObjectId,
         ref : "User"
+    }],
+    newslettersPosted : [{
+        type : mongoose.Schema.Types.ObjectId,
+        ref : "Newsletter",
     }],
     refreshToken : {
         type : String,

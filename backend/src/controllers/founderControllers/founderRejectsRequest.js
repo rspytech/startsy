@@ -17,9 +17,12 @@ export const rejectRequest = async (req, res) => {
         }
 
         // Remove the founder request from the investor's requestedFounders list
-        await investorUser.roleId.updateOne({
-            $pull: { requestedFounders: { founder: founderId } }
-        });
+        if(investorUser.role === "Investor"){
+            await investorUser.roleId.updateOne({
+                $pull: { requestedFounders: { founder: founderId } }
+            });
+        }
+        
 
         // Remove the investor's request notification from the founder's requestNotifications list
         await founderUser.roleId.updateOne({

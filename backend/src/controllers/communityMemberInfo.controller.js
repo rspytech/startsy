@@ -1,5 +1,5 @@
 import { uploadOnCloudinary } from "../../cloudinary.js";
-import { CommunityMemeber } from "../models/communityMember.model.js";
+import { CommunityMember } from "../models/communityMember.model.js";
 import { User } from "../models/user.model.js";
 
 export const CommunityMemeberInfo = async (req, res) => {
@@ -20,7 +20,7 @@ export const CommunityMemeberInfo = async (req, res) => {
         const currentUserId = req.user._id;
         const currentUser = await User.findById(currentUserId);
 
-        const newCommunityMember = new CommunityMemeber({
+        const newCommunityMember = new CommunityMember({
             fullName,
             email,
             country,

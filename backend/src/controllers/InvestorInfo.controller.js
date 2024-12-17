@@ -16,6 +16,9 @@ export const InvestorInfo = async (req, res) => {
             startupStage,
             preferredSector,
             investmentRange,
+            linkedInUrl,
+            websiteUrl,
+            domainEmail,
         } = req.body;
 
         const profilePhoto = req.files.profilePhoto;
@@ -51,6 +54,9 @@ export const InvestorInfo = async (req, res) => {
             startupStage,
             preferredSector,
             investmentRange,
+            linkedInUrl,
+            websiteUrl,
+            domainEmail,
             user_id: req.user._id
         });
 

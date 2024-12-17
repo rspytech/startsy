@@ -1,7 +1,7 @@
 import { User } from "../../models/user.model.js";
 import { Founder } from "../../models/founder.model.js";
 import { Freelancer } from "../../models/freelancer.model.js";
-import {CommunityMemeber} from "../../models/communityMember.model.js";
+import { CommunityMember } from "../../models/communityMember.model.js";
 
 import { Post } from "../../models/post.model.js";
 import mongoose from "mongoose";
@@ -12,7 +12,7 @@ export const getFounderProfileDetails = async (req, res) => {
         const roleMap = {
             Founder: Founder,
             Freelancer: Freelancer,
-            CommunityMember: CommunityMemeber,
+            CommunityMember: CommunityMember,
         };
 
         const userId = req.user._id;
