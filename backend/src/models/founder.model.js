@@ -127,6 +127,14 @@ const founderSchema = new mongoose.Schema({
             type: String,
         }],
     },
+    recommendationId: {
+        type: String,
+        required: true
+    },
+    investorConnections : {
+        type: Number,
+        default: 0
+    },
     user_id : {
         type : mongoose.Schema.Types.ObjectId,
         ref : 'User',

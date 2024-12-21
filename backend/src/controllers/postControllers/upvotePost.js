@@ -1,5 +1,6 @@
 import { Post } from "../../models/post.model.js";
 import { User } from "../../models/user.model.js";
+import { Notification } from "../../models/notification.model.js";
 import cron from 'node-cron';
 import moment from 'moment-timezone';
 
@@ -45,6 +46,16 @@ export const upvotePost = async (req, res) => {
 
         const postUserId = post.user_id;
         const roleDetails = await User.findById(postUserId).populate("roleId");
+
+        if(likeStatus === "like"){
+            await Notification.create({
+                receivingUserId : post.user_id, 
+                sendingUserId : userId,
+                postId : post._id,
+                notificationType: "upvotePost",
+                notificationMessage : "UpVoted your post.",
+            });
+        }
 
         if (user.role === "Investor") {
             if (roleDetails.roleId && roleDetails.roleId.investorUpvotes !== undefined) {

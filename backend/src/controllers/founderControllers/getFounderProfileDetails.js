@@ -4,7 +4,6 @@ import { Freelancer } from "../../models/freelancer.model.js";
 import { CommunityMember } from "../../models/communityMember.model.js";
 
 import { Post } from "../../models/post.model.js";
-import mongoose from "mongoose";
 
 export const getFounderProfileDetails = async (req, res) => {
     try {
@@ -63,20 +62,20 @@ export const getFounderProfileDetails = async (req, res) => {
         userProfile.posts = populatedPosts;
 
         // Fetch follower and following counts
-        const counts = await User.aggregate([
-            { $match: { _id: new mongoose.Types.ObjectId(userId) } },
-            {
-                $project: {
-                    followersCount: { $size: { $ifNull: ["$followers", []] } }, // Default to empty array if missing
-                    followingCount: { $size: { $ifNull: ["$following", []] } }, // Default to empty array if missing
-                },
-            },
-        ]);
+        // const counts = await User.aggregate([
+        //     { $match: { _id: new mongoose.Types.ObjectId(userId) } },
+        //     {
+        //         $project: {
+        //             followersCount: { $size: { $ifNull: ["$followers", []] } }, // Default to empty array if missing
+        //             followingCount: { $size: { $ifNull: ["$following", []] } }, // Default to empty array if missing
+        //         },
+        //     },
+        // ]);
 
         return res.status(200).json({
             message: "Profile details fetched successfully.",
             data: userProfile,
-            connectionCount: counts[0] || { followersCount: 0, followingCount: 0 },
+            // connectionCount: counts[0] || { followersCount: 0, followingCount: 0 },
         });
     } catch (error) {
         console.error("Error:", error.message);

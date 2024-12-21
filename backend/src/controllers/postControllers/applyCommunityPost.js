@@ -1,5 +1,6 @@
 import { Post } from "../../models/post.model.js";
 import { User } from "../../models/user.model.js";
+import { Notification } from "../../models/notification.model.js";
 
 export const applyCommunity = async (req, res) => {
     try {
@@ -27,6 +28,13 @@ export const applyCommunity = async (req, res) => {
         // Add community to user’s community list and save
         user.communityList.push(post.communityPost._id);
         await user.save();
+
+        await Notification.create({
+            receivingUserId : post.user_id, 
+            sendingUserId : req.user._id,
+            notificationType: "joinedCommunity",
+            notificationMessage : `Joined ${post.communityPost.communityName}`,
+        });
 
         console.log("Community members updated:", post.communityPost.communityMembers);
         console.log("User's community list updated:", user.communityList);

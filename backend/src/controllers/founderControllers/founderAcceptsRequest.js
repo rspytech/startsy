@@ -33,6 +33,9 @@ export const acceptRequest = async (req, res) => {
         });
 
         await Founder.findByIdAndUpdate(founderUser.roleId._id, {
+            $inc: {
+                investorConnections : 1,
+            },
             $push: { chatUsers: investorId },
             $pull: { requestNotifications: { investor: investorId } }
         });

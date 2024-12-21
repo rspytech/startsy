@@ -1,4 +1,5 @@
 import { Post } from "../../models/post.model.js";
+import { Notification } from "../../models/notification.model.js";
 
 export const applyJobPost = async (req, res) => {
     try {
@@ -21,6 +22,13 @@ export const applyJobPost = async (req, res) => {
 
         post.jobPosts.jobApplicants.push(user_id);
         await post.jobPosts.save();
+
+        await Notification.create({
+            receivingUserId : post.user_id, 
+            sendingUserId : req.user._id,
+            notificationType: "jobApplied",
+            notificationMessage : "Applied for your job posting.",
+        });
 
         return res.status(200).json({ message: "Job Post Applied Successfully" });
     }

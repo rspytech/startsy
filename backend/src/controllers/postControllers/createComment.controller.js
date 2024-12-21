@@ -1,5 +1,6 @@
 import { Comment } from "../../models/comment.model.js";
 import { Post } from "../../models/post.model.js";
+import { Notification } from "../../models/notification.model.js";
 
 export const createComment = async(req, res) => {
     try {
@@ -13,8 +14,10 @@ export const createComment = async(req, res) => {
             postId,
         }); 
 
+        let post;
+        
         if(newComment){
-            const post = await Post.findByIdAndUpdate({
+            post = await Post.findByIdAndUpdate({
                 _id: postId
             },
             {
@@ -24,6 +27,13 @@ export const createComment = async(req, res) => {
             },{new : true});
         }
 
+        await Notification.create({
+            receivingUserId : post.user_id, 
+            sendingUserId : req.user._id,
+            notificationType: "commentPost",
+            notificationMessage : "Commented on your post",
+        });
+        
         return res.status(200).json({
             message: "Comment created successfully",
             newComment,

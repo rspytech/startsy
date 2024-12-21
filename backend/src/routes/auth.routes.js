@@ -13,7 +13,8 @@ import { checkUserName } from '../controllers/authenticateUser/checkUserName.js'
 import { checkEmail } from '../controllers/authenticateUser/checkEmail.js';
 import { checkCurrentPassword } from '../controllers/authenticateUser/checkCurrentPassword.js';
 import { changePassword } from '../controllers/changePassword.controller.js';
-
+import { getUserNotifications } from '../controllers/getUserNotifications.js';
+import { getUsersProfiles } from '../controllers/getUsersProfile.js';
 const router = express.Router();
 
 router.post('/register', registerUser);
@@ -30,6 +31,8 @@ router.post('/investorInfo', verifyUser, upload.fields([
 router.post('/founderInfo', verifyUser, upload.single('profilePhoto'), FounderInfo);
 router.post('/freelancerInfo', verifyUser, upload.single('profilePhoto'), FreelancerInfo);
 router.post('/communityMemberInfo', verifyUser, upload.single('profilePhoto'), CommunityMemeberInfo);
+router.get('/getUserNotifiation', verifyUser, getUserNotifications);
+router.get('/getUsersProfiles/:id', verifyUser, getUsersProfiles);
 router.post('/doesUserExists', DoesUserExists);
 
 export default router;
