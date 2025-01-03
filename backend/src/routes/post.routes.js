@@ -11,6 +11,7 @@ import { getCommunityChatList } from "../controllers/postControllers/getCommunit
 import { upvotePost } from "../controllers/postControllers/upvotePost.js";
 import { createComment } from "../controllers/postControllers/createComment.controller.js";
 import { getComments } from "../controllers/postControllers/getComments.controller.js";
+import { getPosts } from "../controllers/postControllers/getPost.controller.js";
 
 const router = express.Router();
 
@@ -24,6 +25,6 @@ router.get("/getCommunityChatList", verifyUser, getCommunityChatList);    // TES
 router.post("/upvotePost/:postId/:likeStatus", verifyUser, upvotePost);   // TESTED
 router.post("/createComment/:id", verifyUser, createComment);   // TESTED
 router.get("/getComments/:id", verifyUser, getComments);    // TESTED
-
+router.get("/getPosts", verifyUser, getPosts);
 
 export default router;

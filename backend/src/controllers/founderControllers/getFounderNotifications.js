@@ -9,7 +9,13 @@ export const getFounderNotifications = async (req, res) => {
         const user = await User.findById(founderId).populate({
             path: "roleId",
             populate: {
-                path: "requestNotifications.investor", // Populate nested investor field
+                path: "requestNotifications.investor",
+                populate : {
+                    path : "roleId",
+                    populate : {
+                        path : "user_id",
+                    }
+                }
             },
         });
 

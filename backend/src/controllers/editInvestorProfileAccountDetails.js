@@ -3,19 +3,19 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../../cloudinary.js";
 
 export const editInvestorAccountProfileDetails = async (req, res) => {
+
+    console.log(req.body);
+    console.log(req.file);
+    
+    
     const {
         fullName,
         country,
-        age,
-        gender,
         contactInfo,
         previousExperience,
         areaOfInterest,
         startupStage,
         preferredSector,
-        linkedInUrl,
-        websiteUrl,
-        domainEmail,
         investmentRange
     } = req.body;
 
@@ -32,21 +32,18 @@ export const editInvestorAccountProfileDetails = async (req, res) => {
 
         // Find the existing investor profile
         let investor = await Investor.findOne({ user_id: currentUserId });
+        console.log(investor);
+        
 
         // Define the fields to be updated
         const fieldsToUpdate = {
             fullName,
             country,
-            age,
-            gender,
             contactInfo,
             previousExperience,
             areaOfInterest,
             startupStage,
             preferredSector,
-            linkedInUrl,
-            websiteUrl,
-            domainEmail,
             investmentRange
         };
 
@@ -79,4 +76,5 @@ export const editInvestorAccountProfileDetails = async (req, res) => {
             message: "Internal Server Error"
         });
     }
-};
+
+}

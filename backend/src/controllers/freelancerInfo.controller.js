@@ -1,8 +1,10 @@
 import { uploadOnCloudinary } from "../../cloudinary.js";
 import { Freelancer } from "../models/freelancer.model.js";
 import { User } from "../models/user.model.js";
-
+// chnage
 export const FreelancerInfo = async (req, res) => {
+    req.body.certification = JSON.parse(req.body.certification)
+    req.body.portfolio = JSON.parse(req.body.portfolio)
     try {
         const { 
             fullName,
@@ -14,8 +16,9 @@ export const FreelancerInfo = async (req, res) => {
             tagline,
             skills,
             education,
-            name,
-            url,
+            // name, not needed
+            // url not needed 
+            certification, //needed exra added
             portfolio,
             services,
             currentAvailability,
@@ -36,10 +39,11 @@ export const FreelancerInfo = async (req, res) => {
             tagline,
             skills,
             education,
-            certification : {
-                name,
-                url,
-            },
+            // certification : {
+            //     name,
+            //     url,
+            // },
+            certification,
             portfolio,
             services,
             currentAvailability,

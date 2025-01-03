@@ -15,6 +15,20 @@ import googleAuthRoute from "./routes/google.auth.routes.js";
 import connectionsRoute from "./routes/connection.routes.js"
 import adminRoute from "./routes/admin.routes.js";
 
+import mongoose from "mongoose";
+import dotenv from 'dotenv';
+
+
+dotenv.config();
+mongoose.connect(`${process.env.MONGODB_URI}/${process.env.DB_NAME}`)
+    .then(() => {
+        console.log("Connection successful");
+        
+    })
+    .catch((error) => {
+        console.log(error);
+    });
+
 const app = express();
 const server = http.createServer(app);
 configureSocketIO(server);
@@ -25,6 +39,7 @@ app.use(cors(
     }
 ));
 app.use(bodyParser.json());
+app.use(bodyParser.urlencoded());
 
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
@@ -44,4 +59,10 @@ app.use('/chats', chatRoute);
 app.use('/auth', googleAuthRoute);
 app.use('/connections', connectionsRoute);
 app.use('/admin', adminRoute);
+
+
+
+server.listen(5002, '0.0.0.0', () => {
+    console.log('Server');
+});
 export default app;

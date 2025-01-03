@@ -19,6 +19,11 @@ export const addFounderProfile = async(req, res) => {
             return res.status(404).json({ message: 'Founder not found' });
         }
         
+        if(investor.requestedFounders.includes(id)){
+            return res.status(400).json({
+                message: 'You have already requested this founder',
+            });
+        }
         investor.requestedFounders.push({
             founder : id,
             requestDate : Date.now(),

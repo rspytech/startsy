@@ -1,7 +1,9 @@
 import { Server } from "socket.io";
-
+import { Conversation } from "../models/conversation.model.js";
+import { Message } from "../models/message.model.js";
 const userSocketMap = {};  // Mapping of user IDs to their socket IDs
 let io;
+
 export const configureSocketIO = (server) => {
     io = new Server(server, {
         cors: {
@@ -11,49 +13,86 @@ export const configureSocketIO = (server) => {
 
     io.on("connection", (socket) => {
         console.log("User connected:", socket.id);
-
-        // Listen for the user to provide their userId after connecting
-        socket.on("registerUser", (userId) => {
-            userSocketMap[userId] = socket.id;
-            console.log(`User ${userId} registered with socket ID ${socket.id}`);
+    
+        // Register the user and deliver pending messages
+        socket.on("registerUser", async ({receiverId , senderId , message}) => {
+            userSocketMap[senderId] = socket.id;
+            console.log(`User ${senderId} registered with socket ID ${socket.id}`);
+    
+            // Fetch pending messages
+            const pendingMessages = await Message.find({ receiverId, senderId, status: "pending" });
+            pendingMessages.forEach((msg) => {
+                socket.emit("privateMessage", {
+                    senderId: msg.senderId,
+                    message: msg.message,
+                    timestamp: msg.createdAt,
+                });
+    
+                // Mark as delivered
+                msg.status = "delivered";
+                msg.save();
+            });
         });
-
-        // Handle one-to-one private messages
-        socket.on("privateMessage", ({ senderId, receiverId, message }) => {
-            const receiverSocketId = userSocketMap[receiverId];
-            if (receiverSocketId) {
-                io.to(receiverSocketId).emit("privateMessage", { senderId, message });
-                console.log(`Private message from ${senderId} to ${receiverId}: ${message}`);
-            } else {
-                console.log(`User ${receiverId} is not connected`);
+    
+        // Handle private messages
+        socket.on("privateMessage", async ({ senderId, receiverId, message }) => {
+            try {
+                // Find or create conversation
+                let conversation = await Conversation.findOne({
+                    members: { $all: [senderId, receiverId] },
+                    isGroup: false,
+                });
+    
+                if (!conversation) {
+                    conversation = await Conversation.create({
+                        members: [senderId, receiverId],
+                        isGroup: false,
+                    });
+                }
+    
+                // Save message
+                const newMessage = await Message.create({ senderId, message, receiverId });
+    
+                conversation.messages.push(newMessage._id);
+                conversation.lastMessage = newMessage._id;
+                await conversation.save();
+    
+                // Deliver message
+                const receiverSocketId = userSocketMap[receiverId];
+                if (receiverSocketId) {
+                    io.to(receiverSocketId).emit("privateMessage", newMessage);
+                } else {
+                    console.log(`User ${receiverId} is offline. Message stored in DB.`);
+                }
+            } catch (error) {
+                console.error("Error handling privateMessage:", error.message);
             }
         });
-
-        // Handle group joining logic
-        socket.on("joinGroup", async (groupId) => {
+    
+        // Handle group messages
+        socket.on("groupMessage", async ({ senderId, groupId, message }) => {
             try {
-                const group = await Conversation.findById(groupId);
-                if (!group || !group.isGroup) {
-                    console.error("Invalid group");
+                const conversation = await Conversation.findOne({ communityId: groupId, isGroup: true });
+                if (!conversation) {
+                    console.error("Group not found");
                     return;
                 }
-                socket.join(groupId);
-                console.log(`User ${socket.id} joined group: ${groupId}`);
-                io.to(groupId).emit("systemMessage", { message: "A new user has joined the group." });
-            }
-            catch (error) {
-                console.error("Error joining group:", error.message);
-                socket.emit("error", { error: "Failed to join group" });
+    
+                // Save group message
+                const newMessage = await Message.create({ senderId, message });
+    
+                conversation.messages.push(newMessage._id);
+                conversation.lastMessage = newMessage._id;
+                await conversation.save();
+    
+                // Emit to group
+                io.to(groupId).emit("groupMessage", newMessage);
+            } catch (error) {
+                console.error("Error handling groupMessage:", error.message);
             }
         });
-
-        // Handle group messages
-        socket.on("groupMessage", ({ senderId, groupId, message }) => {
-            io.to(groupId).emit("groupMessage", { senderId, message });
-            console.log(`Group message from ${senderId} to group ${groupId}: ${message}`);
-        });
-
-        // Remove the user from the map on disconnect
+    
+        // Handle disconnection
         socket.on("disconnect", () => {
             for (const userId in userSocketMap) {
                 if (userSocketMap[userId] === socket.id) {

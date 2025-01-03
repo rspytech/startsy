@@ -1,6 +1,5 @@
 import { Investor } from '../../models/investor.model.js';
-import { Founder } from '../../models/founder.model.js'; // Import Founder model
-
+import Recommendation from '../../models/recommendation.model.js';
 // Assuming RecommendationBasic is already imported
 import RecommendationBasic from '../../algorithms/recommendation.js';
 import mappings from '../../config/startupPrefrencesMapping.js';
@@ -37,32 +36,48 @@ export const getFounderProfile = async (req, res) => {
         };
 
         const recommendationIds = recommender.recommendation_id(investorPreferences);
-
-        // 3. Fetch founders using regex-based matching
-        const regexList = recommendationIds.map(id => new RegExp(`^${id}`, 'i'));
-        const matchingFounders = await Founder.find({
+        console.log(recommendationIds);
+        // 3. Generate regex for broader matching
+        const regexList = recommendationIds.map(id => new RegExp(`${id}`));
+        console.log(regexList);
+        // 4. Query Recommendation schema using regexList
+        const matchingRecommendations = await Recommendation.find({
             recommendationId: { $in: regexList },
-        }).populate("user_id");
+        }).populate({
+            path: 'matchingFounders',
+            populate: {
+                path: 'user_id',
+            }
+        });
+        // Populate founders for each recommendation
 
-        if (matchingFounders.length === 0) {
+        console.log(matchingRecommendations);
+
+        if (matchingRecommendations.length === 0) {
             return res.status(404).json({
                 success: false,
-                message: 'No matching founders found for the investor preferences.',
+                message: 'No matching recommendations found for the investor preferences.',
             });
         }
 
-        // 4. Return the list of matching founders
+        // 5. Extract all founders from the matching recommendations
+        const recommendedFounders = matchingRecommendations.flatMap(
+            (recommendation) => recommendation.matchingFounders
+        );
+
+        // console.log(recommendedFounders);
+
         res.status(200).json({
             success: true,
-            message: "Founder profiles fetched successfully",
-            data: matchingFounders,
+            message: "Recommended founders fetched successfully",
+            data: recommendedFounders,
         });
     } catch (error) {
-        // 5. Handle any errors
+        // 6. Handle any errors
         console.error(error);
         res.status(500).json({
             success: false,
-            message: 'Error occurred while fetching founder profiles',
+            message: 'Error occurred while fetching recommended founders',
             error: error.message,
         });
     }

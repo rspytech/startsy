@@ -5,8 +5,13 @@ export const getRequestedFounders = async (req, res) => {
     try {
         const id = req.user._id;
         const investor = await Investor.findOne({ user_id: id })
-            .populate('requestedFounders.founder') 
-            .exec();
+        .populate({
+            path: "requestedFounders.founder",
+            populate: {
+                path: "roleId",
+            }
+        })
+        .exec();
 
         if (!investor) {
             return res.status(404).json({ message: 'Investor not found' });

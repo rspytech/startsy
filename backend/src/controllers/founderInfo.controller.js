@@ -9,6 +9,11 @@ import mappings from "../config/startupPrefrencesMapping.js"; // Assuming the ma
 const recommender = new RecommendationBasic(mappings.stage, mappings.sector, mappings.location, mappings.fundingRange);
 
 export const FounderInfo = async (req, res) => {
+
+    req.body.teamInfo = JSON.parse(req.body.teamInfo)
+    req.body.previousWorkExperience = JSON.parse(req.body.previousWorkExperience)
+    req.body.socialProof = JSON.parse(req.body.socialProof)
+
     const {
         email,
         country,
@@ -125,6 +130,8 @@ export const FounderInfo = async (req, res) => {
             message: "Founder Details uploaded successfully",
             newFounder,
         });
+        console.log("founder succesfuly created ");
+        
 
     } catch (error) {
         console.log(error);
@@ -132,4 +139,4 @@ export const FounderInfo = async (req, res) => {
             message: "Internal Server Error"
         });
     }
-};
+}

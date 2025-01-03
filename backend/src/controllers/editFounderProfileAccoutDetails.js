@@ -1,25 +1,33 @@
+//changes here
+
 import { Founder } from "../models/founder.model.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../../cloudinary.js";
 
 export const editFounderAccountProfileDetails = async (req, res) => {
+
+
+    console.log(req.body);
+    
+    req.body.teamInfo = JSON.parse(req.body.teamInfo)
+    req.body.previousWorkExperience = JSON.parse(req.body.previousWorkExperience)
+    req.body.socialProof = JSON.parse(req.body.socialProof)
     const {
         country,
-        age,
-        gender,
         contactInfo,
         fullName,
-        previousWorkExperience,
+        previousWorkExperience, // changes
         education,
         skills,
+        email,
         nameOfStartup,
         goal,
         description,
-        teamInfo,
+        teamInfo, //chnages
         sector,
         fundingStatus,
         stageOfStartup,
-        socialProof
+        socialProof //changes
     } = req.body;
 
     const profilePhoto = req.file;
@@ -36,7 +44,7 @@ export const editFounderAccountProfileDetails = async (req, res) => {
 
             if (!teamMate) {
                 return res.status(404).send({
-                    message: `Team Member with the username ${team.tag} does not exist`,
+                    message: `Team Member with the username ${team.tag} does not exist,`
                 });
             }
 
@@ -59,8 +67,8 @@ export const editFounderAccountProfileDetails = async (req, res) => {
         // Define the fields to be updated
         const fieldsToUpdate = {
             country,
-            age,
-            gender,
+            // age,
+            // gender,
             contactInfo,
             fullName,
             previousWorkExperience,

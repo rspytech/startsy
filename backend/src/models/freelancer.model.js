@@ -51,6 +51,16 @@ const freelancerSchema = new mongoose.Schema({
         type: String,
     },
 
+    totalUpvotes: {
+        type: Number,
+        default : 0,
+    },
+
+    upvotesPerDay : {
+        type: Number,
+        default : 0,
+    },
+
     requestNotifications: [{
         investor: {
             type: mongoose.Schema.Types.ObjectId,
