@@ -1,0 +1,1 @@
+export const url = 'http://10.10.22.253:5002/'

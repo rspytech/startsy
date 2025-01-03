@@ -1,0 +1,154 @@
+import React, { useState } from 'react';
+import { View, Text, ScrollView } from 'react-native';
+import DropDownPicker from 'react-native-dropdown-picker';
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+
+export default function Drop({ items, onValueChange, open, setOpen, extra, bottomsheet, edit, width, width1 }) {
+    // const [open, setOpen] = useState(false);
+    const [value, setValue] = useState(null);
+    var placeholdertext;
+    if (extra) {
+        if (bottomsheet) {
+            placeholdertext = "Rules"
+        }
+        else placeholdertext = "Country"
+    }
+
+    else placeholdertext = "Select"
+
+    // const [items, setItems] = useState([
+    //     { label: 'Option 1', value: 'option1' },
+    //     { label: 'Option 2', value: 'option2' },
+    //     { label: 'Option 3', value: 'option3' },
+    //     { label: 'Option 4', value: 'option4' },
+    //     { label: 'Option 5', value: 'option5' },
+    //     { label: 'Option 6', value: 'option6' },
+    //     { label: 'Option 7', value: 'option7' },
+    //     { label: 'Option 8', value: 'option8' },
+    //     { label: 'Option 9', value: 'option9' },
+    //     { label: 'Option 10', value: 'option10' },
+    //     { label: 'Option 11', value: 'option11' },
+    //     { label: 'Option 12', value: 'option12' },
+    //     { label: 'Option 13', value: 'option13' },
+    //     { label: 'Option 14', value: 'option14' },
+    //     { label: 'Option 15', value: 'option15' },
+    // ]);
+    const handleValueChange = (value1) => {
+        // console.log(value1, "main");
+        setValue(value1);
+
+        if (onValueChange) {
+            onValueChange(value1); // Call the function passed from the parent
+        }
+    };
+
+    return (
+
+
+
+
+        <DropDownPicker
+            searchable={true}
+            searchPlaceholder='Search'
+            searchPlaceholderTextColor='#AEAFAF'
+            searchTextInputStyle={{
+                borderColor : "#000",
+                color : "#AEAFAF",
+                fontFamily : "abeeze",
+                fontSize : 18
+            }}
+            
+            
+
+            listMode='SCROLLVIEW'
+            open={open}
+            value={value}
+            items={items}
+            setOpen={setOpen}
+            setValue={handleValueChange}
+            maxHeight={200}
+            dropDownDirection='BOTTOM'
+            placeholder={placeholdertext}
+            placeholderTextColor="green"
+            placeholderStyle={{
+                color: '#AEAFAF',
+                fontFamily: 'Alata',
+                fontSize: 20,
+                marginTop: -3,
+            }}
+            ArrowDownIconComponent={({ style }) => (
+                <FontAwesome6 name="chevron-down" size={20} color="#00DE62" />
+            )}
+            ArrowUpIconComponent={({ style }) => (
+                <FontAwesome6 name="chevron-up" size={20} color="#00DE62" />
+            )}
+            style={{
+                width: extra ? "91%" : "94%",
+                width: edit ? "89%" : extra ? "91%" : "94%",
+                width: width ? width : "94%",
+
+                alignSelf: "center",
+                backgroundColor: '#24272A',
+                backgroundColor: bottomsheet ? "transparent" : "#24272A",
+                backgroundColor: edit ? "transparent" : "#24272A",
+                borderRadius: 10,
+                borderWidth: 3,
+                borderTopWidth: extra ? 0 : 3,
+                borderLeftWidth: extra ? 0 : 3,
+                borderRightWidth: extra ? 0 : 3,
+                borderRadius: extra ? 0 : 10,
+                borderBottomWidth: edit ? 1 : 3,
+                borderColor: edit ? "#AEAFAF" : '#16181A',
+                zIndex: 200,
+                maxHeight: 200,
+                includeFontPadding: false,
+                // overflow : "hidden",
+            }}
+            dropDownContainerStyle={{
+                backgroundColor: '#363A3E',
+                // backgroundColor: 'red',
+                opacity: 0.99,
+                maxHeight: 200,
+                width: extra ? "90.5%" : "93%",
+                width: width1 ? width1 : extra ? "90.5%" : "93%",
+                // width: '90.5%',
+                maxHeight: 300,
+                alignSelf: 'center',
+                borderColor: 'transparent',
+                elevation: 10,
+                display: "flex",
+                zIndex: 1100,
+                overflow: "scroll",
+                includeFontPadding: false,
+
+            }}
+            listItemContainerStyle={{
+                justifyContent: 'center',
+                backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                borderBottomColor: 'black',
+                borderBottomWidth: 1,
+                height: 50,
+                includeFontPadding: false,
+            }}
+            listItemLabelStyle={{
+                color: '#AEAFAF',
+                textAlign: 'left',
+                fontSize: 20,
+                fontFamily: "abeeze",
+                includeFontPadding: false,
+            }}
+            labelStyle={{
+                fontFamily: 'abeeze',
+                fontSize: 20,
+                color: '#AEAFAF',
+                includeFontPadding: false,
+            }}
+            nestedScrollEnabled={true}
+        />
+
+
+
+
+
+    );
+}
