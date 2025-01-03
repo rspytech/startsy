@@ -14,6 +14,7 @@ import { checkEmail } from '../controllers/authenticateUser/checkEmail.js';
 import { checkCurrentPassword } from '../controllers/authenticateUser/checkCurrentPassword.js';
 import { changePassword } from '../controllers/changePassword.controller.js';
 import { getUsersProfiles } from '../controllers/getUsersProfile.js';
+import { uploadProfileCoverImage } from '../controllers/uploadProfileCoverImage.js';
 const router = express.Router();
 
 router.post('/register', registerUser);
@@ -32,5 +33,6 @@ router.post('/freelancerInfo', verifyUser, upload.single('profilePhoto'), Freela
 router.post('/communityMemberInfo', verifyUser, upload.single('profilePhoto'), CommunityMemeberInfo);
 router.get('/getUsersProfiles/:id', verifyUser, getUsersProfiles);
 router.post('/doesUserExists', DoesUserExists);
+router.post('/uploadCoverImage', verifyUser, uploadProfileCoverImage);
 
 export default router;

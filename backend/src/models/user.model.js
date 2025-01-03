@@ -49,6 +49,9 @@ const userSchema = new mongoose.Schema({
         type : mongoose.Schema.Types.ObjectId,
         ref : "Newsletter",
     }],
+    bannerImage : {
+        type : String,
+    },
     refreshToken : {
         type : String,
     }
