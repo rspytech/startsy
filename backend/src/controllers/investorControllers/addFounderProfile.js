@@ -2,6 +2,7 @@
  
 import { Investor } from "../../models/investor.model.js";
 import { Founder } from "../../models/founder.model.js";
+import { upvoteProfile } from "../../models/upvoteProfile.model.js";
 
 export const addFounderProfile = async(req, res) => {
     try {
@@ -37,6 +38,10 @@ export const addFounderProfile = async(req, res) => {
         await investor.save();
         await founderProfile.save();
 
+        await upvoteProfile.create({
+            investor: investorId,
+            founder: id,
+        });
 
         return res.status(200).json({
             success: true,

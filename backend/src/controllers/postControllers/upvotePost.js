@@ -3,6 +3,7 @@ import { User } from "../../models/user.model.js";
 import { Notification } from "../../models/notification.model.js";
 import cron from 'node-cron';
 import moment from 'moment-timezone';
+import { UpvotePost } from "../../models/upvotePost.model.js";
 
 cron.schedule('0 0 * * *', async () => {
     try {
@@ -55,6 +56,11 @@ export const upvotePost = async (req, res) => {
                 notificationType: "upvotePost",
                 notificationMessage : "UpVoted your post.",
             });
+            await UpvotePost.findOneAndUpdate(
+                { postId, userId },
+                { postId, userId },
+                { upsert: true, new: true, setDefaultsOnInsert: true }
+            );
         }
 
         if (user.role === "Investor") {
@@ -90,6 +96,7 @@ export const upvotePost = async (req, res) => {
                     upvotesPerDay: -1,
                 },
             });
+            await Upvote.findOneAndDelete({ postId, userId });
             return res.status(200).json({ message: "Post unliked successfully" });
         } else {
             return res.status(400).json({ message: "Invalid like status" });

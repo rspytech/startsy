@@ -33,6 +33,6 @@ router.post('/freelancerInfo', verifyUser, upload.single('profilePhoto'), Freela
 router.post('/communityMemberInfo', verifyUser, upload.single('profilePhoto'), CommunityMemeberInfo);
 router.get('/getUsersProfiles/:id', verifyUser, getUsersProfiles);
 router.post('/doesUserExists', DoesUserExists);
-router.post('/uploadCoverImage', verifyUser, uploadProfileCoverImage);
+router.post('/uploadCoverImage', verifyUser, upload.single('coverImage'), uploadProfileCoverImage);
 
 export default router;
