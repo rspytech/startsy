@@ -10,8 +10,14 @@ const verifyUser = async (req, res, next) => {
                 message: "Unauthorized Request. Token not found",
             });
         }
+        let token;
 
-        const token = authHeader.split(" ")[1]; // Extract the token
+        if(authHeader.includes("Bearer")){
+            token = authHeader.split(" ")[1]; // Extract the token
+        }
+        else{
+            token = authHeader;
+        }
 
         const decodedToken = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 

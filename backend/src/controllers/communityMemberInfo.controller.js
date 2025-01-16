@@ -3,6 +3,8 @@ import { CommunityMember } from "../models/communityMember.model.js";
 import { User } from "../models/user.model.js";
 
 export const CommunityMemeberInfo = async (req, res) => {
+    req.body.certification = JSON.parse(req.body.certification)
+    req.body.portfolio = JSON.parse(req.body.portfolio)
     try{
         const {
             fullName,
@@ -13,7 +15,12 @@ export const CommunityMemeberInfo = async (req, res) => {
             contactInfo,
             communityMemberRole,
             areaOfInterest,
-            contentPrefrence
+            contentPrefrence,
+            tagline,
+            skills,
+            education,
+            certification, 
+            portfolio,
         } = req.body;
 
         const profilePhoto = req.file;
@@ -30,6 +37,11 @@ export const CommunityMemeberInfo = async (req, res) => {
             communityMemberRole,
             areaOfInterest,
             contentPrefrence,
+            tagline,
+            skills,
+            education,
+            certification, 
+            portfolio,
             user_id: req.user._id
         });
 

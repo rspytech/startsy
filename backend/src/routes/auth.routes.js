@@ -15,6 +15,7 @@ import { checkCurrentPassword } from '../controllers/authenticateUser/checkCurre
 import { changePassword } from '../controllers/changePassword.controller.js';
 import { getUsersProfiles } from '../controllers/getUsersProfile.js';
 import { uploadProfileCoverImage } from '../controllers/uploadProfileCoverImage.js';
+import { getInvestorProfile } from '../controllers/getInvestorProfile.js';
 const router = express.Router();
 
 router.post('/register', registerUser);
@@ -34,5 +35,6 @@ router.post('/communityMemberInfo', verifyUser, upload.single('profilePhoto'), C
 router.get('/getUsersProfiles/:id', verifyUser, getUsersProfiles);
 router.post('/doesUserExists', DoesUserExists);
 router.post('/uploadCoverImage', verifyUser, upload.single('coverImage'), uploadProfileCoverImage);
+router.get('/getInvestorProfile', verifyUser, getInvestorProfile);
 
 export default router;

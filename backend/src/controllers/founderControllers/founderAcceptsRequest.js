@@ -100,7 +100,7 @@ export const acceptRequest = async (req, res) => {
         }
 
         const investorProfile = investorUser.roleId;
-        const founderProfile = founderUser.roeId;
+        const founderProfile = founderUser.roleId;
 
         if(investorUser.role === "Investor"){
             const founderRequestIndex = investorProfile.requestedFounders.findIndex(

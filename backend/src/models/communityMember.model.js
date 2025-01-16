@@ -31,6 +31,27 @@ const communityMemberSchema = new mongoose.Schema({
         type : String,  
     },
 
+    tagline: {
+        type : String,
+    },
+    skills : {
+        type : String,
+    },
+    education:{
+        type : String,
+    },
+    certification : [{
+        name : {
+            type: String,
+        },
+        url : {
+            type: String,
+        },
+    }], 
+    portfolio : [{
+        type : String,
+    }],
+
     requestNotifications: [{
         investor: {
             type: mongoose.Schema.Types.ObjectId,

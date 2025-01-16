@@ -27,6 +27,11 @@ export const followUser = async (req, res) => {
             return res.status(404).json({ message: "RoleId or user not found." });
         }
 
+        if(loggedInUserRole.following.includes(followedUserId)){
+            return res.status(400).json({
+                message: "You are already following this user."
+            });
+        }
         // Check if both are following each other
         if (
             loggedInUserRole.followers.includes(followedUserId) &&
