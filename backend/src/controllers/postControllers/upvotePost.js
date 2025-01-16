@@ -47,7 +47,7 @@ export const upvotePost = async (req, res) => {
 
         const postUserId = post.user_id;
         const roleDetails = await User.findById(postUserId).populate("roleId");
-
+        
         if(likeStatus === "like"){
             await Notification.create({
                 receivingUserId : post.user_id, 

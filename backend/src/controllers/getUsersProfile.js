@@ -30,8 +30,15 @@ export const getUsersProfiles = async (req, res) => {
         }
 
         // Fetch the user's profile with basic `posts` population
-        const userProfile = await role.findOne({ user_id: userId })
-            .populate("user_id") // Populate user details
+        const userProfile = await role.findOne({ user_id: userId }).select("goal hiddenInfo investorConnections chatUsers totalUpvotes")
+            .populate({
+                path : "user_id",
+                select : "userName role profilePhoto bannerImage followers",
+                populate: {
+                    path: "followers",
+                    select: "userName"
+                }
+            }) // Populate user details
             .populate({ path: "posts" }) // Basic population for `posts`
             .lean();
 

@@ -3,7 +3,7 @@ import { Comment } from "../../models/comment.model.js";
 export const getComments = async(req, res) => {
     try {
         const postId = req.params.id;
-        const comments = await Comment.find({ postId: postId }).sort({ createdAt: -1 });
+        const comments = await Comment.find({ postId: postId }).sort({ createdAt: -1 }).populate("userId", "userName profilePhoto");
         if(!comments){
             return res.status(404).json({ message: "No comments found" });
         }

@@ -14,7 +14,7 @@ import chatRoute from './routes/chat.routes.js';
 import googleAuthRoute from "./routes/google.auth.routes.js";
 import connectionsRoute from "./routes/connection.routes.js"
 import adminRoute from "./routes/admin.routes.js";
-
+import notificationRoute from "./routes/notifications.routes.js";
 import mongoose from "mongoose";
 import dotenv from 'dotenv';
 
@@ -59,8 +59,7 @@ app.use('/chats', chatRoute);
 app.use('/auth', googleAuthRoute);
 app.use('/connections', connectionsRoute);
 app.use('/admin', adminRoute);
-
-
+app.use('/notification', notificationRoute);
 
 server.listen(5002, '0.0.0.0', () => {
     console.log('Server');
