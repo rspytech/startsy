@@ -27,8 +27,16 @@ export const getUsersProfiles = async (req, res) => {
         console.log("User Role:", userRole);
 
         let status;
-        if(user.followers.includes(loggedInUserId)){
-            status = "Following";
+        if(user.following.includes(userId) && user.followers.includes(loggedInUserId)){
+            status = "Followed";
+        }
+
+        else if(user.followers.includes(loggedInUserId)){
+            status = "Pending Request";
+        }
+
+        else{
+            status = "Follow"
         }
 
         const role = roleMap[userRole];
