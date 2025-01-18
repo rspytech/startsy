@@ -44,6 +44,9 @@ const ChatScreen = ({ navigation, token }) => {
 
     // console.log(token, "dskljkuyhfdsajjsd");
 
+    console.log(navigation);
+    
+
     console.log("chat screen hai");
     console.log("chat screen hai");
     console.log("chat screen hai");

@@ -20,6 +20,36 @@ const Profile = ({ navigation, token }) => {
 
     const [userdata, setuserdata] = useState(null)
 
+    // useEffect(() => {
+    //     async function getdata() {
+    //         try {
+    //             console.log(token);
+
+    //             const response = await fetch(`${url}api/changePassword`, {
+    //                 method: 'POST',
+    //                 body: "",
+    //                 headers: {
+    //                     "Content-Type": "application/json",
+    //                     accept: "application/json",
+    //                     "Authorization": `Bearer ${token}`,
+    //                 },
+    //             });
+    //             const data = await response.json();
+
+    //             console.log(data);
+    //             console.log(response.status);
+
+    //         }
+    //         catch (err) {
+    //             // setloading(false)
+    //             console.log(err);
+
+    //         }
+    //     }
+    //     getdata()
+
+    // }, [])
+
 
 
 

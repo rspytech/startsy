@@ -1,4 +1,21 @@
-<svg width="37" height="29" viewBox="0 0 37 29" fill="none" xmlns="http://www.w3.org/2000/svg">
-<rect x="1" y="1" width="35" height="26.25" rx="2" stroke="#00DE62" stroke-width="2"/>
-<path d="M1 7.5625L17.6056 15.8653C18.1686 16.1468 18.8314 16.1468 19.3944 15.8653L36 7.5625" stroke="#00DE62" stroke-width="2"/>
-</svg>
+import * as React from "react"
+import Svg, { Rect, Path } from "react-native-svg"
+const Mail = (props) => (
+  <Svg xmlns="http://www.w3.org/2000/svg" fill="none" {...props}>
+    <Rect
+      width={35}
+      height={26.25}
+      x={1}
+      y={1}
+      stroke="#00DE62"
+      strokeWidth={2}
+      rx={2}
+    />
+    <Path
+      stroke="#00DE62"
+      strokeWidth={2}
+      d="m1 7.563 16.606 8.302a2 2 0 0 0 1.788 0L36 7.562"
+    />
+  </Svg>
+)
+export default Mail

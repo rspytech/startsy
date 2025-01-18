@@ -70,9 +70,13 @@ const AboutTab = () => {
       </View>
     );
   };
+
+
   useEffect(() => {
     console.log(minHeight); // Log after state updates
   }, [minHeight]);
+
+  
   const loadMorePosts = () => {
     console.log(tabIndex);
     

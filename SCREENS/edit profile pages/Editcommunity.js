@@ -217,7 +217,7 @@ const Editcommunity = ({ navigation }) => {
         })
 
         formData.append("certification", JSON.stringify(certification));
-        formData.append("portfolio", JSON.stringify(portfolio));
+    formData.append("portfolio", JSON.stringify(portfolio));
 
         if (image && image != "") {
             formData.append("profilePhoto", {

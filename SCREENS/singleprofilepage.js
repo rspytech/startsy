@@ -299,6 +299,10 @@ const Singleprofilepage = ({ navigation, props }) => {
 
   async function sendfollowrequest(id) {
 
+    if(connecteddata == "Followed"){
+      return
+    }
+
     console.log(id);
     try {
 
