@@ -4,7 +4,7 @@ import { View, StyleSheet } from "react-native";
 const B2 = (props) => (
   <View style={styles.container}>
 
-  <Svg xmlns="http://www.w3.org/2000/svg" fill="none"  width="50" height="50" viewBox="0 0 60 60">
+  <Svg xmlns="http://www.w3.org/2000/svg" fill="none"  width={props.width || 50} height={props.width || 50} viewBox="0 0 60 60">
     <Path
       fill="#00DE62"
       fillRule="evenodd"

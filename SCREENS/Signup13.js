@@ -26,10 +26,11 @@ import * as DocumentPicker from 'expo-document-picker';
 import { useFocusEffect } from "expo-router";
 import { GlobalContext } from "@/Global/globalcontext.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import { url } from "../config.js"
 
 const Signup13 = ({ navigation, route }) => {
     const { form, image } = route.params;
+// const form = ""
 
     // const [final, setFormData] = useState(new FormData());
     // useFocusEffect(
@@ -41,23 +42,109 @@ const Signup13 = ({ navigation, route }) => {
 
 
     const [token, settoken] = useState("")
+    const [role1, setrole] = useState("")
     const { globaldata, updateField } = useContext(GlobalContext);
+
+    const [open1, setOpen1] = useState(false);
 
     useEffect(() => {
         console.log(globaldata, "global data");
         settoken(globaldata.token)
     }, [])
+
+    const t1 = () => {
+        setOpen1(!open1);
+       
+    }
     useFocusEffect(() => {
         StatusBar.setBackgroundColor("#1e1e1e")
         StatusBar.setBarStyle("light-content")
     })
+    const handlerole = (value1) => {
+        // console.log("Selected Value:", value1); // Optional: Log the selected value
+        setrole(value1); // Update state with the selected value
+    };
 
+    var role = [
+        { label: "Angel Investor", value: "Angel Investor" },
+        { label: "Venture Capitalist", value: "Venture Capitalist" },
+        { label: "Institutional Investor", value: "Institutional Investor" },
+        { label: "Family Offices", value: "Family Offices" },
+        { label: "New Investor", value: "New Investor" },
+    ]
 
     const [linkedinurl, setlinkedinurl] = useState("")
     const [websiteurl, setwebsiteurl] = useState("")
     const [domainemail, setdomainemail] = useState("")
     const [panCard, setpanCard] = useState("")
     const [file, setFile] = useState(null);
+
+    const [errors, setErrors] = useState({
+        linkedinUrlError: "",
+        websiteUrlError: "",
+        domainEmailError: "",
+        panCardError: "",
+        fileError: "",
+    });
+
+
+    const linkedinRegex = /^(https?:\/\/)?(www\.)?linkedin\.com\/.*$/;
+    const websiteRegex = /^(https?:\/\/)?([\w-]+(\.[\w-]+)+)(\/.*)?$/;
+    const emailRegex = /^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$/;
+    const panCardRegex = /^[A-Z]{5}[0-9]{4}[A-Z]{1}$/;
+
+
+    const validateInputs = () => {
+        let isValid = true;
+        const newErrors = {};
+
+
+
+        // Validate LinkedIn URL
+        if ((!linkedinurl || !linkedinRegex.test(linkedinurl))) {
+            newErrors.linkedinUrlError = "* Please enter a valid LinkedIn URL.";
+            isValid = false;
+        }
+
+        // Validate Website URL
+        if ((!websiteurl && !websiteRegex.test(websiteurl)) && (role1 == "Angel Investor" || role1 == "Institutional Investor")) {
+            newErrors.websiteUrlError = "* Please enter a valid Website URL.";
+            isValid = false;
+        }
+
+        // Validate Domain Email
+        if ((!domainemail || !emailRegex.test(domainemail)) && (role1 == "Venture Capitalist")) {
+            newErrors.domainEmailError = "* Please enter a valid email address.";
+            isValid = false;
+        }
+
+        // Validate PAN Card
+        // if (!panCard || !panCardRegex.test(panCard)) {
+        //     newErrors.panCardError = "* Please enter a valid PAN number.";
+        //     isValid = false;
+        // }
+
+        // Validate File Upload
+        if ((!file) && (role1 == "Family Offices" || role1 == "New Investor")) {
+            newErrors.fileError = "* Please upload a valid document.";
+            isValid = false;
+        }
+
+        setErrors(newErrors);
+        return isValid;
+    };
+
+
+    const finalSubmit = async () => {
+        if (!validateInputs()) {
+            return;
+        }
+
+        // Handle form submission
+        // Make API call with the form data (including file and other inputs)
+        navigation.navigate("Main1");
+        // navigation.navigate("Wait");
+    };
 
 
 
@@ -66,6 +153,11 @@ const Signup13 = ({ navigation, route }) => {
 
 
     async function finalsubmit() {
+
+        if (!validateInputs()) {
+            return;
+        }
+
 
         const final = new FormData();
         for (var items of form["_parts"]) {
@@ -104,7 +196,7 @@ const Signup13 = ({ navigation, route }) => {
 
 
 
-        const response = await fetch('http://192.168.1.7:5002/api/investorInfo', {
+        const response = await fetch(`${url}api/investorInfo`, {
             method: 'POST',
             body: final,
 
@@ -145,83 +237,98 @@ const Signup13 = ({ navigation, route }) => {
     <StatusBar backgroundColor="#1E1E1E" barStyle={"light-content"} />
 
     return (
-        <TouchableWithoutFeedback >
-            <SafeAreaView style={signup3styles.container}>
-                <View style={signup3styles.row}>
-                    {/* top */}
-                    <View style={signup3styles.top}>
-                        <View style={signup3styles.left}>
-                            <Image style={signup3styles.logo} source={require("../assets/images/logo.png")} />
+        < SafeAreaView style={[signup3styles.container, { position: "relative" }]} >
+            <ScrollView nestedScrollEnabled={true}
+            >
+                <TouchableWithoutFeedback>
+                    <View
+                        style={[signup3styles.row, { position: "relative" }]}>
+                        {/* <View style={[styles.modal]}></View> */}
+                        {/* top */}
+                        <View style={signup3styles.top}>
+                            <View style={signup3styles.left}>
+                                <Image style={signup3styles.logo} source={require("../assets/images/logo.png")} />
+                            </View>
+                            <View style={signup3styles.right}>
+                                <Line progresswidth={"81%"} />
+                            </View>
                         </View>
-                        <View style={signup3styles.right}>
-                            <Line progresswidth={"105%"} />
-                        </View>
-                    </View>
 
 
 
-                    {/* bottom */}
-
-                    <View style={styles.bottom}>
-
-                        <Text allowFontScaling={false} style={styles.t1}>Authenticity Verification</Text>
-                        <TextInput
-                            allowFontScaling={false}
-                            placeholder="LinkedIN URL*"
-                            placeholderTextColor="#B8B8B8"
-                            style={styles.input}
-                            value={linkedinurl}
-                            onChangeText={(text) => { setlinkedinurl(text) }}
-                        />
-                        <TextInput
-                            allowFontScaling={false}
-                            placeholder="Website URL"
-                            placeholderTextColor="#B8B8B8"
-                            style={styles.input}
-                            value={websiteurl}
-                            onChangeText={(text) => { setwebsiteurl(text) }}
-                        />
-                        <TextInput
-                            allowFontScaling={false}
-                            placeholder="Official Domain Email"
-                            placeholderTextColor="#B8B8B8"
-                            style={styles.input}
-                            value={domainemail}
-                            onChangeText={(text) => { setdomainemail(text) }}
-                        />
-                        <TextInput
-                            allowFontScaling={false}
-                            placeholder="Pan Number"
-                            placeholderTextColor="#B8B8B8"
-                            style={styles.input}
-                            value={panCard}
-                            onChangeText={(text) => { setpanCard(text) }}
-                        />
-
-                        <Text allowFontScaling={false} style={styles.t11}>E-KYC document upload</Text>
-                        <Pressable style={styles.upload} onPress={openFilePicker}>
-                            <Text allowFontScaling={false} style={styles.nexttext}>Upload</Text>
-                        </Pressable>
+                        {/* bottom */}
+                        <View style={styles.bottom}>
 
 
+                            <Text allowFontScaling={false} style={styles.t1}>Authenticity Verification</Text>
+                            <Drop items={role} onValueChange={handlerole} open={open1} setOpen={t1} />
+                            <TextInput
+                                allowFontScaling={false}
+                                placeholder="LinkedIN URL*"
+                                placeholderTextColor="#B8B8B8"
+                                style={[styles.input , {marginTop : 20}]}
+                                value={linkedinurl}
+                                onChangeText={(text) => { setlinkedinurl(text) }}
+                            />
+                            {errors.linkedinUrlError && (<Text style={styles.errorText}>{errors.linkedinUrlError}</Text>)}
+                            <TextInput
+                                allowFontScaling={false}
+                                placeholder="Website URL / Angel list url"
+                                placeholderTextColor="#B8B8B8"
+                                style={styles.input}
+                                value={websiteurl}
+                                onChangeText={(text) => { setwebsiteurl(text) }}
+                            />
 
+                            {errors.websiteUrlError &&
+                                <Text style={styles.errorText}>{errors.websiteUrlError}</Text>}
 
+                            <TextInput
+                                allowFontScaling={false}
+                                placeholder="Official Domain Email"
+                                placeholderTextColor="#B8B8B8"
+                                style={styles.input}
+                                value={domainemail}
+                                onChangeText={(text) => { setdomainemail(text) }}
+                            />
+                            {errors.domainEmailError && <Text style={styles.errorText}>{errors.domainEmailError}</Text>}
 
-                        <View style={styles.icons}>
-                            <Pressable onPress={() => {
+                            <TextInput
+                                allowFontScaling={false}
+                                placeholder="Pan Number"
+                                placeholderTextColor="#B8B8B8"
+                                style={styles.input}
+                                value={panCard}
+                                onChangeText={(text) => { setpanCard(text) }}
+                            />
 
-                                navigation.goBack();
-                            }}><FontAwesome6 name="chevron-left" size={45} color="#00DF60" /></Pressable>
-                            <Pressable style={styles.btn} onPress={() => { finalsubmit() }}>
-                                <Text allowFontScaling={false} style={styles.nexttext}>Submit</Text>
+                            {errors.panCardError && <Text style={styles.errorText}>{errors.panCardError}</Text>}
+
+                            <Text allowFontScaling={false} style={styles.t11}>Verification document upload</Text>
+                            <Pressable style={styles.upload} onPress={openFilePicker}>
+                                <Text allowFontScaling={false} style={styles.nexttext}>Upload</Text>
                             </Pressable>
+                            {errors.fileError && <Text style={styles.errorText1}>{errors.fileError}</Text>}
+
+
+                            <View style={styles.icons}>
+                                <Pressable onPress={() => {
+
+                                    navigation.goBack();
+                                }}><FontAwesome6 name="chevron-left" size={45} color="#00DF60" /></Pressable>
+                                <Pressable style={styles.btn} onPress={() => { finalsubmit() }}>
+                                    <Text allowFontScaling={false} style={styles.nexttext}>Submit</Text>
+                                </Pressable>
+                            </View>
+
+
+
                         </View>
 
-
                     </View>
-                </View>
-            </SafeAreaView>
-        </TouchableWithoutFeedback>
+                </TouchableWithoutFeedback>
+            </ScrollView>
+        </ SafeAreaView>
     )
 }
 
@@ -236,12 +343,12 @@ var b = height / 800;
 const scalingfactor = Math.sqrt(a * b)
 const styles = StyleSheet.create({
     t1: {
-        textAlign: 'left',
+        textAlign: 'center',
         marginLeft: 10,
         color: "#D9D9D9",
         fontFamily: 'Alata',
         fontSize: scalingfactor * 27,
-        marginBottom: scalingfactor * 12,
+        marginBottom: scalingfactor * 20,
 
 
     },
@@ -250,7 +357,7 @@ const styles = StyleSheet.create({
         // marginLeft: 10,
         color: "#D9D9D9",
         fontFamily: 'Alata',
-        fontSize: scalingfactor * 26,
+        fontSize: scalingfactor * 22,
         marginBottom: scalingfactor * 3,
     },
     t2: {
@@ -266,26 +373,28 @@ const styles = StyleSheet.create({
     },
     bottom: {
         width: "100%",
-        height: height * 0.85,
+        // height: height*0.85,
         backgroundColor: "#24272A",
+        // backgroundColor: "red",
         borderTopLeftRadius: 70,
         padding: height * 0.03,
         paddingTop: height * 0.06,
         // justifyContent: "center",
         alignContent: "center",
         padding: scalingfactor * 20,
-        paddingTop: scalingfactor * 40
+        paddingTop: scalingfactor * 40,
     },
     icons: {
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
         width: "92%",
-        margin: "auto",
+        marginHorizontal: "auto",
         // marginTop: scalingfactor * 30,
-        position: "absolute",
-        bottom: 40,
+        // position: "absolute",
+        bottom: 0,
         alignSelf: "center",
+        marginTop: 100
     }
     ,
     btn: {
@@ -345,11 +454,34 @@ const styles = StyleSheet.create({
         borderColor: "#16181A",
         marginTop: 10,
         paddingLeft: 20,
-        color : "#B8B8B8",
+        color: "#B8B8B8",
         // fontFamily: "Alata",
         fontSize: scalingfactor * 16,
         marginBottom: scalingfactor * 16
     },
+
+    errorText: {
+        marginVertical: 5,
+        marginTop: -6,
+        textAlign: "left",
+        // backgroundColor : "red",
+        width: "85%",
+        marginHorizontal: "auto",
+        color: "#E65858",
+        fontSize: 12,
+        fontFamily: "Roboto",
+    },
+    errorText1: {
+        marginVertical: 5,
+        marginTop: 4,
+        textAlign: "center",
+        // backgroundColor : "red",
+        width: "85%",
+        marginHorizontal: "auto",
+        color: "#E65858",
+        fontSize: 12,
+        fontFamily: "Roboto",
+    }
 
 
 

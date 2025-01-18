@@ -1,21 +1,21 @@
 import { useFocusEffect } from "expo-router"
 import { useState, useEffect, useRef, useContext } from "react";
 import * as React from "react"
-import { SafeAreaView, ScrollView, StatusBar, ActivityIndicator, Animated, Dimensions, Pressable, TextInput, TouchableWithoutFeedback, Image } from "react-native"
+import { SafeAreaView, BackHandler, ScrollView, StatusBar, TouchableOpacity, ActivityIndicator, Animated, Dimensions, Pressable, TextInput, TouchableWithoutFeedback, Image } from "react-native"
 import { View, Text, StyleSheet } from "react-native"
 import Profile from "../../assets/icons/profile.js"
 import Drop from "../../SCREENS/dropdown.js"
 import Slider from "@react-native-community/slider";
 import styles from "../commonstyles.js"
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-
+import {url} from "../../config.js"
 import * as ImagePicker from 'expo-image-picker';
 import { GlobalContext } from "../../Global/globalcontext.js";
 
 
 
 
-const EditInvestorInfo = () => {
+const EditInvestorInfo = ({ navigation }) => {
 
     useFocusEffect(() => {
         // StatusBar.setBackgroundColor("red")
@@ -47,12 +47,23 @@ const EditInvestorInfo = () => {
         console.log(globaldata, "global data");
         settoken(globaldata.token)
     }, [globaldata])
+    function gotochangepassowrd() {
 
+        navigation.navigate("ChangePassword1")
+    }
+
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            navigation.goBack();
+
+
+            return true; // This prevents the default back action
+        });
+
+        return () => backHandler.remove();
+    }, []);
 
     const fileupload = async () => {
-
-
-
 
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (permissionResult.granted === false) {
@@ -107,12 +118,23 @@ const EditInvestorInfo = () => {
         { label: "Horizontal Sector", value: "Horizontal Sector" }
     ]
     var country1 = [
-        { label: "10th", value: "10TH" },
-        { label: "12th", value: "12th" },
-        { label: "Graduate", value: "Graduate" },
-        { label: "Post-Graduate", value: "Post-Graduate" },
-        { label: "P.H.D", value: "P.H.D" },
-
+        { label: "India", value: "INDIA" },
+        { label: "United States", value: "UNITED_STATES" },
+        { label: "Canada", value: "CANADA" },
+        { label: "United Kingdom", value: "UNITED_KINGDOM" },
+        { label: "Australia", value: "AUSTRALIA" },
+        { label: "Singapore", value: "SINGAPORE" },
+        { label: "Indonesia", value: "INDONESIA" },
+        { label: "Vietnam", value: "VIETNAM" },
+        { label: "Malaysia", value: "MALAYSIA" },
+        { label: "UAE", value: "UAE" },
+        { label: "Saudi Arabia", value: "SAUDI_ARABIA" },
+        { label: "Israel", value: "ISRAEL" },
+        { label: "Nigeria", value: "NIGERIA" },
+        { label: "South Africa", value: "SOUTH_AFRICA" },
+        { label: "Brazil", value: "BRAZIL" },
+        { label: "Mexico", value: "MEXICO" },
+        { label: "Others (Type)", value: "OTHERS" },
 
     ]
 
@@ -167,7 +189,7 @@ const EditInvestorInfo = () => {
         formData.append("startupStage", startupStage);
         formData.append("preferredSector", preferredSector);
         formData.append("investmentRange", parseInt(sliderrange) || 0);
-        if(image && image != ""){
+        if (image && image != "") {
             formData.append("profilePhoto", {
                 uri: image,
                 type: "image/jpeg",
@@ -183,7 +205,7 @@ const EditInvestorInfo = () => {
 
 
         try {
-            const response = await fetch('http://192.168.1.7:5002/investor/editInvestorAccountProfileDetails', {
+            const response = await fetch(`${url}investor/editInvestorAccountProfileDetails`, {
                 method: 'POST',
                 body: formData,
                 headers: {
@@ -200,7 +222,7 @@ const EditInvestorInfo = () => {
             console.log(err);
 
         }
-        finally{
+        finally {
             setloading(false)
         }
 
@@ -230,6 +252,11 @@ const EditInvestorInfo = () => {
                         )}
                     </Pressable>
                     <Text style={styles1.t2}>Change profile picture</Text>
+
+                    <TouchableOpacity onPress={gotochangepassowrd} style={styles1.editButton1}>
+                        <Text allowFontScaling={false} style={styles1.editButtonText}>Change Password</Text>
+                    </TouchableOpacity>
+
                     <TextInput
                         onTouchStart={handleOutsideTouch}
                         allowFontScaling={false}
@@ -312,9 +339,9 @@ const EditInvestorInfo = () => {
                             // style={styles.sliderbox}
                             style={{ marginTop: -7, width: "90%", margin: "auto" }}
                             minimumValue={0}
-                            maximumValue={10000000}
-                            value={5000000}
-                            step={1000}
+                            maximumValue={100000000}
+                            value={10000000}
+                            step={100000}
                             minimumTrackTintColor="#00DE62"
                             maximumTrackTintColor="#00DE62"
                             // step={100}
@@ -394,7 +421,7 @@ const styles1 = StyleSheet.create({
         fontFamily: "Roboto",
         textAlign: "center",
         fontSize: 14,
-        marginBottom: 20,
+        marginBottom: 5,
         marginTop: 10
     },
     input: {
@@ -463,7 +490,33 @@ const styles1 = StyleSheet.create({
         width: 113,
         height: 113,
         borderRadius: 100
-    }
+    },
+    editButton1: {
+        backgroundColor: "#00DE62",
+        // paddingHorizontal: 20,
+        // paddingVertical: 8,
+        borderRadius: 20,
+        paddingHorizontal: 10,
+        borderWidth: 1,
+        borderColor: "#00DE62",
+        alignItems: "center",
+        verticalAlign: "middle",
+        justifyContent: "center",
+        width: 182,
+        height: 40,
+        alignSelf: "center",
+        marginVertical: 12
+
+
+    },
+    editButtonText: {
+        color: "#16181A",
+        fontSize: 16,
+        fontFamily: "Alata",
+        textAlign: "center",
+        marginLeft: -1,
+        marginTop: -3
+    },
 
 
 })

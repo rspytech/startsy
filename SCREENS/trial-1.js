@@ -46,7 +46,7 @@ const ReadMore1 = function ({ attop, setattop, animatedtop, animatedValue }) {
     getTopCoordinate();
   }, [animatedtop]);
   useFocusEffect(() => {
-    StatusBar.setBackgroundColor("#1e1e1e")
+    StatusBar.setBackgroundColor("#16181a")
     StatusBar.setBarStyle("light-content")
   })
 
@@ -54,7 +54,7 @@ const ReadMore1 = function ({ attop, setattop, animatedtop, animatedValue }) {
 
   const scrollDown = () => {
     scrollViewRef.current.scrollTo({
-      y: height+100, // Change this value to scroll by different heights
+      y: height + 100, // Change this value to scroll by different heights
       animated: true, // Smooth scrolling
     });
 
@@ -106,6 +106,7 @@ const ReadMore1 = function ({ attop, setattop, animatedtop, animatedValue }) {
         </View>
         <View style={readmorestyles.bottom}>
           <Text style={readmorestyles.para} allowFontScaling={false}>
+
             Welcome to Startsy, your gateway to the dynamic world of startups, where founders, investors, freelancers, and community members come together to innovate and collaborate. Whether you’re here to launch your idea, invest in groundbreaking ventures, find freelance opportunities, or immerse yourself in the startup ecosystem, Startsy has the perfect role for you.
           </Text>
           <Text ref={elementRef} ></Text>
@@ -120,14 +121,12 @@ const ReadMore1 = function ({ attop, setattop, animatedtop, animatedValue }) {
 
         contentContainerStyle={{
           paddingTop: 20,
-          paddingBottom: 20,
-          paddingHorizontal: 10,
+          paddingBottom: 10,
+          // paddingHorizontal: 10,
         }}>
 
         <Pressable onPress={scrollDown}>
-
-         
-        <Up/>
+          <Up />
           {/* <Image style={[readmorestyles.uplogo]} source={require("../assets/images/up.png")} /> */}
         </Pressable>
         {/* <View style={{flex : 1 , borderRadius : 100 , backgroundColor : "red", height : height}}> */}
@@ -142,7 +141,7 @@ const ReadMore1 = function ({ attop, setattop, animatedtop, animatedValue }) {
 
 
         >
-         
+
 
           <Text allowFontScaling={false} style={readmorestyles.line1}>Why choose the role of</Text>
           <Text allowFontScaling={false} style={readmorestyles.line2}>Investor</Text>
@@ -165,32 +164,14 @@ const ReadMore1 = function ({ attop, setattop, animatedtop, animatedValue }) {
         >
           <View>
             <Text allowFontScaling={false} style={readmorestyles.line1}>Why choose the role of</Text>
-            <Text allowFontScaling={false} style={readmorestyles.line2}>Investor</Text>
+            <Text allowFontScaling={false} style={readmorestyles.line2}>Founder</Text>
             <Text allowFontScaling={false} style={readmorestyles.main}  >
-              Choose the role of Investor if you are a professional investor, such as a venture capitalist or an angel investor, looking to explore and invest in promising startups. Even if you have no prior experience in investing but have the interest and resources to support innovative ventures, this role is perfect for you! Connect with visionary founders and be part of their success stories.
+              Whether you are an established founder, a company owner, or someone with a groundbreaking idea seeking resources to bring it to life, the role of Founder is for you! Join a community of like-minded entrepreneurs, gain access to investors, and find the support you need to turn your vision into reality.
             </Text>
           </View>
         </BlurView>
 
-        <BlurView
-          style={readmorestyles.sblock1}
-          reducedTransparencyFallbackColor="white"
-          intensity={90}
-          blurAmount={32}
-          experimentalBlurMethod="dimezisBlurView"
-          blurReductionFactor={12}
-          tint="systemChromeMaterialDark"
-
-
-        >
-          <View>
-            <Text allowFontScaling={false} style={readmorestyles.line1}>Why choose the role of</Text>
-            <Text allowFontScaling={false} style={readmorestyles.line2}>Investor</Text>
-            <Text allowFontScaling={false} style={readmorestyles.main}>
-              Choose the role of Investor if you are a professional investor, such as a venture capitalist or an angel investor, looking to explore and invest in promising startups. Even if you have no prior experience in investing but have the interest and resources to support innovative ventures, this role is perfect for you! Connect with visionary founders and be part of their success stories.
-            </Text>
-          </View>
-        </BlurView>
+       
 
 
         <BlurView
@@ -206,9 +187,9 @@ const ReadMore1 = function ({ attop, setattop, animatedtop, animatedValue }) {
         >
           <View>
             <Text allowFontScaling={false} style={readmorestyles.line1}>Why choose the role of</Text>
-            <Text allowFontScaling={false} style={readmorestyles.line2}>Investor</Text>
+            <Text allowFontScaling={false} style={readmorestyles.line2}>Community member?</Text>
             <Text allowFontScaling={false} style={readmorestyles.main}>
-              Choose the role of Investor if you are a professional investor, such as a venture capitalist or an angel investor, looking to explore and invest in promising startups. Even if you have no prior experience in investing but have the interest and resources to support innovative ventures, this role is perfect for you! Connect with visionary founders and be part of their success stories.
+              Join as a Community Member to immerse yourself in the vibrant startup ecosystem! Whether you are a Startup job seeker, student, an aspiring entrepreneur, a mentor, or an industry professional, this role allows you to stay informed, network with key players, and contribute to the community. Engage in discussions, attend events, and be part of the innovation wave shaping the future. This is your gateway to learning, networking, and making a difference in the startup world.
             </Text>
           </View>
 
@@ -224,7 +205,7 @@ const ReadMore1 = function ({ attop, setattop, animatedtop, animatedValue }) {
           }, 1);
         }
 
-        } style={{ zIndex: 10000000, color: "white", position: "absolute", left: "84%", bottom: 10 }}>
+        } style={{ zIndex: 10000000, color: "white", position: "absolute", left: "84%", bottom: 0 }}>
           <Ionicons name="arrow-forward-circle" size={48} color="#00DE62" />
         </Pressable>
 

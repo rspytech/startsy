@@ -33,58 +33,69 @@ const s5 = StyleSheet.create({
         borderBottomColor: "#16181A",
         fontSize: scalingfactor * 20, // Responsive font size
         color: "#B8B8B8",
-        paddingBottom: scalingfactor * 5,
+        // paddingBottom: scalingfactor * 5,
         width: "92%",
         fontFamily: "Roboto",
         lineHeight: scalingfactor * 18,
-        marginBottom: scalingfactor * 25
-    }, 
-    
+        marginTop: scalingfactor * 20,
+        // marginBottom : 0
+    },
+
     bottom: {
         width: "100%",
         // height: height * 0.85,
-        flex  : 1,
+        flex: 1,
         backgroundColor: "#24272A",
+        // backgroundColor: "red",
         borderTopLeftRadius: 70,
         alignContent: "center",
         padding: scalingfactor * 20,
+        paddingBottom : 0,
         paddingTop: scalingfactor * 25
-    },icons:{
-        display : "flex",
-        flexDirection : "row",
-        justifyContent : "space-between",
-        width : "92%",
+    }, icons: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-between",
+        width: "100%",
+        margin: "auto",
+        paddingHorizontal : "4%",
+        // position: "absolute",
+        // bottom: 0,
         margin : "auto",
-    },dropdown:{
-        position : "absolute",
-        right : 20,
-        top : 3,
+        backgroundColor : "#24272A",
+        paddingBottom : 50,
+        marginTop : 40
+
+    }, dropdown: {
+        position: "absolute",
+        right: 20,
+        top: 3,
         // transform: [{ rotate: '180deg' }]
     },
-    dropdownbox:{
-        position : "absolute",
-        backgroundColor : "gray",
-        width : "82%",
-        borderRadius : 10,
+    dropdownbox: {
+        position: "absolute",
+        backgroundColor: "gray",
+        width: "82%",
+        borderRadius: 10,
         // margin : "auto",
-        alignSelf : "center",
-        zIndex : 3,
-        height : 200,
-        opacity : 0.98,
-        elevation : 3,
-        overflow : "hidden"
+        alignSelf: "center",
+        zIndex: 3,
+        height: 200,
+        opacity: 0.98,
+        elevation: 3,
+        overflow: "hidden"
 
     },
-    
+
     dropdownItem: {
         padding: 10,
-        borderBottomColor : "black",
-        borderBottomWidth : 1
+        borderBottomColor: "black",
+        borderBottomWidth: 1
     },
     dropdownText: {
         color: '#B8B8B8',
-        fontFamily  : "abeeze",
-        fontSize : scalingfactor* 20
+        fontFamily: "abeeze",
+        fontSize: scalingfactor * 20
     },
 })
 

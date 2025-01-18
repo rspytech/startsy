@@ -64,8 +64,24 @@ const Signup10 = ({ navigation, route }) => {
         final.append("description", description)
         final.append("sector", startupsector)
         final.append("stageOfStartup", stage1)
-        final.append("fundingStatus", sliderrange)
-
+        
+        if (sliderrange > 100000000) {
+            tosend = sliderrange.toString().substring(0, 2)
+        }
+        else if (sliderrange < 100000000) {
+            tosend = sliderrange.toString()[0]
+            
+        }
+        
+        console.log(tosend);
+        tosend = tosend + 58;
+        
+        final.append("fundingStatus", tosend)
+        console.log(tosend);
+        
+        
+        
+        
         var array = url.map(e => e.url)
         final.append("socialProof", array)
 
@@ -219,9 +235,9 @@ const Signup10 = ({ navigation, route }) => {
                                 // style={styles.sliderbox}
                                 style={{ marginTop: -7 }}
                                 minimumValue={0}
-                                maximumValue={10000000}
+                                maximumValue={100000000}
                                 value={5000000}
-                                step={1000}
+                                step={100000}
                                 minimumTrackTintColor="#00DE62"
                                 maximumTrackTintColor="#00DE62"
                                 // step={100}

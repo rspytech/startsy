@@ -1,9 +1,75 @@
 import CustomButton from "@/components/button";
-import React, { useEffect } from "react";
+import React, { useEffect, useContext, useState } from "react";
 import { Pressable, TextInput } from "react-native";
-import { View, Text, StyleSheet, Image, StatusBar, TouchableOpacity, Dimensions, SafeAreaView, ScrollView } from "react-native";
-const ChangePassword1 = () => {
+import { GlobalContext } from "@/Global/globalcontext";
+import { View, Text, BackHandler, StyleSheet, Image, StatusBar, TouchableOpacity, Dimensions, SafeAreaView, ScrollView } from "react-native";
 
+import { url } from "../config.js";
+const ChangePassword1 = ({ navigation }) => {
+
+
+    const [token, setToken] = useState("");
+    const [message, setmessage] = useState("");
+    const [password, setpassword] = useState("");
+    const [error, seterror] = useState(false);
+    const { globaldata } = useContext(GlobalContext);
+
+
+    useEffect(() => {
+        console.log(globaldata, "global data");
+        setToken(globaldata.token);
+    }, [globaldata])
+
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            navigation.goBack();
+
+            return true; // This prevents the default back action
+        });
+
+        return () => backHandler.remove();
+    }, []);
+
+
+    async function check() {
+        console.log(`${url}api/checkCurrentPassword`);
+        if (password == "") {
+            setmessage("* please enter your password")
+            seterror(true)
+            return
+        }
+
+        try {
+            const response = await fetch(`${url}api/checkCurrentPassword`, {
+                method: 'POST',
+                body: JSON.stringify({password : password}),
+                headers: {
+                    "Content-Type": "application/json",
+                    accept: "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            // setloading(false)
+            console.log(data);
+            console.log(response.status);
+            if (response.status === 400) {
+                setmessage("* entered password does not match with your current password")
+                seterror(true)
+            }
+            else if (response.status === 200) {
+                console.log("success");
+                seterror(false);
+                navigation.navigate("ChangePassword2" , {token})
+                
+            }
+        }
+        catch (err) {
+            // setloading(false)
+            console.log(err);
+
+        }
+    }
 
     return (
 
@@ -18,11 +84,12 @@ const ChangePassword1 = () => {
                 placeholder="Password"
                 placeholderTextColor="#B8B8B8"
                 style={styles.input}
-            // value={username}
-            // onChangeText={(text) => { setusername(text) }}
+                value={password}
+                onChangeText={(text) => { setpassword(text) }}
             />
+            {error && <Text style={styles.err}>{message}</Text>}
             <Text style={styles.t2}>Forgot password</Text>
-            <Pressable style={styles.btn}>
+            <Pressable onPress={check} style={styles.btn}>
                 <Text style={styles.btntext}>Next</Text>
             </Pressable>
 
@@ -64,14 +131,14 @@ const styles = StyleSheet.create({
         color: "#94A3B8",
         fontSize: 15,
         textAlign: "center",
-        marginTop : -5
+        marginTop: -5
     },
     t1: {
         fontFamily: "Alata",
         color: "#ffffff",
         fontSize: 24,
         textAlign: "center",
-        marginTop : 5
+        marginTop: 5
     }
     , input: {
         backgroundColor: "transparent",
@@ -88,24 +155,32 @@ const styles = StyleSheet.create({
         marginHorizontal: "auto",
         fontFamily: "Roboto",
         lineHeight: scalingfactor * 18,
-        marginBottom: scalingfactor * 25,
+        // marginBottom: scalingfactor * 25,
         // borderRadius : 20
-    }, 
-    btn : {
-        borderRadius : 20,
-        height : 45,
-        justifyContent : "center",
-        alignItems : "center",
-        width : "70%",
-        marginHorizontal : "auto",
-        marginVertical : 20,
-        backgroundColor : "#00DF60"
     },
-    btntext : {
-        fontFamily : "Alata",
-        color  : "#24272A",
-        fontSize  : 22,
-        marginTop : -5
+    btn: {
+        borderRadius: 20,
+        height: 45,
+        justifyContent: "center",
+        alignItems: "center",
+        width: "70%",
+        marginHorizontal: "auto",
+        marginVertical: 20,
+        backgroundColor: "#00DF60"
+    },
+    btntext: {
+        fontFamily: "Alata",
+        color: "#24272A",
+        fontSize: 22,
+        marginTop: -5
+    },
+    err: {
+        color: "#E65858",
+        width: "90%",
+        marginHorizontal: "auto",
+        marginTop: -5,
+        fontSize: 12,
+        marginBottom: 25
     }
 
 });

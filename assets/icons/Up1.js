@@ -23,6 +23,7 @@ const Up1 = (props) => (
     </G>
     <G filter="url(#c)">
       <Path
+        fill= {props.selected == true ? "#00de6280" : "transparent"}
         stroke="#00DE62"
         strokeWidth={2}
         d="M25.857 46V30.5h-8.374a.2.2 0 0 1-.142-.341L32.5 15l15.159 15.159a.2.2 0 0 1-.142.341h-8.374V46"

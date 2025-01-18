@@ -2,7 +2,7 @@ import * as React from "react";
 import Svg, { G, Path } from "react-native-svg";
 import { View, StyleSheet } from "react-native";
 
-const Upvote = ({ width = 32, height = 32, color = "#00DE62", style, ...props }) => (
+const Upvote = ({ selected, width = 32, height = 32, color = "#00DE62", style, ...props }) => (
   <View style={[styles.container, style]} >
     <Svg
       xmlns="http://www.w3.org/2000/svg"
@@ -14,16 +14,17 @@ const Upvote = ({ width = 32, height = 32, color = "#00DE62", style, ...props })
     >
       <G>
         <Path
+          fill={selected == true ? "#00de62" : "transparent"}
           stroke={color}
           strokeWidth={2}
           d="M13.011 30.04V16.02H5.483a.2.2 0 0 1-.142-.342L19.02 2l13.678 13.678a.2.2 0 0 1-.142.341h-7.528v14.02"
         />
-        <Path
+       {!selected &&  <Path
           stroke={color}
           strokeLinecap="round"
           strokeLinejoin="round"
           d="m21.742 33.054 1.557-1.46m0 0 1.558 1.46m-1.558-1.46v3.504M17.46 29.936l1.558-1.46m0 0 1.558 1.46m-1.558-1.46v3.505M13.188 33.054l1.557-1.46m0 0 1.557 1.46m-1.557-1.46v3.504"
-        />
+        /> }
       </G>
     </Svg>
   </View>

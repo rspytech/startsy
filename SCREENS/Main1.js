@@ -17,10 +17,13 @@ import {
     TouchableWithoutFeedback
 
 } from "react-native";
+import NewsletterPage from "./main-2/news1.js"
+
 import NewsLettericon from "../assets/icons/Newsletter.js"
 import Box from "../assets/icons/box.js"
 import main from "../styles/main.js"
 import Foryou from "./main-1/Foryou.js"
+import Apnauser from "./Apnauser.js"
 import NewsLetter from "./main-1/NewsLetter.js"
 import Startsy from "./main-1/Startsy.js"
 // import Message from "./main-1/Message.js"
@@ -34,12 +37,13 @@ import AntDesign from "@expo/vector-icons/AntDesign";
 import FontAwesome from "@expo/vector-icons/FontAwesome";
 import { GlobalContext } from "@/Global/globalcontext.js";
 import url from "../config.js"
+import Singleprofilepage from "./singleprofilepage.js";
 
 
 
 
 const Main1 = ({ navigation }) => {
-// console.log(API_URL);
+    // console.log(API_URL);
 
 
     // navigation.navigate("Green")
@@ -60,7 +64,7 @@ const Main1 = ({ navigation }) => {
         StatusBar.setBackgroundColor("#16181a"); // Set your desired color
         StatusBar.setBarStyle("light-content");
 
-        return()=>{
+        return () => {
             StatusBar.setBackgroundColor("#16181a"); // Set your desired color
             StatusBar.setBarStyle("light-content");
         }
@@ -112,7 +116,7 @@ const Main1 = ({ navigation }) => {
 
             <NavigationContainer independent={true}>
                 <Tab.Navigator
-                    initialRouteName="Home"
+                    initialRouteName="Startsy"
                     screenOptions={{
                         tabBarActiveTintColor: "#00DE62",
                         tabBarInactiveTintColor: "#7A7B7C",
@@ -131,10 +135,10 @@ const Main1 = ({ navigation }) => {
 
                 >
                     <Tab.Screen
-                    screenOptions={{
-                     
+                        screenOptions={{
 
-                    }}
+
+                        }}
                         name="ForYou"
                         children={(props) => <Foryou scroll={updatescroll} token={token} />}
                         options={{
@@ -173,7 +177,7 @@ const Main1 = ({ navigation }) => {
                     <Tab.Screen
                         name="Message"
                         // component={ChatScreen}
-                        children={(props) => <ChatScreen navigation={navigation} />}
+                        children={(props) => <ChatScreen navigation={navigation} token={token} />}
                         options={{
                             tabBarLabel: "",
                             tabBarIcon: ({ focused }) => (
@@ -183,12 +187,32 @@ const Main1 = ({ navigation }) => {
                     />
                     <Tab.Screen
                         name="Profile"
-                        component={Profile}
+                       
+                        children={()=><Apnauser navigation={navigation} token={token} />}
                         options={{
+
                             tabBarLabel: "",
                             tabBarIcon: ({ focused }) => (
                                 <FontAwesome6 name="circle-user" size={31} color={focused ? "#00DE62" : "#7A7B7C"} />
                             ),
+                        }}
+                    />
+                     <Tab.Screen
+                        name="NewsletterPage"
+                        component={NewsletterPage} // Replace with the desired component
+                        
+                        options={{
+                            tabBarButton: () => null, // Hides the tab from the bar
+                            tabBarVisible: false,     // Ensures it doesn't take space in the bar
+                        }}
+                    />
+                    <Tab.Screen
+                        name="Singleprofilepage"
+                        // component={Singleprofilepage} // Replace with the desired component
+                        children={()=><Singleprofilepage navigation={navigation}/>}
+                        options={{
+                            tabBarButton: () => null, // Hides the tab from the bar
+                            tabBarVisible: false,     // Ensures it doesn't take space in the bar
                         }}
                     />
 

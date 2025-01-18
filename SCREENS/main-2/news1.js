@@ -5,25 +5,68 @@ import Share from "../../assets/icons/share.js"
 import Upvote from "../../assets/icons/upvote.js"
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
-const NewsletterPage = ({navigation}) => {
-    const item =
-    {
-        id: "1",
-        title: "We fight for climate change, says a new startup called climatex.",
-        author: "raz.shhh",
-        role: "Founder",
-        time: "4 mins ago",
-        content:
-            "lorem ipsum dolor sit amet, con orem ipsum dolor sit amet, con orem ipsum dolor sit amet, con orem ipsum dolor sit amet, con orem ipsum dolor sit amet, con orem ipsum dolor sit amet, con orem ipsum dolor sit amet, con",
-        image: require("../../assets/images/template.png"), // Replace with your image asset
-        profile: require("../../assets/images/p2.png"), // Replace with your profile asset
+const NewsletterPage = ({navigation  , route}) => {
+
+    // const {item} = route.params
+
+    console.log(route.params);
+
+    const {item} = route.params
+    
+
+
+    // const item =
+    // {
+    //     id: "1",
+    //     title: "We fight for climate change, says a new startup called climatex.",
+    //     author: "raz.shhh",
+    //     role: "Founder",
+    //     time: "4 mins ago",
+    //     content:
+    //         "lorem ipsum dolor sit amet, con orem ipsum dolor sit amet, con orem ipsum dolor sit amet, con orem ipsum dolor sit amet, con orem ipsum dolor sit amet, con orem ipsum dolor sit amet, con orem ipsum dolor sit amet, con",
+    //     image: require("../../assets/images/template.png"), // Replace with your image asset
+    //     profile: require("../../assets/images/p2.png"), // Replace with your profile asset
+    // }
+
+
+      useEffect(()=>{
+        // StatusBar.setBackgroundColor("")
+        StatusBar.setBarStyle("light-content")
+      },[])
+
+      function time(time) {
+        // console.log('====================================');
+        // console.log(time);
+        var data1 = new Date(time)
+        // console.log('====================================');
+        // console.log(data1);
+        // console.log('====================================');
+        // console.log('====================================');
+        var seconds = Math.floor((new Date() - data1) / 1000);
+
+        var interval = seconds / 31536000;
+
+        if (interval > 1) {
+            return Math.floor(interval) + " years ago";
+        }
+        interval = seconds / 2592000;
+        if (interval > 1) {
+            return Math.floor(interval) + " months ago";
+        }
+        interval = seconds / 86400;
+        if (interval > 1) {
+            return Math.floor(interval) + " days ago";
+        }
+        interval = seconds / 3600;
+        if (interval > 1) {
+            return Math.floor(interval) + " hours ago";
+        }
+        interval = seconds / 60;
+        if (interval > 1) {
+            return Math.floor(interval) + " minutes ago";
+        }
+        return Math.floor(seconds) + " seconds ago";
     }
-
-
-    //   useEffect(()=>{
-    //     // StatusBar.setBackgroundColor("")
-    //     StatusBar.setBarStyle("light-content")
-    //   },[])
 
 
 
@@ -50,25 +93,25 @@ const NewsletterPage = ({navigation}) => {
                    </Pressable>
                 </View>
                 <View style={styles.i2}>
-                    <Upvote width={36} height={36} style={{marginRight : 10}}/>
+                    {/* <Upvote width={36} height={36} style={{marginRight : 10}}/> */}
                     <Share style={{marginTop : 3}} />
 
                 </View>
             </View>
             <View style={styles.postContainer}>
-                <Image source={item.image} style={styles.postImage} />
-                <Text style={styles.postTitle}>{item.title}</Text>
+                <Image source={{uri : item.newsletterImage}} style={styles.postImage} />
+                <Text style={styles.postTitle}>{item.content}</Text>
                 <View style={styles.authorInfo}>
-                    <Image source={item.profile} style={styles.profileImage} />
+                    <Image source={{uri : item.taggedUser.profilePhoto}} style={styles.profileImage} />
                     <View style={styles.userinfo}>
 
                         <View style={{ display: "flex", flexDirection: "row", alignSelf: "center" }}>
                             <Text style={styles.authorName}>
-                                {item.author}
+                                {item.taggedUserName}
                             </Text>
-                            <Text style={styles.role}>{item.role}</Text>
+                            <Text style={styles.role}>{item.taggedUser.role}</Text>
                         </View>
-                        <Text style={styles.time}>{item.time}</Text>
+                        <Text style={styles.time}>{time(item.taggedUser.createdAt)}</Text>
                     </View>
                 </View>
                 <Text style={styles.postContent}>{item.content}</Text>
@@ -100,8 +143,9 @@ const styles = StyleSheet.create({
         backgroundColor: "#16181a",
     },
     headerText: {
-        color: "#00FF00",
+        color: "#00de62",
         fontSize: 28,
+        paddingLeft  :10,
         fontWeight: "bold",
     },
     headerIcons: {

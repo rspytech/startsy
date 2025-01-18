@@ -52,8 +52,9 @@ export default function Drop({ items, onValueChange, open, setOpen, extra, botto
             searchPlaceholder='Search'
             searchPlaceholderTextColor='#AEAFAF'
             searchTextInputStyle={{
-                borderColor : "#000",
+                borderColor : "transparent",
                 color : "#AEAFAF",
+                backgroundColor : "#24272A",
                 fontFamily : "abeeze",
                 fontSize : 18
             }}
@@ -66,7 +67,7 @@ export default function Drop({ items, onValueChange, open, setOpen, extra, botto
             items={items}
             setOpen={setOpen}
             setValue={handleValueChange}
-            maxHeight={200}
+            maxHeight={300}
             dropDownDirection='BOTTOM'
             placeholder={placeholdertext}
             placeholderTextColor="green"
@@ -105,8 +106,9 @@ export default function Drop({ items, onValueChange, open, setOpen, extra, botto
                 // overflow : "hidden",
             }}
             dropDownContainerStyle={{
-                backgroundColor: '#363A3E',
-                // backgroundColor: 'red',
+                // backgroundColor: '#363A3E',
+                // backgroundColor: '#16181a',
+                backgroundColor: "#24272A",
                 opacity: 0.99,
                 maxHeight: 200,
                 width: extra ? "90.5%" : "93%",
@@ -122,10 +124,13 @@ export default function Drop({ items, onValueChange, open, setOpen, extra, botto
                 includeFontPadding: false,
 
             }}
+            TickIconComponent={() => (
+                <FontAwesome6 name="check" size={20} color="#00DF60" />
+            )}
             listItemContainerStyle={{
                 justifyContent: 'center',
                 backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                borderBottomColor: 'black',
+                borderBottomColor: '#24272A',
                 borderBottomWidth: 1,
                 height: 50,
                 includeFontPadding: false,

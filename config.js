@@ -1,1 +1,1 @@
-export const url = 'http://10.10.22.253:5002/'
+export const url = 'https://startsy.onrender.com/'

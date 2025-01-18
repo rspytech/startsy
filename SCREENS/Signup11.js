@@ -30,7 +30,7 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { useFocusEffect } from "expo-router";
 import { GlobalContext } from "@/Global/globalcontext.js";
 // import { FlatList } from "react-native-gesture-handler";
-
+import {url} from "../config.js"
 
 
 
@@ -98,7 +98,7 @@ const Signup11 = ({ navigation, route }) => {
 
         setloading(true)
         try {
-            const response = await fetch('http://192.168.1.7:5002/api/founderInfo', {
+            const response = await fetch(`${url}api/founderInfo`, {
                 method: 'POST',
                 body: final,
                 headers: {

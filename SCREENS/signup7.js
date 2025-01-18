@@ -1,6 +1,6 @@
 
 // 3.4 second last of freelancer
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useContext } from "react";
 import {
 
     SafeAreaView,
@@ -30,12 +30,24 @@ import Line from "./line.js"
 import Line3 from "./line3.js"
 import Entypo from '@expo/vector-icons/Entypo';
 import { useFocusEffect } from "expo-router";
+import { GlobalContext } from "@/Global/globalcontext.js";
+
+import { url } from "../config.js"
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 // import { FlatList } from "react-native-gesture-handler";
 
 
 
 const Signup7 = ({ navigation, route }) => {
+
+    const [token, settoken] = useState("")
+    const [loading, setloading] = useState(true)
+    const { globaldata, updateField } = useContext(GlobalContext);
+
+    useEffect(() => {
+        console.log(globaldata, "global data");
+        settoken(globaldata.token)
+    }, [])
 
     const [tagline, settagline] = useState("")
     const [skills, setskills] = useState("")
@@ -160,6 +172,70 @@ const Signup7 = ({ navigation, route }) => {
         })
         setportfolio(array);
     }
+
+
+
+    async function finalsubmit() {
+
+        const final = new FormData();
+        for (var items of form["_parts"]) {
+
+            if (items[0] == "fullname" || items[0] == "password") continue;
+            final.append(items[0], items[1]);
+        }
+
+        if (image != "xyz") {
+            final.append("profilePhoto", {
+                uri: image,
+                type: "image/jpeg",
+                name: `image_${Date.now()}.jpg`,
+
+            })
+        }
+
+
+        var certification = certificate.map(({ id, cname, curl }) => {
+            var obj = { name: cname, url: curl }
+            return obj
+
+        })
+        var portfolio = portfolio1.map(({ id, url }) => {
+            return url
+
+        })
+        final.append("tagline", tagline)
+        final.append("skills", skills)
+        final.append("education", education1);
+        final.append("certification", JSON.stringify(certification));
+        final.append("portfolio", JSON.stringify(portfolio));
+        console.log("will make final submit");
+
+
+
+        console.log(final);
+
+
+        setloading(true);
+
+        const response = await fetch(`${url}api/communityMemberInfo`, {
+            method: 'POST',
+            body: final,
+            headers: {
+                accept: "application/json",
+                "Authorization": token,
+            },
+        });
+        const data = await response.json();
+        setloading(false)
+        console.log(data);
+        if (response.status === 200) {
+            navigation.navigate("Main2")
+        }
+        else if (data.status === 400) {
+            console.log("internal error");
+            setmessage("some error occurred")
+        }
+    }
     return (
 
         <SafeAreaView style={signup3styles.container}>
@@ -174,7 +250,7 @@ const Signup7 = ({ navigation, route }) => {
                                 <Image style={signup3styles.logo} source={require("../assets/images/logo.png")} />
                             </View>
                             <View style={signup3styles.right}>
-                                {renderline()}
+                                <Line3 progresswidth={"106%"} />
                             </View>
                         </View>
 
@@ -184,8 +260,8 @@ const Signup7 = ({ navigation, route }) => {
 
                         {/* <KeyboardAvoidingView style={{ flex: 1 }} behavior="height" keyboardVerticalOffset={100}> */}
                         <View style={styles.bottom}>
-                            <Text style={styles.t1}>Tagline</Text>
-                            <Text style={styles.t2}>A brief, catchy description of your services or specialization (e.g., "Expert Graphic Designer" or "Full-Stack Developer with 5 Years of Experience").</Text>
+                            <Text style={styles.t1}>Bio</Text>
+                            <Text style={styles.t2}>A brief, catchy description of your services or specialization.</Text>
                             <TextInput
                                 allowFontScaling={false}
                                 placeholder=""
@@ -263,7 +339,12 @@ const Signup7 = ({ navigation, route }) => {
                                     navigation.goBack()
                                     // console.log(certificate);
                                 }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
-                                <Pressable onPress={() => { nextpage(navigation, type) }}><FontAwesome6 name="chevron-right" size={40} color="#00DF60" /></Pressable>
+
+                                <Pressable style={styles.btn} onPress={() => { finalsubmit() }}>
+                                    <Text allowFontScaling={false} style={styles.nexttext}>Submit</Text>
+                                </Pressable>
+
+                                {/* <Pressable onPress={() => { nextpage(navigation, type) }}><FontAwesome6 name="chevron-right" size={40} color="#00DF60" /></Pressable> */}
                             </View>
 
                         </View>

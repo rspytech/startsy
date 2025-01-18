@@ -1,5 +1,4 @@
 import { Dimensions, StyleSheet } from "react-native";
-
 const { height, width } = Dimensions.get("window");
 
 
@@ -13,6 +12,20 @@ const readmorestyles = StyleSheet.create({
   para: {
     fontSize: scalingfactor * 17,
     textAlign: "center",
+    // padding: 4,
+    color: "#7A7B7C",
+    lineHeight: 35,
+    width: "95%",
+    marginHorizontal: "auto",
+    letterSpacing: 1.2,
+     fontFamily : "Alata",
+     
+  },
+  para1: {
+    fontSize: scalingfactor * 25,
+    textAlign: "center",
+    marginTop : 50,
+    alignSelf : "center",
     // padding: 4,
     color: "#7A7B7C",
     lineHeight: 35,
@@ -55,7 +68,7 @@ const readmorestyles = StyleSheet.create({
     flex: 1,
     // marginTop : height,
     display: "flex",
-    backgroundColor: "#1E1E1E",
+    backgroundColor: "#16181a",
     position: "relative",
     height: height,
     width: "100%",
@@ -72,7 +85,7 @@ const readmorestyles = StyleSheet.create({
 
   },
   block: {
-    backgroundColor: "#1e1e1e",
+    backgroundColor: "#16181a",
     // backgroundColor: "red",
     width: "100%",
     paddingVertical: 10,
@@ -108,7 +121,7 @@ const readmorestyles = StyleSheet.create({
     paddingVertical  :20,
     paddingHorizontal : 25,
     backgroundColor: "rgba(190,190,190,0.2)", 
-    // backgroundColor : "#464646",
+    backgroundColor : "#16181a30",
 
 
     // opacity : 0.6,
@@ -127,6 +140,7 @@ const readmorestyles = StyleSheet.create({
     paddingHorizontal : 25,
     backgroundColor: "rgba(0,0,0,0.8)",
     backgroundColor: "rgba(190,190,190,0.2)",
+    backgroundColor : "#16181a30",
     borderRadius: 30,
     // backfaceVisibility: "hidden",
     overflow: "hidden",

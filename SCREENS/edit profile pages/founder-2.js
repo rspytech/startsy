@@ -9,7 +9,7 @@ import Slider from "@react-native-community/slider";
 import styles from "../commonstyles.js"
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Entypo from '@expo/vector-icons/Entypo';
-
+import {url} from "../../config.js"
 
 
 
@@ -180,7 +180,7 @@ const Founder2 = ({ navigation, route }) => {
         console.log('====================================');
         setloading(true);
         try {
-            const response = await fetch('http://192.168.1.7:5002/founder/editFounderAccountProfileDetails', {
+            const response = await fetch(`${url}founder/editFounderAccountProfileDetails`, {
                 method: 'POST',
                 body: final,
                 headers: {

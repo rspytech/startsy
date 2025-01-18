@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useContext, useCallback } from "react";
-import { View, Text, StyleSheet, TextInput, FlatList, Image, Dimensions, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, TextInput, FlatList, Image, RefreshControl, Dimensions, TouchableOpacity, ActivityIndicator } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { Pressable } from "react-native";
@@ -28,99 +28,102 @@ const data1 = Array(5).fill({
 
 
 
-const ConnectionsScreen = ({ navigation  }) => {
+const ConnectionsScreen = ({ navigation, search , token}) => {
 
+    console.log(search);
+    console.log(navigation);
+    
+
+    const [filtereddata, setfiltereddata] = useState([])
+    useEffect(() => {
+        console.log(search);
+        if (data && data.length > 0) {
+            setfiltereddata(data.filter(item =>
+                search === "" || item.user.userName.toLowerCase().startsWith(search.toLowerCase())
+            ))
+        }
+    }, [search, data])
+    const [refreshing, setRefreshing] = useState(false);
     const { globaldata } = useContext(GlobalContext);
-    const [token, setToken] = useState("");
-    useFocusEffect(
-        useCallback(() => {
-            console.log(globaldata, "global data");
-            setToken(globaldata.token);
-        }, [globaldata])
-    );
 
 
     const [data, setData] = useState(null)
     const [loading, setloading] = useState(false)
-    useFocusEffect(
 
-        useCallback(() => {
+    const fetchData = async () => {
+        var route = ""
 
-            const fetchData = async () => {
-                var route = ""
+        const decoded = jwtDecode(token);
+        console.log(decoded);
 
-                const decoded = jwtDecode(token);
-                console.log(decoded);
+        console.log(decoded.role);
+        
 
-                if (decoded.role == "Founder") {
-                    route = "founder/getFounderChatUserList"
-                }
-                else if (decoded.role == "Investor") {
-                    route = "investor/getInvestorChatUserList"
-                }
-
-                setloading(true); // Start loading before fetching data
-                if (token) {
-                    console.log(token, "second use focus effect");
-                    try {
-                        const response = await fetch(
-                            `${url}${route}`,
-                            {
-                                method: "GET",
-                                headers: {
-                                    accept: "application/json",
-                                    Authorization: `Bearer ${token}`,
-                                },
-                            }
-                        );
-                        const result = await response.json();
-                        console.log(result, "investor");
-                        // console.log(result.data, "investor");
-                        // console.log(result.data.messages.length, "investor");
-
-                        if (response.status === 200) {
-                            // You can update the data state here if needed
-                            // setData(result); // Example, you can handle the response data
-                            setData(result)
-                        }
-                    } catch (err) {
-                        console.log(err);
-                    } finally {
-                        setloading(false); // Set loading to false when done
-                    }
-                }
-            };
-
-            fetchData(); // Call the async function
-        }, [token]) // Depend on token to refetch when it changes
-    );
-
-    useEffect(() => {
-        console.log("connection screen useeffect ");
-
-        function sayhi() {
-            console.log("hi");
+        if (decoded.role == "Founder") {
+            route = "founder/getFounderChatUserList"
+        }
+        else if (decoded.role == "Investor") {
+            route = "investor/getInvestorChatUserList"
+        }
+        else if (decoded.role == "CommunityMember"){
+            console.log("fuck");
+            
+            route = "founder/getFounderChatUserList"
 
         }
+        // else if()
 
-        sayhi()
+        setloading(true); // Start loading before fetching data
+        if (token) {
+            // console.log(token, "second use focus effect");
+            try {
+                const response = await fetch(
+                    `${url}${route}`,
+                    {
+                        method: "GET",
+                        headers: {
+                            accept: "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                const result = await response.json();
+                console.log(result, "investor");
+                // console.log(result.data, "investor");
+                // console.log(result.data.messages.length, "investor");
 
-    }, [])
+                if (response.status === 200) {
+                    // You can update the data state here if needed
+                    // setData(result); // Example, you can handle the response data
+                    setData(result)
+                    setfiltereddata(result)
+                    // setdata1(result)
+                }
+            } catch (err) {
+                console.log(err);
+            } finally {
+                setloading(false); // Set loading to false when done
+            }
+        }
+    };
+
+
+    useEffect(() => {
+
+        fetchData();
+
+    }, [token])
 
 
     function gotochatscreen(item) {
-        console.log('====================================');
         console.log(item.user._id);
 
         const id = item.user._id;
-        console.log('====================================');
-
-        console.log('====================================');
-        console.log("going to chat screen");
-        console.log('====================================');
 
         async function getData() {
             try {
+                console.log(token, "function ke under wala");
+
                 console.log(`${url}investor/recommendation/getFounderProfile`);
 
                 const response = await fetch(
@@ -137,7 +140,7 @@ const ConnectionsScreen = ({ navigation  }) => {
                 // console.log(result.data.messages);
                 // setData(result.data);
                 // setloading(false);
-                navigation.navigate("Chat", { item , messages : result.data?.messages || [] , token });
+                navigation.navigate("Chat", { item, messages: result.data?.messages || [], token , navigation });
 
             } catch (err) {
                 console.log(err, "eror");
@@ -147,13 +150,18 @@ const ConnectionsScreen = ({ navigation  }) => {
         }
         getData();
     }
-
-
     return (
         <View style={styles.listContainer}>
             {!loading && <FlatList
-                data={data}
+                showsVerticalScrollIndicator={false}
+                contentContainerStyle={{paddingBottom:100}}
+
+                data={filtereddata}
                 keyExtractor={(item, index) => index.toString()}
+                refreshControl={<RefreshControl refreshing={refreshing}
+                    onRefresh={fetchData}
+
+                />}
                 renderItem={({ item }) => {
                     // console.log(item);
 
@@ -163,7 +171,7 @@ const ConnectionsScreen = ({ navigation  }) => {
                         }}>
                             <View style={styles.listItem}>
                                 <Image
-                                    source={{ uri: item.user.profilePhoto }}
+                                    source={{ uri: item.user.profilePhoto || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8slgZXgqnSIXDS8wF2uDT_SmsYlBe-W1soQ&s" }}
                                     style={styles.avatar} />
                                 <View style={styles.textContainer}>
                                     <Text allowFontScaling={false} style={styles.username}>{item.user.userName}</Text>
@@ -175,6 +183,8 @@ const ConnectionsScreen = ({ navigation  }) => {
                     )
                 }}
             />}
+
+            {loading && <ActivityIndicator size="large" color="#fff" />}
         </View>
     )
 }
@@ -228,6 +238,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: "#333",
         alignSelf: "flex-start",
+        width: "100%"
     },
     avatar: {
         width: 50,

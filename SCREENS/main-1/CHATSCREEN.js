@@ -15,6 +15,8 @@ import { jwtDecode } from "jwt-decode";
 import { url } from "../../config.js"
 
 const Chat = ({ navigation, route }) => {
+
+
     const { item, messages, token } = route.params;
     // console.log('====================================');
     console.log(item, "chatscreen ka item hai ");
@@ -35,7 +37,6 @@ const Chat = ({ navigation, route }) => {
 
     const [socket, setSocket] = useState(null);
     const [id, setid] = useState(null);
-
     const flatListRef = useRef(null);
     const [keyboardstatus, setkeyboardstatus] = useState(false)
     const inputRef = useRef(null);
@@ -55,6 +56,21 @@ const Chat = ({ navigation, route }) => {
         setTimeout(() => {
             setStatusBar()
         }, 0);
+
+        if (messages && flatListRef.current) {
+            setTimeout(() => {
+                // Ensure we are only scrolling when new messages are added
+                InteractionManager.runAfterInteractions(() => {
+                    flatListRef.current.scrollToOffset({
+                        offset: messages.length * 100,  // Adjust to actual item height
+                        animated: false,
+                    });
+                });
+            }, 0);
+        }
+
+
+
     }, [])
 
 
@@ -78,6 +94,7 @@ const Chat = ({ navigation, route }) => {
             newSocket.disconnect();
         };
     }, []);
+
 
 
 
@@ -114,17 +131,23 @@ const Chat = ({ navigation, route }) => {
             // Update status bar reliably
             setStatusBar();
 
-            // Use InteractionManager to defer actions until navigation is settled
+            // // Use InteractionManager to defer actions until navigation is settled
             const interaction = InteractionManager.runAfterInteractions(() => {
-                if (isActive) {
-                    if (flatListRef.current) {
-                        flatListRef.current.scrollToOffset({
-                            offset: data.length * 100,
-                            animated: true,
-                        });
-                    }
-                }
+                //     if (isActive) {
+                //         if (flatListRef.current) {
+                //             flatListRef.current.scrollToOffset({
+                //                 offset: data.length * 100,
+                //                 animated: true,
+                //             });
+                //         }
+                //     }
             });
+            // if (flatListRef.current) {
+            //     flatListRef.current.scrollToOffset({
+            //         offset: messages.length * 200,
+            //         animated: true,
+            //     });
+            // }
 
             // Keyboard event listeners
             const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", (e) => {
@@ -154,7 +177,7 @@ const Chat = ({ navigation, route }) => {
 
     function sendmessage() {
 
-        if(newtext == ""){
+        if (newtext == "") {
             return
         }
         console.log(messages);
@@ -217,7 +240,11 @@ const Chat = ({ navigation, route }) => {
         });
 
         return () => backHandler.remove();
-    }, []);
+    }, [token]);
+
+    useEffect(() => {
+
+    }, [data]);
 
 
 
@@ -227,15 +254,19 @@ const Chat = ({ navigation, route }) => {
                 <Pressable onPress={() => { navigation.goBack() }}>
                     <Ionicons name="arrow-back-circle-outline" size={40} color="#00DE62" />
                 </Pressable>
-                <View style={styles.details}>
-                    <View style={styles.userimg}>
-                        <Image style={styles.image} source={{ uri: item.user.profilePhoto }} />
+                <Pressable
+                    onPress={() => { navigation.navigate("Singleprofilepage", { token: token, id: item.user._id, page: "Chat", item, messages, }) }}
+                >
+                    <View style={styles.details}>
+                        <View style={styles.userimg}>
+                            <Image style={styles.image} source={{ uri: item.user.profilePhoto }} />
+                        </View>
+                        <View style={styles.d2}>
+                            <Text allowFontScaling={false} style={styles.userid}>{item.user.userName}</Text>
+                            <Text allowFontScaling={false} style={styles.username}>{item.user.userName}</Text>
+                        </View>
                     </View>
-                    <View style={styles.d2}>
-                        <Text allowFontScaling={false} style={styles.userid}>{item.user.userName}</Text>
-                        <Text allowFontScaling={false} style={styles.username}>Rajas Chaudhari</Text>
-                    </View>
-                </View>
+                </Pressable>
             </View>
 
             <KeyboardAvoidingView keyboardVerticalOffset={-50}
@@ -248,6 +279,8 @@ const Chat = ({ navigation, route }) => {
                     data={data}
                     ref={flatListRef}
                     renderItem={renderItem}
+
+                    getItemLayout={(data, index) => ({ length: 100, offset: 100 * index, index })}
                     contentContainerStyle={{
                         paddingHorizontal: 10,
                         paddingVertical: 20,

@@ -34,6 +34,7 @@ export default function Startsy({ navigation, token }) {
     const [refreshing, setRefreshing] = useState(false);
     // const data=[1,2,3,4]
     const [loading, setloading] = useState(true);
+    const [selected, setselected] = useState(false);
 
 
     // console.log(token, "iniitla");
@@ -48,38 +49,41 @@ export default function Startsy({ navigation, token }) {
 
     const [dataFetched, setDataFetched] = useState(false);
 
-    useEffect(() => {
-        console.log("Current Active Card Index:", cardIndex);
-    }, [cardIndex]);
+    // useEffect(() => {
+    //     console.log("Current Active Card Index:", cardIndex);
+    // }, [cardIndex]);
+
+
+    async function getData() {
+        try {
+            console.log(`${url}investor/recommendation/getFounderProfile`);
+
+            const response = await fetch(
+                `${url}investor/recommendation/getFounderProfile`,
+                {
+                    method: "GET",
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            const result = await response.json();
+            console.log(result);
+            setData(result.data);
+            setloading(false);
+            setDataFetched(true);
+        } catch (err) {
+            console.log(err, "eror");
+        }
+        finally {
+        }
+    }
 
     useEffect(() => {
         if (token) {
             setloading(true)
-            async function getData() {
-                try {
-                    console.log(`${url}investor/recommendation/getFounderProfile`);
-
-                    const response = await fetch(
-                        `${url}investor/recommendation/getFounderProfile`,
-                        {
-                            method: "GET",
-                            headers: {
-                                accept: "application/json",
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
-                    );
-                    const result = await response.json();
-                    console.log(result);
-                    setData(result.data);
-                    setloading(false);
-                    setDataFetched(true);
-                } catch (err) {
-                    console.log(err, "eror");
-                }
-                finally {
-                }
-            }
+            
             getData();
         }
     }, [token, dataFetched])
@@ -106,7 +110,7 @@ export default function Startsy({ navigation, token }) {
                             source={{ uri: item.user_id.profilePhoto }}
                             style={styles.profileImage}
                         />
-                        <Text> {index}</Text>
+                        
                         <AutoSizeText
                             numberOfLines={1}
                             fontSize={24}
@@ -122,7 +126,7 @@ export default function Startsy({ navigation, token }) {
                             gap: 0
                         }}>
                             <View ><Upvote width={40} height={40} /></View>
-                            <Text style={styles.followers}>1.2k</Text>
+                            <Text style={styles.followers}>{item.totalUpvotes}</Text>
                         </View>
                     </View>
 
@@ -243,20 +247,15 @@ export default function Startsy({ navigation, token }) {
             // console.log(err);
 
         }
-        console.log(index, "right swiped function index wala");
+        // console.log(index, "right swiped function index wala");
     }
 
 
     async function incrementupvote() {
-        console.log('====================================');
-        var index = cardIndex + 1 == data.length ? 0 : cardIndex + 1 % data.length
-        console.log('====================================');
-        // console.log(index);
-        console.log('====================================');
-        // console.log(data[index].user_id._id)
 
-        const id = data[index].user_id._id
-        console.log('====================================');
+        const currentIndex = swiperRef.current.state.firstCardIndex;
+        console.log(currentIndex);
+        const id = data[currentIndex].user_id._id
 
         try {
 
@@ -306,7 +305,13 @@ export default function Startsy({ navigation, token }) {
                                     }
                                 );
                                 const result = await response.json();
-                                console.log(result);
+                                // console.log(result);
+                                var data1 = result.data.map((e) => {
+                                    var obj = { ...e, isliked: false }
+                                    return obj
+                                })
+                                console.log(data1);
+
                                 setData(result.data);
                                 setloading(false);
                             } catch (err) {
@@ -325,7 +330,7 @@ export default function Startsy({ navigation, token }) {
             <SafeAreaView style={{ flex: 1, width: width, height: height, paddingVertical: 15, backgroundColor: "#16181a" }}>
 
                 <Animated.View
-                    style={main.header}>
+                    style={main.header1}>
                     <Text allowFontScaling={false} style={main.headertext}>For you</Text>
                 </Animated.View>
 
@@ -353,13 +358,14 @@ export default function Startsy({ navigation, token }) {
                         handleleftswipe(index)
                     }}
                     onSwipedRight={(index) => {
-                        setCardIndex(index)
+                        // setCardIndex(index)
                         handlerightswipe(index)
                     }}
                     cardIndex={cardIndex}
                     stackSize={3}
                     verticalSwipe={false}
                     onSwiped={(index) => {
+                        setselected(false)
                         setCardIndex(index)
                     }}
                 />}
@@ -367,8 +373,15 @@ export default function Startsy({ navigation, token }) {
 
                 <View style={styles.iconcontainer}>
                     <Pressable onPress={swipeLeft} style={{ width: 80, height: 80, backgroundColor: "transparent" }}><Trash /></Pressable>
-                    <Pressable onPress={() => { incrementupvote() }}
-                        style={{ transform: [{ scale: 1 }], paddingTop: 5, width: 80, height: 80, backgroundColor: "transparent" }}><Up1 /></Pressable>
+                    <Pressable onPress={() => {
+                        setselected(true)
+                        incrementupvote()
+                    }}
+                        style={{ transform: [{ scale: 1 }], paddingTop: 5, width: 80, height: 80, backgroundColor: "transparent" }}>
+                        {!selected && <Up1 />}
+                        {selected && <Up1 selected={true} />}
+
+                    </Pressable>
                     <Pressable onPress={swipeRight} style={{ width: 80, height: 80, backgroundColor: "transparent" }}><Addicon /></Pressable>
                 </View>
 

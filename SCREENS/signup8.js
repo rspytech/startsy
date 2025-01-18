@@ -20,7 +20,7 @@ import {
     KeyboardAvoidingView
 } from "react-native";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-
+import {url} from "../config.js"
 import { useFocusEffect } from "expo-router";
 
 import signup3styles from "../styles/signup3styles.js";
@@ -86,7 +86,7 @@ const Signup8 = ({ navigation, route }) => {
 
 
         try {
-            const response = await fetch('http://192.168.1.7:5002/api/freelancerInfo', {
+            const response = await fetch(`${url}/freelancerInfo`, {
                 method: 'POST',
                 body: final,
                 headers: {

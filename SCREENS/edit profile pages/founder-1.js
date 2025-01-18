@@ -1,7 +1,7 @@
 import { useFocusEffect } from "expo-router"
 import { useState, useEffect, useRef } from "react";
 import * as React from "react"
-import { SafeAreaView, ScrollView, StatusBar, Animated, Dimensions, Pressable, TextInput, TouchableWithoutFeedback, Image } from "react-native"
+import { SafeAreaView, ScrollView, StatusBar, Animated, TouchableOpacity,Dimensions, BackHandler, Pressable, TextInput, TouchableWithoutFeedback, Image } from "react-native"
 import { View, Text, StyleSheet } from "react-native"
 import Profile from "../../assets/icons/profile.js"
 import Drop from "../../SCREENS/dropdown.js"
@@ -14,6 +14,11 @@ import * as ImagePicker from 'expo-image-picker';
 
 
 const Founder1 = ({ navigation }) => {
+
+    function gotochangepassowrd() {
+
+        navigation.navigate("ChangePassword1")
+    }
     const [sliderrange, setsliderrange] = useState(5000000)
 
 
@@ -28,6 +33,16 @@ const Founder1 = ({ navigation }) => {
     const [image, setImage] = useState("");
 
 
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            navigation.goBack();
+
+
+            return true; // This prevents the default back action
+        });
+
+        return () => backHandler.remove();
+    }, []);
 
 
 
@@ -105,14 +120,24 @@ const Founder1 = ({ navigation }) => {
         { label: "Logistics", value: "Logistics" },
 
     ]
-
     var country1 = [
-        { label: "10th", value: "10TH" },
-        { label: "12th", value: "12th" },
-        { label: "Graduate", value: "Graduate" },
-        { label: "Post-Graduate", value: "Post-Graduate" },
-        { label: "P.H.D", value: "P.H.D" },
-
+        { label: "India", value: "INDIA" },
+        { label: "United States", value: "UNITED_STATES" },
+        { label: "Canada", value: "CANADA" },
+        { label: "United Kingdom", value: "UNITED_KINGDOM" },
+        { label: "Australia", value: "AUSTRALIA" },
+        { label: "Singapore", value: "SINGAPORE" },
+        { label: "Indonesia", value: "INDONESIA" },
+        { label: "Vietnam", value: "VIETNAM" },
+        { label: "Malaysia", value: "MALAYSIA" },
+        { label: "UAE", value: "UAE" },
+        { label: "Saudi Arabia", value: "SAUDI_ARABIA" },
+        { label: "Israel", value: "ISRAEL" },
+        { label: "Nigeria", value: "NIGERIA" },
+        { label: "South Africa", value: "SOUTH_AFRICA" },
+        { label: "Brazil", value: "BRAZIL" },
+        { label: "Mexico", value: "MEXICO" },
+        { label: "Others (Type)", value: "OTHERS" },
 
     ]
 
@@ -197,6 +222,9 @@ const Founder1 = ({ navigation }) => {
                         )}
                     </Pressable>
                     <Text style={styles1.t2}>Change profile picture</Text>
+                    <TouchableOpacity onPress={gotochangepassowrd} style={styles1.editButton1}>
+                        <Text allowFontScaling={false} style={styles1.editButtonText}>Change Password</Text>
+                    </TouchableOpacity>
                     <TextInput
                         onTouchStart={handleOutsideTouch}
                         allowFontScaling={false}
@@ -220,8 +248,8 @@ const Founder1 = ({ navigation }) => {
                         placeholder="Phone number"
                         placeholderTextColor="#B8B8B8"
                         style={[styles1.input, { marginTop: 28 }]}
-                    value={phone}
-                    onChangeText={(text) => { setphone(text) }}
+                        value={phone}
+                        onChangeText={(text) => { setphone(text) }}
                     />
 
 
@@ -241,8 +269,8 @@ const Founder1 = ({ navigation }) => {
                             placeholder="Write any Top 3"
                             placeholderTextColor="#B8B8B8"
                             style={[styles1.input, { marginTop: 25 }]}
-                        value={skills}
-                        onChangeText={(text) => { setskills(text) }}
+                            value={skills}
+                            onChangeText={(text) => { setskills(text) }}
                         />
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginTop: 25, marginBottom: 10, paddingLeft: 7 }]}>Education </Text>
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>List your highest degree achieved, which helps to establish your academic background and qualifications. </Text>
@@ -430,7 +458,33 @@ const styles1 = StyleSheet.create({
         fontFamily: "Roboto",
         lineHeight: scalingfactor * 18,
         marginBottom: scalingfactor * 25
-    }
+    },
+    editButton1: {
+        backgroundColor: "#00DE62",
+        // paddingHorizontal: 20,
+        // paddingVertical: 8,
+        borderRadius: 20,
+        paddingHorizontal: 10,
+        borderWidth: 1,
+        borderColor: "#00DE62",
+        alignItems: "center",
+        verticalAlign: "middle",
+        justifyContent: "center",
+        width: 182,
+        height: 40,
+        alignSelf: "center",
+        marginVertical: 12
+
+
+    },
+    editButtonText: {
+        color: "#16181A",
+        fontSize: 16,
+        fontFamily: "Alata",
+        textAlign: "center",
+        marginLeft: -1,
+        marginTop: -3
+    },
 
 
 })

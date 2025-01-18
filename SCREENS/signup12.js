@@ -41,11 +41,38 @@ const Signup12 = ({ navigation, route }) => {
 
 
 
+    const validateInputs = () => {
+        const newErrors = {};
+        if (!sliderrange1) newErrors.years = "Please select the years of experience.";
+        if (!areaofinterest) newErrors.areaOfInterest = "Please select an area of interest.";
+        if (!startupstage) newErrors.startupStage = "Please select a startup stage.";
+        if (!sector) newErrors.sector = "Please select a preferred sector.";
+        if (!sliderrange) newErrors.capacity = "Please enter your investment capacity.";
+        setErrors(newErrors);
+        return Object.keys(newErrors).length === 0;
+    };
+
+
+    const nextPage = () => {
+        if (!validateInputs()) return;
+
+        const final = new FormData();
+        for (let item of form["_parts"]) {
+            if (item[0] === "fullname" || item[0] === "password") continue;
+            final.append(item[0], item[1]);
+        }
+        final.append("previousExperience", sliderrange1);
+        final.append("areaOfInterest", areaofinterest);
+        final.append("startupStage", startupstage);
+        final.append("preferredSector", sector);
+        final.append("investmentRange", sliderrange);
+
+        navigation.navigate("Signup13", { form: final, image });
+    };
 
 
 
-
-
+    const [errors, setErrors] = useState({});
     useFocusEffect(() => {
         StatusBar.setBackgroundColor("#1e1e1e")
         StatusBar.setBarStyle("light-content")
@@ -126,19 +153,60 @@ const Signup12 = ({ navigation, route }) => {
 
     ]
     var stage = [
-        { label: "Ideation Stage", value: "Ideation Stage" },
-        { label: "Pre-Seed Stage", value: "Pre-Seed Stage" },
-        { label: "Seed Stage ", value: "Seed Stage" },
-        { label: "Early Stage", value: "Early Stage" },
-        { label: "Growth Stage", value: "Growth Stage" },
-        { label: "Mature Stage", value: "Mature Stage" },
+        
+            { label: "Ideation Stage", value: "Ideation Stage" },
+            { label: "Pre-Seed Stage", value: "Pre-Seed Stage" },
+            { label: "Seed Stage", value: "Seed Stage" },
+            { label: "Early Stage (Series A)", value: "Early Stage (Series A)" },
+            { label: "(Series B and Beyond)", value: "Growth Stage (Series B and Beyond)" },
+            { label: "Expansion/Late Stage", value: "Expansion/Late Stage" }
+        
+        
 
     ]
 
     var sectorlist = [
-        { label: "Vertical Sector", value: "Vertical Sector" },
-        { label: "Horizontal Sector", value: "Horizontal Sector" }
+        { label: "AI", value: "AI" },
+        { label: "AR/VR", value: "AR/VR" },
+        { label: "Blockchain", value: "Blockchain" },
+        { label: "Social Media", value: "Social Media" },
+        { label: "Marketing", value: "Marketing" },
+        { label: "Social Media Marketing", value: "Social Media Marketing" },
+        { label: "SaaS", value: "SaaS" },
+        { label: "IoT", value: "IoT" },
+        { label: "Cybersecurity", value: "Cybersecurity" },
+        { label: "Cloud Computing", value: "Cloud Computing" },
+        { label: "Biotech", value: "Biotech" },
+        { label: "MedTech", value: "MedTech" },
+        { label: "Digital Health", value: "Digital Health" },
+        { label: "Pharma", value: "Pharma" },
+        { label: "HealthTech", value: "HealthTech" },
+        { label: "D2C", value: "D2C" },
+        { label: "B2C", value: "B2C" },
+        { label: "B2B", value: "B2B" },
+        { label: "Marketplaces", value: "Marketplaces" },
+        { label: "Logistics", value: "Logistics" },
+        { label: "FinTech", value: "FinTech" },
+        { label: "InsurTech", value: "InsurTech" },
+        { label: "Decentralized Finance", value: "Decentralized Finance" },
+        { label: "EdTech", value: "EdTech" },
+        { label: "Online Learning Platforms", value: "Online Learning Platforms" },
+        { label: "Cleantech", value: "Cleantech" },
+        { label: "Renewable Energy", value: "Renewable Energy" },
+        { label: "Sustainability", value: "Sustainability" },
+        { label: "Media", value: "Media" },
+        { label: "Gaming", value: "Gaming" },
+        { label: "Content Platforms", value: "Content Platforms" },
+        { label: "EVs", value: "EVs" },
+        { label: "Autonomous Vehicles", value: "Autonomous Vehicles" },
+        { label: "Ride-Sharing", value: "Ride-Sharing" },
+        { label: "AgriTech", value: "AgriTech" },
+        { label: "FoodTech", value: "FoodTech" },
+        { label: "Non-profits", value: "Non-profits" },
+        { label: "Impact Investing", value: "Impact Investing" },
+        { label: "Philanthropy", value: "Philanthropy" }
     ]
+    
 
 
 
@@ -196,21 +264,31 @@ const Signup12 = ({ navigation, route }) => {
                                 hitSlop={{ top: 50, left: 50, right: 50, bottom: 50 }}
                                 thumbTouchSize={{ width: 100, height: 100 }}
                             />
+                            {errors.years && <Text style={signup3styles.errorText}>{errors.years}</Text>}
 
 
                             <Text allowFontScaling={false} style={[styles.t1, { marginTop: 25, marginBottom: 10 }]}>Area of interest </Text>
                             <Text allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>In this section, specify the fields and industries that capture your investment interest. </Text>
                             <Drop items={areaofinterestlist} onValueChange={(value) => { setareafofinterest(value) }} setOpen={setOpen1} open={open1} nestedScrollEnabled={true} />
+                            {errors.areaOfInterest && (
+                                <Text style={signup3styles.errorText}>{errors.areaOfInterest}</Text>
+                            )}
 
 
                             <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 25 }]}>Preferred startup stage </Text>
                             <Text allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>Indicate the stages of development at which you prefer to invest.</Text>
                             <Drop items={stage} onValueChange={(value) => { setsetstartupstage(value) }} setOpen={setOpen2} open={open2} nestedScrollEnabled={true} />
+                            {errors.startupStage && (
+                                <Text style={signup3styles.errorText}>{errors.startupStage}</Text>
+                            )}
 
                             <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 25 }]}>Preferred startup sector  </Text>
                             <Text allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>This distinction helps founders understand the scope and nature of your investment interests, ensuring that you receive opportunities that align with your strategic preferences and expertise.
                             </Text>
                             <Drop items={sectorlist} onValueChange={(value) => { setsector(value) }} setOpen={setOpen3} open={open3} nestedScrollEnabled={true} />
+                            {errors.sector && (
+                                <Text style={signup3styles.errorText}>{errors.sector}</Text>
+                            )}
 
 
                             <Text allowFontScaling={false} style={[styles.t1, { marginTop: 20, marginBottom: 25 }]}>Investment capacity</Text>
@@ -218,6 +296,15 @@ const Signup12 = ({ navigation, route }) => {
 
                             <Pressable onPress={() => { handleOutsideTouch() }} style={styles.btn}>
                                 <Text allowFontScaling={false} style={styles.nexttext}>{sliderrange.toLocaleString("en-IN")}</Text>
+                                {/* <TextInput
+                                    style={signup3styles.input}
+                                    keyboardType="numeric"
+                                    value={sliderrange.toLocaleString("en-IN")}
+                                    onChangeText={(text) => {
+                                        
+                                        setsliderrange(text);
+                                    }}
+                                /> */}
                             </Pressable>
 
                             {/* slider */}
@@ -228,7 +315,7 @@ const Signup12 = ({ navigation, route }) => {
                                 style={{ marginTop: -7 }}
                                 minimumValue={0}
                                 maximumValue={10000000}
-                                value={5000000}
+                                value={sliderrange}
                                 step={1000}
                                 minimumTrackTintColor="#00DE62"
                                 maximumTrackTintColor="#00DE62"
@@ -241,6 +328,9 @@ const Signup12 = ({ navigation, route }) => {
                                 hitSlop={{ top: 50, left: 50, right: 50, bottom: 50 }}
                                 thumbTouchSize={{ width: 100, height: 100 }}
                             />
+                            {errors.capacity && (
+                                <Text style={signup3styles.errorText}>{errors.capacity}</Text>
+                            )}
 
 
 
@@ -248,7 +338,7 @@ const Signup12 = ({ navigation, route }) => {
 
                             <View style={styles.icons}>
                                 <Pressable style={{ marginTop: 5 }} onPress={() => { navigation.goBack() }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
-                                <Pressable onPress={() => { nextpage(navigation, type) }}><FontAwesome6 name="chevron-right" size={40} color="#00DF60" /></Pressable>
+                                <Pressable onPress={() => {nextPage()}}><FontAwesome6 name="chevron-right" size={40} color="#00DF60" /></Pressable>
 
                             </View>
 

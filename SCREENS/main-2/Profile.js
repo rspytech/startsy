@@ -1,4 +1,4 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { View, Text, StyleSheet, Image, StatusBar, TouchableOpacity, Dimensions, SafeAreaView, ScrollView } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
@@ -6,27 +6,67 @@ import Upvote from "@/assets/icons/upvote.js";
 import Share from "@/assets/icons/share.js";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { url } from "../../config.js"
+import { jwtDecode } from "jwt-decode";
 
+const Profile = ({ navigation, token }) => {
 
-const Profile = () => {
+    const decoded = jwtDecode(token);
+    console.log(decoded);
+    const [userdata, setuserdata] = useState(null)
+
 
     const Tab = createMaterialTopTabNavigator();
+
+    useEffect(() => {
+        async function getdata(params) {
+            try {
+
+                const response = await fetch(`${url}api/getUsersProfiles/${decoded._id}`, {
+                    method: 'GET',
+                    headers: {
+                        "Content-Type": "application/json",
+                        accept: "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                });
+                const data = await response.json();
+                console.log(data.data);
+                console.log(response.status);
+                setuserdata(data.data)
+
+            }
+            catch (err) {
+                console.log(err);
+
+            }
+        }
+        getdata()
+    }, [])
 
 
     const Buyplan = () => {
         console.log("hi");
 
         return (
-            <ScrollView style={{ flex: 1, width: width, height: 10000 , backgroundColor : "#16181a" }}>
+            <ScrollView style={{ flex: 1, width: width, height: 10000, backgroundColor: "#16181a" }}>
                 <View style={styles.buyPlanSection}>
                     <Text allowFontScaling={false} style={styles.buyPlanText}>Buy Plan</Text>
                 </View>
-               
-
             </ScrollView>
         )
     }
 
+
+
+    function gotoeditprofile() {
+
+        navigation.navigate("Founder1")
+    }
+    function gotochangepassowrd() {
+
+        navigation.navigate("ChangePassword1")
+    }
     const Yourpost = () => {
         return (
             <ScrollView style={{ flex: 1, backgroundColor: "#16181a" }}>
@@ -58,116 +98,116 @@ const Profile = () => {
     return (
         <ScrollView style={styles.container}>
             {/* Header Section */}
-            <View style={{flex : 1 , minHeight  : 1000}}>
-            <Text allowFontScaling={false} style={styles.headerText}>Profile</Text>
+            {userdata && <View style={{ flex: 1, minHeight: 1000 }}>
+                <Text allowFontScaling={false} style={styles.headerText}>Profile</Text>
 
-            {/* Profile Section */}
-            <View style={styles.profileSection}>
-                <Image
-                    style={styles.profileImage}
-                    source={require("../../assets/images/p2.png")} // Replace with your image path
-                />
-                <View style={styles.userinfo}>
-                    <Text allowFontScaling={false} style={styles.username}>Acehammer</Text>
-                    <Text allowFontScaling={false} style={styles.userRole}>Investor</Text>
-                    <TouchableOpacity style={styles.editButton}>
-                        <Text allowFontScaling={false} style={styles.editButtonText}>Edit profile</Text>
-                    </TouchableOpacity>
-                    <TouchableOpacity style={styles.editButton1}>
-                        <Text allowFontScaling={false} style={styles.editButtonText}>Change Password</Text>
-                    </TouchableOpacity>
-                    <View style={styles.connectionContainer}>
-                        <View style={styles.circle}>
-                            <Image
-                                style={styles.profileImage1}
-                                source={require("../../assets/images/p2.png")} // Replace with your image path
-                            />
+                {/* Profile Section */}
+                <View style={styles.profileSection}>
+                    <Image
+                        style={styles.profileImage}
+                        source={{ uri: userdata.user_id.profilePhoto }} // Replace with your image path
+                    />
+                    <View style={styles.userinfo}>
+                        <Text allowFontScaling={false} style={styles.username}>{userdata.user_id.userName}</Text>
+                        <Text allowFontScaling={false} style={styles.userRole}>{userdata.user_id.role}</Text>
+                        <TouchableOpacity onPress={gotoeditprofile} style={styles.editButton}>
+                            <Text allowFontScaling={false} style={styles.editButtonText}>Edit profile</Text>
+                        </TouchableOpacity>
+                        <TouchableOpacity onPress={gotochangepassowrd} style={styles.editButton1}>
+                            <Text allowFontScaling={false} style={styles.editButtonText}>Change Password</Text>
+                        </TouchableOpacity>
+                        <View style={styles.connectionContainer}>
+                            <View style={styles.circle}>
+                                <Image
+                                    style={styles.profileImage1}
+                                    source={require("../../assets/images/p2.png")} // Replace with your image path
+                                />
+                            </View>
+                            <View style={styles.circle}>
+                                <Image
+                                    style={styles.profileImage1}
+                                    source={require("../../assets/images/p2.png")} // Replace with your image path
+                                />
+                            </View>
+                            <View style={styles.circle}>
+                                <Image
+                                    style={styles.profileImage1}
+                                    source={require("../../assets/images/p2.png")} // Replace with your image path
+                                />
+                            </View>
+                            <Text style={styles.t6}>{userdata.chatUsers.length} connections</Text>
                         </View>
-                        <View style={styles.circle}>
-                            <Image
-                                style={styles.profileImage1}
-                                source={require("../../assets/images/p2.png")} // Replace with your image path
-                            />
-                        </View>
-                        <View style={styles.circle}>
-                            <Image
-                                style={styles.profileImage1}
-                                source={require("../../assets/images/p2.png")} // Replace with your image path
-                            />
-                        </View>
-                        <Text style={styles.t6}>34 connections</Text>
                     </View>
+
+                    <View style={styles.divider}></View>
                 </View>
 
-                <View style={styles.divider}></View>
-            </View>
+
+                <Tab.Navigator
+
+                    screenOptions={({ route }) => ({
+
+                        tabBarStyle: {
+                            backgroundColor: "#16181a",
+                            // backgroundColor: "red",
+                            justifyContent: "space-between",
+                            display: "flex",
+                            // height  : 200,
 
 
-            <Tab.Navigator
-
-                screenOptions={({ route }) => ({
-
-                    tabBarStyle: {
-                        backgroundColor: "#16181a",
-                        // backgroundColor: "red",
-                        justifyContent: "space-between",
-                        display: "flex",
-                        // height  : 200,
+                            width: width * 0.92,
+                            margin: "auto"
+                        },
 
 
-                        width: width * 0.92,
-                        margin: "auto"
-                    },
+                        tabBarIndicatorStyle: {
+                            backgroundColor: "#00DE62",
+                            height: 0,
+                        },
+
+                    })}
+                >
+                    <Tab.Screen
+                        name="Connections"
+                        component={Buyplan}
 
 
-                    tabBarIndicatorStyle: {
-                        backgroundColor: "#00DE62",
-                        height: 0,
-                    },
+                        options={{
+                            tabBarLabel: ({ focused }) => (
+                                <Text allowFontScaling={false} style={[
+                                    styles.tabbarpill, {
 
-                })}
-            >
-                <Tab.Screen
-                    name="Connections"
-                    component={Buyplan}
-                  
+                                        color: focused ? "#16181A" : "#00de62",
+                                        borderColor: focused ? "#00DE62" : "#808080",
+                                        backgroundColor: focused ? "#00DE62" : "transparent",
+                                    }
+                                ]}> Buy Plan
+                                </Text>
+                            ),
 
-                    options={{
-                        tabBarLabel: ({ focused }) => (
-                            <Text allowFontScaling={false} style={[
-                                styles.tabbarpill, {
+                        }}
+                    />
+                    <Tab.Screen
 
-                                    color: focused ? "#16181A" : "#00de62",
-                                    borderColor: focused ? "#00DE62" : "#808080",
-                                    backgroundColor: focused ? "#00DE62" : "transparent",
-                                }
-                            ]}> Buy Plan
-                            </Text>
-                        ),
+                        name="Requests"
+                        component={Yourpost}
+                        options={{
+                            tabBarLabel: ({ focused }) => (
+                                <Text allowFontScaling={false} style={[
+                                    styles.tabbarpill, {
+                                        color: focused ? "#16181A" : "#00de62",
+                                        borderColor: focused ? "#00DE62" : "#808080",
+                                        backgroundColor: focused ? "#00DE62" : "transparent",
+                                    }
+                                ]}> Your Posts
+                                </Text>
+                            ),
 
-                    }}
-                />
-                <Tab.Screen
+                        }}
+                    />
+                </Tab.Navigator>
 
-                    name="Requests"
-                    component={Yourpost}
-                    options={{
-                        tabBarLabel: ({ focused }) => (
-                            <Text allowFontScaling={false} style={[
-                                styles.tabbarpill, {
-                                    color: focused ? "#16181A" : "#00de62",
-                                    borderColor: focused ? "#00DE62" : "#808080",
-                                    backgroundColor: focused ? "#00DE62" : "transparent",
-                                }
-                            ]}> Your Posts
-                            </Text>
-                        ),
-
-                    }}
-                />
-            </Tab.Navigator>
-
-            </View>
+            </View>}
             {/* Buy Plan Section */}
 
         </ ScrollView>

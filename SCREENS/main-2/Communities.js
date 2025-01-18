@@ -4,30 +4,29 @@ import React from "react";
 import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, StatusBar } from "react-native";
 const Communities = () => (
     <View style={styles.c1}>
-        <View style={styles.card}>
-            {/* Header Section */}
-            <View style={styles.header1}>
-                <Image
-                    source={require("../../assets/images/p2.png")} // Replace with real profile picture URL
-                    style={styles.profileImage}
-                />
-                <View style={styles.headerText}>
-                    <Text allowFontScaling={false} style={styles.username}>raz.shhh</Text>
-                    <Text allowFontScaling={false} style={styles.date}>Today</Text>
-                </View>
-            </View>
+        {/* <View style={styles.card}>
+    //         <View style={styles.header1}>
+    //             <Image
+    //                 source={require("../../assets/images/p2.png")} 
+    //                 style={styles.profileImage}
+    //             />
+    //             <View style={styles.headerText}>
+    //                 <Text allowFontScaling={false} style={styles.username}>raz.shhh</Text>
+    //                 <Text allowFontScaling={false} style={styles.date}>Today</Text>
+    //             </View>
+    //         </View>
 
-            {/* Title Section */}
-            <Text allowFontScaling={false} style={styles.title}>Startsy</Text>
-            <Text allowFontScaling={false} style={styles.description}>
-                Revolutionizing startup ecosystem.
-            </Text>
+    //         <Text allowFontScaling={false} style={styles.title}>Startsy</Text>
+    //         <Text allowFontScaling={false} style={styles.description}>
+    //             Revolutionizing startup ecosystem.
+    //         </Text>
 
-            {/* Status Section */}
-            <Text allowFontScaling={false} style={styles.status}>Preseed stage - 200k</Text>
-            <Text allowFontScaling={false} style={styles.pending}>Pending...</Text>
-        </View>
+    //         <Text allowFontScaling={false} style={styles.status}>Preseed stage - 200k</Text>
+    //         <Text allowFontScaling={false} style={styles.pending}>Pending...</Text>
+        </View> */}
     </View>
+
+
 );
 
 

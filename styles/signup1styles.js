@@ -19,7 +19,7 @@ const signupstyles = StyleSheet.create({
 
     container: {
         flex: 1,
-        backgroundColor: "#1E1E1E",
+        backgroundColor: "#16181a",
         justifyContent: "center",
         alignContent: "center",
     },
@@ -32,7 +32,7 @@ const signupstyles = StyleSheet.create({
     top: {
         width: "100%",
         height: height * 0.3,
-        backgroundColor: "#1E1E1E",
+        backgroundColor: "#16181a",
         justifyContent: "center",
         alignContent: "center",
     },

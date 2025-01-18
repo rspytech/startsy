@@ -1,6 +1,6 @@
 import * as React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
-
+import * as SplashScreen from "expo-splash-screen";
 import { DarkTheme, NavigationContainer } from "@react-navigation/native";
 // import { createStackNavigator } from "@react-navigation/stack";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -38,13 +38,16 @@ import EditInvestorInfo from "../../SCREENS/edit profile pages/investor.js";
 import Founder1 from "../../SCREENS/edit profile pages/founder-1.js";
 import Founder2 from "../../SCREENS/edit profile pages/founder-2.js";
 import Singleprofilepage from "../../SCREENS/singleprofilepage.js";
-import Logout from "../../SCREENS/Logout.js"
+import Logout from "../../SCREENS/Logout.js";
 import Login2 from "../../SCREENS/login2.js";
-import Test1 from "../../SCREENS/test1.js"
+import Test1 from "../../SCREENS/test1.js";
+import Wait from "../../SCREENS/Wait.js";
+import Editcommunity from "../../SCREENS/edit profile pages/Editcommunity.js"
 // import drop from "../../SCREENS/dropdown.js"
 // import Login1 from "../../SCREENS/logintrial.js";
 import F1 from "../../SCREENS/test.js";
 import F2 from "../../SCREENS/F2.js";
+import KeyboardAvoidingComponent from "../../SCREENS/Keyboard.js";
 import Blur from "../../SCREENS/blur.js"; // trial blur page
 import { useEffect, createContext } from "react";
 import { ActivityIndicator, View, Text, StyleSheet } from "react-native";
@@ -56,12 +59,23 @@ import { GlobalProvider } from "../../Global/globalcontext.js";
 // import style from "../"
 
 import { StatusBar, Platform } from "react-native";
+import { useFocusEffect } from "expo-router";
 // import ReadMore1 from "../../SCREENS/trial-1.js";
+
+SplashScreen.preventAutoHideAsync(); 
 const Stack = createNativeStackNavigator();
 
 // export const Global = createContext("ok");
 
 export default function App() {
+
+  useEffect(() => {
+    const prepareApp = async () => {
+      await SplashScreen.hideAsync(); // Hide the splash screen
+    };
+
+    prepareApp();
+  }, []);
   // const [globaldata, setGlobalData] = React.useState({
   //   token : "",
   // })
@@ -81,8 +95,15 @@ export default function App() {
   //   getToken();
   // }, []);
 
+  useFocusEffect(() => {
+    StatusBar.setBackgroundColor("#16181a")
+    StatusBar.setBarStyle("light-content")
+  })
+
   const fontsLoaded = useLoadFonts();
+  
   if (!fontsLoaded) {
+    
     return (
       <View style={styles.loadingContainer}>
         <ActivityIndicator size="large" color="#fff" />
@@ -99,12 +120,13 @@ export default function App() {
           initialRouteName="Green"
           screenOptions={{
             headerStyle: {
-              backgroundColor: "#16181a", // Set the background color of the header to black
+              backgroundColor: "#16181a",
             },
             // cardStyle: {backgroundColor: "red"},
-            keyboardHandlingEnabled: true,
-            headerShown: false, // Hide the header
-            animation: "slide_from_right", // Set the default animation to slide from the right
+            keyboardHandlingEnabled: false,
+            
+            headerShown: false,
+            animation: "slide_from_right",
           }}
         >
           <Stack.Screen name="Green" component={Green} />
@@ -124,6 +146,7 @@ export default function App() {
           <Stack.Screen name="Signup11" component={Signup11} />
           <Stack.Screen name="Signup12" component={Signup12} />
           <Stack.Screen name="Signup13" component={Signup13} />
+          <Stack.Screen name="Wait" component={Wait} />
           {/* <Stack.Screen name="Connectionscreen" component={ConnectionsScreen} /> */}
           <Stack.Screen name="Chat" component={Chat} />
 
@@ -148,9 +171,25 @@ export default function App() {
           <Stack.Screen name="Founder2" component={Founder2} />
           <Stack.Screen name="Logout" component={Logout} />
           <Stack.Screen name="Test1" component={Test1} />
+          <Stack.Screen name="Editcommunity" component={Editcommunity} />
           <Stack.Screen
-            name="Singleprofilepage"
-            component={Singleprofilepage}
+            name="KeyboardAvoidingComponent"
+            component={KeyboardAvoidingComponent}
+            options={{
+              
+              headerTitle: "Your Custom Title", // Custom title for the header
+              headerStyle: {
+                backgroundColor: "blue", // Custom background color
+              },
+              headerTintColor: "white", // Custom color for the title text
+              headerTitleStyle: {
+                fontWeight: "bold", // Make the title text bold
+              },
+            }}
+          />
+
+          <Stack.Screen
+            name="Singleprofilepage" component={Singleprofilepage}
           />
         </Stack.Navigator>
       </View>
@@ -163,12 +202,12 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     // zIndex : 1000000,
-    backgroundColor: "#1E1E1E", // Set your desired background color here
+    backgroundColor: "#16181a", // Set your desired background color here
   },
   loadingContainer: {
     flex: 1,
     justifyContent: "center",
     alignItems: "center",
-    backgroundColor: "#1E1E1E", // Set your desired background color here
+    backgroundColor: "#16181a", // Set your desired background color here
   },
 });

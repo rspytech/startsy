@@ -24,7 +24,7 @@ const styles = StyleSheet.create({
         flex: 1,
         // marginTop : height,
         display: "flex",
-        backgroundColor: "#1E1E1E",
+        backgroundColor: "#16181a",
         // backgroundColor : "red",
         position: "relative",
         height: height,
@@ -264,6 +264,32 @@ const styles = StyleSheet.create({
     backicon: {
         transform: [{ scale: 1.1 }],
         zIndex: 20
+    },
+    error : {
+        marginVertical :0,
+        marginTop  :0,
+        textAlign : "left",
+        // backgroundColor : "red",
+        width  : "92%",
+        marginHorizontal : "auto",
+        // color : "red",
+        color : "#E65858",
+        fontSize : 15,
+        fontFamily : "Roboto",
+
+    },
+    error1 : {
+        marginVertical :0,
+        marginTop  :0,
+        textAlign : "center",
+        // backgroundColor : "red",
+        width  : "92%",
+        marginHorizontal : "auto",
+        // color : "red",
+        color : "#E65858",
+        fontSize : 15,
+        fontFamily : "Roboto",
+
     },
 });
 

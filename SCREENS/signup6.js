@@ -22,6 +22,8 @@ import { LinearGradient } from "expo-linear-gradient";
 import signup3styles from "../styles/signup3styles.js";
 import Drop from "./dropdown.js";
 import Line2 from "./line2.js";
+import Line3 from "./line3.js";
+import Line from "./line.js";
 import { useFocusEffect } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -45,18 +47,22 @@ const Signup6 = ({ navigation, route }) => {
     const [prefference, setprefference] = useState("")
     // const final = new FormData
 
-
-
-
     var role = [
         { label: "Learner", value: "Learner" },
+        { label: "Job seeker", value: "Job seeker" },
         { label: "Startup Enthusiast", value: "Startup Enthusiast" },
         { label: "Mentor", value: "Mentor" },
         { label: "Networker", value: "Networker" },
         { label: "Contributor", value: "Contributor" },
 
-
     ]
+
+    var contentPreferences = [
+        { label: "Startup News", value: "Startup News" },
+        { label: "Job Postings", value: "Job Postings" },
+        { label: "Educational Content", value: "Educational Content" },
+    ]
+
 
     var token;
 
@@ -136,7 +142,7 @@ const Signup6 = ({ navigation, route }) => {
         }
         console.log("will make final submit");
         console.log(final);
-       
+
 
         setloading(true)
         const response = await fetch('http://192.168.1.7:5002/api/communityMemberInfo', {
@@ -159,6 +165,38 @@ const Signup6 = ({ navigation, route }) => {
         }
     }
 
+    
+    var areaofinterestlist = [
+        { label: "Technology", value: "Technology" },
+        { label: "Healthcare", value: "Healthcare" },
+        { label: "Finance", value: "Finance" },
+        { label: "Consumer Goods", value: "Consumer Goods" },
+        { label: "Education", value: "Education" },
+        { label: "Energy", value: "Energy" },
+        { label: "Real Estate", value: "Real Estate" },
+        { label: "Logistics", value: "Logistics" },
+
+    ]
+
+
+    function nextpage(type) {
+
+        const final = new FormData();
+        for (var items of form["_parts"]) {
+
+            if (items[0] == "fullname" || items[0] == "password") continue;
+            final.append(items[0], items[1]);
+
+        }
+
+        final.append("communityMemberRole", role1)
+        final.append("areaOfInterest", interest)
+        final.append("contentPrefrence", prefference)
+        final.append("user_id", "abcd")
+
+        navigation.navigate("Signup7", { form: final, image: image })
+    }
+
     return (
         <TouchableWithoutFeedback onPress={handleOutsideTouch}>
             <SafeAreaView style={signup3styles.container}>
@@ -170,7 +208,7 @@ const Signup6 = ({ navigation, route }) => {
                                 <Image style={signup3styles.logo} source={require("../assets/images/logo.png")} />
                             </View>
                             <View style={signup3styles.right}>
-                                <Line2 progresswidth={"105%"} />
+                                <Line3 progresswidth={"73%"} />
                             </View>
                         </View>
 
@@ -189,22 +227,26 @@ const Signup6 = ({ navigation, route }) => {
 
                             <Text allowFontScaling={false} style={[styles.t1, { marginTop: scalingfactor * 18 }]}>Area of Interest</Text>
                             <Text allowFontScaling={false} style={styles.t2}>Indicate the specific fields or topics you are passionate about within the startup ecosystem.</Text>
-                            <Drop items={role} onValueChange={handleinterest} open={open2} setOpen={t2} />
+                            <Drop items={areaofinterestlist} onValueChange={handleinterest} open={open2} setOpen={t2} />
 
 
                             <Text allowFontScaling={false} style={[styles.t1, { marginTop: scalingfactor * 18 }]}>Content Preference</Text>
                             <Text allowFontScaling={false} style={styles.t2}>Choose the types of content you want to see most in your feed.</Text>
-                            <Drop items={role} onValueChange={handleprefference} open={open3} setOpen={t3} />
+                            <Drop items={contentPreferences} onValueChange={handleprefference} open={open3} setOpen={t3} />
 
 
                             <View style={styles.icons}>
                                 <Pressable onPress={() => {
-
                                     navigation.goBack();
                                 }}><FontAwesome6 name="chevron-left" size={45} color="#00DF60" /></Pressable>
-                                <Pressable style={styles.btn} onPress={() => { finalsubmit() }}>
+                                <Pressable onPress={() => {
+                                    nextpage()
+                                }}><FontAwesome6 name="chevron-right" size={45} color="#00DF60" /></Pressable>
+
+
+                                {/* <Pressable style={styles.btn} onPress={() => { finalsubmit() }}>
                                     <Text allowFontScaling={false} style={styles.nexttext}>Submit</Text>
-                                </Pressable>
+                                </Pressable> */}
                             </View>
 
 

@@ -1,7 +1,7 @@
 // App.tsx
 
 import * as React from "react";
-import { useState, useEffect, useRef , useContext } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import styles from "../styles/l.js"
 // import { StatusBar } from 'expo-status-bar';
 import { SafeAreaView, BackHandler, Text, Pressable, ActivityIndicator, TextInput, View, Image, StyleSheet, Dimensions, StatusBar, Animated, Easing, Platform, KeyboardAvoidingView, ScrollView, Alert } from "react-native";
@@ -16,7 +16,7 @@ import { useFocusEffect } from "expo-router";
 import AsyncStorage from '@react-native-async-storage/async-storage';
 import { jwtDecode } from "jwt-decode";
 import { GlobalContext } from "@/Global/globalcontext.js";
-import {url} from "../config.js"
+import { url } from "../config.js"
 const Login1 = ({ navigation }) => {
   // const navigation = useNavigation();
   // console.log(navigation);
@@ -25,7 +25,7 @@ const Login1 = ({ navigation }) => {
 
 
   useFocusEffect(() => {
-    StatusBar.setBackgroundColor("#1e1e1e")
+    StatusBar.setBackgroundColor("#16181a")
     StatusBar.setBarStyle("light-content")
   })
 
@@ -33,19 +33,23 @@ const Login1 = ({ navigation }) => {
   const [isForm1Visible, setForm1Visible] = useState(true);
   const [attop, setattop] = useState(true);
   const [initial, setinitial] = useState(true)
+
+
   const animation2 = (first) => {
     console.log(first);
 
 
     setTimeout(() => {
       Animated.timing(heightAnim, {
-        toValue: height * 0.32,
+        // toValue: height * 0.42,
+        toValue: height * 0.42,
         duration: (first == undefined) ? 300 : 0,
         useNativeDriver: false,
       }).start();
 
       Animated.timing(bottomanim, {
-        toValue: height * 0.68,
+        // toValue: height * 0.68,
+        toValue: height * 0.58,
         duration: (first == undefined) ? 300 : 0,
         useNativeDriver: false,
 
@@ -92,11 +96,34 @@ const Login1 = ({ navigation }) => {
   const [email, setemail] = useState("")
   const [password, setpassword] = useState("")
   const [loading, setloading] = useState(false)
+  const [emailerror, setemailerror] = useState(false)
+  const [passworderror, setpassworderror] = useState(false)
+  const [passworderror1, setpassworderror1] = useState(false)
+  const [wrongcredential, setwrongcredential] = useState(false)
 
 
   const handlelogin = async (navigation) => {
-    setloading(true)
 
+    setemailerror(false)
+    setpassworderror(false)
+    setpassworderror1(false)
+    setwrongcredential(false)
+
+    if (email == "") {
+      setemailerror(true)
+      return
+    }
+    if (password == "") {
+      setpassworderror(true)
+      return
+    }
+    const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
+    // if (!passwordRegex.test(password)) {
+    //   setpassworderror1(true)
+    //   return;
+    // }
+    
+    setloading(true)
 
     var final = {
       identifier: email,
@@ -141,6 +168,9 @@ const Login1 = ({ navigation }) => {
         catch (err) {
 
         }
+      }
+      else{
+        setwrongcredential(true)
       }
 
 
@@ -371,7 +401,7 @@ const Login1 = ({ navigation }) => {
 
 
     <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={-100} style={[styles.container]}>
-      <Animated.View style={[{ backgroundColor: "#1E1E1E" }, animatedtop1]}>
+      <Animated.View style={[{ backgroundColor: "#16181a" }, animatedtop1]}>
 
         {!isForm1Visible && (
           <Pressable style={[styles.back, { zIndex: (attop) ? 1 : 0 }]} onPress={() => {
@@ -403,15 +433,18 @@ const Login1 = ({ navigation }) => {
         {/* -------------------------------- bottom part ------------------------------------------------- */}
         <Animated.View style={[styles.bottom, { height: bottomanim }]}>
 
-          {isForm1Visible && (<View><Text allowFontScaling={false} style={styles.label}>Email</Text>
+          {wrongcredential && <Text style={styles.error1}>Invalid credentials</Text>}
+
+          {isForm1Visible && (<View><Text allowFontScaling={false} style={styles.label}>Email / Username</Text>
             <TextInput allowFontScaling={false}
               placeholderTextColor="#828282"
               style={styles.input}
-              placeholder="rajaschaudhari9@gmail.com"
+              placeholder="xyz@gmail.com"
               value={email}
               onChangeText={(text) => { setemail(text) }}
 
             />
+            {emailerror && <Text style={styles.error}>Please enter email address</Text>}
             <View style={styles.passwordcontainer}>
               <TextInput allowFontScaling={false}
                 placeholderTextColor="#828282"
@@ -422,10 +455,14 @@ const Login1 = ({ navigation }) => {
                 secureTextEntry={true}
                 maxLength={10}
               />
+
               <Pressable style={styles.forgot}>
                 <Text allowFontScaling={false} style={[styles.white, styles.forgottext]}>Forgot ?</Text>
               </Pressable>
             </View>
+            {passworderror && <Text style={styles.error}>Please enter password</Text>}
+            {passworderror1 && <Text style={styles.error}>Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, and one number.</Text>}
+
             <Pressable style={styles.loginbutton} onPress={() => {
               handlelogin(navigation)
             }}>
@@ -460,7 +497,7 @@ const Login1 = ({ navigation }) => {
               <Pressable onPress={() => {
                 showsignuppage("Founder", navigation)
               }} style={styles.btn4}><Text allowFontScaling={false} style={styles.btn4text}>Founder</Text></Pressable>
-              <Pressable onPress={() => { showsignuppage("Freelancer", navigation) }} style={styles.btn4}><Text allowFontScaling={false} style={styles.btn4text}>Freelancer</Text></Pressable>
+              {/* <Pressable onPress={() => { showsignuppage("Freelancer", navigation) }} style={styles.btn4}><Text allowFontScaling={false} style={styles.btn4text}>Freelancer</Text></Pressable> */}
               <Pressable onPress={() => { showsignuppage("CommunityMember", navigation) }} style={styles.btn4}><Text allowFontScaling={false} style={styles.btn4text}>Community Member</Text></Pressable>
               <Text allowFontScaling={false} style={[styles.gray, styles.p]}>
                 Don't know what to choose? <Text onPress={() => setattop(false)} style={styles.green}>Read more</Text>

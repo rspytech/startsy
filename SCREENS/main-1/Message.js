@@ -18,12 +18,37 @@ const DATA = Array(5).fill({
 const Tab = createMaterialTopTabNavigator();
 
 
-const ChatScreen = ({ navigation }) => {
+const ChatScreen = ({ navigation , token }) => {
+
+    console.log(navigation);
+    
+
+
+    console.log("chatscren of investor");
+    console.log("chatscren of investor");
+    console.log("chatscren of investor");
+    console.log("chatscren of investor");
+    console.log("chatscren of investor");
+    console.log("chatscren of investor");
+    console.log("chatscren of investor");
+    console.log("chatscren of investor");
+    console.log("chatscren of investor");
+    console.log("chatscren of investor");
+    console.log("chatscren of investor");
+    console.log("chatscren of investor");
+    console.log("chatscren of investor");
+    console.log("chatscren of investor");
+    console.log("chatscren of investor");
+    console.log("chatscren of investor");
+    console.log("chatscren of investor");
+    console.log("chatscren of investor");
+    console.log("chatscren of investor");
+    
 
     useFocusEffect(() => {
         StatusBar.setBackgroundColor("#16181a")
     })
-    // console.log(navigation , "message")
+    console.log(navigation , "message")
 
     return (
 
@@ -51,7 +76,9 @@ const ChatScreen = ({ navigation }) => {
                         justifyContent: "space-between",
                         display: "flex",
                         width: width * 0.92,
-                        margin: "auto"
+                        margin: "auto",
+                        elevation : 0
+
                     },
 
 
@@ -65,7 +92,7 @@ const ChatScreen = ({ navigation }) => {
                 <Tab.Screen
                     name="Connections"
                     // component={ConnectionsScreen}
-                    children={(props) => <ConnectionsScreen navigation={navigation} />}
+                    children={(props) => <ConnectionsScreen navigation={navigation} token={token} search={"true"} />}
                     options={{
                         tabBarLabel: ({ focused }) => (
                             <Text allowFontScaling={false} style={[
@@ -97,6 +124,7 @@ const ChatScreen = ({ navigation }) => {
 
                     }}
                 />
+
             </Tab.Navigator>
             {/* </NavigationContainer> */}
         </View>

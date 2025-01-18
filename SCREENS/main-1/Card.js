@@ -53,7 +53,7 @@ function Cards({ navigation, route }) {
           gap: 0
         }}>
           <View ><Upvote width={42} height={42} /></View>
-          <Text style={styles.followers}>1.2k</Text>
+          <Text style={styles.followers}>{item.totalUpvotes}</Text>
         </View>
       </View>
 

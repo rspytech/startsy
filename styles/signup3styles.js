@@ -16,13 +16,13 @@ const signup3styles = StyleSheet.create({
     container: {
         flex: 1,
         flexGrow :1,
-        minHeight : 1000,
+        // minHeight : 1000,
         // justifyContent: 'center',
         alignContent: 'center',
-        backgroundColor: "#1E1E1E",
+        backgroundColor: "#16181a",
         // backgroundColor: "red",
         zIndex : 100,
-        // maxHeight  : height
+        // maxHeight  : 1000
     },
     row: {
         flex: 1,
@@ -36,7 +36,7 @@ const signup3styles = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         marginBottom : 0,
-        backgroundColor: "#1E1E1E",
+        backgroundColor: "#16181a",
 
     },
     left: {
@@ -164,6 +164,18 @@ const signup3styles = StyleSheet.create({
         textAlign : "center",
         marginTop : scalingfactor*20,
         marginBottom : scalingfactor* 20
+    },
+    errorText : {
+        marginVertical :15,
+        marginTop  :0,
+        textAlign : "left",
+        // backgroundColor : "red",
+        width  : "92%",
+        marginHorizontal : "auto",
+        color : "#E65858",
+        fontSize : 15,
+        fontFamily : "Roboto",
+        marginTop : 5
     }
 })
 

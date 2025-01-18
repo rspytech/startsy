@@ -5,9 +5,10 @@ import React, { useState, useRef, useEffect, useCallback } from "react";
 import { Text, Animated, RefreshControl, StatusBar, View, Image, FlatList, TouchableOpacity, SafeAreaView, StyleSheet, Dimensions, ScrollView, Pressable } from "react-native";
 import { LinearGradient } from "expo-linear-gradient";
 import { url } from "../../config.js"
+import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
 
 
-const InvestorCard = ({ token }) => {
+const InvestorCard = ({ token, navigation }) => {
 
 
     const [items, setItems] = useState([])
@@ -16,59 +17,64 @@ const InvestorCard = ({ token }) => {
     const [refreshing, setRefreshing] = useState(false);
     console.log("request screen of ofunder ");
     const animatedValues = useRef({})
+    async function getData() {
+        setloading(true);
+        try {
+            const response = await fetch(
+                `${url}founder/getFounderNotifications`,
+                {
+                    method: "GET",
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            const result = await response.json();
+            console.log(result);
+            // console.log(result.investor);
+            // console.log(result.investor.roleId);
+            // console.log(result.investor.roleId.requestNotifications);
 
+
+            console.log('====================================');
+            console.log(response.status);
+            console.log('====================================');
+            // console.log(result.data.upvotesPerDay);
+            // console.log(result.data.investorUpvotes);
+            // console.log(result.data.length, "length");
+            // console.log(result.data[0]);
+            // console.log(result.data[0].investor.profilePhoto , "iuyt");
+            // console.log(result.data[0].investor.roleId.user_id.userName);
+            // console.log(result.data[0].investor.userName);
+            // console.log(result.data[0].investor.roleId.user_id.role);
+            // console.log(result.data[0].investor.roleId.previousExperience);
+            // console.log(result.data[0].investor.roleId.fullName);
+            // console.log(result.data[0].investor.roleId.investmentRange);
+            // console.log(result.data[0].requestDate);
+
+            if (response.status == 200) {
+                var array = result.data.map((item, index) => {
+                    item["id"] = index + 1
+                    return item
+                })
+                setItems(array)
+            }
+
+            // console.log(array);
+
+        } catch (err) {
+            console.log(err, "errr");
+        }
+        finally {
+            setloading(false);
+        }
+    }
 
     // Update animationRefs whenever data changes
     useEffect(() => {
 
-        async function getData() {
-            setloading(true);
-            try {
-                const response = await fetch(
-                    `${url}founder/getFounderNotifications`,
-                    {
-                        method: "GET",
-                        headers: {
-                            accept: "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
-                const result = await response.json();
-                console.log(result);
-                console.log('====================================');
-                console.log(response.status);
-                console.log('====================================');
-                // console.log(result.data.upvotesPerDay);
-                // console.log(result.data.investorUpvotes);
-                // console.log(result.data.length, "length");
-                // console.log(result.data[0]);
-                // console.log(result.data[0].investor.profilePhoto , "iuyt");
-                // console.log(result.data[0].investor.roleId.user_id.userName);
-                // console.log(result.data[0].investor.userName);
-                // console.log(result.data[0].investor.roleId.user_id.role);
-                // console.log(result.data[0].investor.roleId.previousExperience);
-                // console.log(result.data[0].investor.roleId.fullName);
-                // console.log(result.data[0].investor.roleId.investmentRange);
-                // console.log(result.data[0].requestDate);
 
-                if (response.status == 200) {
-                    var array = result.data.map((item, index) => {
-                        item["id"] = index + 1
-                        return item
-                    })
-                    setItems(array)
-                }
-
-                // console.log(array);
-
-            } catch (err) {
-                console.log(err);
-            }
-            finally {
-                setloading(false);
-            }
-        }
         getData();
 
 
@@ -134,6 +140,10 @@ const InvestorCard = ({ token }) => {
     function rendercard({ item, index }) {
 
 
+        console.log(item);
+
+
+
         console.log('====================================');
         console.log(item.investor.profilePhoto);
         console.log('====================================');
@@ -142,15 +152,12 @@ const InvestorCard = ({ token }) => {
 
             if (!animatedValues.current[id]) return;
 
+            console.log(direction);
+
+
 
             if (direction == "left") {
-                console.log('====================================');
-                console.log(item.investor._id);
-                console.log('====================================');
-
                 const id = item.investor._id;
-
-
                 async function makesubmit() {
 
                     try {
@@ -168,12 +175,34 @@ const InvestorCard = ({ token }) => {
                         console.log(err);
 
                     }
-
                 }
-
                 makesubmit()
 
             }
+
+            else if (direction == "right") {
+                const id = item.investor._id;
+                async function makesubmit() {
+
+                    try {
+                        const response = await fetch(`${url}founder/rejectRequest/${id}`, {
+                            method: 'POST',
+                            headers: {
+                                Authorization: `Bearer ${token}`,
+                            }
+                        })
+                        const data = await response.json();
+                        console.log(data);
+
+                    }
+                    catch (err) {
+                        console.log(err);
+
+                    }
+                }
+                makesubmit()
+            }
+
             const translateValue = direction === "left" ? -width : width; // Left or right movement
 
 
@@ -240,23 +269,45 @@ const InvestorCard = ({ token }) => {
                     end={{ x: 0, y: 1 }}
                 >
                     <View style={styles.header}>
-                        <Image
-                            source={{ uri: item.investor.profilePhoto }}
-                            // source={require("../../assets/images/p2.png")}
-                            style={styles.image}
-                        />
-                        <Text style={styles.role}>{item.investor.roleId.user_id.role} </Text>
+                        <Pressable
+                            onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.investor._id, page: "bell" }) }}
+                            style={{ display: "flex", flexDirection: "row", width: "80%" }}
+                        >
+                            <Image
+                                source={{ uri: item.investor.profilePhoto }}
+                                // source={require("../../assets/images/p2.png")}
+                                style={styles.image}
+                            />
+                            {/* <Text style={styles.role}>{item.investor.roleId.user_id.role} </Text> */}
+
+                            <AutoSizeText
+                                numberOfLines={1}
+                                fontSize={26}
+                                mode={ResizeTextMode.max_lines}
+                                ellipsizeMode='tail'
+                                style={styles.role}>{item.investor.roleId.user_id.role}
+                            </AutoSizeText>
+                        </Pressable>
                         {/* <Text style={styles.role}> role </Text> */}
                         <Text style={styles.date}>{time(item.requestDate)}</Text>
                         {/* <Text style={styles.date}>today</Text> */}
                     </View>
 
-                    <Text style={styles.name}>{item.investor.roleId.fullName}</Text>
+                    {/* <Text style={styles.name}>{item.investor.roleId.fullName}</Text> */}
+                    <AutoSizeText
+                        numberOfLines={1}
+                        fontSize={26}
+                        mode={ResizeTextMode.max_lines}
+                        ellipsizeMode='tail'
+                        style={styles.name}>{item.investor.roleId.fullName}
+                    </AutoSizeText>
                     {/* <Text style={styles.name}>Ansh Gala</Text> */}
-                    <Text style={styles.info}>Investing experience - {item.investor.roleId.previousExperience} years</Text>
-                    {/* <Text style={styles.info}>Investing experience - 5  years</Text> */}
-                    <Text style={styles.info1}>Investing Capacity - {item.investor.roleId.investmentRange}</Text>
-                    {/* <Text style={styles.info1}>Investing Capacity - | "10 cr"</Text> */}
+
+                    {item.investor.role == "Investor" && <Text style={styles.info}>Investing experience - {item.investor.roleId.previousExperience} years</Text>}
+
+                    {item.investor.role == "Investor" && <Text style={styles.info1}>Investing Capacity - {item.investor.roleId.investmentRange}</Text>}
+
+
 
                     <View style={styles.actions}>
                         <Pressable onPress={() => { moveItem(item.id, "left", item) }} style={styles.buttonAccept}>
@@ -282,38 +333,7 @@ const InvestorCard = ({ token }) => {
                     onRefresh={() => {
                         console.log("start");
                         // setRefreshing(true)
-                        async function getData() {
-                            setloading(true);
-                            try {
-                                const response = await fetch(
-                                    `${url}founder/getFounderNotifications`,
-                                    {
-                                        method: "GET",
-                                        headers: {
-                                            accept: "application/json",
-                                            Authorization: `Bearer ${token}`,
-                                        },
-                                    }
-                                );
-                                const result = await response.json();
 
-                                if (response.status === 200) {
-                                    var array = result.data.map((item, index) => {
-                                        item["id"] = index + 1
-                                        return item
-                                    })
-
-                                    // console.log(array);
-                                    setItems(array)
-                                }
-
-                            } catch (err) {
-                                console.log(err);
-                            }
-                            finally {
-                                setloading(false);
-                            }
-                        }
                         getData();
 
                         setTimeout(() => {
@@ -370,14 +390,17 @@ const styles = StyleSheet.create({
     date: {
         fontSize: 12,
         color: '#B8B8B8',
-        fontFamily: "Roboto"
+        fontFamily: "Roboto",
+        alignSelf: "center",
+        marginTop: -10
     },
     name: {
         fontSize: 32,
         color: '#B8B8B8',
         // fontWeight: 'bold',
         marginBottom: 8,
-        fontFamily: "Alata"
+        fontFamily: "Alata",
+        // backgroundColor: "red"
     },
     info: {
         fontSize: 16,
@@ -426,16 +449,14 @@ const styles = StyleSheet.create({
         marginTop: -5
     },
     no: {
-        textAlign: 'center',
-        fontSize: 25,
-        marginVertical: "auto",
-        alignSelf: "center",
-        // flex: 1,
-        color: "#FFFF",
+        textAlign: "center",
+        color: "#B8B8B8",
         fontFamily: "Roboto",
-        marginTop: 20,
-        // backgroundColor :  "red",
-        height : 30
+        fontSize: 22,
+        margin: "auto",
+        justifyContent: "center",
+        marginTop: 200,
+        alignSelf: "center",
     }
 
 

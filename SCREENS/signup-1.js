@@ -19,7 +19,7 @@ const Signup1 = function ({ navigation, route }) {
 
 
     useFocusEffect(() => {
-        StatusBar.setBackgroundColor("#1e1e1e")
+        StatusBar.setBackgroundColor("#16181a")
         StatusBar.setBarStyle("light-content")
     })
 

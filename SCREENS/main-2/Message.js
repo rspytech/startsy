@@ -1,5 +1,5 @@
-import React, { useEffect } from "react";
-import { View, Text, StyleSheet, TextInput, FlatList, Image, Dimensions, TouchableOpacity, StatusBar } from "react-native";
+import React, { useCallback, useEffect, useState } from "react";
+import { View, Text, StyleSheet, TextInput, BackHandler, FlatList, Image, Dimensions, TouchableOpacity, StatusBar } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
 import { Pressable } from "react-native";
@@ -40,19 +40,54 @@ const RequestsScreen = () => (
 );
 
 
-const ChatScreen = ({ navigation , token }) => {
+const ChatScreen = ({ navigation, token }) => {
 
-    console.log(token , "dskljkuyhfdsajjsd");
+    // console.log(token, "dskljkuyhfdsajjsd");
+
+    console.log("chat screen hai");
+    console.log("chat screen hai");
+    console.log("chat screen hai");
+    console.log("chat screen hai");
+    console.log("chat screen hai");
+    console.log("chat screen hai");
+    console.log("chat screen hai");
+    console.log("chat screen hai");
+    console.log("chat screen hai");
+    console.log("chat screen hai");
+    console.log("chat screen hai");
+    console.log("chat screen hai");
+    console.log("chat screen hai");
+    console.log("chat screen hai");
+    console.log("chat screen hai");
+    console.log("chat screen hai");
+    console.log("chat screen hai");
     
 
+   
 
-    useEffect(()=>{
+    useFocusEffect(
+        useCallback(() => {
+            const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
 
-    })
+                console.log('====================================');
+                console.log("hiiiiiiiiiii");
+                console.log('====================================');
+                navigation.navigate("Startsy");
+                return true;
+            });
+
+            return () => backHandler.remove();
+
+        })
+    )
 
 
 
-    
+
+
+    const [search, setsearch] = useState("")
+
+
     return (
 
         <View style={styles.container}>
@@ -63,6 +98,10 @@ const ChatScreen = ({ navigation , token }) => {
                     style={styles.searchInput}
                     placeholder="Search"
                     placeholderTextColor="#828282"
+                    onChangeText={(text) => {
+                        // console.log(text);
+                        setsearch(text)
+                    }}
                 />
             </View>
 
@@ -75,7 +114,8 @@ const ChatScreen = ({ navigation , token }) => {
                         justifyContent: "space-between",
                         display: "flex",
                         width: width * 0.92,
-                        margin: "auto"
+                        margin: "auto",
+                        elevation: 0,
                     },
 
                     tabBarIndicatorStyle: {
@@ -88,7 +128,7 @@ const ChatScreen = ({ navigation , token }) => {
                 <Tab.Screen
                     name="Connections"
                     // component={ConnectionsScreen}
-                    children={(props) => <ConnectionsScreen navigation={navigation} />}
+                    children={(props) => <ConnectionsScreen navigation={navigation} token={token} search={search} />}
                     options={{
                         tabBarLabel: ({ focused }) => (
                             <View>
@@ -214,7 +254,7 @@ const styles = StyleSheet.create({
         marginTop: 50,
         fontSize: 16,
     },
-    
+
 
 
     tabbarpill: {
