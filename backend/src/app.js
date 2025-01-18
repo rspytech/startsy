@@ -9,6 +9,7 @@ import cookieSession from "cookie-session";
 import authRoute from './routes/auth.routes.js';
 import investorRoute from './routes/investor.routes.js';
 import founderRoute from './routes/founder.routes.js';
+import communityMemberRoute from './routes/communityMember.routes.js'
 import postRoute from './routes/post.routes.js';
 import chatRoute from './routes/chat.routes.js';
 import googleAuthRoute from "./routes/google.auth.routes.js";
@@ -54,6 +55,7 @@ app.use(cookieSession({
 app.use('/api', authRoute);
 app.use('/investor', investorRoute);
 app.use('/founder', founderRoute);
+app.use('/communityMember', communityMemberRoute);
 app.use('/posts', postRoute);
 app.use('/chats', chatRoute);
 app.use('/auth', googleAuthRoute);
