@@ -3,21 +3,25 @@ import { User } from '../models/user.model.js';
 
 const verifyUser = async (req, res, next) => {
     try {
-        const authHeader = req.headers.authorization;
+        var authHeader = req.headers.authorization;
 
-        if (!authHeader || !authHeader.startsWith("Bearer ")) {
-            return res.status(401).json({
-                message: "Unauthorized Request. Token not found",
-            });
-        }
+        // console.log(authHeader);
+
+        authHeader = authHeader.replaceAll(/Bearer/gi , "").trim()
+        console.log(authHeader);
+
+        
+        
+
+        // if (!authHeader || !authHeader.startsWith("Bearer ")) {
+        //     return res.status(401).json({
+        //         message: "Unauthorized Request. Token not found",
+        //     });
+        // }
         let token;
+        token = authHeader
 
-        if(authHeader.includes("Bearer")){
-            token = authHeader.split(" ")[1]; // Extract the token
-        }
-        else{
-            token = authHeader;
-        }
+
 
         const decodedToken = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 
