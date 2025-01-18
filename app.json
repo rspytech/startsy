@@ -9,7 +9,7 @@
     "resizeMode": "contain",
     "userInterfaceStyle": "dark",
     "splash": {
-      "image": "./assets/images/splash.png",
+      "image": "./assets/images/logo.png",
       "resizeMode": "contain",
       "backgroundColor": "#000000"
     },
