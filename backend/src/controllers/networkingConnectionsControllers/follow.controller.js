@@ -27,7 +27,7 @@ export const followUser = async (req, res) => {
             return res.status(404).json({ message: "RoleId or user not found." });
         }
 
-        if(loggedInUserRole.following.includes(followedUserId)){
+        if(loggedInUserRole.followers.includes(followedUserId)){
             return res.status(400).json({
                 message: "You are already following this user."
             });
@@ -66,10 +66,11 @@ export const followUser = async (req, res) => {
             investor: loggedInUserId, // Save ID, not full object, for efficiency
             requestDate: Date.now(),
         });
-
+        console.log(messagingUserRole.roleId.requestNotifications);
         // Save the updated role
         await messagingUserRole.roleId.save();
 
+        console.log(messagingUserRole.roleId);
         return res.status(200).json({
             message: "User followed successfully, waiting for follow back.",
         });

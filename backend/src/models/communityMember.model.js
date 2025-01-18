@@ -63,6 +63,19 @@ const communityMemberSchema = new mongoose.Schema({
         }
     }],
 
+    totalUpvotes: {
+        type: Number,
+        default : 0,
+    },
+
+    upvotesPerDay : {
+        type: Number,
+        default : 0,
+    },
+
+    currentUpvoteDate: {
+        type : String,
+    },
     // !! Revisit chatUsers either make here or may be a separate model for it !!
 
     chatUsers: [{
