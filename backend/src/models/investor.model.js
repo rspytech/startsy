@@ -39,6 +39,9 @@ const investorSchema = new mongoose.Schema({
             data: { type: String, required: true },
         }
     },
+    investorType: {
+        type: String,
+    },
     startupStage : {
         type : String,
         required: true,

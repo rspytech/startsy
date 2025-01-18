@@ -19,6 +19,7 @@ export const InvestorInfo = async (req, res) => {
             linkedInUrl,
             websiteUrl,
             domainEmail,
+            investorType,
         } = req.body;
 
         const profilePhoto = req.files.profilePhoto;
@@ -57,6 +58,7 @@ export const InvestorInfo = async (req, res) => {
             linkedInUrl,
             websiteUrl,
             domainEmail,
+            investorType,
             user_id: req.user._id
         });
 
