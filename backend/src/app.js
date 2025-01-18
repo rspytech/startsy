@@ -63,7 +63,7 @@ app.use('/connections', connectionsRoute);
 app.use('/admin', adminRoute);
 app.use('/notification', notificationRoute);
 
-server.listen(5002, '0.0.0.0', () => {
+server.listen(process.env.PORT, '0.0.0.0', () => {
     console.log('Server');
 });
 export default app;
