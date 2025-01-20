@@ -45,8 +45,18 @@ export const CommunityMemeberInfo = async (req, res) => {
             user_id: req.user._id
         });
 
-        const uploadedPhoto = await uploadOnCloudinary(profilePhoto.path);
-        const photoUrl = uploadedPhoto.secure_url;
+        let uploadedPhoto;
+        try {
+            uploadedPhoto = await uploadOnCloudinary(profilePhoto.buffer);
+        } catch (err) {
+            console.error("Cloudinary Upload Error:", err.message);
+            return res.status(400).json({ message: "Error uploading to Cloudinary.", error: err.message });
+        }
+
+        if (!uploadedPhoto || !uploadedPhoto.secure_url) {
+            return res.status(400).json({ message: "Failed to upload photo to Cloudinary." });
+        }
+        const photoUrl = uploadedPhoto.secure_url;  
 
         currentUser.profilePhoto = photoUrl;
         currentUser.email = email;

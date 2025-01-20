@@ -42,18 +42,27 @@ export const FounderInfo = async (req, res) => {
 
     try {
         // 1. Process the team info
-        let i = 0;
-        for (const team of teamInfo) {
-            let teamMate = await User.findOne({ userName: team.tag });
+        const invalidTeamMates = [];
+        for (let i = 0; i < teamInfo.length; i++) {
+            const team = teamInfo[i];
+            const teamMate = await User.findOne({ userName: team.tag });
 
             if (!teamMate) {
-                res.status(404).send({
-                    message: `Team Member with the username ${team.tag} does not exist`,
-                });
+                // Add invalid team member to the list
+                invalidTeamMates.push(i);
             }
+            else {
+                // Replace the tag with the team member's ID
+                teamInfo[i].tag = teamMate._id;
+            }
+        }
 
-            teamInfo[i].tag = teamMate._id;
-            i += 1;
+        // If there are invalid team members, send a response but don't stop execution
+        if (invalidTeamMates.length > 0) {
+            return res.status(400).json({
+                message: "Team members were not found in the database. Please correct them.",
+                invalidTeamMates,
+            });
         }
 
         // 2. Find the current user
