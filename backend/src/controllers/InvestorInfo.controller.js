@@ -62,8 +62,21 @@ export const InvestorInfo = async (req, res) => {
             user_id: req.user._id
         });
 
-        const uploadedPhoto = await uploadOnCloudinary(profilePhoto[0].path);
-        const photoUrl = uploadedPhoto.secure_url;
+        // const uploadedPhoto = await uploadOnCloudinary(profilePhoto[0].path);
+        // const photoUrl = uploadedPhoto.secure_url;
+
+        let uploadedPhoto;
+        try {
+            uploadedPhoto = await uploadOnCloudinary(profilePhoto[0].buffer);
+        } catch (err) {
+            console.error("Cloudinary Upload Error:", err.message);
+            return res.status(400).json({ message: "Error uploading to Cloudinary.", error: err.message });
+        }
+
+        if (!uploadedPhoto || !uploadedPhoto.secure_url) {
+            return res.status(400).json({ message: "Failed to upload photo to Cloudinary." });
+        }
+        const photoUrl = uploadedPhoto.secure_url;  
         
         // set profile photo link, email, contactInfo of the current user in the User Model
         currentUser.profilePhoto = photoUrl;
@@ -72,8 +85,22 @@ export const InvestorInfo = async (req, res) => {
 
         currentUser.roleId = newInvestor._id;           /* NOTE : Adding the roleId to the base user model */ 
 
-        const pancardUploadedPhoto = await uploadOnCloudinary(pancardPhoto[0].path);
-        const pancardPhotoUrl = pancardUploadedPhoto.secure_url;
+        // const pancardUploadedPhoto = await uploadOnCloudinary(pancardPhoto[0].path);
+        // const pancardPhotoUrl = pancardUploadedPhoto.secure_url;
+
+        let pancardUploadedPhoto;
+        try {
+            pancardUploadedPhoto = await uploadOnCloudinary(pancardPhoto[0].buffer);
+        } catch (err) {
+            console.error("Cloudinary Upload Error:", err.message);
+            return res.status(400).json({ message: "Error uploading to Cloudinary.", error: err.message });
+        }
+
+        if (!pancardUploadedPhoto || !pancardUploadedPhoto.secure_url) {
+            return res.status(400).json({ message: "Failed to upload photo to Cloudinary." });
+        }
+        const pancardPhotoUrl = pancardUploadedPhoto.secure_url;  
+
         newInvestor.panCardPhoto = pancardPhotoUrl;
 
         await currentUser.save();

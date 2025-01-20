@@ -21,7 +21,20 @@ export const createNewsletter = async (req, res) => {
 
         await user.newslettersPosted.push(newsletter._id);
 
-        const uploadedPhoto = await uploadOnCloudinary(newsletterImage.path);
+        // const uploadedPhoto = await uploadOnCloudinary(newsletterImage.path);
+        // const photoUrl = uploadedPhoto.secure_url;
+
+        let uploadedPhoto;
+        try {
+            uploadedPhoto = await uploadOnCloudinary(newsletterImage.buffer);
+        } catch (err) {
+            console.error("Cloudinary Upload Error:", err.message);
+            return res.status(400).json({ message: "Error uploading to Cloudinary.", error: err.message });
+        }
+
+        if (!uploadedPhoto || !uploadedPhoto.secure_url) {
+            return res.status(400).json({ message: "Failed to upload photo to Cloudinary." });
+        }
         const photoUrl = uploadedPhoto.secure_url;
 
         newsletter.newsletterImage = photoUrl;

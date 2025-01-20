@@ -12,15 +12,33 @@ const createPost = async (req, res) => {
         let mediaType = null;
 
         if (type === "photo" || type === "video") {
-            const localFilePath = req.file?.path;
+            // const localFilePath = req.file?.path;
+            // console.log(localFilePath);
+            // if (localFilePath) {
+            //     const uploadResponse = await uploadOnCloudinary(localFilePath);
+            //     if (uploadResponse) {
+            //         mediaUrl = uploadResponse.secure_url;
+            //         mediaType = uploadResponse.resource_type;
+            //     }
+            // }
+            let localFilePath = req.file?.buffer;
             console.log(localFilePath);
-            if (localFilePath) {
-                const uploadResponse = await uploadOnCloudinary(localFilePath);
-                if (uploadResponse) {
+            if(localFilePath){
+                let uploadResponse;
+                try {
+                    uploadResponse = await uploadOnCloudinary(localFilePath);
+                } catch (err) {
+                    console.error("Cloudinary Upload Error:", err.message);
+                    return res.status(400).json({ message: "Error uploading to Cloudinary.", error: err.message });
+                }
+                if (!uploadResponse || !uploadResponse.secure_url) {
+                    return res.status(400).json({ message: "Failed to upload photo to Cloudinary." });
+                }
+                if(uploadResponse){
                     mediaUrl = uploadResponse.secure_url;
                     mediaType = uploadResponse.resource_type;
                 }
-            }
+            }            
         }
 
         const newPostData = {
@@ -47,11 +65,11 @@ const createPost = async (req, res) => {
             return res.status(500).json({ success: false, message: 'User roleId or posts array not found' });
         }
 
-        res.status(201).json({ success: true, post: newPost });
+        return res.status(200).json({ success: true, post: newPost });
     }
     catch (error) {
         console.error('Error creating post:', error);
-        res.status(500).json({ success: false, message: 'Failed to create post' });
+        return res.status(404).json({ success: false, message: 'Failed to create post' });
     }
 };
 

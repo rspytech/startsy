@@ -19,13 +19,26 @@ export const uploadProfileCoverImage = async (req, res) => {
         }
 
         // Upload the file to Cloudinary
-        const uploadedCoverImage = await uploadOnCloudinary(coverImage.path);
-        if (!uploadedCoverImage || !uploadedCoverImage.secure_url) {
-            return res.status(500).json({ message: "Failed to upload image to Cloudinary." });
+        // const uploadedCoverImage = await uploadOnCloudinary(coverImage.path);
+        // if (!uploadedCoverImage || !uploadedCoverImage.secure_url) {
+        //     return res.status(500).json({ message: "Failed to upload image to Cloudinary." });
+        // }
+
+        let uploadedCoverImage;
+        try {
+            uploadedCoverImage = await uploadOnCloudinary(coverImage.buffer);
+        } catch (err) {
+            console.error("Cloudinary Upload Error:", err.message);
+            return res.status(400).json({ message: "Error uploading to Cloudinary.", error: err.message });
         }
 
+        if (!uploadedCoverImage || !uploadedCoverImage.secure_url) {
+            return res.status(400).json({ message: "Failed to upload photo to Cloudinary." });
+        }
+        const photoUrl = uploadedCoverImage.secure_url;
+
         // Update the user's banner image URL
-        user.bannerImage = uploadedCoverImage.secure_url;
+        user.bannerImage = photoUrl;
         await user.save();
 
         // Send a success response
