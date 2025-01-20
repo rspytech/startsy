@@ -82,10 +82,11 @@ export const InvestorInfo = async (req, res) => {
         res.status(200).send({
             message: "Investor Details uploaded successfully"
         });
-    } catch (error) {
-        console.log(error);
-        res.status(500).send({
-            message: "Internal Server Error"
+    }
+    catch (error) {
+        res.status(400).json({
+            message: "Error while creating account of investor",
+            error: error,
         });
     }
 }

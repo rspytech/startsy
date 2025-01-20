@@ -1,13 +1,15 @@
 import multer from 'multer';
 
-const storage = multer.diskStorage({
-    destination: (req, file, cb) => {
-        cb(null, './public'); // Ensure the 'public' folder exists and is writable
-    },
-    filename: (req, file, cb) => {
-        cb(null, `${Date.now()}-${file.originalname}`); // Creates a unique filename
-    }
-});
+const storage = multer.memoryStorage(
+    // {
+    //     destination: (req, file, cb) => {
+    //         cb(null, './public'); // Ensure the 'public' folder exists and is writable
+    //     },
+    //     filename: (req, file, cb) => {
+    //         cb(null, `${Date.now()}-${file.originalname}`); // Creates a unique filename
+    //     }
+    // }
+);
 
 const fileFilter = (req, file, cb) => {
     const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'video/mp4', 'video/quicktime'];

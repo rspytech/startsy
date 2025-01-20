@@ -3,8 +3,8 @@ import { CommunityMember } from "../models/communityMember.model.js";
 import { User } from "../models/user.model.js";
 
 export const CommunityMemeberInfo = async (req, res) => {
-    // req.body.certification = JSON.parse(req.body.certification)
-    // req.body.portfolio = JSON.parse(req.body.portfolio)
+    req.body.certification = JSON.parse(req.body.certification)
+    req.body.portfolio = JSON.parse(req.body.portfolio)
     try{
         const {
             fullName,
@@ -60,7 +60,8 @@ export const CommunityMemeberInfo = async (req, res) => {
     }
     catch (error) {
         console.log(error);
-        res.status(500).send({
+        res.status(400).json({
+            error : error,
             message: "Internal Server Error"
         });
     }

@@ -1,21 +1,21 @@
 import mongoose from "mongoose";
-import app from './app.js';
-import dotenv from 'dotenv';
+import server from "./app.js"; // Import the server from app.js
+import dotenv from "dotenv";
 dotenv.config();
 
 const startServer = async () => {
-    app.listen(process.env.PORT, () => {
-        console.log('Server started on port 5000');
+    const PORT = process.env.PORT || 5000; // Use PORT from environment or fallback to 5000
+    server.listen(PORT, () => {
+        console.log(`Server started on port ${PORT}`);
     });
 };
 
-console.log(process.env.MONGODB_URI)
-// Connect to MongoDB and start server
+// Connect to MongoDB and start the server
 mongoose.connect(`${process.env.MONGODB_URI}/${process.env.DB_NAME}`)
     .then(() => {
-        console.log("Connection successful");
-        return startServer();
+        console.log("Database connection successful");
+        startServer();
     })
     .catch((error) => {
-        console.log(error);
+        console.error("Database connection failed:", error);
     });
