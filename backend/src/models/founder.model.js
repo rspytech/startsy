@@ -24,15 +24,12 @@ const founderSchema = new mongoose.Schema({
     previousWorkExperience : [{
         company : {
             type: String,
-            required: true,
         },
         role : {                /* Founder */
             type: String,
-            required: true,
         },
         year : {
             type: Number,
-            required: true,
         }
     }],
     education : {
@@ -41,7 +38,6 @@ const founderSchema = new mongoose.Schema({
     },
     skills : {             
         type: String,
-        required: true,
     },
     nameOfStartup:{
         type: String,

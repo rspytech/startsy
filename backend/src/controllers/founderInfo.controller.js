@@ -1,6 +1,7 @@
 import { Founder } from "../models/founder.model.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../../cloudinary.js";
+import { Notification } from "../models/notification.model.js";
 import Recommendation from "../models/recommendation.model.js";
 import RecommendationBasic from "../algorithms/recommendation.js";
 import mappings from "../config/startupPrefrencesMapping.js"; // Assuming the mappings are available in this config file
@@ -43,9 +44,13 @@ export const FounderInfo = async (req, res) => {
     try {
         // 1. Process the team info
         const invalidTeamMates = [];
-        for (let i = 0; i < teamInfo.length; i++) {
+        if(teamInfo.length > 0){
+            for (let i = 0; i < teamInfo.length; i++) {
             const team = teamInfo[i];
-            const teamMate = await User.findOne({ userName: team.tag });
+            let teamMate;
+            if(teamInfo.tag.length > 0){
+                teamMate = await User.findOne({ userName: team.tag });
+            }
 
             if (!teamMate) {
                 // Add invalid team member to the list
@@ -56,10 +61,12 @@ export const FounderInfo = async (req, res) => {
                 teamInfo[i].tag = teamMate._id;
             }
         }
+        }
+        
 
         // If there are invalid team members, send a response but don't stop execution
         if (invalidTeamMates.length > 0) {
-            return res.status(400).json({
+            return res.status(666).json({
                 message: "Team members were not found in the database. Please correct them.",
                 invalidTeamMates,
             });
@@ -92,7 +99,17 @@ export const FounderInfo = async (req, res) => {
             },
             user_id: req.user._id
         });
-
+        if(teamInfo.length > 0){
+            for(let i = 0; i < teamInfo.length; i++){
+                await Notification.create({
+                    receivingUserId : teamInfo[i].tag,
+                    sendingUserId : req.user._id,
+                    notificationType : "teammateAdded",
+                    notificationMessage : "You have been added to a new startup as a team member",
+                });
+            }
+            
+        }
         // 4. Update current user details
         if (email) {
             currentUser.email = email;

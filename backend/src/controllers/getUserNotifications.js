@@ -6,7 +6,7 @@ export const getUserNotifications = async (req, res) => {
 
         // Fetch all notifications and populate necessary fields
         let notifications = await Notification.find({ receivingUserId: userId })
-            .sort({ createdAt: -1 })
+            .sort({ createdAt: 1 })
             .populate("sendingUserId")
             .populate("postId");
 

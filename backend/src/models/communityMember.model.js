@@ -49,7 +49,12 @@ const communityMemberSchema = new mongoose.Schema({
         },
     }], 
     portfolio : [{
-        type : String,
+        name : {
+            type: String,
+        },
+        url : {
+            type: String,
+        },
     }],
 
     requestNotifications: [{

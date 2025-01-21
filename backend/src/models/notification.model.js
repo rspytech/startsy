@@ -15,7 +15,7 @@ const notificationSchema = new mongoose.Schema({
     },
     notificationType : {
         type: String,
-        enum: ['upvotePost', 'upvoteProfile', 'jobApplied', "joinedCommunity", "commentPost"],
+        enum: ['upvotePost', 'upvoteProfile', 'jobApplied', "joinedCommunity", "commentPost", "teammateAdded"],
     },
     notificationMessage: {
         type: String,
