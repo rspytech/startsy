@@ -15,7 +15,7 @@ export const FounderInfo = async (req, res) => {
     req.body.previousWorkExperience = JSON.parse(req.body.previousWorkExperience)
     req.body.socialProof = JSON.parse(req.body.socialProof)
 
-    const {
+    let {
         email,
         country,
         age,
@@ -40,33 +40,42 @@ export const FounderInfo = async (req, res) => {
     if (!profilePhoto) {
         return res.status(400).json({ message: "Please upload a profile photo" });
     }
+    teamInfo = teamInfo.filter((team) => team.tag !== "" && team.name !== "" && team.role !== "")
+
+    console.log("affafiajfiajfoajfofaofoadfkfake", teamInfo.length);
 
     try {
         // 1. Process the team info
         const invalidTeamMates = [];
         if(teamInfo && teamInfo.length > 0){
             for (let i = 0; i < teamInfo.length; i++) {
-            const team = teamInfo[i];
-            let teamMate;
-            if(team.tag.length > 0){
-                teamMate = await User.findOne({ userName: team.tag });
-            }
+                const team = teamInfo[i];
+                let teamMate;
+                if(team.tag.length > 0){
+                    teamMate = await User.findOne({ userName: team.tag });
+                    await Notification.create({
+                        receivingUserId : teamInfo[i].tag,
+                        sendingUserId : req.user._id,
+                        notificationType : "teammateAdded",
+                        notificationMessage : "You have been added to a new startup as a team member",
+                    });
+                    if (!teamMate) {
+                        // Add invalid team member to the list
+                        invalidTeamMates.push(i);
+                    }
+                    else {
+                        // Replace the tag with the team member's ID
+                        teamInfo[i].tag = teamMate._id;
+                    }
 
-            if (!teamMate) {
-                // Add invalid team member to the list
-                invalidTeamMates.push(i);
+                }
             }
-            else {
-                // Replace the tag with the team member's ID
-                teamInfo[i].tag = teamMate._id;
-            }
-        }
         }
         
 
         // If there are invalid team members, send a response but don't stop execution
         if (invalidTeamMates.length > 0) {
-            return res.status(666).json({
+            return res.status(555).json({
                 message: "Team members were not found in the database. Please correct them.",
                 invalidTeamMates,
             });
@@ -99,17 +108,7 @@ export const FounderInfo = async (req, res) => {
             },
             user_id: req.user._id
         });
-        if(teamInfo.length > 0){
-            for(let i = 0; i < teamInfo.length; i++){
-                await Notification.create({
-                    receivingUserId : teamInfo[i].tag,
-                    sendingUserId : req.user._id,
-                    notificationType : "teammateAdded",
-                    notificationMessage : "You have been added to a new startup as a team member",
-                });
-            }
-            
-        }
+        
         // 4. Update current user details
         if (email) {
             currentUser.email = email;
