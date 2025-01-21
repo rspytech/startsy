@@ -4,7 +4,7 @@ export const getUserNameSuggestions = async (req, res) => {
     try {
         let {userName} = req.params;
         userName = userName.substring(1,);
-        const userSuggestions = await User.find({
+        const userSuggestions = await User.find({ 
             userName : {$regex: `^${userName}`, $options: "i"}
         }).limit(3).filter((user) => user.role !== "Investor");
 

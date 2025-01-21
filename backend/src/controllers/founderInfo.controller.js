@@ -44,11 +44,11 @@ export const FounderInfo = async (req, res) => {
     try {
         // 1. Process the team info
         const invalidTeamMates = [];
-        if(teamInfo.length > 0){
+        if(teamInfo && teamInfo.length > 0){
             for (let i = 0; i < teamInfo.length; i++) {
             const team = teamInfo[i];
             let teamMate;
-            if(teamInfo.tag.length > 0){
+            if(team.tag.length > 0){
                 teamMate = await User.findOne({ userName: team.tag });
             }
 
