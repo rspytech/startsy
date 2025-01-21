@@ -6,14 +6,16 @@ export const getUserNameSuggestions = async (req, res) => {
         userName = userName.substring(1,);
         const userSuggestions = await User.find({ 
             userName : {$regex: `^${userName}`, $options: "i"}
-        }).limit(3).filter((user) => user.role !== "Investor");
+        }).limit(3);
+
+        let newarray = userSuggestions.filter((user) => user.role !== "Investor");
 
         if(!userSuggestions){
             return res.status(400).json({message: "No matching users found"});
         }
         return res.status(200).json({
             message: "User name suggestions found",
-            data: userSuggestions,
+            data: newarray,
         })
     }
     catch (error) {

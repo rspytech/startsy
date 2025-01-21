@@ -37,6 +37,6 @@ router.get('/getUsersProfiles/:id', verifyUser, getUsersProfiles);
 router.post('/doesUserExists', DoesUserExists);
 router.post('/uploadCoverImage', verifyUser, upload.single('coverImage'), uploadProfileCoverImage);
 router.get('/getInvestorProfile', verifyUser, getInvestorProfile);
-router.get('/getUserNameSuggestions', verifyUser, getUserNameSuggestions);
+router.get('/getUserNameSuggestions/:userName', verifyUser, getUserNameSuggestions);
 
 export default router;

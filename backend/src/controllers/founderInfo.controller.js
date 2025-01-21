@@ -5,7 +5,7 @@ import { Notification } from "../models/notification.model.js";
 import Recommendation from "../models/recommendation.model.js";
 import RecommendationBasic from "../algorithms/recommendation.js";
 import mappings from "../config/startupPrefrencesMapping.js"; // Assuming the mappings are available in this config file
-
+import mongoose from "mongoose";
 // Initialize RecommendationBasic with mappings
 const recommender = new RecommendationBasic(mappings.stage, mappings.sector, mappings.location, mappings.fundingRange);
 
@@ -53,12 +53,6 @@ export const FounderInfo = async (req, res) => {
                 let teamMate;
                 if(team.tag.length > 0){
                     teamMate = await User.findOne({ userName: team.tag });
-                    await Notification.create({
-                        receivingUserId : teamInfo[i].tag,
-                        sendingUserId : req.user._id,
-                        notificationType : "teammateAdded",
-                        notificationMessage : "You have been added to a new startup as a team member",
-                    });
                     if (!teamMate) {
                         // Add invalid team member to the list
                         invalidTeamMates.push(i);
@@ -67,7 +61,6 @@ export const FounderInfo = async (req, res) => {
                         // Replace the tag with the team member's ID
                         teamInfo[i].tag = teamMate._id;
                     }
-
                 }
             }
         }
@@ -109,6 +102,24 @@ export const FounderInfo = async (req, res) => {
             user_id: req.user._id
         });
         
+        for(let i = 0; i < teamInfo.length; i++){
+            let teamMateTag = teamInfo[i].tag; 
+            // TeamMateTag is now objectId as it converted now from code above as per the model using  teamInfo[i].tag = teamMate._id;
+            let teamMate;
+            if(mongoose.Types.ObjectId.isValid(teamMateTag)) {
+              teamMate = await User.findById(teamMateTag);  
+            }   
+            if(teamMate){
+                await Notification.create({
+                    receivingUserId : teamInfo[i].tag,
+                    sendingUserId : req.user._id,
+                    notificationType : "teammateAdded",
+                    notificationMessage : "You have been added to a new startup as a team member",
+                });
+            }
+            
+        }
+
         // 4. Update current user details
         if (email) {
             currentUser.email = email;
