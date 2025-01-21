@@ -158,7 +158,21 @@ const InvestorCard = ({ token, navigation }) => {
 
             if (direction == "left") {
                 const id = item.investor._id;
-                async function makesubmit() {
+                console.log(id);
+                console.log(id);
+                console.log(id);
+                console.log(id);
+                console.log(id);
+                console.log(id);
+                console.log(id);
+                console.log(id);
+                console.log(`${url}founder/acceptRequest/${id}`);
+
+
+                async function makesubmit1() {
+
+                    console.log("left wala ");
+
 
                     try {
                         const response = await fetch(`${url}founder/acceptRequest/${id}`, {
@@ -176,11 +190,14 @@ const InvestorCard = ({ token, navigation }) => {
 
                     }
                 }
-                makesubmit()
+                makesubmit1()
 
             }
 
             else if (direction == "right") {
+
+                console.log("hutt");
+
                 const id = item.investor._id;
                 async function makesubmit() {
 
@@ -304,8 +321,13 @@ const InvestorCard = ({ token, navigation }) => {
                     {/* <Text style={styles.name}>Ansh Gala</Text> */}
 
                     {item.investor.role == "Investor" && <Text style={styles.info}>Investing experience - {item.investor.roleId.previousExperience} years</Text>}
-
                     {item.investor.role == "Investor" && <Text style={styles.info1}>Investing Capacity - {item.investor.roleId.investmentRange}</Text>}
+
+                    {item.investor.role == "Founder" && <Text style={styles.info}>Goal - {item.investor.roleId.goal} years</Text>}
+                    {item.investor.role == "Founder" && <Text style={styles.info1}>Investing Capacity - {item.investor.roleId.investmentRange}</Text>}
+
+                    {item.investor.role == "CommunityMember" && <Text style={styles.info}>Investing experience - {item.investor.roleId.previousExperience} years</Text>}
+                    {item.investor.role == "CommunityMember" && <Text style={styles.info1}>Investing Capacity - {item.investor.roleId.investmentRange}</Text>}
 
 
 
@@ -325,9 +347,14 @@ const InvestorCard = ({ token, navigation }) => {
 
     return (
 
-        <View style={{ flex: 1, backgroundColor: "#16181a" }}>
+        <View
+            // refreshControl={<RefreshControl progressViewOffset={0} refreshing={refreshing}/>}
+
+
+            style={{ flex: 1, backgroundColor: "#16181a" }}>
             {items.length == 0 && <Text style={styles.no}>No new notification found</Text>}
-            {!loading && <FlatList
+            {items && <FlatList
+
 
                 refreshControl={<RefreshControl progressViewOffset={0} refreshing={refreshing}
                     onRefresh={() => {
@@ -347,6 +374,8 @@ const InvestorCard = ({ token, navigation }) => {
                 renderItem={rendercard} // Correct integration
             // keyExtractor={(item, index) => index.toString()} // Ensure keys are unique
             />}
+
+            {/* <Text>hello</Text> */}
         </View>
 
     );
@@ -451,11 +480,14 @@ const styles = StyleSheet.create({
     no: {
         textAlign: "center",
         color: "#B8B8B8",
+        // position : "absolute",
+        elevation: 100,
         fontFamily: "Roboto",
         fontSize: 22,
-        margin: "auto",
-        justifyContent: "center",
-        marginTop: 200,
+        // top : 10,
+        // margin: "auto",
+        // justifyContent: "center",
+        paddingTop: 200,
         alignSelf: "center",
     }
 

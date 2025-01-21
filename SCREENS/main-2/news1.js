@@ -1,18 +1,18 @@
 import React, { useEffect } from "react";
 import { Pressable, ScrollView, StatusBar } from "react-native";
-import { View, Text, StyleSheet, Image, FlatList, TextInput, Dimensions, TouchableOpacity } from "react-native";
+import { View, Text, StyleSheet, Image, FlatList, TextInput, Dimensions,BackHandler, TouchableOpacity } from "react-native";
 import Share from "../../assets/icons/share.js"
 import Upvote from "../../assets/icons/upvote.js"
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
-const NewsletterPage = ({navigation  , route}) => {
+const NewsletterPage = ({ navigation, route }) => {
 
     // const {item} = route.params
 
     console.log(route.params);
 
-    const {item} = route.params
-    
+    const { item } = route.params
+
 
 
     // const item =
@@ -29,12 +29,12 @@ const NewsletterPage = ({navigation  , route}) => {
     // }
 
 
-      useEffect(()=>{
+    useEffect(() => {
         // StatusBar.setBackgroundColor("")
         StatusBar.setBarStyle("light-content")
-      },[])
+    }, [])
 
-      function time(time) {
+    function time(time) {
         // console.log('====================================');
         // console.log(time);
         var data1 = new Date(time)
@@ -68,6 +68,15 @@ const NewsletterPage = ({navigation  , route}) => {
         return Math.floor(seconds) + " seconds ago";
     }
 
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            navigation.goBack();
+            return true; // This prevents the default back action
+        });
+
+        return () => backHandler.remove();
+    }, [item]);
+
 
 
     return (
@@ -86,23 +95,23 @@ const NewsletterPage = ({navigation  , route}) => {
                     </View>
                 </View>
             </View>
-            <View  style={styles.iconcontainer}>
+            <View style={styles.iconcontainer}>
                 <View style={styles.i1}>
-                   <Pressable onPress={()=>navigation.goBack()}>
-                   <FontAwesome6 name="chevron-left" size={32} color="#00DF60" />
-                   </Pressable>
+                    <Pressable onPress={() => navigation.goBack()}>
+                        <FontAwesome6 name="chevron-left" size={32} color="#00DF60" />
+                    </Pressable>
                 </View>
                 <View style={styles.i2}>
                     {/* <Upvote width={36} height={36} style={{marginRight : 10}}/> */}
-                    <Share style={{marginTop : 3}} />
+                    <Share style={{ marginTop: 3 }} />
 
                 </View>
             </View>
             <View style={styles.postContainer}>
-                <Image source={{uri : item.newsletterImage}} style={styles.postImage} />
+                <Image source={{ uri: item.newsletterImage }} style={styles.postImage} />
                 <Text style={styles.postTitle}>{item.content}</Text>
                 <View style={styles.authorInfo}>
-                    <Image source={{uri : item.taggedUser.profilePhoto}} style={styles.profileImage} />
+                    <Image source={{ uri: item.taggedUser.profilePhoto }} style={styles.profileImage} />
                     <View style={styles.userinfo}>
 
                         <View style={{ display: "flex", flexDirection: "row", alignSelf: "center" }}>
@@ -145,7 +154,7 @@ const styles = StyleSheet.create({
     headerText: {
         color: "#00de62",
         fontSize: 28,
-        paddingLeft  :10,
+        paddingLeft: 10,
         fontWeight: "bold",
     },
     headerIcons: {
@@ -246,20 +255,20 @@ const styles = StyleSheet.create({
         // backgroundColor : "red"
 
     },
-    iconcontainer : {
-        display : "flex",
-        justifyContent : "space-between",
-        flexDirection  :"row",
-        width : "92%",
-        margin : "auto",
-        marginVertical : 5
+    iconcontainer: {
+        display: "flex",
+        justifyContent: "space-between",
+        flexDirection: "row",
+        width: "92%",
+        margin: "auto",
+        marginVertical: 5
 
     },
-    i2 : {
-        display : "flex",
-        justifyContent : "space-between",
-        flexDirection  :"row",
-        gap  :10,
+    i2: {
+        display: "flex",
+        justifyContent: "space-between",
+        flexDirection: "row",
+        gap: 10,
         // marginVertical : 20
     }
 });

@@ -3,7 +3,7 @@ import { View, Text, ScrollView } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
-export default function Drop({ items, onValueChange, open, setOpen, extra, bottomsheet, edit, width, width1 }) {
+export default function Drop({ items, onValueChange, open, setOpen, extra, bottomsheet, edit, width, width1 , up }) {
     // const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
     var placeholdertext;
@@ -49,14 +49,16 @@ export default function Drop({ items, onValueChange, open, setOpen, extra, botto
 
         <DropDownPicker
             searchable={true}
+            
             searchPlaceholder='Search'
             searchPlaceholderTextColor='#AEAFAF'
             searchTextInputStyle={{
                 borderColor : "transparent",
                 color : "#AEAFAF",
                 backgroundColor : "#24272A",
-                fontFamily : "abeeze",
-                fontSize : 18
+                fontFamily : "Alata",
+                fontSize : 18,
+                // padding : 20
             }}
             
             
@@ -68,7 +70,7 @@ export default function Drop({ items, onValueChange, open, setOpen, extra, botto
             setOpen={setOpen}
             setValue={handleValueChange}
             maxHeight={300}
-            dropDownDirection='BOTTOM'
+            dropDownDirection= {up ? "TOP" : "BOTTOM"}
             placeholder={placeholdertext}
             placeholderTextColor="green"
             placeholderStyle={{
@@ -143,9 +145,12 @@ export default function Drop({ items, onValueChange, open, setOpen, extra, botto
                 includeFontPadding: false,
             }}
             labelStyle={{
-                fontFamily: 'abeeze',
+                // color : "red",
+                fontFamily: 'Alata',
                 fontSize: 20,
                 color: '#AEAFAF',
+                paddingBottom : 0,
+                marginBottom : -5,
                 includeFontPadding: false,
             }}
             nestedScrollEnabled={true}

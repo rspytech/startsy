@@ -25,7 +25,7 @@ const styles = StyleSheet.create({
         borderRadius: 15,
         margin: "auto",
         marginBottom: 25,
-        paddingVertical: 20,
+        paddingVertical: 10,
         // opacity : 0.5
 
     },
@@ -320,14 +320,14 @@ const styles = StyleSheet.create({
         borderRadius: 16
     }
     , error: {
-        color: "red",
+        color: "#E65858",
         textAlign: "left",
         marginLeft: 20,
         marginTop: -20,
         marginBottom: 20
     }
     , error1: {
-        color: "red",
+        color: "#E65858",
         textAlign: "left",
         marginLeft: 20,
         marginTop: 10,
@@ -410,11 +410,13 @@ const styles = StyleSheet.create({
         // paddingHorizontal : 20,
         paddingLeft: 20,
         fontFamily: "Roboto",
-        marginBottom: 10,
+        marginBottom: 20,
         fontSize: 18,
+        paddingBottom : 10,
         alignSelf: "flex-start",
         backgroundColor: "transparent",
-        maxHeight: 200
+        maxHeight: 200,
+        // backgroundColor : "red"
 
     },
     send: {

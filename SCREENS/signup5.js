@@ -128,6 +128,9 @@ const Signup5 = ({ navigation, route }) => {
             // Proceed to the next page if no errors
             nextpage(navigation, type);
         }
+
+        // nextpage(navigation, type);
+
     };
 
 

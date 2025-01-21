@@ -54,7 +54,7 @@ const Green = ({ navigation }) => {
         if (state == "Investor" && animationover) {
             navigation.navigate("Main1")
         }
-        else if (state == "Founder" || state == "CommunityMember") {
+        else if ((state == "Founder" || state == "CommunityMember") && animationover) {
             navigation.navigate("Main2")
 
         }
@@ -115,39 +115,42 @@ const Green = ({ navigation }) => {
 
 
     return (
-        <View style={greenstyle.green}>
-            <StatusBar translucent={true} />
-            <View style={styles.main}>
-                {/* <Text style={{fontFamily: "Alata"}}>hello</Text> */}
-                <Animated.View style={{ overflow: 'hidden', width: animatedWidth, position: "absolute", alignSelf: "center", left: -width * 0.31, alignContent: "center", top: -50, }}>
-                    <Svg height="80" width={width}>
-                        <SvgText
-                            // style={{ fontFamily: "Arial"  }}
-                            x="0"
-                            y="50"
-                            // fontFamily="Roboto"
-                            // fontFamily="Arial"
-                            fontSize="70"
-                            alignItems="center"
-                            fontWeight="bold"
-                            fill="#00DF60"
-                        >
-                            startsy
-                        </SvgText>
-                    </Svg>
-                </Animated.View>
-            </View>
+        <SafeAreaView style={{flex : 1 , backgroundColor : "#000"}}>
+            <View style={greenstyle.green}>
+                <StatusBar backgroundColor="#16181a" barStyle={"light-content"} />
+                {/* <StatusBar translucent={true} /> */}
+                <View style={styles.main}>
+                    {/* <Text style={{fontFamily: "Alata"}}>hello</Text> */}
+                    <Animated.View style={{ overflow: 'hidden', width: animatedWidth, position: "absolute", alignSelf: "center", left: -width * 0.31, alignContent: "center", top: -50, }}>
+                        <Svg height="80" width={width}>
+                            <SvgText
+                                // style={{ fontFamily: "Arial"  }}
+                                x="0"
+                                y="50"
+                                // fontFamily="Roboto"
+                                // fontFamily="Arial"
+                                fontSize="70"
+                                alignItems="center"
+                                fontWeight="bold"
+                                fill="#00DF60"
+                            >
+                                startsy
+                            </SvgText>
+                        </Svg>
+                    </Animated.View>
+                </View>
 
 
 
-            {state == "" && <Animated.View style={[greenstyle.login, { top: animatedtop1 }]}>
-                <Login1 navigation={navigation} />
-            </Animated.View>}
-            {/* <Animated.View style={[greenstyle.login, { top: animatedtop1 }]}>
+                {state == "" && <Animated.View style={[greenstyle.login, { top: animatedtop1 }]}>
+                    <Login1 navigation={navigation} />
+                </Animated.View>}
+                {/* <Animated.View style={[greenstyle.login, { top: animatedtop1 }]}>
                 <Login1 navigation={navigation} />
             </Animated.View> */}
 
-        </View>
+            </View>
+        </SafeAreaView>
     )
 }
 

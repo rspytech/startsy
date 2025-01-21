@@ -61,19 +61,25 @@ const Foryou = ({ scroll, navigation, token }) => {
 
 
     const [allpost, setallpost] = useState([])
+    const [willopen, setwillopen] = useState(false)
     // console.log(token);
 
 
-    // console.log("hello ofor you");
 
     // const [token, settoken] = useState("")
     const [comment, setcomment] = useState(false)
     const [loading, setloading] = useState(true)
+    const [loading1, setloading1] = useState(true)
 
     const [p1u, setp1u] = useState(false)
     const [p2u, setp2u] = useState(false)
     const [p3u, setp3u] = useState(false)
     const [p4u, setp4u] = useState(false)
+
+    const [p1text, setp1text] = useState("Post")
+    const [p2text, setp2text] = useState("Post")
+    const [p3text, setp3text] = useState("Post")
+    const [p4text, setp4text] = useState("Post")
 
     const [co, setiscommentopen] = useState(false)
     const [allcomments, setallcomments] = useState([])
@@ -179,6 +185,7 @@ const Foryou = ({ scroll, navigation, token }) => {
     const [status1, setstatus] = useState(false)
     const [bg, setbg] = useState("#16181a")
     const [refreshing, setRefreshing] = useState(false);
+    const [refreshing1, setRefreshing1] = useState(false);
     const [textlength, settextlength] = useState(0);
     const [rule1, setrule] = useState("")
     const [open1, setOpen1] = useState(false);
@@ -223,7 +230,7 @@ const Foryou = ({ scroll, navigation, token }) => {
     const snapPoints2 = useMemo(() => ['120%'], []);
     const snapPoints3 = useMemo(() => ['120%'], []);
     const snapPoints4 = useMemo(() => ['120%'], []);
-    const snapPoints5 = useMemo(() => ["100%"], []);
+    const snapPoints5 = useMemo(() => ["50%", "100%"], []);
 
     const [err1, seterr1] = useState(false)
     const [err2, seterr2] = useState(false)
@@ -300,11 +307,12 @@ const Foryou = ({ scroll, navigation, token }) => {
             }
 
             const data = await response.json();
+            setp1text("Posted")
             console.log(data);
             bottomSheetRef.current?.close()
             setTimeout(() => {
                 bottomSheetRef1.current?.close();
-            }, 3000);
+            }, 1000);
         } catch (err) {
             console.error("Error:", err);
         }
@@ -313,6 +321,7 @@ const Foryou = ({ scroll, navigation, token }) => {
         }
     };
     const post2 = async function () {
+        setp2u(true)
         let hasError = false;
         if (content == "") {
             seterr4(true)
@@ -325,18 +334,24 @@ const Foryou = ({ scroll, navigation, token }) => {
         }
 
         if (hasError) { return };
+        if (p2u) return
 
         const postType = "textBlog"; // Define postType value
         const finaldata = {
             "caption": caption,
             "content": content,
         };
+        console.log(finaldata);
+        console.log(`${url}posts/createPost/${postType}`);
+
+
 
         try {
             const response = await fetch(`${url}posts/createPost/${postType}`, {
                 method: 'POST',
                 body: JSON.stringify(finaldata), // Convert object to JSON string
                 headers: {
+                    "Content-Type": "application/json",
                     'Accept': 'application/json',
                     'Authorization': `Bearer ${token}`
                 }
@@ -348,18 +363,22 @@ const Foryou = ({ scroll, navigation, token }) => {
             }
 
             const data = await response.json();
+            setp2text("Posted")
             console.log(data);
             bottomSheetRef.current?.close()
             setTimeout(() => {
                 bottomSheetRef2.current?.close();
-            }, 3000);
+            }, 1000);
         } catch (err) {
             console.error("Error:", err);
+        }
+        finally {
+            setp2u(false)
         }
     };
     const post4 = async function () {
 
-
+        setp4u(true);
 
         const postType = "jobPost"; // Define postType value
         const finaldata = {
@@ -368,7 +387,7 @@ const Foryou = ({ scroll, navigation, token }) => {
             "duration": duration4,
             "pay": pay4,
         };
-
+        if (p4u) { return }
 
         console.log('====================================');
         console.log(finaldata);
@@ -391,6 +410,7 @@ const Foryou = ({ scroll, navigation, token }) => {
             }
 
             const data = await response.json();
+            setp4text("Posted")
             console.log(data);
             bottomSheetRef.current?.close()
             setTimeout(() => {
@@ -399,8 +419,13 @@ const Foryou = ({ scroll, navigation, token }) => {
         } catch (err) {
             console.error("Error:", err);
         }
+        finally {
+            setp4u(false);
+
+        }
     };
     const post3 = async function () {
+        setp3u(true)
         let hasError = false;
         if (uri == "") {
             seterr6(true)
@@ -412,6 +437,7 @@ const Foryou = ({ scroll, navigation, token }) => {
         }
 
         if (hasError) { return };
+        if (p3u) return;
 
         // Define postType value
 
@@ -444,6 +470,7 @@ const Foryou = ({ scroll, navigation, token }) => {
             }
 
             const data = await response.json();
+            setp3text("Posted")
             console.log(data);
             bottomSheetRef.current?.close()
             setTimeout(() => {
@@ -452,11 +479,15 @@ const Foryou = ({ scroll, navigation, token }) => {
         } catch (err) {
             console.error("Error:", err);
         }
+        finally {
+            setp3u(false)
+        }
     };
 
 
     // Function to open the bottom sheet
     const openBottomSheet = () => {
+        setwillopen(true)
         // setfirstbottomsheet(true)
         function open() {
             bottomSheetRef.current?.expand();
@@ -1088,11 +1119,23 @@ const Foryou = ({ scroll, navigation, token }) => {
         )
     }
 
-    function header() {
+    function Header() {
         return (
-            <View style={[main.header, { backgroundColor: "#16181a" }]}>
+            <ScrollView
+                refreshControl={
+                    <RefreshControl progressViewOffset={0} refreshing={refreshing1}
+                        onRefresh={() => {
+                            setRefreshing1(true);
+                            getdata()
+
+
+                            setTimeout(() => {
+                                setRefreshing1(false); // Stop refreshing after fetching data
+                            }, 2000); // Adjust the delay as needed
+                        }} />}
+                style={[main.header, { backgroundColor: "#16181a" }]}>
                 <Text allowFontScaling={false} style={main.headertext}>For you</Text>
-            </View>
+            </ScrollView>
         )
     }
 
@@ -1123,9 +1166,10 @@ const Foryou = ({ scroll, navigation, token }) => {
 
                 {/* <TouchableWithoutFeedback onPress={closebottomsheet}> */}
                 {/* <View style={{ position: "absolute" }}> */}
+                {allpost.length == 0 && <Header />}
                 {allpost.length > 0 && <FlatList
 
-                    ListHeaderComponent={header}
+                    ListHeaderComponent={Header}
                     // scrollEventThrottle={0}
                     showsVerticalScrollIndicator={false}
                     style={main.scroll1}
@@ -1179,7 +1223,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                 </Pressable>
 
 
-                 <BottomSheet
+                <BottomSheet
 
 
                     overlayColor="rgba(0, 0, 0, 0.9)"
@@ -1197,6 +1241,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                         // Keyboard.dismiss()
                         setstatus(false)
                         setp1u(false)
+                        setwillopen(false)
 
                     }}
                     index={-1} // Initially closed
@@ -1210,7 +1255,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                 {/* bottomsheet 1 */}
 
 
-                <BottomSheet
+                {willopen && <BottomSheet
                     nestedScrollEnabled={true}
                     overlayColor="rgba(0, 0, 0, 0.5)"
                     enablePanDownToClose
@@ -1223,6 +1268,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                         marginTop: 20
 
                     }}
+                    onClose={() => { setp2u(false) }}
                     style={{ marginTop: 60 }}
 
                     ref={bottomSheetRef1}
@@ -1367,7 +1413,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                         {err3 && <Text style={styles.error1}> *please enter this field</Text>}
 
                         <Pressable onPress={post1} style={styles.post}>
-                            {!p1u && <Text style={styles.posttext}>Post</Text>}
+                            {!p1u && <Text style={styles.posttext}>{p1text}</Text>}
                             {p1u && <ActivityIndicator size={24} color="#16181a" />}
                         </Pressable>
 
@@ -1376,7 +1422,7 @@ const Foryou = ({ scroll, navigation, token }) => {
 
 
 
-                </BottomSheet>
+                </BottomSheet>}
                 {/* bottomsheet1  */}
 
 
@@ -1384,7 +1430,7 @@ const Foryou = ({ scroll, navigation, token }) => {
 
                 {/* bottomsheet 2 */}
 
-                <BottomSheet
+                {willopen && <BottomSheet
                     nestedScrollEnabled={true}
                     overlayColor="rgba(0, 0, 0, 0.5)"
                     enablePanDownToClose
@@ -1467,7 +1513,9 @@ const Foryou = ({ scroll, navigation, token }) => {
 
 
                         <Pressable onPress={post2} style={styles.post}>
-                            <Text style={styles.posttext}>Post</Text>
+
+                            {!p2u && <Text style={styles.posttext}>{p2text}</Text>}
+                            {p2u && <ActivityIndicator size={24} color="#16181a" />}
                         </Pressable>
 
 
@@ -1475,11 +1523,11 @@ const Foryou = ({ scroll, navigation, token }) => {
 
 
 
-                </BottomSheet>
+                </BottomSheet>}
 
-                {/* 333 */}
+                {/* 222 */}
 
-                <BottomSheet
+                {willopen && <BottomSheet
                     nestedScrollEnabled={true}
                     overlayColor="rgba(0, 0, 0, 0.5)"
                     enablePanDownToClose
@@ -1525,6 +1573,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                             placeholderTextColor="#B8B8B8"
                             style={styles.input}
                             value={c2}
+                            onClose={() => { setp3u(false) }}
                             onTextInput={() => { if (err7) seterr7(false) }}
                             onChangeText={(text) => { setc2(text) }}
                         />
@@ -1536,118 +1585,125 @@ const Foryou = ({ scroll, navigation, token }) => {
 
 
                         <Pressable onPress={post3} style={styles.post}>
-                            <Text style={styles.posttext}>Post</Text>
+                            {/* <Text style={styles.posttext}>Post</Text> */}
+
+                            {!p3u && <Text style={styles.posttext}>{p3text}</Text>}
+                            {p3u && <ActivityIndicator size={24} color="#16181a" />}
                         </Pressable>
 
 
                     </BottomSheetScrollView>
-                </BottomSheet>
+                </BottomSheet>}
+
+                {/* 333 */}
+
+                {willopen &&
+                    <BottomSheet
+                        nestedScrollEnabled={true}
+                        overlayColor="rgba(0, 0, 0, 0.5)"
+                        enablePanDownToClose
+                        backgroundStyle={{ backgroundColor: '#222222', borderRadius: 30 }}
+                        // backgroundStyle={{ backgroundColor: 'red', borderRadius: 30 }}
+                        // height={100}
+                        handleIndicatorStyle={{
+                            backgroundColor: '#00de62',
+                            width: 70,
+                            marginTop: 20
+
+                        }}
+                        style={{ marginTop: 60 }}
+                        enableDynamicSizing={true}
+                        keyboardBehavior="fill-parent"
+                        ref={bottomSheetRef4}
+                        snapPoints={snapPoints4}
+                        index={-1} // Initially closed
+
+                    >
+
+                        <View style={{ height: 80, marginTop: -5 }} ><B4 /></View>
+                        <BottomSheetScrollView
+                            nestedScrollEnabled={true} style={{
+                                flex: 1,
+                                minHeight: 2000,
+                                // backgroundColor: "red",
+                                flexGrow: 1
+
+                            }}>
+
+                            <BottomSheetTextInput
+                                allowFontScaling={false}
+                                placeholder="Role"
+                                placeholderTextColor="#B8B8B8"
+                                style={styles.input}
+                                value={role4}
+                                onChangeText={(text) => { setrole4(text) }}
+                            />
+
+
+                            <Text style={{
+                                fontSize: 20,
+                                width: "92%",
+                                paddingLeft: 10,
+                                marginHorizontal: "auto",
+                                color: "#B8B8B8"
+                            }}>Description:</Text>
+
+                            <BottomSheetView style={{ position: "relative" }}>
+                                <Text style={[styles.t2, styles.count]}>{textlength}/100</Text>
+                                <BottomSheetTextInput
+                                    allowFontScaling={false}
+                                    placeholder=""
+                                    placeholderTextColor="#B8B8B8"
+                                    style={styles.input1}
+                                    maxLength={100}
+                                    multiline={true}
+                                    // onFocus={handleOutsideTouch}
+                                    // onPress={handleOutsideTouch}
+                                    value={description4}
+                                    onChangeText={(text) => {
+                                        setdescription4(text)
+                                        counttext(text)
+                                    }}
+                                />
+                            </BottomSheetView>
+
+                            <BottomSheetTextInput
+                                allowFontScaling={false}
+                                placeholder="Duration"
+                                placeholderTextColor="#B8B8B8"
+                                style={styles.input}
+                                value={duration4}
+                                onChangeText={(text) => { setduration4(text) }}
+                            />
+
+                            <BottomSheetTextInput
+                                allowFontScaling={false}
+                                placeholder="Pay"
+                                placeholderTextColor="#B8B8B8"
+                                style={styles.input}
+                                value={pay4}
+                                onChangeText={(text) => { setpay4(text) }}
+                            />
+
+
+                            <Pressable onPress={post4} style={styles.post}>
+                                {/* <Text style={styles.posttext}>{p4text}</Text> */}
+
+                                {!p4u && <Text style={styles.posttext}>{p4text}</Text>}
+                                {p4u && <ActivityIndicator size={24} color="#16181a" />}
+                            </Pressable>
+
+
+                        </BottomSheetScrollView>
+
+                    </BottomSheet>}
 
                 {/* 333 */}
 
 
-                <BottomSheet
-                    nestedScrollEnabled={true}
-                    overlayColor="rgba(0, 0, 0, 0.5)"
-                    enablePanDownToClose
-                    backgroundStyle={{ backgroundColor: '#222222', borderRadius: 30 }}
-                    // backgroundStyle={{ backgroundColor: 'red', borderRadius: 30 }}
-                    // height={100}
-                    handleIndicatorStyle={{
-                        backgroundColor: '#00de62',
-                        width: 70,
-                        marginTop: 20
-
-                    }}
-                    style={{ marginTop: 60 }}
-                    enableDynamicSizing={true}
-                    keyboardBehavior="fill-parent"
-                    ref={bottomSheetRef4}
-                    snapPoints={snapPoints4}
-                    index={-1} // Initially closed
-
-                >
-
-                    <View style={{ height: 80, marginTop: -5 }} ><B4 /></View>
-                    <BottomSheetScrollView
-                        nestedScrollEnabled={true} style={{
-                            flex: 1,
-                            minHeight: 2000,
-                            // backgroundColor: "red",
-                            flexGrow: 1
-
-                        }}>
-
-                        <BottomSheetTextInput
-                            allowFontScaling={false}
-                            placeholder="Role"
-                            placeholderTextColor="#B8B8B8"
-                            style={styles.input}
-                            value={role4}
-                            onChangeText={(text) => { setrole4(text) }}
-                        />
 
 
-                        <Text style={{
-                            fontSize: 20,
-                            width: "92%",
-                            paddingLeft: 10,
-                            marginHorizontal: "auto",
-                            color: "#B8B8B8"
-                        }}>Description:</Text>
-
-                        <BottomSheetView style={{ position: "relative" }}>
-                            <Text style={[styles.t2, styles.count]}>{textlength}/100</Text>
-                            <BottomSheetTextInput
-                                allowFontScaling={false}
-                                placeholder=""
-                                placeholderTextColor="#B8B8B8"
-                                style={styles.input1}
-                                maxLength={100}
-                                multiline={true}
-                                // onFocus={handleOutsideTouch}
-                                // onPress={handleOutsideTouch}
-                                value={description4}
-                                onChangeText={(text) => {
-                                    setdescription4(text)
-                                    counttext(text)
-                                }}
-                            />
-                        </BottomSheetView>
-
-                        <BottomSheetTextInput
-                            allowFontScaling={false}
-                            placeholder="Duration"
-                            placeholderTextColor="#B8B8B8"
-                            style={styles.input}
-                            value={duration4}
-                            onChangeText={(text) => { setduration4(text) }}
-                        />
-
-                        <BottomSheetTextInput
-                            allowFontScaling={false}
-                            placeholder="Pay"
-                            placeholderTextColor="#B8B8B8"
-                            style={styles.input}
-                            value={pay4}
-                            onChangeText={(text) => { setpay4(text) }}
-                        />
-
-
-                        <Pressable onPress={post4} style={styles.post}>
-                            <Text style={styles.posttext}>Post</Text>
-                        </Pressable>
-
-
-                    </BottomSheetScrollView>
-
-                </BottomSheet>
-
-
-
-
-                {/* fuck */}
-
+                {/* 444 */}
 
                 <BottomSheet
 
@@ -1663,6 +1719,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                     onClose={() => {
                         setcomment(false)
                         setstatus(false)
+                        setp4u(false)
                         // Keyboard.dismiss()
                         // headeref.current.setNativeProps({
                         //     style: { zIndex: 1 }, // Change the style here
@@ -1683,7 +1740,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                             data={allcomments}
                             renderItem={comments}
                             scrollEnabled={true}
-                            style={{ flex: 0.7, height: 100, overflow: "hidden" }}
+                            style={{ flex: 0.7, height: "100", overflow: "hidden" }}
                         // contentContainerStyle={  }}
 
                         />
@@ -1711,7 +1768,7 @@ const Foryou = ({ scroll, navigation, token }) => {
 
                 </BottomSheet>
 
-                {/* bottomsheet 1 */}
+                {/* bottomsheet 4 */}
             </GestureHandlerRootView>
         </SafeAreaView >
 

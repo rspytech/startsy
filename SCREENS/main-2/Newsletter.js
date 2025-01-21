@@ -13,12 +13,14 @@ import {
     Dimensions,
     StatusBar,
     FlatList,
+    BackHandler,
     RefreshControl,
+    TouchableOpacity
 
 } from "react-native";
 import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
 import Skeleton from "react-content-loader/native";
-
+import Profile from "@/assets/icons/profile.js";
 import Search from "../../assets/icons/Search.js";
 import main from "../../styles/main.js"
 import { LinearGradient } from "expo-linear-gradient";
@@ -44,6 +46,7 @@ const NewsLetter = ({ navigation, route }) => {
 
 
     const [newsletter, setnewsletter] = useState([])
+    const [showbox, setshowbox] = useState(false)
     const [filterednewsletter, setfilterednewsletter] = useState([])
 
 
@@ -63,7 +66,7 @@ const NewsLetter = ({ navigation, route }) => {
             console.log(data.data[0]);
             setnewsletter(data.data)
             setfilterednewsletter(data.data)
-         
+
 
 
         }
@@ -119,43 +122,43 @@ const NewsLetter = ({ navigation, route }) => {
         }
         return (
 
-        
-                <Pressable onPress={() => {
-                    navigation.navigate("NewsletterPage", { navigation, item: item })
-                }}>
-                    <LinearGradient
-                        colors={["rgba(33, 34, 35, 0.4)", "rgba(25, 26, 27, 0.6)"]}
-                        locations={[0, 1]}
-                        start={{ x: 0, y: 0 }}
-                        end={{ x: 0, y: 1 }}
-                        style={styles.box}>
-                        <Image style={styles.image} source={{ uri: item.newsletterImage }} />
+
+            <Pressable onPress={() => {
+                navigation.navigate("NewsletterPage", { navigation, item: item })
+            }}>
+                <LinearGradient
+                    colors={["rgba(33, 34, 35, 0.4)", "rgba(25, 26, 27, 0.6)"]}
+                    locations={[0, 1]}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 1 }}
+                    style={styles.box}>
+                    <Image style={styles.image} source={{ uri: item.newsletterImage }} />
 
 
-                        <Text style={styles.text}>
-                            <Text numberOfLines={2}
-                                ellipsizeMode="tail"
-                                allowFontScaling={false} style={styles.des}>Description:</Text> {item.title}
+                    <Text style={styles.text}>
+                        <Text numberOfLines={2}
+                            ellipsizeMode="tail"
+                            allowFontScaling={false} style={styles.des}>Description:</Text> {item.title}
 
-                        </Text>
+                    </Text>
 
-                        <View style={styles.bottominfo}>
-                            <Image style={styles.topimage} source={{ uri: item.taggedUser.profilePhoto }} />
-                            <Text style={styles.topu1}>{item.taggedUserName}</Text>
-                            <Text style={styles.topu2}>{item.taggedUser.role}</Text>
-                            <View style={styles.circle}></View>
+                    <View style={styles.bottominfo}>
+                        <Image style={styles.topimage} source={{ uri: item.taggedUser.profilePhoto }} />
+                        <Text style={styles.topu1}>{item.taggedUserName}</Text>
+                        <Text style={styles.topu2}>{item.taggedUser.role}</Text>
+                        <View style={styles.circle}></View>
 
-                            <AutoSizeText
-                                numberOfLines={1}
-                                fontSize={12}
-                                mode={ResizeTextMode.max_lines}
-                                ellipsizeMode='tail'
-                                style={styles.time}>{time(item.taggedUser.createdAt)}
-                            </AutoSizeText>
-                        </View>
-                    </LinearGradient>
-                </Pressable>
-         
+                        <AutoSizeText
+                            numberOfLines={1}
+                            fontSize={12}
+                            mode={ResizeTextMode.max_lines}
+                            ellipsizeMode='tail'
+                            style={styles.time}>{time(item.taggedUser.createdAt)}
+                        </AutoSizeText>
+                    </View>
+                </LinearGradient>
+            </Pressable>
+
 
         )
     }
@@ -163,13 +166,13 @@ const NewsLetter = ({ navigation, route }) => {
 
     const Render = () => {
         return (
-          <View style={styles.skeletonWrapper}>
-            <Skeleton width={width * 0.7} height={200} />
-            <Skeleton width={width * 0.7} height={20} />
-            <Skeleton width={width * 0.7} height={20} />
-          </View>
+            <View style={styles.skeletonWrapper}>
+                <Skeleton width={width * 0.7} height={200} />
+                <Skeleton width={width * 0.7} height={20} />
+                <Skeleton width={width * 0.7} height={20} />
+            </View>
         );
-      };
+    };
     const renderItem1 = ({ item }) => {
 
         function time(time) {
@@ -253,25 +256,108 @@ const NewsLetter = ({ navigation, route }) => {
     }
 
     const [refreshing, setRefreshing] = useState(false)
+    const [suggestionarray, setsuggestionarray] = useState([])
+    const [text1, settext] = useState("")
 
     function search(text) {
         console.log(text);
 
         // console.log(filterednewsletter[0].content);
-
-        setfilterednewsletter(newsletter.filter(item =>
-            text === "" || item.content.toLowerCase().includes(text.toLowerCase())
-        ))
+        if (text[0] != "@") {
+            setfilterednewsletter(newsletter.filter(item =>
+                text === "" || item.content.toLowerCase().includes(text.toLowerCase())
+            ))
+        }
     }
+
+
+    async function searchUser() {
+
+        console.log(text1);
+
+
+
+        try {
+            const response = await fetch(`${url}api/getUserNameSuggestions/${text1}`, {
+                method: 'GET',
+                headers: {
+                    accept: "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            // setloading(false)
+            console.log(data);
+            setshowbox(true)
+
+            console.log(data.message);
+            console.log(data.message[0]);
+            console.log(data.message[0].profilePhoto);
+            setsuggestionarray(data.data)
+
+        }
+        catch (err) {
+            console.log(err);
+
+        }
+    }
+
+    function renderSuggestion({ item }) {
+        return (
+            // <Text style={{color : "#fff"}}>hello</Text>
+            <TouchableOpacity onPress={() => {
+                navigation.navigate("Singleuserpage", { token: token, id: item._id, page: "NewsLetter" })
+            }}>
+                <View style={styles.listItem}>
+                    {/* <Image
+                        source={{ uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8slgZXgqnSIXDS8wF2uDT_SmsYlBe-W1soQ&s" }}
+                        style={styles.avatar} /> */}
+                    {!item.profilePhoto && <Image style={styles.avatar} source={require("../../assets/images/blank.png")} />}
+                    {item.profilePhoto && <Image style={styles.avatar} source={{ uri: item.profilePhoto }} />}
+
+
+
+
+                    <View style={styles.textContainer}>
+                        <Text allowFontScaling={false} style={styles.username}>{item.userName}</Text>
+                        <Text allowFontScaling={false} style={styles.message}>{item.role}</Text>
+                    </View>
+                    {/* <Text allowFontScaling={false} style={styles.time}> "today"}</Text> */}
+                </View>
+            </TouchableOpacity>
+        )
+    }
+    useEffect(() => {
+        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+            if (showbox) {
+                console.log("hiiiii");
+                
+                setshowbox(false)
+                return true; // This prevents the default back action
+            }
+            return false;
+        });
+
+        return () => backHandler.remove();
+    }, []);
 
 
 
     return (
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#16181a" }}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#16181a", position: "relative" }}>
 
-            {!filterednewsletter && <Render/>}
+            {!filterednewsletter && <Render />}
 
-            {filterednewsletter && <FlatList style={styles.container}
+            {showbox && <FlatList
+                data={suggestionarray}
+                renderItem={renderSuggestion}
+                style={styles.suggestionbox}>
+
+            </FlatList>}
+
+            {filterednewsletter && <FlatList
+                onTouchStart={() => setshowbox(false)}
+                style={styles.container}
                 data={filterednewsletter}
                 contentContainerStyle={{ paddingBottom: 100 }}
                 renderItem={renderItem1}
@@ -294,7 +380,12 @@ const NewsLetter = ({ navigation, route }) => {
                                 style={styles.searchInput}
                                 placeholder="Search"
                                 placeholderTextColor="#828282"
-                                onChangeText={(text) => { search(text) }}
+                                onChangeText={(text) => {
+                                    settext(text)
+                                    search(text)
+                                }}
+                                returnKeyType="done" // Adjusts the keyboard's Enter key label
+                                onSubmitEditing={(text) => { searchUser(text) }}
                             />
                         </View>
                         <View style={styles.divider}></View>
@@ -544,11 +635,61 @@ const styles = StyleSheet.create({
 
     },
     skeletonWrapper: {
-    padding: 10,
-    backgroundColor: '#24272A',
-    marginHorizontal: 6,
-    borderRadius: 15,
-    marginBottom: 15,
-  },
+        padding: 10,
+        backgroundColor: '#24272A',
+        marginHorizontal: 6,
+        borderRadius: 15,
+        marginBottom: 15,
+    },
+
+    suggestionbox: {
+        width: "100%",
+        height: 320,
+        backgroundColor: "#16181a",
+        position: "absolute",
+        top: 120,
+        elevation: 100,
+        zIndex: 1000
+    },
+    listItem: {
+        flexDirection: "row",
+        alignItems: "center",
+        paddingVertical: 5,
+        // borderBottomWidth: 1,
+        borderRadius: 20,
+        backgroundColor: "#24272A",
+        // borderBottomColor: "#333",
+        // alignSelf: "flex-start",
+        width: "95%",
+        marginVertical: 5,
+        paddingHorizontal: 20,
+        marginHorizontal: "auto"
+    },
+    avatar: {
+        width: 50,
+        height: 52,
+        paddingTop: 15,
+        borderRadius: 25,
+        marginRight: 15,
+        marginTop: 0,
+    },
+    textContainer: {
+        flex: 1,
+        alignSelf: "flex-start",
+    },
+    username: {
+        fontSize: 22,
+        color: "#B8B8B8",
+        fontFamily: "Alata",
+        alignSelf: "flex-start",
+        marginTop: 0,
+        marginBottom: 0
+    },
+    message: {
+        fontSize: 12,
+        color: "#B8B8B8",
+        color: "#00DE62",
+        marginTop: -3,
+    },
 
 })

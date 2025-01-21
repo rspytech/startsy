@@ -6,51 +6,55 @@ import { AutoSizeText, ResizeTextMode } from "react-native-auto-size-text";
 
 function Upvotedata() {
 
-    useFocusEffect(
-    
-        useCallback(() => {
-            if (token) {
-                setloading(true)
-                async function getData1() {
-                    try {
-                        const response = await fetch(
-                            `${url}notification/getUserNotifiation`,
-                            {
-                                method: "GET",
-                                headers: {
-                                    accept: "application/json",
-                                    Authorization: `Bearer ${token}`,
-                                },
-                            }
-                        );
-                        const result = await response.json();
-
-                        console.log(result);
-                        
-                        // console.log(result.data.totalUpvotes);
-                        // console.log(result.data.upvotesPerDay);
-                        // console.log(result.data.investorUpvotes);
-
-                        // setstatistic(result.data)
-
-                        // console.log(result.data[0].investor.roleId.user_id.profilePhoto);
-                        // console.log(result.data[0].investor.roleId.user_id.userName);
-                        // console.log(result.data[0].investor.roleId.user_id.role);
-                        // console.log(result.data[0].investor.roleId.previousExperience);
-                        // console.log(result.data[0].requestDate);
-
-                    } catch (err) {
-                        console.log(err);
-                    }
-                    finally {
-                        setloading(false);
-                    }
+    async function getData1() {
+        try {
+            const response = await fetch(
+                `${url}notification/getUserNotifiation`,
+                {
+                    method: "GET",
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
                 }
+            );
+            const result = await response.json();
 
-                getData1();
-            }
-        }, [])
-    );
+            console.log(result);
+
+            // console.log(result.data.totalUpvotes);
+            // console.log(result.data.upvotesPerDay);
+            // console.log(result.data.investorUpvotes);
+
+            // setstatistic(result.data)
+
+            // console.log(result.data[0].investor.roleId.user_id.profilePhoto);
+            // console.log(result.data[0].investor.roleId.user_id.userName);
+            // console.log(result.data[0].investor.roleId.user_id.role);
+            // console.log(result.data[0].investor.roleId.previousExperience);
+            // console.log(result.data[0].requestDate);
+
+        } catch (err) {
+            console.log(err);
+        }
+        finally {
+            setloading(false);
+        }
+    }
+
+    // useFocusEffect(
+
+    //     useCallback(() => {
+    //         if (token) {
+    //             setloading(true)
+    //             getData1();
+    //         }
+    //         return () => {
+    //             // If you need to abort the fetch or cleanup, do it here.
+    //             // Example: controller.abort() if you are using AbortController
+    //           };
+    //     }, [token])
+    // );
 
 
     return (

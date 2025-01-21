@@ -15,6 +15,7 @@ import {
     ScrollView,
     StatusBar,
     FlatList,
+    ActivityIndicator,
     TouchableWithoutFeedback
 } from "react-native";
 // import { FlatList, ScrollView } from 'react-native-gesture-handler';
@@ -30,7 +31,7 @@ import Entypo from '@expo/vector-icons/Entypo';
 import { useFocusEffect } from "expo-router";
 import { GlobalContext } from "@/Global/globalcontext.js";
 // import { FlatList } from "react-native-gesture-handler";
-import {url} from "../config.js"
+import { url } from "../config.js"
 
 
 
@@ -40,7 +41,7 @@ const Signup11 = ({ navigation, route }) => {
 
     const [token, settoken] = useState("")
     const { globaldata, updateField } = useContext(GlobalContext);
-    const [loading, setloading] = useState(true)
+    const [loading, setloading] = useState(false)
 
     useEffect(() => {
         console.log(globaldata, "global data");
@@ -48,7 +49,7 @@ const Signup11 = ({ navigation, route }) => {
     }, [])
     const type = "Founder"
     useFocusEffect(() => {
-        StatusBar.setBackgroundColor("#1e1e1e")
+        StatusBar.setBackgroundColor("#16181a")
         StatusBar.setBarStyle("light-content")
     })
 
@@ -60,6 +61,79 @@ const Signup11 = ({ navigation, route }) => {
 
 
     async function finalsubmit() {
+
+
+
+
+        for (var i = 0; i < teammember.length; i++) {
+            console.log(i);
+
+            var member = teammember[i];
+            console.log(member);
+
+            // Check if all fields are empty
+            if (member.username === "" && member.name === "" && member.role === "") {
+                // Do nothing or handle as needed
+                console.log("All fields are empty for member at index", i);
+                continue;
+            }
+
+            // Check if only `username` is filled
+            if (member.username !== "" && member.name === "" && member.role === "") {
+                var updatedTeam = teammember.map((t, index) => {
+                    if (i === index) {
+                        return { ...t, nameError: true, roleError: true };
+                    } else return t;
+                });
+                console.log(updatedTeam, "Name and Role are missing");
+                setteammember(updatedTeam);
+                return;
+            }
+
+            // Check if only `name` is filled
+            if (member.username === "" && member.name !== "" && member.role === "") {
+                var updatedTeam = teammember.map((t, index) => {
+                    if (i === index) {
+                        return { ...t, usernameError: true, roleError: true };
+                    } else return t;
+                });
+                console.log(updatedTeam, "Username and Role are missing");
+                setteammember(updatedTeam);
+                return;
+            }
+
+            // Check if only `role` is filled
+            if (member.username === "" && member.name === "" && member.role !== "") {
+                var updatedTeam = teammember.map((t, index) => {
+                    if (i === index) {
+                        return { ...t, usernameError: true, nameError: true };
+                    } else return t;
+                });
+                console.log(updatedTeam, "Username and Name are missing");
+                setteammember(updatedTeam);
+                return;
+            }
+
+            // Check if any single field is missing
+            if (member.username === "" || member.name === "" || member.role === "") {
+                var updatedTeam = teammember.map((t, index) => {
+                    if (i === index) {
+                        return {
+                            ...t,
+                            usernameError: member.username === "",
+                            nameError: member.name === "",
+                            roleError: member.role === "",
+                        };
+                    } else return t;
+                });
+                console.log(updatedTeam, "Some fields are missing");
+                setteammember(updatedTeam);
+                return;
+            }
+        }
+
+
+
 
         const final = new FormData();
         for (var items of form["_parts"]) {
@@ -94,7 +168,14 @@ const Signup11 = ({ navigation, route }) => {
 
         })
 
+
+        console.log(array);
+
         final.append("teamInfo", JSON.stringify(array));
+
+
+        console.log(final);
+
 
         setloading(true)
         try {
@@ -102,13 +183,24 @@ const Signup11 = ({ navigation, route }) => {
                 method: 'POST',
                 body: final,
                 headers: {
-                    accept: "application/json",
+                    // accept: "application/json",
                     "Authorization": token,
                 },
             });
             const data = await response.json();
+
+            console.log(data);
+            console.log(response.status);
+
             if (response.status == 200) {
                 navigation.navigate("Main2")
+            }
+            else if (response.status == 555) {
+                for (items of data.invalidTeamMates) {
+                    teammember[items].tagerror = true;
+                    setteammember(teammember)
+                }
+
             }
 
         }
@@ -122,7 +214,7 @@ const Signup11 = ({ navigation, route }) => {
 
         setloading(false)
 
-        navigation.navigate("Main2")
+        // navigation.navigate("Main2")
 
     }
 
@@ -138,20 +230,74 @@ const Signup11 = ({ navigation, route }) => {
 
     const [teammember, setteammember] = useState([{ id: Date.now(), username: '', name: '', role: "" }]);
     function addteammember() {
+
+        console.log("hi");
+
         setteammember(
             [...teammember, { id: Date.now(), username: '', name: '', role: '' }]
         )
     }
+    function deleteteammember(index) {
+        console.log(index);
+
+        const updatedTeamMembers = [...teammember];
+        updatedTeamMembers.splice(index, 1);
+        // console.log(ar1);
+
+        setteammember(updatedTeamMembers)
+
+    }
     function handleworkchange(id, field, value) {
         var array = teammember.map((e) => {
             if (e.id === id) {
-                return { ...e, [field]: value }
+                return { ...e, [field]: value , nameError : false , roleError : false , usernameError : false };
 
             }
-            else return e
+            else return {...e , roleError : false , usernameError : false , nameError : false}
         })
         setteammember(array);
     }
+
+    let debounceTimeout;
+    let status = true;
+
+    async function getSuggestions(text) {
+
+        // Clear the debounce timer
+        clearTimeout(debounceTimeout);
+
+        // Debounce API calls
+        debounceTimeout = setTimeout(async () => {
+            console.log(text);
+            console.log({ "name": text });
+
+            if (!status) return;
+
+            status = false; // Prevent multiple concurrent calls
+
+            try {
+                const response = await fetch(`${url}api/getUserNameSuggestions/${text}`, {
+                    method: 'GET',
+                    headers: {
+                        accept: "application/json",
+                        "Authorization": token,
+                    },
+                });
+
+                const data = await response.json();
+
+                console.log(data);
+                console.log(response.status);
+
+                // Handle response (e.g., update suggestions state in UI)
+            } catch (err) {
+                console.error('Error fetching suggestions:', err);
+            } finally {
+                status = true; // Allow new requests
+            }
+        }, 1000); // Adjust debounce delay as needed
+    }
+
 
 
 
@@ -177,11 +323,14 @@ const Signup11 = ({ navigation, route }) => {
 
                     <View style={styles.bottom}>
                         <Text style={styles.t1}>Team Information</Text>
-                        {teammember.map((we) => (
+                        {teammember.map((we, index) => (
                             <View key={we.id} style={styles.certificate}>
                                 <Pressable onPress={addteammember}>
                                     <Entypo style={styles.plus} name="plus" size={24} color="#00DE62" />
                                 </Pressable>
+                                {index > 0 && <Pressable onPress={() => { deleteteammember(index) }}>
+                                    <FontAwesome6 name="trash" style={styles.minus} size={15} color="#00DE62" />
+                                </Pressable>}
 
                                 <TextInput
                                     allowFontScaling={false}
@@ -189,8 +338,13 @@ const Signup11 = ({ navigation, route }) => {
                                     placeholderTextColor="#B8B8B8"
                                     style={[styles.input, { marginTop: 20, backgroundColor: "transparent" }]}
                                     value={we.username}
-                                    onChangeText={(text) => { handleworkchange(we.id, "username", text) }}
+                                    onChangeText={(text) => {
+                                        // getSuggestions(text)
+                                        handleworkchange(we.id, "username", text)
+                                    }}
                                 />
+                                {we.usernameError && <Text style={styles.err}>please enter a valid username</Text>}
+                                {we.tagerror && <Text style={styles.err}>* user not found</Text>}
                                 <TextInput
                                     allowFontScaling={false}
                                     placeholder="Name"
@@ -199,6 +353,8 @@ const Signup11 = ({ navigation, route }) => {
                                     value={we.name}
                                     onChangeText={(text) => { handleworkchange(we.id, "name", text) }}
                                 />
+                                {we.nameError && <Text style={styles.err}>* please enter name</Text>}
+
                                 <TextInput
                                     allowFontScaling={false}
                                     placeholder="Role"
@@ -207,6 +363,8 @@ const Signup11 = ({ navigation, route }) => {
                                     value={we.role}
                                     onChangeText={(text) => { handleworkchange(we.id, "role", text) }}
                                 />
+                                {we.roleError && <Text style={styles.err}>* please enter role</Text>}
+
 
                             </View>
                         ))}
@@ -216,7 +374,8 @@ const Signup11 = ({ navigation, route }) => {
                                 // console.log(workexperience);
                             }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
                             <Pressable style={styles.btn} onPress={() => { finalsubmit() }}>
-                                <Text allowFontScaling={false} style={styles.nexttext}>Submit</Text>
+                                {loading && <ActivityIndicator size={24} color="#16181a" />}
+                                {!loading && <Text allowFontScaling={false} style={styles.nexttext}>Submit</Text>}
                             </Pressable>
                         </View>
 
@@ -349,6 +508,24 @@ const styles = StyleSheet.create({
         right: 5,
         top: -5,
         zIndex: 100
+    },
+    minus: {
+        position: "absolute",
+        right: 45,
+        top: -3,
+        zIndex: 100
+    },
+    err: {
+        marginVertical: 0,
+        marginTop: -20,
+        marginBottom: 10,
+        textAlign: "left",
+        // backgroundColor : "red",
+        width: "90%",
+        marginHorizontal: "auto",
+        color: "#E65858",
+        fontSize: 12,
+        fontFamily: "Roboto",
     }
 
 

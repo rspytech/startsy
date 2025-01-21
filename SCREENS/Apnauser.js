@@ -1,12 +1,12 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
 import { View, Text, Image, FlatList, StatusBar, RefreshControl, ActivityIndicator, StyleSheet, BackHandler, SafeAreaView, ScrollView, Pressable, Dimensions } from "react-native";
 import Entypo from '@expo/vector-icons/Entypo';
-import EvilIcons from '@expo/vector-icons/EvilIcons'; import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import EvilIcons from '@expo/vector-icons/EvilIcons';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Banner from "../assets/icons/banner.js"
 import Upvote from '@/assets/icons/upvote';
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
-
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as ImagePicker from 'expo-image-picker';
 import Post from "../components/Post.js"
 import { useRoute } from '@react-navigation/native';
@@ -17,7 +17,7 @@ import Share from "@/assets/icons/share.js";
 import styles from "../styles/post.js"
 import { jwtDecode } from 'jwt-decode';
 import { useFocusEffect } from 'expo-router';
-
+import Logout from "../assets/icons/logout.js"
 const Apnauser = ({ navigation, props, token }) => {
     // console.log(token);
     var mypage = true
@@ -61,7 +61,7 @@ const Apnauser = ({ navigation, props, token }) => {
         useFocusEffect(
             useCallback(() => {
                 console.log("post");
-                console.log(posts, "fuck");
+                console.log(posts, "ok");
 
                 // handleTabChange(1)
             })
@@ -74,6 +74,12 @@ const Apnauser = ({ navigation, props, token }) => {
                 {posts?.length == 0 && <Text style={styles1.no}>You have not posted anything yet</Text>}
 
                 <FlatList
+                    getItemLayout={(data, index) => ({
+                        length: 400,
+                        offset: 400 * index,
+                        index,
+                    })}
+                    keyExtractor={(item, index) => index.toString()}
                     data={posts}
                     renderItem={renderItem}
 
@@ -147,6 +153,8 @@ const Apnauser = ({ navigation, props, token }) => {
             });
             const data = await response.json();
 
+            console.log(data);
+
             console.log(data.data.chatUsers, "poiuytr");
 
             setinvestorarray(data.data.chatUsers.filter((e) => e.role == "Investor"))
@@ -154,15 +162,15 @@ const Apnauser = ({ navigation, props, token }) => {
             setPosts(data.data.posts)
             setuserdata(data.data)
 
-            setMinHeight(data.data.posts.length * 400)
+            setMinHeight(data.data.posts.length * 700)
             setImage(data.data.user_id.bannerImage)
 
             console.log(data.data);
-            
-
             console.log(data.data.user_id.bannerImage);
+            console.log(image);
 
-           
+
+
 
 
         }
@@ -176,7 +184,7 @@ const Apnauser = ({ navigation, props, token }) => {
 
     useEffect(() => {
         getdata()
-    }, [id, token])
+    }, [])
 
 
 
@@ -211,10 +219,101 @@ const Apnauser = ({ navigation, props, token }) => {
     const [image, setImage] = useState("")
     const [followstatus, setfollowstatus] = useState("Follow")
 
+    // async function deletepost(postid) {
+
+    //     console.log(postid);
+    //     console.log("hioiiiii");
+    //     console.log("hioiiiii");
+    //     console.log("hioiiiii");
+    //     console.log("hioiiiii");
+    //     console.log("hioiiiii");
+    //     console.log("hioiiiii");
+    //     console.log("hioiiiii");
+    //     console.log("hioiiiii");
+    //     console.log("hioiiiii");
+    //     console.log("hioiiiii");
+    //     console.log("hioiiiii");
+        
+    //     console.log("hioiiiii");
+    //     // try {
+    //     //     const response = await fetch(`${url}posts/deletepost/${postid}`, {
+    //     //         method: 'POST',
+    //     //         body: "",
+    //     //         headers: {
+    //     //             accept: "application/json",
+    //     //             "Authorization": `Bearer ${token}`,
+    //     //         },
+    //     //     });
+    //     //     const data = await response.json();
+    //     //     console.log(data);
+    //     //     // var array = posts.map((e)=>{
+    //     //     //     console.log(e);
+                
+    //     //     //     if(e._id != id){
+    //     //     //         return e
+    //     //     //     }
+    //     //     // })
+    //     //     // var array = posts.splice(posts.indexOf(postid) , 1)
+    //     //     // setPosts(array)
+            
+    //     // }
+    //     // catch (err) {
+    //     //     console.log(err);
+
+    //     // }
+
+    // }
+
+ 
+
 
     const renderItem = ({ item, index }) => {
 
+        
+    async function deletepost(postid) {
 
+        console.log(postid);
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        
+        console.log("hioiiiii");
+        try {
+            const response = await fetch(`${url}posts/deletepost/${postid}`, {
+                method: 'POST',
+                body: "",
+                headers: {
+                    accept: "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            console.log(data);
+            // var array = posts.map((e)=>{
+            //     console.log(e);
+                
+            //     if(e._id != id){
+            //         return e
+            //     }
+            // })
+            // var array = posts.splice(posts.indexOf(postid) , 1)
+            // setPosts(array)
+            
+        }
+        catch (err) {
+            console.log(err);
+
+        }
+
+    }
         // console.log(item);
         // console.log(item.type);
 
@@ -227,11 +326,13 @@ const Apnauser = ({ navigation, props, token }) => {
             pay = Number(pay);
             return pay.toLocaleString("en-IN")
         }
+
+
         if (item.type == "photo" || item.type == "textBlog" || item.type == "video") {
             return (
                 <View style={styles.box}>
-                    <View style={styles.top} >
-                        <Pressable
+                    <View style={[styles.top, { marginBottom: 10 }]} >
+                        <View
                             onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.user_id._id, page: "Startsy" }) }}
                             style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                             <Image style={styles.userimg} source={{ uri: userdata.user_id.profilePhoto }} />
@@ -239,7 +340,10 @@ const Apnauser = ({ navigation, props, token }) => {
                                 <Text allowFontScaling={false} style={styles.u1}>{userdata.user_id.userName}</Text>
                                 <Text allowFontScaling={false} style={styles.u2}>{userdata.user_id.role}</Text>
                             </View>
-                        </Pressable>
+                            <Pressable onPress={() => deletepost(item._id)}>
+                                <FontAwesome6 name="trash" style={styles1.minus} size={22} color="#00DE62" />
+                            </Pressable>
+                        </View>
                     </View>
                     {item.type == "photo" && <Image style={styles.template} source={{ uri: item.mediaUrl }} />}
                     {item.type == "video" &&
@@ -422,38 +526,40 @@ const Apnauser = ({ navigation, props, token }) => {
         }
 
     }
+    async function logout() {
+        try {
+            await AsyncStorage.removeItem('token'); // Replace 'token' with your key
+            console.log('Token removed successfully');
+        } catch (error) {
+            console.error('Error removing token:', error);
+        }
+
+        navigation.navigate("LoginTrial")
+
+    }
 
     const Header = function () {
         return (
             <>
-                <View style={styles1.header}>
-                    {/* <Pressable onPress={() => {
-                        // if (page == "Chat") {
-
-                        //     console.log(page);
-
-
-                        //     navigation.navigate(page, { item, messages, token });
-                        // }
-                        // else {
-
-                        //     navigation.navigate(page)
-                        // }
-
-
-                    }}><FontAwesome6 name="chevron-left" size={36} color="#00de62" /></Pressable> */}
-                    <Text style={styles1.username}>{userdata.user_id.userName}</Text>
-                </View>
+                <Pressable onPress={logout}>
+                    <View style={styles1.header}>
+                        <Text style={styles1.username}>{userdata.user_id.userName}</Text>
+                        <View style={styles1.logout}>
+                            <Logout />
+                        </View>
+                        <Text style={styles1.logoutText}>Logout</Text>
+                    </View>
+                </Pressable>
                 <View>
                     <Pressable onPress={fileupload} style={styles1.top}>
                         {/* {userdata.user_id.bannerImage != "" && <Image style={styles1.bimg} source={{ uri: userdata.user_id.bannerImage }} />} */}
 
-                        {image == "" &&
+                        {(image == "" || image == undefined) &&
                             <View style={styles1.img1}>
                                 <Banner />
                             </View>}
 
-                        {image != "" && <Image style={styles1.bimg} source={{ uri: image }} />}
+                        {(image != "" && image != undefined) && <Image style={styles1.bimg} source={{ uri: image }} />}
                     </Pressable>
                     <View style={styles1.bottom}>
 
@@ -520,7 +626,7 @@ const Apnauser = ({ navigation, props, token }) => {
                                             source={
                                                 investor[index]
                                                     ? { uri: investor[index].profilePhoto } // Profile photo if available
-                                                    : require("../assets/images/p2.png")   // Dummy image if not
+                                                    : require("../assets/images/blank1.png")   // Dummy image if not
                                             }
                                         />
                                     </View>
@@ -539,7 +645,7 @@ const Apnauser = ({ navigation, props, token }) => {
                                             source={
                                                 noninvestor[index]
                                                     ? { uri: noninvestor[index].profilePhoto } // Profile photo if available
-                                                    : require("../assets/images/p2.png")   // Dummy image if not
+                                                    : require("../assets/images/blank1.png")   // Dummy image if not
                                             }
                                         />
                                     </View>
@@ -578,7 +684,7 @@ const Apnauser = ({ navigation, props, token }) => {
 
         < View style={{ flex: 1, minHeight: minHeight, backgroundColor: "#16181a" }} >
 
-            {!userdata &&  <ActivityIndicator size={24} color="#16181a" />}
+            {!userdata && <ActivityIndicator size={24} color="#16181a" />}
             {userdata && <Header />}
 
             {/* Tab Navigation */}
@@ -595,7 +701,7 @@ const Apnauser = ({ navigation, props, token }) => {
                             elevation: 0,
 
 
-                            width: width * 0.92,
+                            width: width * 0.95,
                             margin: "auto"
                         },
 
@@ -712,14 +818,72 @@ const Apnauser = ({ navigation, props, token }) => {
         }, 2000); // Simulate API delay
     };
 
+
+
+    async function deletepost(postid) {
+
+        // console.log(postid);
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        
+        console.log("hioiiiii");
+        // try {
+        //     const response = await fetch(`${url}posts/deletepost/${postid}`, {
+        //         method: 'POST',
+        //         body: "",
+        //         headers: {
+        //             accept: "application/json",
+        //             "Authorization": `Bearer ${token}`,
+        //         },
+        //     });
+        //     const data = await response.json();
+        //     console.log(data);
+        //     // var array = posts.map((e)=>{
+        //     //     console.log(e);
+                
+        //     //     if(e._id != id){
+        //     //         return e
+        //     //     }
+        //     // })
+        //     // var array = posts.splice(posts.indexOf(postid) , 1)
+        //     // setPosts(array)
+            
+        // }
+        // catch (err) {
+        //     console.log(err);
+
+        // }
+
+    }
+
     return (
 
-
         <SafeAreaView style={{ flex: 1, backgroundColor: "#16181a" }}>
-            {!userdata && <ActivityIndicator size="large" color="#16181a" />}
+
+            {!userdata && <View style={styles1.header}>
+                <Text style={styles1.username}>Profile</Text>
+                <View style={styles1.logout}>
+                    <Logout />
+                </View>
+                <Text style={styles1.logoutText}>Logout</Text>
+            </View>}
+
+            {!userdata && <ActivityIndicator style={{ marginVertical: "auto", top: -50 }} size="large" color="#fff" />}
+
+
 
             {userdata && <FlatList
 
+                keyExtractor={(item, index) => index.toString()}
                 onViewableItemsChanged={onViewableItemsChanged}
                 viewabilityConfig={viewabilityConfig}
                 contentContainerStyle={{ paddingBottom: 50 }}
@@ -736,6 +900,7 @@ const Apnauser = ({ navigation, props, token }) => {
                         }} />}
 
                 data={[1]}
+                // keyExtractor={[1] => item.id.toString()} 
                 style={{ backgroundColor: "#16181a" }}
                 renderItem={render}
                 onEndReachedThreshold={0.1}
@@ -762,9 +927,27 @@ const styles1 = StyleSheet.create({
         height: 55,
         backgroundColor: "#16181A",
         paddingHorizontal: 15,
-        paddingVertical: 5
+        paddingVertical: 5,
+        justifyContent: "space-between"
+    },
+    header1: {
+        display: "flex",
+        flexDirection: "row",
+        height: 55,
+        backgroundColor: "#16181A",
+        paddingHorizontal: 15,
+        // paddingVertical: 5,
+        justifyContent: "space-between"
     },
     username: {
+        fontFamily: "myanmar",
+        fontSize: 24,
+        color: "#00DE62",
+        fontWeight: "bold",
+        marginLeft: 10,
+        marginTop: 2
+    },
+    logout: {
         fontFamily: "myanmar",
         fontSize: 24,
         color: "#00DE62",
@@ -822,6 +1005,7 @@ const styles1 = StyleSheet.create({
         paddingHorizontal: 5,
         width: "100%",
         marginVertical: 10,
+        marginTop : -5
         // marginTop: 30
     },
     role: {
@@ -888,6 +1072,8 @@ const styles1 = StyleSheet.create({
         height: "100%",
         borderRadius: 100,
         marginBottom: 0,
+        borderWidth : 2,
+        borderColor : "#16181a"
     },
     t6: {
         fontFamily: "Alata",
@@ -982,7 +1168,7 @@ const styles1 = StyleSheet.create({
         justifyContent: "center",
         alignItems: "center",
         alignSelf: "center",
-        width: width * 0.42,
+        width: width * 0.46,
         fontFamily: "Alata",
         fontSize: 18,
         textAlign: "center",
@@ -1005,7 +1191,27 @@ const styles1 = StyleSheet.create({
         marginTop: 30,
         // backgroundColor :  "red",
         height: 30
+    },
+    logoutText: {
+        position: "absolute",
+        right: 12,
+        top: 13,
+        color: "#00DE62",
+        fontFamily: "Roboto",
+        fontSize: 14
+    },
+    minus: {
+        position: "absolute",
+        right: 20,
+        elevation : 100,
+        zIndex : 1000,
+        top: 12
     }
+    // logout : {
+    //     position: "absolute",
+    //     right : 0,
+    //     top : 10
+    // }
 
 
 })

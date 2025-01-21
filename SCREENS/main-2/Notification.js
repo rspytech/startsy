@@ -63,30 +63,33 @@ const Notification = ({ token, navigation }) => {
     }, [])
 
     useFocusEffect(
-        useCallback(async () => {
-            try {
-                const response = await fetch(
-                    `${url}notification/getUserNotifiation`,
-                    {
-                        method: "GET",
-                        headers: {
-                            accept: "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
-                const result = await response.json();
+        useCallback( () => {
+            async function getData1() {
+                try {
+                    const response = await fetch(
+                        `${url}notification/getUserNotifiation`,
+                        {
+                            method: "GET",
+                            headers: {
+                                accept: "application/json",
+                                Authorization: `Bearer ${token}`,
+                            },
+                        }
+                    );
+                    const result = await response.json();
 
-                console.log(result);
-                setsubnotification(result.data);
+                    console.log(result);
+                    setsubnotification(result.data);
 
-            } catch (err) {
-                console.log(err);
+                } catch (err) {
+                    console.log(err);
+                }
+                finally {
+                    setloading(false);
+                }
             }
-            finally {
-                setloading(false);
-            }
-        }, [])
+            getData1()
+        }, [token])
     )
 
 
@@ -154,8 +157,8 @@ const Notification = ({ token, navigation }) => {
                             <View style={{ display: "flex", flexDirection: "row" }}>
 
                                 <Pressable
-                            onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.sendingUserId._id, page: "bell" }) }}
-                                
+                                    onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.sendingUserId._id, page: "bell" }) }}
+
                                 >
                                     <Text style={styles.topu1}>{item.sendingUserId.userName}  <Text style={styles.topu2}>founder</Text>  <View style={styles.circle}></View>  <AutoSizeText
                                         numberOfLines={1}

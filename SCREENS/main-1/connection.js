@@ -28,11 +28,11 @@ const data1 = Array(5).fill({
 
 
 
-const ConnectionsScreen = ({ navigation, search , token}) => {
+const ConnectionsScreen = ({ navigation, search, token }) => {
 
     console.log(search);
     console.log(navigation);
-    
+
 
     const [filtereddata, setfiltereddata] = useState([])
     useEffect(() => {
@@ -57,7 +57,7 @@ const ConnectionsScreen = ({ navigation, search , token}) => {
         console.log(decoded);
 
         console.log(decoded.role);
-        
+
 
         if (decoded.role == "Founder") {
             route = "founder/getFounderChatUserList"
@@ -65,9 +65,9 @@ const ConnectionsScreen = ({ navigation, search , token}) => {
         else if (decoded.role == "Investor") {
             route = "investor/getInvestorChatUserList"
         }
-        else if (decoded.role == "CommunityMember"){
+        else if (decoded.role == "CommunityMember") {
             console.log("fuck");
-            
+
             route = "founder/getFounderChatUserList"
 
         }
@@ -140,7 +140,7 @@ const ConnectionsScreen = ({ navigation, search , token}) => {
                 // console.log(result.data.messages);
                 // setData(result.data);
                 // setloading(false);
-                navigation.navigate("Chat", { item, messages: result.data?.messages || [], token , navigation });
+                navigation.navigate("Chat", { item, messages: result.data?.messages || [], token, navigation });
 
             } catch (err) {
                 console.log(err, "eror");
@@ -150,11 +150,45 @@ const ConnectionsScreen = ({ navigation, search , token}) => {
         }
         getData();
     }
+
+    function time(time) {
+        // console.log('====================================');
+        // console.log(time);
+        var data1 = new Date(time)
+        // console.log('====================================');
+        // console.log(data1);
+        // console.log('====================================');
+        // console.log('====================================');
+        var seconds = Math.floor((new Date() - data1) / 1000);
+
+        var interval = seconds / 31536000;
+
+        if (interval > 1) {
+            return Math.floor(interval) + " years ago";
+        }
+        interval = seconds / 2592000;
+        if (interval > 1) {
+            return Math.floor(interval) + " months ago";
+        }
+        interval = seconds / 86400;
+        if (interval > 1) {
+            return Math.floor(interval) + " days ago";
+        }
+        interval = seconds / 3600;
+        if (interval > 1) {
+            return Math.floor(interval) + " hours ago";
+        }
+        interval = seconds / 60;
+        if (interval > 1) {
+            return Math.floor(interval) + " minutes ago";
+        }
+        return Math.floor(seconds) + " seconds ago";
+    }
     return (
         <View style={styles.listContainer}>
             {!loading && <FlatList
                 showsVerticalScrollIndicator={false}
-                contentContainerStyle={{paddingBottom:100}}
+                contentContainerStyle={{ paddingBottom: 100 }}
 
                 data={filtereddata}
                 keyExtractor={(item, index) => index.toString()}
@@ -175,9 +209,16 @@ const ConnectionsScreen = ({ navigation, search , token}) => {
                                     style={styles.avatar} />
                                 <View style={styles.textContainer}>
                                     <Text allowFontScaling={false} style={styles.username}>{item.user.userName}</Text>
-                                    <Text allowFontScaling={false} style={styles.message}>{item.message || "abhi nai hai"}</Text>
+                                    <Text
+                                        numberOfLines={1}
+                                        ellipsizeMode="tail"
+
+                                        allowFontScaling={false} style={styles.message}>{item.lastMessage.message || "abhi nai hai"}</Text>
                                 </View>
-                                <Text allowFontScaling={false} style={styles.time}>{item.time || "today"}</Text>
+                                <Text
+
+
+                                    allowFontScaling={false} style={styles.time}>{time(item.lastMessage.createdAt)}</Text>
                             </View>
                         </TouchableOpacity>
                     )
@@ -243,6 +284,8 @@ const styles = StyleSheet.create({
     avatar: {
         width: 50,
         height: 50,
+        marginTop: 5,
+
         borderRadius: 25,
         marginRight: 15,
     },
@@ -255,7 +298,7 @@ const styles = StyleSheet.create({
         color: "#00DE62",
         fontFamily: "Alata",
         alignSelf: "flex-start",
-        marginTop: 0,
+        marginTop: -5,
         marginBottom: 5
     },
     message: {
@@ -265,6 +308,12 @@ const styles = StyleSheet.create({
     },
     time: {
         fontSize: 12,
+        width : 100,
+        position : "absolute",
+        right : 10,
+        top : 10,
+        textAlign : "right",
+        // backgroundColor : "red",
         color: "#B8B8B8",
         fontFamily: "Roboto",
     },

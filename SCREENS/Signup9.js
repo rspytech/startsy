@@ -18,7 +18,6 @@ import {
     TouchableWithoutFeedback
 } from "react-native";
 // import { FlatList, ScrollView } from 'react-native-gesture-handler';
-
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { LinearGradient } from "expo-linear-gradient";
 import signup3styles from "../styles/signup3styles.js";
@@ -36,7 +35,7 @@ import { useFocusEffect } from "expo-router";
 const Signup9 = ({ navigation, route }) => {
 
     useFocusEffect(() => {
-        StatusBar.setBackgroundColor("#1e1e1e")
+        StatusBar.setBackgroundColor("#16181a")
         StatusBar.setBarStyle("light-content")
     })
     const [workexperience, setworkexperience] = useState([{ id: Date.now(), name: '', role: '', year: "" }]);
@@ -46,10 +45,100 @@ const Signup9 = ({ navigation, route }) => {
 
     const [skills, setskills] = useState("")
     const [education1, seteducation] = useState("")
+    const [eduerror, seteduerror] = useState(false)
 
 
 
     function nextpage(navigation, type) {
+
+        console.log(education1);
+
+        if (education1 == "") {
+            console.log("hi");
+            seteduerror(true);
+            return;
+        }
+
+
+        for (var i = 0; i < workexperience.length; i++) {
+            console.log(i);
+
+            var items = workexperience[i];
+            console.log(items);
+
+            // Check if all fields are empty
+            if (items.name == "" && items.role == "" && items.year == "") {
+                // Do nothing or handle if needed
+            }
+            // Check if only `name` is filled
+            else if (items.name != "" && items.role == "" && items.year == "") {
+                var array = workexperience.map((w, index) => {
+                    if (i == index) {
+                        return { ...w, roleError: true, yearError: true };
+                    } else return w;
+                });
+                console.log(array, "Role and Year missing");
+                setworkexperience(array);
+                return;
+            }
+            // Check if only `role` is filled
+            else if (items.name == "" && items.role != "" && items.year == "") {
+                var array = workexperience.map((w, index) => {
+                    if (i == index) {
+                        return { ...w, nameError: true, yearError: true };
+                    } else return w;
+                });
+                console.log(array, "Name and Year missing");
+                setworkexperience(array);
+                return;
+            }
+            // Check if only `year` is filled
+            else if (items.name == "" && items.role == "" && items.year != "") {
+                if (isNaN(items.year) || items.year < 1950 || items.year > 2025) {
+                    var array = workexperience.map((w, index) => {
+                        if (i == index) {
+                            return { ...w, yearError: true, yearInvalid: true };
+                        } else return w;
+                    });
+                    console.log(array, "Year must be a number between 1950 and 2025");
+                    setworkexperience(array);
+                    return;
+                }
+                var array = workexperience.map((w, index) => {
+                    if (i == index) {
+                        return { ...w, nameError: true, roleError: true };
+                    } else return w;
+                });
+                console.log(array, "Name and Role missing");
+                setworkexperience(array);
+                return;
+            }
+            // Check if any single field is missing or year is invalid
+            else if (
+                items.name == "" ||
+                items.role == "" ||
+                items.year == "" ||
+                isNaN(items.year) ||
+                items.year < 1950 ||
+                items.year > 2025
+            ) {
+                var array = workexperience.map((w, index) => {
+                    if (i == index) {
+                        return {
+                            ...w,
+                            nameError: items.name == "",
+                            roleError: items.role == "",
+                            yearError: items.year == "",
+                            yearInvalid: isNaN(items.year) || items.year < 1950 || items.year > 2025,
+                        };
+                    } else return w;
+                });
+                console.log(array, "Some fields missing or year invalid");
+                setworkexperience(array);
+                return;
+            }
+        }
+
 
         const final = new FormData();
         for (var items of form["_parts"]) {
@@ -64,15 +153,14 @@ const Signup9 = ({ navigation, route }) => {
         var array = workexperience.map(({ id, name, ...items }) => {
             return {
                 company: name,
-                ...items
+                role: items.role,
+                year: items.year
             }
         })
         final.append("previousWorkExperience", array)
-        console.log('====================================');
-        console.log(array);
+
         console.log(final);
 
-        console.log('====================================');
         navigation.navigate("Signup10", { form: final, image: image })
     }
     var education = [
@@ -102,14 +190,25 @@ const Signup9 = ({ navigation, route }) => {
             [...workexperience, { id: Date.now(), name: '', role: '', year: '' }]
         )
     }
+    function deleteworkexperience(index) {
+        console.log(index);
+
+        // setworkexperience(
+        //     [...workexperience, { id: Date.now(), name: '', role: '', year: '' }]
+        // )
+        var update = [...workexperience]
+        update.splice(index, 1)
+        // var array = workexperience.splice(index, 1);
+        setworkexperience(update)
+    }
 
     function handleworkchange(id, field, value) {
         var array = workexperience.map((e) => {
             if (e.id === id) {
-                return { ...e, [field]: value }
+                return { ...e, [field]: value, yearError: false, roleError: false, nameError: false, yearInvalid: false }
 
             }
-            else return e
+            else return { ...e, yearError: false, roleError: false, nameError: false, yearInvalid: false }
         })
         setworkexperience(array);
     }
@@ -146,8 +245,11 @@ const Signup9 = ({ navigation, route }) => {
                             />
                             <Text style={[styles.t1, { marginBottom: 5 }]}>Education</Text>
                             <Text style={[styles.t2, { marginBottom: 20 }]}>List your highest degree achieved, which helps to establish your academic background and qualifications.</Text>
-                            <Drop items={education} open={open} setOpen={setOpen} onValueChange={(value) => seteducation(value)} nestedScrollEnabled={true} />
+                            <Drop items={education} open={open} setOpen={setOpen} onValueChange={(value) => {
+                                seteduerror(false)
+                                seteducation(value)}} nestedScrollEnabled={true} />
 
+                            {eduerror && <Text style={styles.err1}>* please select a valid value</Text>}
 
                             {/* <Text style={styles.t1}>Education</Text>
                             <Text style={[styles.t2, { marginBottom: 20 }]}>List your highest degree achieved, which helps to establish your academic background and qualifications.</Text> */}
@@ -160,11 +262,16 @@ const Signup9 = ({ navigation, route }) => {
                             <Text style={[styles.t2, { marginBottom: 20 }]}>Detail any relevant industry experience, particularly if you’ve worked in a specific company or held roles that have prepared you for your current venture.</Text>
 
 
-                            {workexperience.map((we) => (
+                            {workexperience.map((we, index) => (
                                 <View key={we.id} style={styles.certificate}>
                                     <Pressable onPress={addworkexperience}>
                                         <Entypo style={styles.plus} name="plus" size={24} color="#00DE62" />
+
+                                        {/* <Entypo style={styles.minus} name="plus" size={24} color="#00DE62" /> */}
                                     </Pressable>
+                                    {index > 0 && <Pressable onPress={() => { deleteworkexperience(index) }}>
+                                        <FontAwesome6 name="trash" style={styles.minus} size={15} color="#00DE62" />
+                                    </Pressable>}
 
                                     <TextInput
                                         allowFontScaling={false}
@@ -174,6 +281,7 @@ const Signup9 = ({ navigation, route }) => {
                                         value={we.name}
                                         onChangeText={(text) => { handleworkchange(we.id, "name", text) }}
                                     />
+                                    {we.nameError && <Text style={styles.err}>* please enter company name</Text>}
                                     <TextInput
                                         allowFontScaling={false}
                                         placeholder="Role"
@@ -182,6 +290,8 @@ const Signup9 = ({ navigation, route }) => {
                                         value={we.role}
                                         onChangeText={(text) => { handleworkchange(we.id, "role", text) }}
                                     />
+                                    {we.roleError && <Text style={styles.err}>* please enter your role</Text>}
+
                                     <TextInput
                                         allowFontScaling={false}
                                         placeholder="Year"
@@ -190,6 +300,9 @@ const Signup9 = ({ navigation, route }) => {
                                         value={we.year}
                                         onChangeText={(text) => { handleworkchange(we.id, "year", text) }}
                                     />
+                                    {we.yearError && <Text style={styles.err}>* please enter year</Text>}
+                                    {we.yearInvalid && <Text style={styles.err}>* please enter valid year</Text>}
+
 
                                 </View>
                             ))}
@@ -332,6 +445,36 @@ const styles = StyleSheet.create({
         right: 5,
         top: -5,
         zIndex: 100
+    },
+    minus: {
+        position: "absolute",
+        right: 45,
+        top: -3,
+        zIndex: 100
+    },
+    err: {
+        marginVertical: 0,
+        marginTop: -20,
+        marginBottom: 10,
+        textAlign: "left",
+        // backgroundColor : "red",
+        width: "90%",
+        marginHorizontal: "auto",
+        color: "#E65858",
+        fontSize: 12,
+        fontFamily: "Roboto",
+    },
+    err1: {
+        marginVertical: 0,
+        marginTop: 0,
+        marginBottom: 10,
+        textAlign: "left",
+        // backgroundColor : "red",
+        width: "90%",
+        marginHorizontal: "auto",
+        color: "#E65858",
+        fontSize: 12,
+        fontFamily: "Roboto",
     }
 
 

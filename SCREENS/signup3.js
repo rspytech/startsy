@@ -19,7 +19,7 @@ const Signup3 = ({ navigation }) => {
         });
     }
     useFocusEffect(() => {
-        StatusBar.setBackgroundColor("#1e1e1e")
+        StatusBar.setBackgroundColor("#16181A")
         StatusBar.setBarStyle("light-content")
     })
     return (

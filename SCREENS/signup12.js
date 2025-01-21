@@ -74,7 +74,7 @@ const Signup12 = ({ navigation, route }) => {
 
     const [errors, setErrors] = useState({});
     useFocusEffect(() => {
-        StatusBar.setBackgroundColor("#1e1e1e")
+        StatusBar.setBackgroundColor("#16181a")
         StatusBar.setBarStyle("light-content")
     })
     const { type } = route.params || "Investor"
@@ -153,15 +153,15 @@ const Signup12 = ({ navigation, route }) => {
 
     ]
     var stage = [
-        
-            { label: "Ideation Stage", value: "Ideation Stage" },
-            { label: "Pre-Seed Stage", value: "Pre-Seed Stage" },
-            { label: "Seed Stage", value: "Seed Stage" },
-            { label: "Early Stage (Series A)", value: "Early Stage (Series A)" },
-            { label: "(Series B and Beyond)", value: "Growth Stage (Series B and Beyond)" },
-            { label: "Expansion/Late Stage", value: "Expansion/Late Stage" }
-        
-        
+
+        { label: "Ideation Stage", value: "Ideation Stage" },
+        { label: "Pre-Seed Stage", value: "Pre-Seed Stage" },
+        { label: "Seed Stage", value: "Seed Stage" },
+        { label: "Early Stage (Series A)", value: "Early Stage (Series A)" },
+        { label: "(Series B and Beyond)", value: "Growth Stage (Series B and Beyond)" },
+        { label: "Expansion/Late Stage", value: "Expansion/Late Stage" }
+
+
 
     ]
 
@@ -206,7 +206,7 @@ const Signup12 = ({ navigation, route }) => {
         { label: "Impact Investing", value: "Impact Investing" },
         { label: "Philanthropy", value: "Philanthropy" }
     ]
-    
+
 
 
 
@@ -255,14 +255,15 @@ const Signup12 = ({ navigation, route }) => {
                                 step={1}
                                 minimumTrackTintColor="#00DE62"
                                 maximumTrackTintColor="#00DE62"
+                                thumbTintColor="#737373"
                                 // step={100}
                                 // thumbTintColor="#737373" // Color of the slider thumb
                                 // trackImage={require("../assets/images/slider.png")}
                                 // trackImage={require("../assets/images/slider3.png")}
-                                thumbImage={require("../assets/images/slider3.png")}
+                                // thumbImage={require("../assets/images/slider3.png")}
                                 onValueChange={(value) => { setsliderrange1(value) }}
-                                hitSlop={{ top: 50, left: 50, right: 50, bottom: 50 }}
-                                thumbTouchSize={{ width: 100, height: 100 }}
+                            // hitSlop={{ top: 50, left: 50, right: 50, bottom: 50 }}
+                            // thumbTouchSize={{ width: 100, height: 100 }}
                             />
                             {errors.years && <Text style={signup3styles.errorText}>{errors.years}</Text>}
 
@@ -323,10 +324,12 @@ const Signup12 = ({ navigation, route }) => {
                                 // thumbTintColor="#737373" // Color of the slider thumb
                                 // trackImage={require("../assets/images/slider.png")}
                                 // trackImage={require("../assets/images/slider3.png")}
-                                thumbImage={require("../assets/images/slider3.png")}
+                                thumbTintColor="#737373"
+
+                                // thumbImage={require("../assets/images/slider3.png")}
                                 onValueChange={(value) => { setsliderrange(value) }}
-                                hitSlop={{ top: 50, left: 50, right: 50, bottom: 50 }}
-                                thumbTouchSize={{ width: 100, height: 100 }}
+                            // hitSlop={{ top: 50, left: 50, right: 50, bottom: 50 }}
+                            // thumbTouchSize={{ width: 100, height: 100 }}
                             />
                             {errors.capacity && (
                                 <Text style={signup3styles.errorText}>{errors.capacity}</Text>
@@ -338,7 +341,7 @@ const Signup12 = ({ navigation, route }) => {
 
                             <View style={styles.icons}>
                                 <Pressable style={{ marginTop: 5 }} onPress={() => { navigation.goBack() }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
-                                <Pressable onPress={() => {nextPage()}}><FontAwesome6 name="chevron-right" size={40} color="#00DF60" /></Pressable>
+                                <Pressable onPress={() => { nextPage() }}><FontAwesome6 name="chevron-right" size={40} color="#00DF60" /></Pressable>
 
                             </View>
 

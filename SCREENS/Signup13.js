@@ -57,7 +57,7 @@ const Signup13 = ({ navigation, route }) => {
        
     }
     useFocusEffect(() => {
-        StatusBar.setBackgroundColor("#1e1e1e")
+        StatusBar.setBackgroundColor("#16181a")
         StatusBar.setBarStyle("light-content")
     })
     const handlerole = (value1) => {
@@ -234,7 +234,7 @@ const Signup13 = ({ navigation, route }) => {
             Alert.alert('Error', 'An error occurred while picking the file.');
         }
     };
-    <StatusBar backgroundColor="#1E1E1E" barStyle={"light-content"} />
+    <StatusBar backgroundColor="#16181a" barStyle={"light-content"} />
 
     return (
         < SafeAreaView style={[signup3styles.container, { position: "relative" }]} >

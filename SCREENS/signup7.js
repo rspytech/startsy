@@ -63,7 +63,7 @@ const Signup7 = ({ navigation, route }) => {
 
 
     useFocusEffect(() => {
-        StatusBar.setBackgroundColor("#1e1e1e")
+        StatusBar.setBackgroundColor("#16181A")
         StatusBar.setBarStyle("light-content")
     })
 
@@ -134,7 +134,7 @@ const Signup7 = ({ navigation, route }) => {
     };
     // multiple certificate 
     const [certificate, setcertificate] = useState([{ id: Date.now(), cname: '', curl: '' }]);
-    const [portfolio1, setportfolio] = useState([{ id: Date.now(), url: '' }]);
+    const [portfolio1, setportfolio] = useState([{ id: Date.now(), url: '', name: "" }]);
 
 
     function addcertificate() {
@@ -142,21 +142,34 @@ const Signup7 = ({ navigation, route }) => {
             [...certificate, { id: Date.now(), cname: '', curl: '' }]
         )
     }
+    function deletecertificate(index) {
+        console.log(index);
+        var array = certificate.splice(index, 1);
+        setcertificate(array);
+    }
 
     function addportfolio() {
         setportfolio(
-            [...portfolio1, { id: Date.now(), url: "" }]
+            [...portfolio1, { id: Date.now(), url: "", name: "" }]
         )
+    }
+    function deleteportfolio(index) {
+        // setportfolio(
+        //     [...portfolio1, { id: Date.now(), url: "", name: "" }]
+        // )
+
+        var array = portfolio1.splice(index, 1)
+        setportfolio(array);
     }
 
 
     function handlecertificatechange(id, field, value) {
         var array = certificate.map((e) => {
             if (e.id === id) {
-                return { ...e, [field]: value }
+                return { ...e, [field]: value, firsterror: false, seconderror: false }
 
             }
-            else return e
+            else return { ...e, firsterror: false, seconderror: false }
         })
         setcertificate(array);
     }
@@ -165,10 +178,10 @@ const Signup7 = ({ navigation, route }) => {
     function handleurlchange(id, field, value) {
         var array = portfolio1.map((e) => {
             if (e.id === id) {
-                return { ...e, [field]: value }
+                return { ...e, [field]: value, firsterror: false, seconderror: false }
 
             }
-            else return e
+            else return { ...e, firsterror: false, seconderror: false }
         })
         setportfolio(array);
     }
@@ -176,6 +189,79 @@ const Signup7 = ({ navigation, route }) => {
 
 
     async function finalsubmit() {
+
+        for (var i = 0; i < certificate.length; i++) {
+
+            console.log(i);
+
+            var items = certificate[i];
+            console.log(items);
+            if (items.cname == "" && items.curl == "") {
+
+            }
+            else if ((items.cname != "" && items.curl == "")) {
+                var array = certificate.map((c, index) => {
+                    if (i == index) {
+                        return { ...c, seconderror: true }
+                    }
+                    else return c
+                })
+                console.log(array, "sajkhd");
+                setcertificate(array);
+                return
+            }
+            else if ((items.cname == "" && items.curl != "")) {
+                var array = certificate.map((c, index) => {
+                    if (i == index) {
+                        return { ...c, firsterror: true }
+                    }
+                    else return c
+                })
+                setcertificate(array)
+                return
+
+            }
+        }
+
+        for (var i = 0; i < portfolio1.length; i++) {
+
+            console.log(i);
+
+            var items = portfolio1[i];
+            console.log(items, "portfolio");
+            if (items.url == "" && items.name == "") {
+
+            }
+            else if ((items.name != "" && items.url == "")) {
+                var array = portfolio1.map((c, index) => {
+                    if (i == index) {
+                        return { ...c, seconderror: true }
+                    }
+                    else return c
+                })
+                console.log(array, "sajkhd");
+
+                setportfolio(array)
+                return
+            }
+            else if ((items.name == "" && items.url != "")) {
+                var array = portfolio1.map((c, index) => {
+                    if (i == index) {
+                        return { ...c, firsterror: true }
+                    }
+                    else return c
+                })
+                setportfolio(array)
+                return
+
+            }
+        }
+
+        console.log(certificate, "ok");
+
+
+        // console.log(image);
+
 
         const final = new FormData();
         for (var items of form["_parts"]) {
@@ -199,9 +285,8 @@ const Signup7 = ({ navigation, route }) => {
             return obj
 
         })
-        var portfolio = portfolio1.map(({ id, url }) => {
-            return url
-
+        var portfolio = portfolio1.map(({ id, url , name }) => {
+            return {url , name}
         })
         final.append("tagline", tagline)
         final.append("skills", skills)
@@ -225,6 +310,9 @@ const Signup7 = ({ navigation, route }) => {
                 "Authorization": token,
             },
         });
+
+        console.log(final);
+
         const data = await response.json();
         setloading(false)
         console.log(data);
@@ -290,11 +378,14 @@ const Signup7 = ({ navigation, route }) => {
                             <Text style={[styles.t1, { marginTop: 30 }]}>Certification</Text>
 
 
-                            {certificate.map((certificate) => (
+                            {certificate.map((certificate, index) => (
                                 <View key={certificate.id} style={styles.certificate}>
                                     <Pressable onPress={addcertificate}>
                                         <Entypo style={styles.plus} name="plus" size={24} color="#00DE62" />
                                     </Pressable>
+                                    {index > 0 && <Pressable onPress={() => { deletecertificate(index) }}>
+                                        <FontAwesome6 name="trash" style={styles.minus} size={15} color="#00DE62" />
+                                    </Pressable>}
 
                                     <TextInput
                                         allowFontScaling={false}
@@ -304,6 +395,7 @@ const Signup7 = ({ navigation, route }) => {
                                         value={certificate.cname}
                                         onChangeText={(text) => { handlecertificatechange(certificate.id, "cname", text) }}
                                     />
+                                    {certificate.firsterror && <Text style={styles.err}>* please enter this field</Text>}
                                     <TextInput
                                         allowFontScaling={false}
                                         placeholder="URL"
@@ -312,25 +404,40 @@ const Signup7 = ({ navigation, route }) => {
                                         value={certificate.curl}
                                         onChangeText={(text) => { handlecertificatechange(certificate.id, "curl", text) }}
                                     />
+                                    {certificate.seconderror && <Text style={styles.err}>* please enter this field</Text>}
+
 
                                 </View>
                             ))}
 
 
                             <Text style={[styles.t1, { marginTop: 30 }]}>Portfolio</Text>
-                            {portfolio1.map((items) => (
-                                <View style={styles.v1} key={items.id}>
+                            {portfolio1.map((items, index) => (
+                                <View style={styles.certificate} key={items.id}>
                                     <Pressable onPress={addportfolio}>
-                                        <Entypo style={styles.plus1} name="plus" size={24} color="#00DE62" />
+                                        <Entypo style={styles.plus} name="plus" size={24} color="#00DE62" />
                                     </Pressable>
+                                    {index > 0 && <Pressable onPress={() => { deleteportfolio(index) }}>
+                                        <FontAwesome6 name="trash" style={styles.minus} size={15} color="#00DE62" />
+                                    </Pressable>}
                                     <TextInput
                                         allowFontScaling={false}
                                         placeholder="URL"
                                         placeholderTextColor="#B8B8B8"
-                                        style={styles.input1}
+                                        style={[styles.input, { marginTop: 20, backgroundColor: "transparent" }]}
                                         onChangeText={(text) => { handleurlchange(items.id, "url", text) }}
 
                                     />
+                                    {items.seconderror && <Text style={styles.err}>* please enter this field</Text>}
+                                    <TextInput
+                                        allowFontScaling={false}
+                                        placeholder="Portfolio name"
+                                        placeholderTextColor="#B8B8B8"
+                                        style={styles.input}
+                                        onChangeText={(text) => { handleurlchange(items.id, "name", text) }}
+
+                                    />
+                                    {items.firsterror && <Text style={styles.err}>* please enter this field</Text>}
 
                                 </View>
                             ))}
@@ -508,6 +615,24 @@ const styles = StyleSheet.create({
         top: 2,
         zIndex: 100
     }
-
+    ,
+    minus: {
+        position: "absolute",
+        right: 45,
+        top: -3,
+        zIndex: 100
+    },
+    err: {
+        marginVertical: 0,
+        marginTop: -20,
+        marginBottom: 10,
+        textAlign: "left",
+        // backgroundColor : "red",
+        width: "90%",
+        marginHorizontal: "auto",
+        color: "#E65858",
+        fontSize: 12,
+        fontFamily: "Roboto",
+    }
 
 })

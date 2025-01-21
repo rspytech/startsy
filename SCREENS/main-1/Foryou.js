@@ -423,18 +423,6 @@ const Foryou = ({ scroll, navigation, token }) => {
     )
 
 
-
-
-
-
-
-
-
-
-
-
-
-
     function header() {
         return (
             <View style={[main.header, { backgroundColor: "#16181a" }]}>
@@ -456,11 +444,14 @@ const Foryou = ({ scroll, navigation, token }) => {
     return (
         <SafeAreaView style={styles.container}>
 
-
             <GestureHandlerRootView nestedScrollEnabled style={{ flex: 1 }} >
 
                 {/* <TouchableWithoutFeedback onPress={closebottomsheet}> */}
                 {/* <View style={{ position: "absolute" }}> */}
+
+                {allpost.length == 0 &&     <View style={[main.header, { backgroundColor: "#16181a" }]}>
+                <Text allowFontScaling={false} style={main.headertext}>For you</Text>
+            </View>}
                 {allpost.length > 0 && <FlatList
 
                     ListHeaderComponent={header}

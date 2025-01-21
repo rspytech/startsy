@@ -25,6 +25,7 @@ const s5 = StyleSheet.create({
 
     , input: {
         backgroundColor: "transparent",
+        // backgroundColor: "red",
         margin: height * 0.016,
         marginTop: 0,
         borderBottomWidth: 3,
@@ -35,7 +36,9 @@ const s5 = StyleSheet.create({
         color: "#B8B8B8",
         // paddingBottom: scalingfactor * 5,
         width: "92%",
-        fontFamily: "Roboto",
+        paddingBottom : 8,
+        fontFamily: "Alata",
+        fontWeight: '0',
         lineHeight: scalingfactor * 18,
         marginTop: scalingfactor * 20,
         // marginBottom : 0

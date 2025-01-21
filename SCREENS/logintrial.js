@@ -104,6 +104,9 @@ const Login1 = ({ navigation }) => {
 
   const handlelogin = async (navigation) => {
 
+    console.log("login route called");
+    
+
     setemailerror(false)
     setpassworderror(false)
     setpassworderror1(false)

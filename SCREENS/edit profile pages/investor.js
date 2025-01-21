@@ -344,21 +344,23 @@ const EditInvestorInfo = ({ navigation }) => {
                             step={100000}
                             minimumTrackTintColor="#00DE62"
                             maximumTrackTintColor="#00DE62"
+                            thumbTintColor="#737373"
+                            
                             // step={100}
                             // thumbTintColor="#737373" // Color of the slider thumb
                             // trackImage={require("../assets/images/slider.png")}
                             // trackImage={require("../assets/images/slider3.png")}
-                            thumbImage={require("../../assets/images/slider3.png")}
+                            // thumbImage={require("../../assets/images/slider3.png")}
                             onValueChange={(value) => { setsliderrange(value) }}
-                            hitSlop={{ top: 50, left: 50, right: 50, bottom: 50 }}
-                            thumbTouchSize={{ width: 100, height: 100 }}
+                            // hitSlop={{ top: 50, left: 50, right: 50, bottom: 50 }}
+                            // thumbTouchSize={{ width: 100, height: 100 }}
                         />
 
                     </View>
 
 
                     <View onTouchStart={handleOutsideTouch} s style={styles1.icons}>
-                        <Pressable style={{ alignSelf: "center" }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
+                        <Pressable onPress={()=>{navigation.goBack()}} style={{ alignSelf: "center" }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
                         <Pressable onPress={savedata} style={styles1.btn}>
                             {loading && <ActivityIndicator size={24} color="#16181a" />}
                             {!loading && <Text allowFontScaling={false} style={styles1.nexttext}>Save</Text>}

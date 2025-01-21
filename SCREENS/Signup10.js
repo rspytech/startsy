@@ -40,6 +40,13 @@ const Signup10 = ({ navigation, route }) => {
     const [description, setdescription] = useState("")
     const [sliderrange, setsliderrange] = useState(5000000)
 
+    const [error, seterror] = useState(false)
+    const [nameerror, setnameerror] = useState(false)
+    const [goalerror, setgoalerror] = useState(false)
+    const [sserror, setsserror] = useState(false)
+    const [stageerror, setstageerror] = useState(false)
+    const [fundingstatuserror, setfunderror] = useState(false)
+
 
 
     const { type } = route.params || "Freelancer"
@@ -50,6 +57,34 @@ const Signup10 = ({ navigation, route }) => {
 
 
     function nextpage(navigation, type) {
+
+        let error;
+        if(name == ""){
+            setnameerror(true)
+            error = true
+        }
+        if(goal == ""){
+            setgoalerror(true)
+            error = true
+
+        }
+        if(startupsector == ""){
+            setsserror(true)
+            error = true
+
+        }
+        if(stage1 == ""){
+            setstageerror(true)
+            error = true
+
+        }
+        if(sliderrange == ""){
+            setfunderror(true)
+            error = true
+
+        }
+
+        if(error)return
 
         const final = new FormData();
         for (var items of form["_parts"]) {
@@ -73,20 +108,16 @@ const Signup10 = ({ navigation, route }) => {
             
         }
         
-        console.log(tosend);
+       
         tosend = tosend + 58;
-        
         final.append("fundingStatus", tosend)
-        console.log(tosend);
-        
-        
+        console.log(tosend.toString() , "to send");
         
         
         var array = url.map(e => e.url)
         final.append("socialProof", array)
 
-
-
+        console.log(final);
         navigation.navigate("Signup11", { form: final, image: image })
     }
 
@@ -108,17 +139,54 @@ const Signup10 = ({ navigation, route }) => {
     }
     const [textlength, settextlength] = useState(0);
     var ss = [
-        { label: "Vertical Sector", value: "Vertical Sector" },
-        { label: "Horizontal Sector", value: "Horizontal Sector" },
-
-    ]
+        { label: "AI", value: "AI" },
+        { label: "AR/VR", value: "AR/VR" },
+        { label: "Blockchain", value: "Blockchain" },
+        { label: "Social Media", value: "Social Media" },
+        { label: "Marketing", value: "Marketing" },
+        { label: "Social Media Marketing", value: "Social Media Marketing" },
+        { label: "SaaS", value: "SaaS" },
+        { label: "IoT", value: "IoT" },
+        { label: "Cybersecurity", value: "Cybersecurity" },
+        { label: "Cloud Computing", value: "Cloud Computing" },
+        { label: "Biotech", value: "Biotech" },
+        { label: "MedTech", value: "MedTech" },
+        { label: "Digital Health", value: "Digital Health" },
+        { label: "Pharma", value: "Pharma" },
+        { label: "HealthTech", value: "HealthTech" },
+        { label: "D2C", value: "D2C" },
+        { label: "B2C", value: "B2C" },
+        { label: "B2B", value: "B2B" },
+        { label: "Marketplaces", value: "Marketplaces" },
+        { label: "Logistics", value: "Logistics" },
+        { label: "FinTech", value: "FinTech" },
+        { label: "InsurTech", value: "InsurTech" },
+        { label: "Decentralized Finance", value: "Decentralized Finance" },
+        { label: "EdTech", value: "EdTech" },
+        { label: "Online Learning Platforms", value: "Online Learning Platforms" },
+        { label: "Cleantech", value: "Cleantech" },
+        { label: "Renewable Energy", value: "Renewable Energy" },
+        { label: "Sustainability", value: "Sustainability" },
+        { label: "Media", value: "Media" },
+        { label: "Gaming", value: "Gaming" },
+        { label: "Content Platforms", value: "Content Platforms" },
+        { label: "EVs", value: "EVs" },
+        { label: "Autonomous Vehicles", value: "Autonomous Vehicles" },
+        { label: "Ride-Sharing", value: "Ride-Sharing" },
+        { label: "AgriTech", value: "AgriTech" },
+        { label: "FoodTech", value: "FoodTech" },
+        { label: "Non-profits", value: "Non-profits" },
+        { label: "Impact Investing", value: "Impact Investing" },
+        { label: "Philanthropy", value: "Philanthropy" }
+    ];
+    
     var stage = [
         { label: "Ideation Stage", value: "Ideation Stage" },
         { label: "Pre-Seed Stage", value: "Pre-Seed Stage" },
         { label: "Seed Stage ", value: "Seed Stage" },
         { label: "Early Stage", value: "Early Stage" },
         { label: "Growth Stage", value: "Growth Stage" },
-        { label: "Mature Stage", value: "Mature Stage" },
+        { label: "Expansion Stage", value: "Mature Stage" },
 
     ]
 
@@ -181,6 +249,7 @@ const Signup10 = ({ navigation, route }) => {
                                 value={name}
                                 onChangeText={(text) => { setname(text) }}
                             />
+                            {nameerror && <Text style={styles.err}>* please write a startup name</Text>}
                             <TextInput
                                 allowFontScaling={false}
                                 placeholder="Goal"
@@ -189,6 +258,9 @@ const Signup10 = ({ navigation, route }) => {
                                 value={goal}
                                 onChangeText={(text) => { setgoal(text) }}
                             />
+                            {goalerror && <Text style={styles.err}>* please write your goal </Text>}
+
+
                             <Text allowFontScaling={false} style={styles.des}>Description:</Text>
                             <View allowFontScaling={false} style={{ position: "relative" }}>
                                 <Text allowFontScaling={false} style={[styles.t2, styles.count]}>{textlength}/1000</Text>
@@ -213,12 +285,13 @@ const Signup10 = ({ navigation, route }) => {
                             <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 10 }]}>Startup sector </Text>
                             <Text allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>Define your startup’s focus: horizontal sectors serve multiple industries, while vertical sectors target a specific niche.</Text>
                             <Drop items={ss} onValueChange={(value) => { setstartupsector(value) }} setOpen={setOpen1} open={open1} nestedScrollEnabled={true} />
+                            {sserror && <Text style={styles.err1}>* please select a sector </Text>}
 
 
                             <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 25 }]}>Startup stage </Text>
                             <Text allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>Identify where your startup is in its journey—whether you’re in ideation, have a prototype, or are generating revenue.</Text>
                             <Drop items={stage} onValueChange={(value) => { setsetstartupstage(value) }} setOpen={setOpen2} open={open2} nestedScrollEnabled={true} />
-
+                            {stageerror && <Text style={styles.err1}>* please select your startup stage </Text>}
 
 
 
@@ -240,11 +313,13 @@ const Signup10 = ({ navigation, route }) => {
                                 step={100000}
                                 minimumTrackTintColor="#00DE62"
                                 maximumTrackTintColor="#00DE62"
+                                thumbTintColor="#737373"
+
                                 // step={100}
                                 // thumbTintColor="#737373" // Color of the slider thumb
                                 // trackImage={require("../assets/images/slider.png")}
                                 // trackImage={require("../assets/images/slider3.png")}
-                                thumbImage={require("../assets/images/slider3.png")}
+                                // thumbImage={require("../assets/images/slider3.png")}
                                 onValueChange={(value) => { setsliderrange(value) }}
                                 hitSlop={{ top: 50, left: 50, right: 50, bottom: 50 }}
                                 thumbTouchSize={{ width: 100, height: 100 }}
@@ -252,6 +327,8 @@ const Signup10 = ({ navigation, route }) => {
                             {/* <Slider
                                 style={{ marginTop: 100 }}
                             /> */}
+                            {fundingstatuserror && <Text style={styles.err}>* please select your funding status </Text>}
+
 
 
                             <Text allowFontScaling={false} style={[styles.t1, { marginTop: 20, marginBottom: 10 }]}>Social proof</Text>
@@ -504,5 +581,30 @@ const styles = StyleSheet.create({
         paddingBottom: 0,
         marginTop: 10
     },
+    err: {
+        marginVertical: 0,
+        marginTop: -20,
+        marginBottom: 10,
+        textAlign: "left",
+        // backgroundColor : "red",
+        width: "90%",
+        marginHorizontal: "auto",
+        color: "#E65858",
+        fontSize: 12,
+        fontFamily: "Roboto",
+    },
+    err1: {
+        marginVertical: 0,
+        marginTop: 0,
+        marginBottom: 10,
+        textAlign: "left",
+        // backgroundColor : "red",
+        width: "90%",
+        marginHorizontal: "auto",
+        color: "#E65858",
+        fontSize: 12,
+        fontFamily: "Roboto",
+    }
+
 
 })

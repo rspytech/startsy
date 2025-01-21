@@ -83,7 +83,7 @@ export default function Startsy({ navigation, token }) {
     useEffect(() => {
         if (token) {
             setloading(true)
-            
+
             getData();
         }
     }, [token, dataFetched])
@@ -110,7 +110,7 @@ export default function Startsy({ navigation, token }) {
                             source={{ uri: item.user_id.profilePhoto }}
                             style={styles.profileImage}
                         />
-                        
+
                         <AutoSizeText
                             numberOfLines={1}
                             fontSize={24}
@@ -306,13 +306,15 @@ export default function Startsy({ navigation, token }) {
                                 );
                                 const result = await response.json();
                                 // console.log(result);
-                                var data1 = result.data.map((e) => {
-                                    var obj = { ...e, isliked: false }
-                                    return obj
-                                })
-                                console.log(data1);
+                                if (result.data && result.data.length > 0) {
+                                    var data1 = result.data.map((e) => {
+                                        var obj = { ...e, isliked: false }
+                                        return obj
+                                    })
+                                    console.log(data1);
 
-                                setData(result.data);
+                                    setData(result.data);
+                                }
                                 setloading(false);
                             } catch (err) {
                                 console.log(err, "eror");
@@ -334,7 +336,7 @@ export default function Startsy({ navigation, token }) {
                     <Text allowFontScaling={false} style={main.headertext}>For you</Text>
                 </Animated.View>
 
-                {!loading && <Swiper
+                {data && data.length>0 && <Swiper
                     ref={swiperRef}
                     nestedScrollEnabled={true}
                     backgroundColor='#16181a'

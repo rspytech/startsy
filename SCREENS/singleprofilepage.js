@@ -25,8 +25,15 @@ const Singleprofilepage = ({ navigation, props }) => {
   const messages = route.params.messages
   const mypage = route.params.mypage
 
+  // console.log(id);
+  // console.log(token);
+  // console.log(page);
+  // console.log(item);
+  // console.log(messages);
+  // console.log(mypage);
+  
 
-  console.log(mypage);
+
 
   const [investor, setinvestorarray] = useState([]);
   const [noninvestor, setnoninvestor] = useState([]);
@@ -43,11 +50,12 @@ const Singleprofilepage = ({ navigation, props }) => {
 
   // const Tab = createMaterialTopTabNavigator();
 
-  // console.log(id);
+  // console.log(id , "id");
 
   async function getdata(params) {
     try {
-
+      // console.log(`${url}api/getUsersProfiles/${id}`);
+      
       const response = await fetch(`${url}api/getUsersProfiles/${id}`, {
         method: 'GET',
         headers: {
@@ -57,11 +65,14 @@ const Singleprofilepage = ({ navigation, props }) => {
         },
       });
       const data = await response.json();
+console.log(data);
 
       console.log(data.status , "abhi ka");
       
       // console.log(data.data.user_id.profilePhoto);
       // console.log(response.status);
+      // console.log(data);
+      
       
 
       setinvestorarray(data.data.chatUsers.filter((e) => e.role == "Investor"))
@@ -69,6 +80,9 @@ const Singleprofilepage = ({ navigation, props }) => {
       // console.log(data.data);
       setposts(data.data.posts)
       setuserdata(data.data)
+
+      console.log(data.data.status ,  "oiuy");
+      
       setconnecteddata(data.status)
 
     }
@@ -318,9 +332,10 @@ const Singleprofilepage = ({ navigation, props }) => {
       const data = await response.json();
       // setloading(false)
       console.log(data);
-
       console.log(response.status);
-      setfollowstatus("request sent")
+
+      // setfollowstatus("request sent")
+      setconnecteddata("request sent")
 
     }
     catch (err) {

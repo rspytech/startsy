@@ -291,25 +291,29 @@ const Chat = ({ navigation, route }) => {
 
 
 
-            <Pressable onPress={() => { setkeyboardstatus(true) }}>
-                <Animated.View style={[styles.searchContainer]}>
-                    <TextInput
-                        ref={inputRef}
-                        allowFontScaling={false}
-                        multiline={true}
-                        style={styles.searchInput}
-                        placeholder="Search"
-                        placeholderTextColor="#828282"
-                        onFocus={handleFocus}
-                        onBlur={() => setkeyboardstatus(false)}
-                        onChangeText={(val) => setnewtext(val)}
-                        value={newtext}
-                    />
-                    <Pressable style={styles.send} onPress={sendmessage}>
-                        <Ionicons name="send" size={24} color="#00DE62" />
+            <KeyboardAvoidingView behavior="padding" >
+                <ScrollView style={{}}>
+                    <Pressable onPress={() => { setkeyboardstatus(true) }}>
+                        <Animated.View style={[styles.searchContainer]}>
+                            <TextInput
+                                ref={inputRef}
+                                allowFontScaling={false}
+                                multiline={true}
+                                style={styles.searchInput}
+                                placeholder="Search"
+                                placeholderTextColor="#828282"
+                                onFocus={handleFocus}
+                                onBlur={() => setkeyboardstatus(false)}
+                                onChangeText={(val) => setnewtext(val)}
+                                value={newtext}
+                            />
+                            <Pressable style={styles.send} onPress={sendmessage}>
+                                <Ionicons name="send" size={24} color="#00DE62" />
+                            </Pressable>
+                        </Animated.View>
                     </Pressable>
-                </Animated.View>
-            </Pressable>
+                </ScrollView>
+            </KeyboardAvoidingView>
 
 
 
@@ -446,15 +450,16 @@ const styles = StyleSheet.create({
     senttext: {
         fontFamily: "Roboto",
         fontSize: 16,
-        color: "#00DE62",
+        color: "#16181a",
         maxWidth: width * 0.6,
         fontWeight: "bold",
         // backgroundColor: "red",
-        borderRadius: 40,
+        borderRadius: 20,
         borderBottomRightRadius: 2,
         borderWidth: 2,
         borderColor: "#00DE62",
         backgroundColor: "transparent",
+        backgroundColor: "#00DE62",
         maxWidth: width * 0.6,
         padding: 20,
         paddingVertical: 10,
@@ -463,13 +468,15 @@ const styles = StyleSheet.create({
     receivedtext: {
         fontFamily: "Roboto",
         fontSize: 16,
-        color: "#16181a",
+        color: "#00de62",
         maxWidth: width * 0.6,
+        borderColor : "#00DE62",
         fontWeight: "bold",
+        borderWidth: 2,
         // backgroundColor : "red",
-        borderRadius: 40,
+        borderRadius: 20,
         borderBottomLeftRadius: 2,
-        backgroundColor: "#00DE62",
+        backgroundColor: "transparent",
         maxWidth: width * 0.6,
         padding: 20,
         paddingVertical: 10,

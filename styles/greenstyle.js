@@ -10,7 +10,7 @@ const greenstyle = StyleSheet.create({
     },
     login: {
         flex: 1,
-        backgroundColor: "#1E1E1E",
+        backgroundColor: "#16181a",
         height: height + 120,
         width: "100%",
         position: "absolute",

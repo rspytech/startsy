@@ -33,7 +33,7 @@ import { GlobalContext } from "@/Global/globalcontext.js";
 const Signup8 = ({ navigation, route }) => {
 
     useFocusEffect(() => {
-        StatusBar.setBackgroundColor("#1e1e1e")
+        StatusBar.setBackgroundColor("#16181a")
         StatusBar.setBarStyle("light-content")
     })
     const [token, settoken] = useState("")

@@ -9,9 +9,8 @@
     "resizeMode": "contain",
     "userInterfaceStyle": "dark",
     "splash": {
-      "image": "./assets/images/logo.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#000000"
+      "resizeMode": "cover",
+      "backgroundColor": "#16181a"
     },
     "ios": {
       "supportsTablet": true,
@@ -19,13 +18,19 @@
     },
     "android": {
       "softwareKeyboardLayoutMode": "pan",
+      "androidStatusBar": {
+        "backgroundColor": "#16181A",
+        "translucent": false
+      },
       "permissions": [
         "ACCESS_NETWORK_STATE",
         "INTERNET"
+      
       ],
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/adaptive-icon.png",
-        "backgroundColor": "#000000"
+        "foregroundImage": "./assets/images/appicon.png",
+        "backgroundColor": "#16181a",
+        "resizeMode" : "contain"
       },
       "package": "com.rspytech.startsy"
     },
@@ -46,6 +51,12 @@
       "eas": {
         "projectId": "104869d6-a4db-4041-8b76-8deb8d1a34c5"
       }
+    },
+    "runtimeVersion": {
+      "policy": "appVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/104869d6-a4db-4041-8b76-8deb8d1a34c5"
     }
   }
 }

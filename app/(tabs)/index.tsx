@@ -42,7 +42,7 @@ import Logout from "../../SCREENS/Logout.js";
 import Login2 from "../../SCREENS/login2.js";
 import Test1 from "../../SCREENS/test1.js";
 import Wait from "../../SCREENS/Wait.js";
-import Editcommunity from "../../SCREENS/edit profile pages/Editcommunity.js"
+import Editcommunity from "../../SCREENS/edit profile pages/Editcommunity.js";
 // import drop from "../../SCREENS/dropdown.js"
 // import Login1 from "../../SCREENS/logintrial.js";
 import F1 from "../../SCREENS/test.js";
@@ -54,7 +54,8 @@ import { ActivityIndicator, View, Text, StyleSheet } from "react-native";
 // import { setNavigationBarColorAsync } from 'expo-navigation-bar';
 import useLoadFonts from "../../hooks/useLoadFonts.js";
 import { setBackgroundColorAsync } from "expo-system-ui";
-
+import * as SystemUI from "expo-system-ui";
+// import { StatusBar } from 'expo-status-bar';
 import { GlobalProvider } from "../../Global/globalcontext.js";
 // import style from "../"
 
@@ -62,60 +63,40 @@ import { StatusBar, Platform } from "react-native";
 import { useFocusEffect } from "expo-router";
 // import ReadMore1 from "../../SCREENS/trial-1.js";
 
-SplashScreen.preventAutoHideAsync(); 
+SplashScreen.preventAutoHideAsync();
 const Stack = createNativeStackNavigator();
 
 // export const Global = createContext("ok");
 
 export default function App() {
-
+  // <StatusBar style="dark" />
   useEffect(() => {
-    const prepareApp = async () => {
-      await SplashScreen.hideAsync(); // Hide the splash screen
-    };
-
-    prepareApp();
+    StatusBar.setBackgroundColor("#16181a");
+    StatusBar.setBarStyle("light-content");
   }, []);
-  // const [globaldata, setGlobalData] = React.useState({
-  //   token : "",
-  // })
-
-  // const updateField = (field, value) => {
-  //   setGlobalData((prevData) => ({
-  //     ...prevData,
-  //     [field]: value,
-  //   }));
-  // };
-
-  // useEffect(() => {
-  //   async function getToken() {
-  //     var temp = await AsyncStorage.getItem("accessToken");
-  //     updateField("token", temp);
-  //   }
-  //   getToken();
-  // }, []);
 
   useFocusEffect(() => {
-    StatusBar.setBackgroundColor("#16181a")
-    StatusBar.setBarStyle("light-content")
-  })
+    StatusBar.setBackgroundColor("#16181a");
+    StatusBar.setBarStyle("light-content");
+  });
 
   const fontsLoaded = useLoadFonts();
-  
-  if (!fontsLoaded) {
-    
-    return (
-      <View style={styles.loadingContainer}>
-        <ActivityIndicator size="large" color="#fff" />
-      </View>
-    );
-  }
+  const [appisready, setappisready] = React.useState(false);
+
+  // if (!fontsLoaded) {
+  // }
+  useEffect(() => {
+    if (fontsLoaded) {
+      setappisready(true);
+    }
+  }, [fontsLoaded]);
 
   return (
     // <NavigationContainer theme={DarkTheme} >
     <GlobalProvider>
-      <View style={styles.container}>
-        {/* <StatusBar backgroundColor="#16181a" barStyle={"light-content"} /> */}
+      {/* <View style={styles.container}> */}
+      <StatusBar backgroundColor="#16181a" barStyle={"light-content"} />
+      {appisready && (
         <Stack.Navigator
           initialRouteName="Green"
           screenOptions={{
@@ -124,7 +105,7 @@ export default function App() {
             },
             // cardStyle: {backgroundColor: "red"},
             keyboardHandlingEnabled: false,
-            
+
             headerShown: false,
             animation: "slide_from_right",
           }}
@@ -150,8 +131,8 @@ export default function App() {
           {/* <Stack.Screen name="Connectionscreen" component={ConnectionsScreen} /> */}
           <Stack.Screen name="Chat" component={Chat} />
 
-          <Stack.Screen name="Main1" component={Main1} />
-          <Stack.Screen name="Main2" component={Main2} />
+          {/* <Stack.Screen name="Main1" component={Main1} /> */}
+          {/* <Stack.Screen name="Main2" component={Main2} /> */}
           <Stack.Screen name="Login2" component={Login2} />
           <Stack.Screen
             name="Card"
@@ -159,6 +140,20 @@ export default function App() {
               animation: "none",
             }}
             component={Card}
+          />
+          <Stack.Screen
+            name="Main1"
+            options={{
+              animation: "none",
+            }}
+            component={Main1}
+          />
+          <Stack.Screen
+            name="Main2"
+            options={{
+              animation: "none",
+            }}
+            component={Main2}
           />
 
           <Stack.Screen name="F1" component={F1} />
@@ -176,7 +171,6 @@ export default function App() {
             name="KeyboardAvoidingComponent"
             component={KeyboardAvoidingComponent}
             options={{
-              
               headerTitle: "Your Custom Title", // Custom title for the header
               headerStyle: {
                 backgroundColor: "blue", // Custom background color
@@ -189,10 +183,12 @@ export default function App() {
           />
 
           <Stack.Screen
-            name="Singleprofilepage" component={Singleprofilepage}
+            name="Singleprofilepage"
+            component={Singleprofilepage}
           />
         </Stack.Navigator>
-      </View>
+      )}
+      {/* </View> */}
     </GlobalProvider>
     // </NavigationContainer>
   );
