@@ -2,8 +2,8 @@ import { User } from "../models/user.model.js";
 
 export const getUserNameSuggestions = async (req, res) => {
     try {
-        const userName = req.body;
-        
+        let {userName} = req.params;
+        userName = userName.substring(1,);
         const userSuggestions = await User.find({
             userName : {$regex: `^${userName}`, $options: "i"}
         }).limit(3).filter((user) => user.role !== "Investor");
