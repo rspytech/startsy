@@ -150,7 +150,7 @@ const Foryou = ({ scroll, navigation, token }) => {
 
 
             if (data.data.length > 0) {
-                setallpost(data1)
+                setallpost(data1.reverse())
             }
 
 
@@ -973,11 +973,11 @@ const Foryou = ({ scroll, navigation, token }) => {
     }
 
     var role = [
-        { label: "Learner", value: "Learner" },
+        { label: "Only for Founders", value: "Only for Founders" },
         { label: "Startup Enthusiast", value: "Startup Enthusiast" },
-        { label: "Mentor", value: "Mentor" },
-        { label: "Networker", value: "Networker" },
-        { label: "Contributor", value: "Contributor" },
+        // { label: "Mentor", value: "Mentor" },
+        // { label: "Networker", value: "Networker" },
+        // { label: "Contributor", value: "Contributor" },
 
 
     ]

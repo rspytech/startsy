@@ -58,43 +58,43 @@ const RequestsScreen = () => {
         }
         return Math.floor(seconds) + " seconds ago";
     }
+    async function getData() {
+        console.log(token, "second use focus eefct ");
+        setloading(true);
 
+        try {
+            const response = await fetch(
+                `${url}investor/getPendingRequestsByInvestor`,
+                {
+                    method: "GET",
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            const result = await response.json();
+            console.log(result.requestedFounders, "investor");
+
+            if (response.status == 200) {
+                var datatobesaved = Object.entries(result.requestedFounders.requestedFounders)
+                setData(datatobesaved)
+                setDataFetched(true);
+            }
+
+
+        } catch (err) {
+            console.log(err);
+        }
+        finally {
+            setloading(false);
+        }
+    }
 
 
     useEffect(() => {
         if (token && !dataFetched) {
-            async function getData() {
-                console.log(token, "second use focus eefct ");
-                setloading(true);
 
-                try {
-                    const response = await fetch(
-                        `${url}investor/getPendingRequestsByInvestor`,
-                        {
-                            method: "GET",
-                            headers: {
-                                accept: "application/json",
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
-                    );
-                    const result = await response.json();
-                    console.log(result.requestedFounders, "investor");
-
-                    if (response.status == 200) {
-                        var datatobesaved = Object.entries(result.requestedFounders.requestedFounders)
-                        setData(datatobesaved)
-                        setDataFetched(true);
-                    }
-
-
-                } catch (err) {
-                    console.log(err);
-                }
-                finally {
-                    setloading(false);
-                }
-            }
             getData();
         }
     }, [token, dataFetched])
@@ -105,6 +105,7 @@ const RequestsScreen = () => {
         console.log("refrshing");
         console.log('====================================');
         // setRefreshing(true);
+        getData();
 
         // Simulate a network request or data update
         // setTimeout(() => {
@@ -113,6 +114,14 @@ const RequestsScreen = () => {
         // }, 2000);
 
     };
+
+    function getfund(fund) {
+        if (fund == 69) {
+            return 0
+        }
+        fund = fund - 57
+        return (fund * 10000000).toLocaleString("en-IN")
+    }
 
     return (
 
@@ -132,7 +141,7 @@ const RequestsScreen = () => {
         >
 
 
-            {!loading && data!= null && data.map((item, index) => {
+            {!loading && data != null && data.map((item, index) => {
 
                 // console.log('====================================');
                 // console.log(item[1].founder.roleId.nameOfStartup);
@@ -178,7 +187,7 @@ const RequestsScreen = () => {
 
                             {/* Status Section */}
                             <Text allowFontScaling={false} style={styles.status}>
-                                {item[1].founder.roleId.hiddenInfo.stageOfStartup} - {item[1].founder.roleId.hiddenInfo.fundingStatus}
+                                {item[1].founder.roleId.hiddenInfo.stageOfStartup} - {getfund(item[1].founder.roleId.hiddenInfo.fundingStatus)}
                             </Text>
                             <Text allowFontScaling={false} style={styles.pending}>
                                 Pending...

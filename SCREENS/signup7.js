@@ -17,7 +17,8 @@ import {
     Platform,
     FlatList,
     TouchableWithoutFeedback,
-    KeyboardAvoidingView
+    KeyboardAvoidingView,
+    ActivityIndicator
 } from "react-native";
 // import { FlatList, ScrollView } from 'react-native-gesture-handler';
 

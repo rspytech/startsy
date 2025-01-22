@@ -246,7 +246,13 @@ const Chat = ({ navigation, route }) => {
 
     }, [data]);
 
-
+    function handlenext() {
+        var decode = jwtDecode(token)
+        if(decode.role == "Investor"){
+            return
+        }
+        navigation.navigate("Singleprofilepage", { token: token, id: item.user._id, page: "Chat", item, messages, })
+    }
 
     return (
         <View style={{ flex: 1, backgroundColor: "#16181a" }}>
@@ -255,7 +261,7 @@ const Chat = ({ navigation, route }) => {
                     <Ionicons name="arrow-back-circle-outline" size={40} color="#00DE62" />
                 </Pressable>
                 <Pressable
-                    onPress={() => { navigation.navigate("Singleprofilepage", { token: token, id: item.user._id, page: "Chat", item, messages, }) }}
+                    onPress={() => { handlenext() }}
                 >
                     <View style={styles.details}>
                         <View style={styles.userimg}>
@@ -470,7 +476,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         color: "#00de62",
         maxWidth: width * 0.6,
-        borderColor : "#00DE62",
+        borderColor: "#00DE62",
         fontWeight: "bold",
         borderWidth: 2,
         // backgroundColor : "red",

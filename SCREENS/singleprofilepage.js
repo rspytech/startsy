@@ -84,8 +84,10 @@ const Singleprofilepage = ({ navigation, props }) => {
       console.log('====================================');
       setuserdata(data.data)
 
-      console.log(data.data.status, "oiuy");
+      setImage(data.data.user_id.bannerImage)
 
+      console.log(data.status, "oiuy");
+      // setImage(data.data.user_id.bannerImage)
       setconnecteddata(data.status)
 
     }
@@ -348,6 +350,28 @@ const Singleprofilepage = ({ navigation, props }) => {
 
   }
 
+
+  function getfund(fund) {
+
+    if (fund == 69) {
+      return 0
+    }
+    fund = fund - 57
+    console.log(fund, "fundddddddddddddddddd");
+    console.log(fund, "fundddddddddddddddddd");
+    console.log(fund, "fundddddddddddddddddd");
+    console.log(fund, "fundddddddddddddddddd");
+    console.log(fund, "fundddddddddddddddddd");
+    console.log(fund, "fundddddddddddddddddd");
+    console.log(fund, "fundddddddddddddddddd");
+
+    return (fund * 10000000).toLocaleString("en-IN")
+
+
+    // (+userdata.hiddenInfo.fundingStatus).toLocaleString("en-IN")
+
+  }
+
   const header = function () {
     return (
       <>
@@ -371,10 +395,12 @@ const Singleprofilepage = ({ navigation, props }) => {
         </View>
         <View>
           <Pressable onPress={fileupload} style={styles1.top}>
-            {image == "" && <View style={styles1.img1}>
-              <Banner />
-            </View>}
-            {image != "" && <Image style={styles1.bimg} source={{ uri: image }} />}
+            {(image == "" || image == undefined) &&
+              <View style={styles1.img1}>
+                <Banner />
+              </View>}
+
+            {(image != "" && image != undefined) && <Image style={styles1.bimg} source={{ uri: image }} />}
           </Pressable>
           <View style={styles1.bottom}>
 
@@ -404,7 +430,7 @@ const Singleprofilepage = ({ navigation, props }) => {
             }
 
             {userdata.user_id.role == "Founder" &&
-              <Text style={styles1.fund}>{userdata.hiddenInfo.stageOfStartup} : {+(userdata.hiddenInfo.fundingStatus).toLocaleString("en-IN")}</Text>
+              <Text style={styles1.fund}>{userdata.hiddenInfo.stageOfStartup} :₹ {getfund(userdata.hiddenInfo.fundingStatus)}</Text>
             }
 
             {userdata.user_id.role == "Investor" &&
@@ -680,8 +706,8 @@ const styles1 = StyleSheet.create({
     height: "100%",
     borderRadius: 100,
     marginBottom: 0,
-    borderWidth : 2,
-    borderColor : "#16181a"
+    borderWidth: 2,
+    borderColor: "#16181a"
   },
   t6: {
     fontFamily: "Alata",

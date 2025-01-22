@@ -161,7 +161,7 @@ const Apnauser = ({ navigation, props, token }) => {
             setnoninvestor(data.data.chatUsers.filter((e) => e.role != "Investor"))
             setPosts(data.data.posts)
             setuserdata(data.data)
-
+            setfollowstatus(data.data.status)
             setMinHeight(data.data.posts.length * 700)
             setImage(data.data.user_id.bannerImage)
 
@@ -398,6 +398,9 @@ const Apnauser = ({ navigation, props, token }) => {
                                     <Text allowFontScaling={false} style={styles.u1}>{item.user_id.userName}</Text>
                                     <Text allowFontScaling={false} style={styles.u2}>Community Member</Text>
                                 </View>
+                                <Pressable onPress={() => deletepost(item._id)}>
+                                    <FontAwesome6 name="trash" style={styles1.minus} size={22} color="#00DE62" />
+                                </Pressable>
                             </View>
                         </Pressable>
                     </View>
@@ -429,6 +432,10 @@ const Apnauser = ({ navigation, props, token }) => {
                                     <Text allowFontScaling={false} style={styles.u1}>{item.user_id.userName}</Text>
                                     <Text allowFontScaling={false} style={styles.u2}>{userdata.user_id.role == "CommunityMember" ? "Member" : userdata.user_id.role}</Text>
                                 </View>
+
+                                <Pressable onPress={() => deletepost(item._id)}>
+                                    <FontAwesome6 name="trash" style={styles1.minus} size={22} color="#00DE62" />
+                                </Pressable>
                             </View>
 
                         </Pressable>
@@ -539,25 +546,17 @@ const Apnauser = ({ navigation, props, token }) => {
     }
 
 
-    function getfund(fund){
+    function getfund(fund) {
 
-        if(fund == 69){
+        if (fund == 69) {
             return 0
         }
-        fund = fund-57
-        console.log(fund ,"fundddddddddddddddddd");
-        console.log(fund ,"fundddddddddddddddddd");
-        console.log(fund ,"fundddddddddddddddddd");
-        console.log(fund ,"fundddddddddddddddddd");
-        console.log(fund ,"fundddddddddddddddddd");
-        console.log(fund ,"fundddddddddddddddddd");
-        console.log(fund ,"fundddddddddddddddddd");
-
+        fund = fund - 57
         return (fund * 10000000).toLocaleString("en-IN")
 
-        
+
         // (+userdata.hiddenInfo.fundingStatus).toLocaleString("en-IN")
-        
+
     }
 
     const Header = function () {
@@ -611,9 +610,9 @@ const Apnauser = ({ navigation, props, token }) => {
                         }
 
                         {decode.role == "Founder" &&
-                            <Text style={styles1.fund}>{userdata.hiddenInfo.stageOfStartup} :  ₹ {getfund(userdata.hiddenInfo.fundingStatus) }</Text>
+                            <Text style={styles1.fund}>{userdata.hiddenInfo.stageOfStartup ? userdata.hiddenInfo.stageOfStartup : ""} :  ₹ {getfund(userdata.hiddenInfo.fundingStatus)}</Text>
                         }
-                       
+
 
 
                         {decode.role == "Investor" &&

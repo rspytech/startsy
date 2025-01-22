@@ -97,6 +97,14 @@ export default function Startsy({ navigation, token }) {
 
     }
 
+    function getfund(fund){
+        if (fund == 69) {
+            return 0
+        }
+        fund = fund - 57
+        return (fund * 10000000).toLocaleString("en-IN")
+    }
+
     function renderCard(item, index) {
 
         return (
@@ -133,7 +141,7 @@ export default function Startsy({ navigation, token }) {
                     {/* Startup Info */}
                     <Text style={styles.title}>{item.nameOfStartup}</Text>
                     <Text style={styles.subtitle}>Revolutionizing startup ecosystem.</Text>
-                    <Text style={styles.status}>{item.hiddenInfo.stageOfStartup} stage - {item.hiddenInfo.fundingStatus}</Text>
+                    <Text style={styles.status}>{item.hiddenInfo.stageOfStartup} stage - {getfund(item.hiddenInfo.fundingStatus)}</Text>
 
                     {/* Goal Section */}
                     <Text style={styles.sectionHeader}>Goal: <Text style={styles.text}>
@@ -305,7 +313,7 @@ export default function Startsy({ navigation, token }) {
                                     }
                                 );
                                 const result = await response.json();
-                                // console.log(result);
+                                console.log(result);
                                 if (result.data && result.data.length > 0) {
                                     var data1 = result.data.map((e) => {
                                         var obj = { ...e, isliked: false }

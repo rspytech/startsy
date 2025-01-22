@@ -145,7 +145,7 @@ const Foryou = ({ scroll, navigation, token }) => {
 
 
             if (data.data.length > 0) {
-                setallpost(data1)
+                setallpost(data1.reverse())
             }
 
 
@@ -323,7 +323,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                                 <Image style={styles.userimg} source={{ uri: item.user_id.profilePhoto }} />
                                 <View style={styles.userdetail}>
                                     <Text allowFontScaling={false} style={styles.u1}>{item.user_id.userName}</Text>
-                                    <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role == "CommunityMember" ? "Member" : item.user_id.role}}</Text>
+                                    <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role == "CommunityMember" ? "Member" : item.user_id.role}</Text>
                                 </View>
                             </Pressable>
                         </View>
@@ -369,7 +369,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                                     <Image style={styles.userimg} source={{ uri: item.user_id.profilePhoto }} />
                                     <View style={styles.userdetail}>
                                         <Text allowFontScaling={false} style={styles.u1}>{item.user_id.userName}</Text>
-                                        <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role == "CommunityMember" ? "Member" : item.user_id.role}}</Text>
+                                        <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role == "CommunityMember" ? "Member" : item.user_id.role}</Text>
                                     </View>
                                 </View>
                             </Pressable>
@@ -394,13 +394,12 @@ const Foryou = ({ scroll, navigation, token }) => {
                         <View style={styles.top} >
 
                             <Pressable
-                                onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.user_id._id, page: "Startsy" }) }}
                                 style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                 <View style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                     <Image style={styles.userimg} source={{ uri: item.user_id.profilePhoto }} />
                                     <View style={styles.userdetail}>
                                         <Text allowFontScaling={false} style={styles.u1}>{item.user_id.userName}</Text>
-                                        <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role == "CommunityMember" ? "Member" : item.user_id.role}}</Text>
+                                        <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role == "CommunityMember" ? "Member" : item.user_id.role}</Text>
                                     </View>
                                 </View>
 

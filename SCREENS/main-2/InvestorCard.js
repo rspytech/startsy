@@ -60,16 +60,23 @@ const InvestorCard = ({ token, navigation }) => {
 
 
                 var array = result.data.map((item, index) => {
-                    console.log(item, index);
-                    console.log(result.data.length, "shdkasuhdkshdkjshdkshkasjhfkhfkhfkasjfhksjfhk");
+                    // console.log(item, index);
+                    // console.log(result.data.length, "shdkasuhdkshdkjshdkshkasjhfkhfkhfkasjfhksjfhk");
 
                     item["id"] = index + 1
 
                     // console.log(item["id"]);
                     return item
                 })
-                console.log(array, "yeh hai arraya");
-                setItems(array)
+                console.log(array.length, "yeh hai arraya");
+
+
+                const uniqueData = array.filter((item, index, self) =>
+                    self.findIndex(innerItem => innerItem.investor._id === item.investor._id) === index
+                );
+
+                // array = array.filter((item , index , array)=> array.indexOf(item) == index)
+                setItems(uniqueData)
             }
 
 
@@ -269,15 +276,15 @@ const InvestorCard = ({ token, navigation }) => {
 
         return (
             <Animated.View
-                style={[
-                    {
-                        transform: [
-                            { translateX: animatedValues.current[item.id]?.translateX },
-                            { scaleY: animatedValues.current[item.id]?.scaleY },
-                        ],
-                        opacity: animatedValues.current[item.id]?.opacity,
-                    },
-                ]}
+                // style={[
+                //     {
+                //         transform: [
+                //             { translateX: animatedValues.current[item.id]?.translateX },
+                //             { scaleY: animatedValues.current[item.id]?.scaleY },
+                //         ],
+                //         opacity: animatedValues.current[item.id]?.opacity,
+                //     },
+                // ]}
             >
                 <LinearGradient
                     style={styles.card}
@@ -324,8 +331,8 @@ const InvestorCard = ({ token, navigation }) => {
                     {item.investor.role == "Investor" && <Text style={styles.info}>Investing experience - {item.investor.roleId.previousExperience} years</Text>}
                     {item.investor.role == "Investor" && <Text style={styles.info1}>Investing Capacity - {item.investor.roleId.investmentRange}</Text>}
 
-                    {item.investor.role == "Founder" && <Text style={styles.info}>Goal - {item.investor.roleId.goal} years</Text>}
-                    {item.investor.role == "Founder" && <Text style={styles.info1}>Investing Capacity - {item.investor.roleId.investmentRange}</Text>}
+                    {item.investor.role == "Founder" && <Text style={styles.info}>Stage of Startup - {item.investor.roleId.hiddenInfo.stageOfStartup} </Text>}
+                    {item.investor.role == "Founder" && <Text style={styles.info1}>Startup Sector - {item.investor.roleId.hiddenInfo.sector}</Text>}
 
                     {item.investor.role == "CommunityMember" && <Text style={styles.info}>Investing experience - {item.investor.roleId.previousExperience} years</Text>}
                     {item.investor.role == "CommunityMember" && <Text style={styles.info1}>Investing Capacity - {item.investor.roleId.investmentRange}</Text>}
