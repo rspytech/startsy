@@ -141,7 +141,7 @@ export default function Startsy({ navigation, token }) {
                     {/* Startup Info */}
                     <Text style={styles.title}>{item.nameOfStartup}</Text>
                     <Text style={styles.subtitle}>Revolutionizing startup ecosystem.</Text>
-                    <Text style={styles.status}>{item.hiddenInfo.stageOfStartup} stage - {getfund(item.hiddenInfo.fundingStatus)}</Text>
+                    <Text style={styles.status}>{item.hiddenInfo.stageOfStartup} - {getfund(item.hiddenInfo.fundingStatus)}</Text>
 
                     {/* Goal Section */}
                     <Text style={styles.sectionHeader}>Goal: <Text style={styles.text}>
