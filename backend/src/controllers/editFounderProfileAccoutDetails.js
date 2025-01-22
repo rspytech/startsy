@@ -3,6 +3,8 @@
 import { Founder } from "../models/founder.model.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../../cloudinary.js";
+import mongoose from "mongoose";
+import { Notification } from "../models/notification.model.js";
 
 export const editFounderAccountProfileDetails = async (req, res) => {
 
@@ -12,7 +14,7 @@ export const editFounderAccountProfileDetails = async (req, res) => {
     req.body.teamInfo = JSON.parse(req.body.teamInfo)
     req.body.previousWorkExperience = JSON.parse(req.body.previousWorkExperience)
     req.body.socialProof = JSON.parse(req.body.socialProof)
-    const {
+    let {
         country,
         contactInfo,
         fullName,
@@ -32,24 +34,38 @@ export const editFounderAccountProfileDetails = async (req, res) => {
 
     const profilePhoto = req.file;
 
-    if (!profilePhoto) {
-        return res.status(400).json({ message: "Please upload a profile photo" });
-    }
+    // if (!profilePhoto) {
+    //     return res.status(400).json({ message: "Please upload a profile photo" });
+    // }
+
+    teamInfo = teamInfo.filter((team) => team.tag !== "" && team.name !== "" && team.role !== "")
 
     try {
         // Update the team info with corresponding user IDs
-        let i = 0;
-        for (const team of teamInfo) {
-            let teamMate = await User.findOne({ userName: team.tag });
-
-            if (!teamMate) {
-                return res.status(404).send({
-                    message: `Team Member with the username ${team.tag} does not exist,`
-                });
+        const invalidTeamMates = [];
+        if(teamInfo && teamInfo.length > 0){
+            for (let i = 0; i < teamInfo.length; i++) {
+                const team = teamInfo[i];
+                let teamMate;
+                if(team.tag.length > 0){
+                    teamMate = await User.findOne({ userName: team.tag });
+                    if (!teamMate) {
+                        // Add invalid team member to the list
+                        invalidTeamMates.push(i);
+                    }
+                    else {
+                        // Replace the tag with the team member's ID
+                        teamInfo[i].tag = teamMate._id;
+                    }
+                }
             }
-
-            teamInfo[i].tag = teamMate._id;
-            i += 1;
+        }
+        
+        if (invalidTeamMates.length > 0) {
+            return res.status(555).json({
+                message: "Team members were not found in the database. Please correct them.",
+                invalidTeamMates,
+            });
         }
 
         // Get the current user
@@ -89,6 +105,24 @@ export const editFounderAccountProfileDetails = async (req, res) => {
         // Update teamInfo if provided
         if (teamInfo.length > 0) {
             founder.teamInfo = teamInfo;
+        }
+
+        for(let i = 0; i < teamInfo.length; i++){
+            let teamMateTag = teamInfo[i].tag; 
+            // TeamMateTag is now objectId as it converted now from code above as per the model using  teamInfo[i].tag = teamMate._id;
+            let teamMate;
+            if(mongoose.Types.ObjectId.isValid(teamMateTag)) {
+                teamMate = await User.findById(teamMateTag);  
+            }   
+            if(teamMate){
+                await Notification.create({
+                    receivingUserId : teamInfo[i].tag,
+                    sendingUserId : req.user._id,
+                    notificationType : "teammateAdded",
+                    notificationMessage : "You have been added to a new startup as a team member",
+                });
+            }
+            
         }
 
         // Update hiddenInfo (sector, fundingStatus, stageOfStartup, socialProof)

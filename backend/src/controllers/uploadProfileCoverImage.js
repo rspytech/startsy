@@ -8,7 +8,7 @@ export const uploadProfileCoverImage = async (req, res) => {
         const userId = req.user._id; // Extract the user ID from the authenticated user
 
         // Check if a file is uploaded
-        if (!coverImage || !coverImage.path) {
+        if (!coverImage ) {
             return res.status(400).json({ message: "Please select a valid cover image." });
         }
 

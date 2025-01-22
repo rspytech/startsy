@@ -28,9 +28,9 @@ export const editCommunityMemberAccountProfileDetails = async (req, res) => {
 
         const profilePhoto = req.file;
 
-        if (!profilePhoto) {
-            return res.status(400).json({ message: "Please upload a profile photo" });
-        }
+        // if (!profilePhoto) {
+        //     return res.status(400).json({ message: "Please upload a profile photo" });
+        // }
 
         // Get the current user
         const currentUserId = req.user._id;
