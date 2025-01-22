@@ -27,7 +27,7 @@ export const getUsersProfiles = async (req, res) => {
         console.log("User Role:", userRole);
 
         let status;
-        if(user.following.includes(userId) && user.followers.includes(loggedInUserId)){
+        if(user.following.includes(loggedInUserId) && user.followers.includes(loggedInUserId)){
             status = "Followed";
         }
 
