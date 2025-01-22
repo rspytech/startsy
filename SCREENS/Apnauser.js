@@ -160,7 +160,7 @@ const Apnauser = ({ navigation, props, token }) => {
             setinvestorarray(data.data.chatUsers.filter((e) => e.role == "Investor"))
             setnoninvestor(data.data.chatUsers.filter((e) => e.role != "Investor"))
             setPosts(data.data.posts)
-            setuserdata(data.data)
+            // setuserdata(data.data)
             setfollowstatus(data.data.status)
             setMinHeight(data.data.posts.length * 700)
             setImage(data.data.user_id.bannerImage)
