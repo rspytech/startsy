@@ -144,8 +144,9 @@ const Signup7 = ({ navigation, route }) => {
     }
     function deletecertificate(index) {
         console.log(index);
-        var array = certificate.splice(index, 1);
-        setcertificate(array);
+        var new1 = [...certificate]
+        new1.splice(index, 1)
+        setcertificate(new1);
     }
 
     function addportfolio() {
