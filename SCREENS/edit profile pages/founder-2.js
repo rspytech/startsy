@@ -9,7 +9,7 @@ import Slider from "@react-native-community/slider";
 import styles from "../commonstyles.js"
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Entypo from '@expo/vector-icons/Entypo';
-import {url} from "../../config.js"
+import {url as url1} from "../../config.js"
 
 
 
@@ -20,6 +20,10 @@ import { GlobalContext } from "@/Global/globalcontext.js";
 const Founder2 = ({ navigation, route }) => {
 
     const [token, settoken] = useState("")
+
+
+    console.log(url1 , "route ka url");
+    
     const { globaldata, updateField } = useContext(GlobalContext);
 
     useEffect(() => {
@@ -78,7 +82,23 @@ const Founder2 = ({ navigation, route }) => {
 
     ]
 
+    function deletecertificate(index){
 
+        console.log(index);
+        
+        var new1 = [...teammember];
+        new1.splice(index, 1)
+        setteammember(new1)
+    }
+
+    function deletecertificate1(index){
+
+        console.log(index);
+        
+        var new1 = [...url];
+        new1.splice(index, 1)
+        seturl(new1)
+    }
 
     const handleOutsideTouch = () => {
         if (open1) setOpen1(false);
@@ -179,8 +199,13 @@ const Founder2 = ({ navigation, route }) => {
         console.log(final);
         console.log('====================================');
         setloading(true);
+
+
+        console.log(`${url}founder/editFounderAccountProfileDetails`);
         try {
-            const response = await fetch(`${url}founder/editFounderAccountProfileDetails`, {
+
+            
+            const response = await fetch(`${url1}founder/editFounderAccountProfileDetails`, {
                 method: 'POST',
                 body: final,
                 headers: {
@@ -336,12 +361,17 @@ const Founder2 = ({ navigation, route }) => {
                         />
 
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 35, paddingLeft: 10 }]}>Social proof</Text>
-                        {url.map(items =>
+                        {url.map((items ,index) =>
 
                             <View style={styles1.v1} key={items.id}>
                                 <Pressable onPress={addurl}>
                                     <Entypo style={styles1.plus1} name="plus" size={24} color="#00DE62" />
                                 </Pressable>
+
+                                
+                                {index > 0 && <Pressable onPress={() => { deletecertificate1(index) }}>
+                                    <FontAwesome6 name="trash" style={styles1.minus1} size={15} color="#00DE62" />
+                                </Pressable>}
                                 <TextInput
 
                                     allowFontScaling={false}
@@ -358,11 +388,15 @@ const Founder2 = ({ navigation, route }) => {
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 35, paddingLeft: 10 }]}>Team Information</Text>
 
 
-                        {teammember.map((we) => (
+                        {teammember.map((we , index) => (
                             <View key={we.id} style={styles1.certificate}>
                                 <Pressable onPress={addteammember}>
                                     <Entypo style={styles1.plus} name="plus" size={24} color="#00DE62" />
                                 </Pressable>
+
+                                {index > 0 && <Pressable onPress={() => { deletecertificate(index) }}>
+                                    <FontAwesome6 name="trash" style={styles1.minus} size={15} color="#00DE62" />
+                                </Pressable>}
 
                                 <TextInput
                                     allowFontScaling={false}
@@ -643,14 +677,27 @@ const styles1 = StyleSheet.create({
         fontSize: scalingfactor * 20,
         color: "#B8B8B8",
         paddingBottom: scalingfactor * 0,
-        width: "90%",
+        width: "80%",
         marginLeft: 0,
+        // backgroundColor : "red",
         paddingLeft: 10,
         fontFamily: "Roboto",
         lineHeight: scalingfactor * 18,
 
 
-    }
+    },
+    minus: {
+        position: "absolute",
+        right: 45,
+        top: -3,
+        zIndex: 100
+    },
+    minus1: {
+        position: "absolute",
+        right: 45,
+        top: 6,
+        zIndex: 100
+    },
 
 
 })

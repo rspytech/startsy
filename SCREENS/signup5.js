@@ -203,7 +203,7 @@ const Signup5 = ({ navigation, route }) => {
 
         // Launch the image picker
         const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All, // Allow all media types
+            mediaTypes: ImagePicker.MediaTypeOptions.Images, // Allow all media types
             allowsEditing: true, // Allows cropping the image
             aspect: [4, 3], // Aspect ratio of the image
             quality: 1, // Image quality (0 to 1)

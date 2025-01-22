@@ -813,7 +813,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                                 <Image style={styles.userimg} source={{ uri: item.user_id.profilePhoto }} />
                                 <View style={styles.userdetail}>
                                     <Text allowFontScaling={false} style={styles.u1}>{item.user_id.userName}</Text>
-                                    <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role}</Text>
+                                    <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role == "CommunityMember" ? "Member" : item.user_id.role}</Text>
                                 </View>
                             </Pressable>
                         </View>
@@ -867,7 +867,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                                     <Image style={styles.userimg} source={{ uri: item.user_id.profilePhoto }} />
                                     <View style={styles.userdetail}>
                                         <Text allowFontScaling={false} style={styles.u1}>{item.user_id.userName}</Text>
-                                        <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role}</Text>
+                                        <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role == "CommunityMember" ? "Member" : item.user_id.role}</Text>
                                     </View>
                                 </View>
                             </Pressable>
@@ -898,7 +898,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                                     <Image style={styles.userimg} source={{ uri: item.user_id.profilePhoto }} />
                                     <View style={styles.userdetail}>
                                         <Text allowFontScaling={false} style={styles.u1}>{item.user_id.userName}</Text>
-                                        <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role}</Text>
+                                        <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role == "CommunityMember" ? "Member" : item.user_id.role}</Text>
                                     </View>
                                 </View>
 
@@ -1229,7 +1229,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                     overlayColor="rgba(0, 0, 0, 0.9)"
                     backdropComponent={renderBackdrop}
                     enablePanDownToClose
-                    backgroundStyle={{ backgroundColor: '#222222', borderRadius: 30 }} // Changes the background of the sheet itself
+                    backgroundStyle={{ backgroundColor: '#16181a', borderRadius: 30 }} // Changes the background of the sheet itself
                     handleIndicatorStyle={{ backgroundColor: '#00de62' }}
 
                     ref={bottomSheetRef}
@@ -1259,7 +1259,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                     nestedScrollEnabled={true}
                     overlayColor="rgba(0, 0, 0, 0.5)"
                     enablePanDownToClose
-                    backgroundStyle={{ backgroundColor: '#222222', borderRadius: 30 }}
+                    backgroundStyle={{ backgroundColor: '#16181a', borderRadius: 30 }}
                     // backgroundStyle={{ backgroundColor: 'red', borderRadius: 30 }}
                     // height={100}
                     handleIndicatorStyle={{
@@ -1434,7 +1434,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                     nestedScrollEnabled={true}
                     overlayColor="rgba(0, 0, 0, 0.5)"
                     enablePanDownToClose
-                    backgroundStyle={{ backgroundColor: '#222222', borderRadius: 30 }}
+                    backgroundStyle={{ backgroundColor: '#16181a', borderRadius: 30 }}
                     // backgroundStyle={{ backgroundColor: 'red', borderRadius: 30 }}
                     // height={100}
                     handleIndicatorStyle={{
@@ -1531,7 +1531,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                     nestedScrollEnabled={true}
                     overlayColor="rgba(0, 0, 0, 0.5)"
                     enablePanDownToClose
-                    backgroundStyle={{ backgroundColor: '#222222', borderRadius: 30 }}
+                    backgroundStyle={{ backgroundColor: '#16181a', borderRadius: 30 }}
 
                     handleIndicatorStyle={{ backgroundColor: '#00de62', width: 70, marginTop: 20 }}
                     style={{ marginTop: 60 }}
@@ -1602,7 +1602,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                         nestedScrollEnabled={true}
                         overlayColor="rgba(0, 0, 0, 0.5)"
                         enablePanDownToClose
-                        backgroundStyle={{ backgroundColor: '#222222', borderRadius: 30 }}
+                        backgroundStyle={{ backgroundColor: '#16181a', borderRadius: 30 }}
                         // backgroundStyle={{ backgroundColor: 'red', borderRadius: 30 }}
                         // height={100}
                         handleIndicatorStyle={{
@@ -1730,7 +1730,7 @@ const Foryou = ({ scroll, navigation, token }) => {
 
 
                 >
-                    <View style={{ flex: 0.93 }}>
+                    <View style={{ flex: 0.92 }}>
 
                         <Text style={styles.comment}>Comments</Text>
                         {/* <KeyboardAvoidingView behavior="" keyboardVerticalOffset={-100} style={{ flex: 1 }}> */}

@@ -383,7 +383,6 @@ const Login1 = ({ navigation }) => {
     React.useCallback(() => {
       // Adding back button handler only when the screen is focused
       const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-        // StatusBar.setBackgroundColor("#1e1e1e")
 
         if (!isForm1Visible) {
           console.log("ok");
@@ -456,7 +455,6 @@ const Login1 = ({ navigation }) => {
                 value={password}
                 onChangeText={(text) => { setpassword(text) }}
                 secureTextEntry={true}
-                maxLength={10}
               />
 
               <Pressable style={styles.forgot}>

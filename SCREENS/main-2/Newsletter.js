@@ -320,7 +320,7 @@ const NewsLetter = ({ navigation, route }) => {
 
                     <View style={styles.textContainer}>
                         <Text allowFontScaling={false} style={styles.username}>{item.userName}</Text>
-                        <Text allowFontScaling={false} style={styles.message}>{item.role}</Text>
+                        <Text allowFontScaling={false} style={styles.message}>{item.role == "CommunityMember"  ? "Member" : item.role}</Text>
                     </View>
                     {/* <Text allowFontScaling={false} style={styles.time}> "today"}</Text> */}
                 </View>

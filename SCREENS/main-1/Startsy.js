@@ -336,6 +336,8 @@ export default function Startsy({ navigation, token }) {
                     <Text allowFontScaling={false} style={main.headertext}>For you</Text>
                 </Animated.View>
 
+                {data && data.length == 0 && <Text></Text>}
+
                 {data && data.length>0 && <Swiper
                     ref={swiperRef}
                     nestedScrollEnabled={true}

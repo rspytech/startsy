@@ -15,6 +15,7 @@ const InvestorCard = ({ token, navigation }) => {
     const [animation, setanimation] = useState([]);
     const [loading, setloading] = useState(true);
     const [refreshing, setRefreshing] = useState(false);
+    const [refreshing11, setRefreshing11] = useState(false);
     console.log("request screen of ofunder ");
     const animatedValues = useRef({})
     async function getData() {
@@ -31,15 +32,17 @@ const InvestorCard = ({ token, navigation }) => {
                 }
             );
             const result = await response.json();
-            console.log(result);
-            // console.log(result.investor);
+            // console.log(result.data);
+
+
+            // console.log(result.data[0].investor);
             // console.log(result.investor.roleId);
             // console.log(result.investor.roleId.requestNotifications);
 
 
-            console.log('====================================');
-            console.log(response.status);
-            console.log('====================================');
+            // console.log('====================================');
+            // console.log(response.status);
+            // console.log('====================================');
             // console.log(result.data.upvotesPerDay);
             // console.log(result.data.investorUpvotes);
             // console.log(result.data.length, "length");
@@ -54,14 +57,21 @@ const InvestorCard = ({ token, navigation }) => {
             // console.log(result.data[0].requestDate);
 
             if (response.status == 200) {
+
+
                 var array = result.data.map((item, index) => {
+                    console.log(item, index);
+                    console.log(result.data.length, "shdkasuhdkshdkjshdkshkasjhfkhfkhfkasjfhksjfhk");
+
                     item["id"] = index + 1
+
+                    // console.log(item["id"]);
                     return item
                 })
+                console.log(array, "yeh hai arraya");
                 setItems(array)
             }
 
-            // console.log(array);
 
         } catch (err) {
             console.log(err, "errr");
@@ -76,7 +86,6 @@ const InvestorCard = ({ token, navigation }) => {
 
 
         getData();
-
 
 
     }, [])
@@ -139,14 +148,12 @@ const InvestorCard = ({ token, navigation }) => {
 
     function rendercard({ item, index }) {
 
-
-        console.log(item);
-
+        console.log(item, "render card ka item");
 
 
-        console.log('====================================');
-        console.log(item.investor.profilePhoto);
-        console.log('====================================');
+
+
+
 
         const moveItem = (id, direction) => {
 
@@ -159,13 +166,7 @@ const InvestorCard = ({ token, navigation }) => {
             if (direction == "left") {
                 const id = item.investor._id;
                 console.log(id);
-                console.log(id);
-                console.log(id);
-                console.log(id);
-                console.log(id);
-                console.log(id);
-                console.log(id);
-                console.log(id);
+
                 console.log(`${url}founder/acceptRequest/${id}`);
 
 
@@ -302,7 +303,7 @@ const InvestorCard = ({ token, navigation }) => {
                                 fontSize={26}
                                 mode={ResizeTextMode.max_lines}
                                 ellipsizeMode='tail'
-                                style={styles.role}>{item.investor.roleId.user_id.role}
+                                style={styles.role}>{item.investor.roleId.user_id.role == "CommunityMember" ? "Member" : item.investor.roleId.user_id.role}
                             </AutoSizeText>
                         </Pressable>
                         {/* <Text style={styles.role}> role </Text> */}
@@ -344,16 +345,35 @@ const InvestorCard = ({ token, navigation }) => {
         );
     }
 
+    function Header1() {
+        return (
+            <ScrollView
+                refreshControl={
+                    <RefreshControl progressViewOffset={0} refreshing={refreshing11}
+                        onRefresh={() => {
+                            // setRefreshing11(true);
+                            
+                            getData()
+                            console.log("royet called");
+                            
+                            setTimeout(() => {
+                                setRefreshing11(false); // Stop refreshing after fetching data
+                            }, 2000); // Adjust the delay as needed
+                        }} />}
+            >
+                <Text style={styles.no}>No new notification found</Text>
+            </ScrollView>
+        )
+    }
+
 
     return (
 
         <View
-            // refreshControl={<RefreshControl progressViewOffset={0} refreshing={refreshing}/>}
-
-
+            // refreshControl={<RefreshControl progressViewOffset={0} refreshing={refreshing}/>
             style={{ flex: 1, backgroundColor: "#16181a" }}>
-            {items.length == 0 && <Text style={styles.no}>No new notification found</Text>}
-            {items && <FlatList
+            {items && items.length == 0 && <Header1 />}
+            {items && items.length > 0 && <FlatList
 
 
                 refreshControl={<RefreshControl progressViewOffset={0} refreshing={refreshing}

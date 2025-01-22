@@ -285,8 +285,8 @@ const Signup7 = ({ navigation, route }) => {
             return obj
 
         })
-        var portfolio = portfolio1.map(({ id, url , name }) => {
-            return {url , name}
+        var portfolio = portfolio1.map(({ id, url, name }) => {
+            return { url, name }
         })
         final.append("tagline", tagline)
         final.append("skills", skills)
@@ -302,27 +302,37 @@ const Signup7 = ({ navigation, route }) => {
 
         setloading(true);
 
-        const response = await fetch(`${url}api/communityMemberInfo`, {
-            method: 'POST',
-            body: final,
-            headers: {
-                accept: "application/json",
-                "Authorization": token,
-            },
-        });
-
-        console.log(final);
-
-        const data = await response.json();
-        setloading(false)
-        console.log(data);
-        if (response.status === 200) {
-            navigation.navigate("Main2")
+        try {
+            const response = await fetch(`${url}api/communityMemberInfo`, {
+                method: 'POST',
+                body: final,
+                headers: {
+                    accept: "application/json",
+                    "Authorization": token,
+                },
+            });
+            const data = await response.json();
+            console.log(data);
+            if (response.status === 200) {
+                navigation.navigate("Main2")
+            }
+            else if (response.status === 400) {
+                console.log("internal error");
+                setmessage("some error occurred")
+            }
         }
-        else if (data.status === 400) {
-            console.log("internal error");
-            setmessage("some error occurred")
+        catch (err) {
+
         }
+        finally {
+            setloading(false);
+        }
+
+        // console.log(final);
+
+       
+        // setloading(false)
+       
     }
     return (
 
@@ -448,7 +458,8 @@ const Signup7 = ({ navigation, route }) => {
                                 }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
 
                                 <Pressable style={styles.btn} onPress={() => { finalsubmit() }}>
-                                    <Text allowFontScaling={false} style={styles.nexttext}>Submit</Text>
+                                    {loading && <ActivityIndicator size={24} color="#16181a" />}
+                                    {!loading && <Text allowFontScaling={false} style={styles.nexttext}>Submit</Text>}
                                 </Pressable>
 
                                 {/* <Pressable onPress={() => { nextpage(navigation, type) }}><FontAwesome6 name="chevron-right" size={40} color="#00DF60" /></Pressable> */}

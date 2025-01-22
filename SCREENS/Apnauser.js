@@ -233,7 +233,7 @@ const Apnauser = ({ navigation, props, token }) => {
     //     console.log("hioiiiii");
     //     console.log("hioiiiii");
     //     console.log("hioiiiii");
-        
+
     //     console.log("hioiiiii");
     //     // try {
     //     //     const response = await fetch(`${url}posts/deletepost/${postid}`, {
@@ -248,14 +248,14 @@ const Apnauser = ({ navigation, props, token }) => {
     //     //     console.log(data);
     //     //     // var array = posts.map((e)=>{
     //     //     //     console.log(e);
-                
+
     //     //     //     if(e._id != id){
     //     //     //         return e
     //     //     //     }
     //     //     // })
     //     //     // var array = posts.splice(posts.indexOf(postid) , 1)
     //     //     // setPosts(array)
-            
+
     //     // }
     //     // catch (err) {
     //     //     console.log(err);
@@ -264,56 +264,56 @@ const Apnauser = ({ navigation, props, token }) => {
 
     // }
 
- 
+
 
 
     const renderItem = ({ item, index }) => {
 
-        
-    async function deletepost(postid) {
 
-        console.log(postid);
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-        
-        console.log("hioiiiii");
-        try {
-            const response = await fetch(`${url}posts/deletepost/${postid}`, {
-                method: 'POST',
-                body: "",
-                headers: {
-                    accept: "application/json",
-                    "Authorization": `Bearer ${token}`,
-                },
-            });
-            const data = await response.json();
-            console.log(data);
-            // var array = posts.map((e)=>{
-            //     console.log(e);
-                
-            //     if(e._id != id){
-            //         return e
-            //     }
-            // })
-            // var array = posts.splice(posts.indexOf(postid) , 1)
-            // setPosts(array)
-            
+        async function deletepost(postid) {
+
+            console.log(postid);
+            console.log("hioiiiii");
+            console.log("hioiiiii");
+            console.log("hioiiiii");
+            console.log("hioiiiii");
+            console.log("hioiiiii");
+            console.log("hioiiiii");
+            console.log("hioiiiii");
+            console.log("hioiiiii");
+            console.log("hioiiiii");
+            console.log("hioiiiii");
+            console.log("hioiiiii");
+
+            console.log("hioiiiii");
+            try {
+                const response = await fetch(`${url}posts/deletepost/${postid}`, {
+                    method: 'POST',
+                    body: "",
+                    headers: {
+                        accept: "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                });
+                const data = await response.json();
+                console.log(data);
+                // var array = posts.map((e)=>{
+                //     console.log(e);
+
+                //     if(e._id != id){
+                //         return e
+                //     }
+                // })
+                // var array = posts.splice(posts.indexOf(postid) , 1)
+                // setPosts(array)
+
+            }
+            catch (err) {
+                console.log(err);
+
+            }
+
         }
-        catch (err) {
-            console.log(err);
-
-        }
-
-    }
         // console.log(item);
         // console.log(item.type);
 
@@ -338,7 +338,7 @@ const Apnauser = ({ navigation, props, token }) => {
                             <Image style={styles.userimg} source={{ uri: userdata.user_id.profilePhoto }} />
                             <View style={styles.userdetail}>
                                 <Text allowFontScaling={false} style={styles.u1}>{userdata.user_id.userName}</Text>
-                                <Text allowFontScaling={false} style={styles.u2}>{userdata.user_id.role}</Text>
+                                <Text allowFontScaling={false} style={styles.u2}>{userdata.user_id.role == "CommunityMember" ? "Member" : userdata.user_id.role}</Text>
                             </View>
                             <Pressable onPress={() => deletepost(item._id)}>
                                 <FontAwesome6 name="trash" style={styles1.minus} size={22} color="#00DE62" />
@@ -427,7 +427,7 @@ const Apnauser = ({ navigation, props, token }) => {
                                 <Image style={styles.userimg} source={{ uri: userdata.user_id.profilePhoto }} />
                                 <View style={styles.userdetail}>
                                     <Text allowFontScaling={false} style={styles.u1}>{item.user_id.userName}</Text>
-                                    <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role}</Text>
+                                    <Text allowFontScaling={false} style={styles.u2}>{userdata.user_id.role == "CommunityMember" ? "Member" : userdata.user_id.role}</Text>
                                 </View>
                             </View>
 
@@ -538,6 +538,28 @@ const Apnauser = ({ navigation, props, token }) => {
 
     }
 
+
+    function getfund(fund){
+
+        if(fund == 69){
+            return 0
+        }
+        fund = fund-57
+        console.log(fund ,"fundddddddddddddddddd");
+        console.log(fund ,"fundddddddddddddddddd");
+        console.log(fund ,"fundddddddddddddddddd");
+        console.log(fund ,"fundddddddddddddddddd");
+        console.log(fund ,"fundddddddddddddddddd");
+        console.log(fund ,"fundddddddddddddddddd");
+        console.log(fund ,"fundddddddddddddddddd");
+
+        return (fund * 10000000).toLocaleString("en-IN")
+
+        
+        // (+userdata.hiddenInfo.fundingStatus).toLocaleString("en-IN")
+        
+    }
+
     const Header = function () {
         return (
             <>
@@ -576,7 +598,7 @@ const Apnauser = ({ navigation, props, token }) => {
                         </View>
 
                         <Text style={styles1.u1}>
-                            {userdata.user_id.userName}  <Text style={styles1.role}>{userdata.user_id.role}</Text>
+                            {userdata.user_id.userName}  <Text style={styles1.role}>{userdata.user_id.role == "CommunityMember" ? "Member" : userdata.user_id.role}</Text>
                         </Text>
 
                         <Pressable onPress={() => {
@@ -589,8 +611,10 @@ const Apnauser = ({ navigation, props, token }) => {
                         }
 
                         {decode.role == "Founder" &&
-                            <Text style={styles1.fund}>{userdata.hiddenInfo.stageOfStartup} : {(+userdata.hiddenInfo.fundingStatus).toLocaleString("en-IN")}</Text>
+                            <Text style={styles1.fund}>{userdata.hiddenInfo.stageOfStartup} :  ₹ {getfund(userdata.hiddenInfo.fundingStatus) }</Text>
                         }
+                       
+
 
                         {decode.role == "Investor" &&
                             <Text style={styles1.goal}>Investment experience : {userdata.previousExperience} years</Text>
@@ -602,11 +626,11 @@ const Apnauser = ({ navigation, props, token }) => {
 
 
                         {decode.role == "CommunityMember" &&
-                            <Text style={styles1.goal}>Bio : {userdata.skills}</Text>
+                            <Text style={styles1.goal}>Bio : {userdata.tagline}</Text>
                         }
 
                         {decode.role == "CommunityMember" &&
-                            <Text style={styles1.fund}>Skills : {userdata.tagline}</Text>
+                            <Text style={styles1.fund}>Skills : {userdata.skills}</Text>
                         }
 
 
@@ -834,7 +858,7 @@ const Apnauser = ({ navigation, props, token }) => {
         console.log("hioiiiii");
         console.log("hioiiiii");
         console.log("hioiiiii");
-        
+
         console.log("hioiiiii");
         // try {
         //     const response = await fetch(`${url}posts/deletepost/${postid}`, {
@@ -849,14 +873,14 @@ const Apnauser = ({ navigation, props, token }) => {
         //     console.log(data);
         //     // var array = posts.map((e)=>{
         //     //     console.log(e);
-                
+
         //     //     if(e._id != id){
         //     //         return e
         //     //     }
         //     // })
         //     // var array = posts.splice(posts.indexOf(postid) , 1)
         //     // setPosts(array)
-            
+
         // }
         // catch (err) {
         //     console.log(err);
@@ -1005,7 +1029,7 @@ const styles1 = StyleSheet.create({
         paddingHorizontal: 5,
         width: "100%",
         marginVertical: 10,
-        marginTop : -5
+        marginTop: -5
         // marginTop: 30
     },
     role: {
@@ -1072,8 +1096,8 @@ const styles1 = StyleSheet.create({
         height: "100%",
         borderRadius: 100,
         marginBottom: 0,
-        borderWidth : 2,
-        borderColor : "#16181a"
+        borderWidth: 2,
+        borderColor: "#16181a"
     },
     t6: {
         fontFamily: "Alata",
@@ -1186,7 +1210,7 @@ const styles1 = StyleSheet.create({
         marginVertical: "auto",
         alignSelf: "center",
         // flex: 1,
-        color: "#FFFF",
+        color: "#bbbbbb",
         fontFamily: "Roboto",
         marginTop: 30,
         // backgroundColor :  "red",
@@ -1203,8 +1227,8 @@ const styles1 = StyleSheet.create({
     minus: {
         position: "absolute",
         right: 20,
-        elevation : 100,
-        zIndex : 1000,
+        elevation: 100,
+        zIndex: 1000,
         top: 12
     }
     // logout : {

@@ -27,8 +27,9 @@
         "INTERNET"
       
       ],
+
       "adaptiveIcon": {
-        "foregroundImage": "./assets/images/appicon.png",
+        "foregroundImage": "./assets/images/logofinal.png",
         "backgroundColor": "#16181a",
         "resizeMode" : "contain"
       },

@@ -69,6 +69,7 @@ const Foryou = ({ scroll, navigation, token }) => {
     // const [token, settoken] = useState("")
     const [comment, setcomment] = useState(false)
     const [loading, setloading] = useState(true)
+    const [loading1, setloading1] = useState(true)
 
     const [p1u, setp1u] = useState(false)
     const [p2u, setp2u] = useState(false)
@@ -282,7 +283,7 @@ const Foryou = ({ scroll, navigation, token }) => {
     }
     const showToastWithGravity = (message) => {
         ToastAndroid.showWithGravity(
-           message,
+            message,
             ToastAndroid.LONG,
             ToastAndroid.TOP,
         );
@@ -322,7 +323,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                                 <Image style={styles.userimg} source={{ uri: item.user_id.profilePhoto }} />
                                 <View style={styles.userdetail}>
                                     <Text allowFontScaling={false} style={styles.u1}>{item.user_id.userName}</Text>
-                                    <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role}</Text>
+                                    <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role == "CommunityMember" ? "Member" : item.user_id.role}}</Text>
                                 </View>
                             </Pressable>
                         </View>
@@ -368,7 +369,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                                     <Image style={styles.userimg} source={{ uri: item.user_id.profilePhoto }} />
                                     <View style={styles.userdetail}>
                                         <Text allowFontScaling={false} style={styles.u1}>{item.user_id.userName}</Text>
-                                        <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role}</Text>
+                                        <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role == "CommunityMember" ? "Member" : item.user_id.role}}</Text>
                                     </View>
                                 </View>
                             </Pressable>
@@ -399,7 +400,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                                     <Image style={styles.userimg} source={{ uri: item.user_id.profilePhoto }} />
                                     <View style={styles.userdetail}>
                                         <Text allowFontScaling={false} style={styles.u1}>{item.user_id.userName}</Text>
-                                        <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role}</Text>
+                                        <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role == "CommunityMember" ? "Member" : item.user_id.role}}</Text>
                                     </View>
                                 </View>
 
@@ -449,9 +450,9 @@ const Foryou = ({ scroll, navigation, token }) => {
                 {/* <TouchableWithoutFeedback onPress={closebottomsheet}> */}
                 {/* <View style={{ position: "absolute" }}> */}
 
-                {allpost.length == 0 &&     <View style={[main.header, { backgroundColor: "#16181a" }]}>
-                <Text allowFontScaling={false} style={main.headertext}>For you</Text>
-            </View>}
+                {allpost.length == 0 && <View style={[main.header, { backgroundColor: "#16181a" }]}>
+                    <Text allowFontScaling={false} style={main.headertext}>For you</Text>
+                </View>}
                 {allpost.length > 0 && <FlatList
 
                     ListHeaderComponent={header}

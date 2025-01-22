@@ -1,7 +1,7 @@
 import { useFocusEffect } from "expo-router"
 import { useState, useEffect, useRef } from "react";
 import * as React from "react"
-import { SafeAreaView, ScrollView, StatusBar, Animated, TouchableOpacity,Dimensions, BackHandler, Pressable, TextInput, TouchableWithoutFeedback, Image } from "react-native"
+import { SafeAreaView, ScrollView, StatusBar, Animated, TouchableOpacity, Dimensions, BackHandler, Pressable, TextInput, TouchableWithoutFeedback, Image } from "react-native"
 import { View, Text, StyleSheet } from "react-native"
 import Profile from "../../assets/icons/profile.js"
 import Drop from "../../SCREENS/dropdown.js"
@@ -198,6 +198,12 @@ const Founder1 = ({ navigation }) => {
         setworkexperience(array);
     }
 
+    function deletecertificate(index){
+        var new1 = [...workexperience];
+        new1.splice(index, 1)
+        setworkexperience(new1)
+    }
+
 
     useFocusEffect(() => {
         StatusBar.setBackgroundColor("#16181A")
@@ -280,11 +286,15 @@ const Founder1 = ({ navigation }) => {
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 25, paddingLeft: 7 }]}>Previous Work Experience </Text>
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>Detail any relevant industry experience, particularly if you’ve worked in a specific company or held roles that have prepared you for your current venture.</Text>
 
-                        {workexperience.map((we) => (
+                        {workexperience.map((we, index) => (
                             <View onTouchStart={handleOutsideTouch} key={we.id} style={styles1.certificate}>
                                 <Pressable onPress={addworkexperience}>
                                     <Entypo style={styles1.plus} name="plus" size={24} color="#00DE62" />
                                 </Pressable>
+
+                                {index > 0 && <Pressable onPress={() => { deletecertificate(index) }}>
+                                    <FontAwesome6 name="trash" style={styles1.minus} size={15} color="#00DE62" />
+                                </Pressable>}
 
                                 <TextInput
                                     allowFontScaling={false}
@@ -323,7 +333,7 @@ const Founder1 = ({ navigation }) => {
 
 
                     <View onTouchStart={handleOutsideTouch} style={styles1.icons}>
-                        <Pressable onPress={()=>{navigation.goBack()}} style={{ alignSelf: "center" }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
+                        <Pressable onPress={() => { navigation.goBack() }} style={{ alignSelf: "center" }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
                         <Pressable onPress={nextpage} style={{ alignSelf: "center" }}><FontAwesome6 name="chevron-right" size={40} color="#00DF60" /></Pressable>
 
                     </View>
@@ -485,6 +495,13 @@ const styles1 = StyleSheet.create({
         marginLeft: -1,
         marginTop: -3
     },
+    minus: {
+        position: "absolute",
+        right: 45,
+        top: -3,
+        zIndex: 100
+    },
+
 
 
 })

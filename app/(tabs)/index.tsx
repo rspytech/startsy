@@ -82,6 +82,7 @@ export default function App() {
 
   const fontsLoaded = useLoadFonts();
   const [appisready, setappisready] = React.useState(false);
+  
 
   // if (!fontsLoaded) {
   // }

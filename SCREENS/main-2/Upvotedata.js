@@ -42,19 +42,19 @@ function Upvotedata() {
         }
     }
 
-    // useFocusEffect(
+    useFocusEffect(
 
-    //     useCallback(() => {
-    //         if (token) {
-    //             setloading(true)
-    //             getData1();
-    //         }
-    //         return () => {
-    //             // If you need to abort the fetch or cleanup, do it here.
-    //             // Example: controller.abort() if you are using AbortController
-    //           };
-    //     }, [token])
-    // );
+        useCallback(() => {
+            if (token) {
+                setloading(true)
+                getData1();
+            }
+            return () => {
+                // If you need to abort the fetch or cleanup, do it here.
+                // Example: controller.abort() if you are using AbortController
+              };
+        }, [token])
+    );
 
 
     return (

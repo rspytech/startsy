@@ -1,7 +1,7 @@
 
 import { useFocusEffect } from "expo-router";
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Text, StatusBar, View, Image, TouchableOpacity, SafeAreaView, StyleSheet, Dimensions, ScrollView, Pressable } from "react-native";
+import { Text, StatusBar, View, Image, TouchableOpacity, SafeAreaView, StyleSheet, RefreshControl, Dimensions, ScrollView, Pressable } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import Upvote from "../../assets/icons/upvote.js"
 import Useradd from "../../assets/icons/useradd.js"
@@ -12,6 +12,7 @@ import { FlatList } from "react-native-gesture-handler";
 import InvestorCard from "./InvestorCard.js"
 import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
 import B2 from "@/assets/icons/b2.js";
+import { jwtDecode } from "jwt-decode";
 
 
 const Notification = ({ token, navigation }) => {
@@ -40,15 +41,14 @@ const Notification = ({ token, navigation }) => {
             );
             const result = await response.json();
 
-            // console.log(result.data.at(-1));
-            console.log(result.data[0].sendingUserId._id);
-            console.log(result.data[1].sendingUserId._id);
-            console.log(result.data[2].sendingUserId._id);
-            console.log(result.data[4].sendingUserId._id);
-            console.log(result.data[5].sendingUserId._id);
-            console.log(result.data[6].sendingUserId._id);
 
-            setsubnotification(result.data);
+            console.log(result.data, "top 3 data ajilffkhedskfh");
+
+            var array = result.data.reverse()
+
+            setsubnotification(array);
+
+
 
         } catch (err) {
             console.log(err);
@@ -63,7 +63,7 @@ const Notification = ({ token, navigation }) => {
     }, [])
 
     useFocusEffect(
-        useCallback( () => {
+        useCallback(() => {
             async function getData1() {
                 try {
                     const response = await fetch(
@@ -78,8 +78,8 @@ const Notification = ({ token, navigation }) => {
                     );
                     const result = await response.json();
 
-                    console.log(result);
-                    setsubnotification(result.data);
+                    console.log(result.data, "doubt");
+                    setsubnotification(result.data.reverse());
 
                 } catch (err) {
                     console.log(err);
@@ -102,6 +102,45 @@ const Notification = ({ token, navigation }) => {
 
     function Upvotedata() {
 
+        const [refreshing, setRefreshing] = useState(false)
+
+
+
+        async function getdata() {
+            try {
+                const response = await fetch(
+                    `${url}founder/getFounderProfileDetails`,
+                    {
+                        method: "GET",
+                        headers: {
+                            accept: "application/json",
+                            Authorization: `Bearer ${token}`,
+                        },
+                    }
+                );
+                const result = await response.json();
+                console.log(result.data.totalUpvotes, "a");
+                console.log(result.data.upvotesPerDay, "b");
+                console.log(result.data.investorUpvotes, "c");
+
+                var object = {
+                    totalUpvotes: result.data.upvotesPerDay,
+                    upvotesPerDay: result.data.upvotesPerDay,
+                    investorUpvotes: result.data.investorUpvotes
+                }
+
+                console.log(object, "object");
+                setstatistic(object);
+
+            } catch (err) {
+                console.log(err);
+            }
+            finally {
+                setloading(false);
+            }
+        }
+
+        // getdata()
 
 
         function rendersub({ item }) {
@@ -160,7 +199,7 @@ const Notification = ({ token, navigation }) => {
                                     onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.sendingUserId._id, page: "bell" }) }}
 
                                 >
-                                    <Text style={styles.topu1}>{item.sendingUserId.userName}  <Text style={styles.topu2}>founder</Text>  <View style={styles.circle}></View>  <AutoSizeText
+                                    <Text style={styles.topu1}>{item.sendingUserId.userName}  <Text style={styles.topu2}>{item.sendingUserId.role == "CommunityMember" ? "Member" : item.sendingUserId.role}</Text>  <View style={styles.circle}></View>  <AutoSizeText
                                         numberOfLines={1}
                                         fontSize={12}
                                         mode={ResizeTextMode.max_lines}
@@ -188,8 +227,8 @@ const Notification = ({ token, navigation }) => {
                         {item.notificationType == "upvoteProfile"}
                         {item.notificationType == "jobApplied"}
                         {item.notificationType == "joinCommunity"}
-                        {item.notificationType == "upvotePost" && item.postId.type == "blogPost" && <B2 width={40} height={40} />}
-                        {item.notificationType == "upvotePost" && item.postId.type == "photo" && <Image style={styles.image1} source={{ uri: item.postId.mediaUrl }} />}
+                        {/* {item.notificationType == "upvotePost" && item.postId?.type == "blogPost" && <B2 width={40} height={40} />} */}
+                        {/* {item.notificationType == "upvotePost" && item.postId?.type == "photo" && <Image style={styles.image1} source={{ uri: item.postId.mediaUrl }} />} */}
                         {item.notificationType == "commentPost"}
 
                     </View>
@@ -198,6 +237,9 @@ const Notification = ({ token, navigation }) => {
         }
 
         function top3data() {
+
+            var decode = jwtDecode(token)
+
             return (
                 <View style={styles.container1}>
                     <View style={styles.textbox}>
@@ -208,41 +250,57 @@ const Notification = ({ token, navigation }) => {
                         <Text style={styles.t1}>{statistic.upvotesPerDay}</Text>
                         <Text style={styles.t2}>Today </Text>
                     </View>
-                    <View style={styles.textbox}>
+                    {decode.role != "CommunityMember" && <View style={styles.textbox}>
                         <Text style={styles.t1}>{statistic.investorUpvotes}</Text>
                         <Text style={styles.t2}>By Investors </Text>
-                    </View>
+                    </View>}
+
+                    {/* <Text> {JSON.stringify(token)}</Text> */}
                 </View>
             )
         }
 
 
         return (
-            <View
+            <ScrollView
+                refreshControl={
+                    <RefreshControl
+                        progressViewOffset={0}
+                        refreshing={refreshing}
+                        onRefresh={async () => {
+                            setRefreshing(true);
+                            getData1()
+                            await getdata(); // Call the data fetching function
+                            setRefreshing(false); // Stop refreshing after data is fetched
+                        }}
+                    />
+                }
                 //  refreshControl={}
                 style={{ flex: 1, backgroundColor: "#16181a" }}>
 
                 <View style={styles.divider}></View>
 
 
-                <FlatList
-                    ListHeaderComponent={top3data}
+                {subnotification && <FlatList
 
+
+                    ListHeaderComponent={top3data}
                     data={subnotification}
                     renderItem={rendersub}
-
                     contentContainerStyle={{ paddingBottom: 100 }}
 
 
-                />
+                />}
 
 
-            </View>
+            </ScrollView>
 
         )
     }
 
     return (
+
+
 
         <SafeAreaView style={{
             flex: 1,
@@ -250,8 +308,10 @@ const Notification = ({ token, navigation }) => {
         }}>
             <Text allowFontScaling={false} style={styles.headerText}>Notification</Text>
             <Tab.Navigator
-
+                initialRouteName="Requests"
                 screenOptions={({ route }) => ({
+
+
 
                     tabBarStyle: {
                         backgroundColor: "#16181a",

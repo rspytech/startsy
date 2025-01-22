@@ -107,7 +107,7 @@ const ReadMore1 = function ({ attop, setattop, animatedtop, animatedValue }) {
         <View style={readmorestyles.bottom}>
           <Text style={readmorestyles.para} allowFontScaling={false}>
 
-            Welcome to Startsy, your gateway to the dynamic world of startups, where founders, investors, freelancers, and community members come together to innovate and collaborate. Whether you’re here to launch your idea, invest in groundbreaking ventures, find freelance opportunities, or immerse yourself in the startup ecosystem, Startsy has the perfect role for you.
+            Welcome to Startsy, your gateway to the dynamic world of startups, where founders, investors, job seekers and community members come together to innovate and collaborate. Whether you’re here to launch your idea, invest in groundbreaking ventures, find job opportunities in startups, or immerse yourself in the startup ecosystem, Startsy has the perfect role for you.
           </Text>
           <Text ref={elementRef} ></Text>
         </View>
@@ -144,7 +144,7 @@ const ReadMore1 = function ({ attop, setattop, animatedtop, animatedValue }) {
 
 
           <Text allowFontScaling={false} style={readmorestyles.line1}>Why choose the role of</Text>
-          <Text allowFontScaling={false} style={readmorestyles.line2}>Investor</Text>
+          <Text allowFontScaling={false} style={readmorestyles.line2}>Investor ?</Text>
           <Text allowFontScaling={false} style={readmorestyles.main} >
             Choose the role of Investor if you are a professional investor, such as a venture capitalist or an angel investor, looking to explore and invest in promising startups. Even if you have no prior experience in investing but have the interest and resources to support innovative ventures, this role is perfect for you! Connect with visionary founders and be part of their success stories.
           </Text>
@@ -164,7 +164,7 @@ const ReadMore1 = function ({ attop, setattop, animatedtop, animatedValue }) {
         >
           <View>
             <Text allowFontScaling={false} style={readmorestyles.line1}>Why choose the role of</Text>
-            <Text allowFontScaling={false} style={readmorestyles.line2}>Founder</Text>
+            <Text allowFontScaling={false} style={readmorestyles.line2}>Founder ?</Text>
             <Text allowFontScaling={false} style={readmorestyles.main}  >
               Whether you are an established founder, a company owner, or someone with a groundbreaking idea seeking resources to bring it to life, the role of Founder is for you! Join a community of like-minded entrepreneurs, gain access to investors, and find the support you need to turn your vision into reality.
             </Text>
@@ -187,7 +187,7 @@ const ReadMore1 = function ({ attop, setattop, animatedtop, animatedValue }) {
         >
           <View>
             <Text allowFontScaling={false} style={readmorestyles.line1}>Why choose the role of</Text>
-            <Text allowFontScaling={false} style={readmorestyles.line2}>Community member?</Text>
+            <Text allowFontScaling={false} style={readmorestyles.line2}>Community member ?</Text>
             <Text allowFontScaling={false} style={readmorestyles.main}>
               Join as a Community Member to immerse yourself in the vibrant startup ecosystem! Whether you are a Startup job seeker, student, an aspiring entrepreneur, a mentor, or an industry professional, this role allows you to stay informed, network with key players, and contribute to the community. Engage in discussions, attend events, and be part of the innovation wave shaping the future. This is your gateway to learning, networking, and making a difference in the startup world.
             </Text>

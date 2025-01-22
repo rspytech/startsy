@@ -89,14 +89,17 @@ const ConnectionsScreen = ({ navigation, search, token }) => {
                 );
                 const result = await response.json();
                 console.log(result, "investor");
+                const uniqueData = result.filter((item, index, self) =>
+                    self.findIndex(innerItem => innerItem.user.userName === item.user.userName) === index
+                );
                 // console.log(result.data, "investor");
                 // console.log(result.data.messages.length, "investor");
 
                 if (response.status === 200) {
                     // You can update the data state here if needed
                     // setData(result); // Example, you can handle the response data
-                    setData(result)
-                    setfiltereddata(result)
+                    setData(uniqueData)
+                    setfiltereddata(uniqueData)
                     // setdata1(result)
                 }
             } catch (err) {
@@ -186,7 +189,7 @@ const ConnectionsScreen = ({ navigation, search, token }) => {
     }
     return (
         <View style={styles.listContainer}>
-            {!loading && <FlatList
+            {filtereddata && <FlatList
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 100 }}
 
@@ -213,12 +216,12 @@ const ConnectionsScreen = ({ navigation, search, token }) => {
                                         numberOfLines={1}
                                         ellipsizeMode="tail"
 
-                                        allowFontScaling={false} style={styles.message}>{item.lastMessage.message || "abhi nai hai"}</Text>
+                                        allowFontScaling={false} style={styles.message}>{item.lastMessage?.message || "No chats yet"}</Text>
                                 </View>
                                 <Text
 
 
-                                    allowFontScaling={false} style={styles.time}>{time(item.lastMessage.createdAt)}</Text>
+                                    allowFontScaling={false} style={styles.time}>{item.lastMessage ? time(item.lastMessage.createdAt) : "today"}</Text>
                             </View>
                         </TouchableOpacity>
                     )
@@ -308,11 +311,11 @@ const styles = StyleSheet.create({
     },
     time: {
         fontSize: 12,
-        width : 100,
-        position : "absolute",
-        right : 10,
-        top : 10,
-        textAlign : "right",
+        width: 100,
+        position: "absolute",
+        right: 10,
+        top: 10,
+        textAlign: "right",
         // backgroundColor : "red",
         color: "#B8B8B8",
         fontFamily: "Roboto",

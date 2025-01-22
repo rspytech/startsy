@@ -46,6 +46,23 @@ const Editcommunity = ({ navigation }) => {
 
 
 
+    function deletecertificate1(index) {
+
+        console.log(index);
+
+        var new1 = [...certificate];
+        new1.splice(index, 1)
+        setcertificate(new1)
+    }
+    function deletecertificate(index) {
+
+        console.log(index);
+
+        var new1 = [...certificate];
+        new1.splice(index, 1)
+        setcertificate(new1)
+    }
+
 
 
     const [open1, setOpen1] = React.useState(false)
@@ -195,15 +212,9 @@ const Editcommunity = ({ navigation }) => {
 
 
         var formData = new FormData()
-        formData.append("fullName", fullName);
-        formData.append("country", country);
-        formData.append("contactInfo", contactInfo);
-        formData.append("communityMemberRole", role1)
-        formData.append("areaOfInterest", interest)
-        formData.append("contentPreferences", preferences)
-        formData.append("tagline", tagline)
-        formData.append("skills", skills)
-        formData.append("education", education1)
+
+
+
 
 
         var certification = certificate.map(({ id, cname, curl }) => {
@@ -216,8 +227,12 @@ const Editcommunity = ({ navigation }) => {
 
         })
 
+
+
+
+
         formData.append("certification", JSON.stringify(certification));
-    formData.append("portfolio", JSON.stringify(portfolio));
+        formData.append("portfolio", JSON.stringify(portfolio));
 
         if (image && image != "") {
             formData.append("profilePhoto", {
@@ -450,11 +465,15 @@ const Editcommunity = ({ navigation }) => {
                             {/* </ScrollView> */}
 
                             <Text style={[styles.t1, { marginTop: 15 }]}>Certification</Text>
-                            {certificate.map((certificate) => (
+                            {certificate.map((certificate, index) => (
                                 <View key={certificate.id} style={styles1.certificate}>
                                     <Pressable onPress={addcertificate}>
                                         <Entypo style={styles1.plus} name="plus" size={24} color="#00DE62" />
                                     </Pressable>
+
+                                    {index > 0 && <Pressable onPress={() => { deletecertificate1(index) }}>
+                                        <FontAwesome6 name="trash" style={styles1.minus} size={15} color="#00DE62" />
+                                    </Pressable>}
 
                                     <TextInput
                                         allowFontScaling={false}
@@ -478,16 +497,22 @@ const Editcommunity = ({ navigation }) => {
 
 
                             <Text style={[styles.t1, { marginTop: 30 }]}>Portfolio</Text>
-                            {portfolio1.map((items) => (
+                            {portfolio1.map((items , index) => (
                                 <View style={styles1.v1} key={items.id}>
                                     <Pressable onPress={addportfolio}>
                                         <Entypo style={styles1.plus1} name="plus" size={24} color="#00DE62" />
                                     </Pressable>
+
+
+                                    {index > 0 && <Pressable onPress={() => { deletecertificate(index) }}>
+                                        <FontAwesome6 name="trash" style={styles1.minus} size={15} color="#00DE62" />
+                                    </Pressable>}
+
                                     <TextInput
                                         allowFontScaling={false}
                                         placeholder="URL"
                                         placeholderTextColor="#B8B8B8"
-                                        style={styles1.input1}
+                                        style={[styles1.input1 , styles1.small]}
                                         onChangeText={(text) => { handleurlchange(items.id, "url", text) }}
 
                                     />
@@ -505,7 +530,7 @@ const Editcommunity = ({ navigation }) => {
 
 
                         <View onTouchStart={handleOutsideTouch} s style={styles1.icons}>
-                            <Pressable onPress={()=>{navigation.goBack()}} style={{ alignSelf: "center" }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
+                            <Pressable onPress={() => { navigation.goBack() }} style={{ alignSelf: "center" }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
                             <Pressable onPress={savedata} style={styles1.btn}>
                                 {loading && <ActivityIndicator size={24} color="#16181a" />}
                                 {!loading && <Text allowFontScaling={false} style={styles1.nexttext}>Save</Text>}
@@ -606,7 +631,13 @@ const styles1 = StyleSheet.create({
         fontFamily: "Roboto",
         lineHeight: scalingfactor * 18,
         marginBottom: scalingfactor * 15,
+        // backgroundColor : "red"
         // borderRadius : 20
+    },
+
+    small : {
+
+        // width : "80%"
     },
     icons: {
         display: "flex",
@@ -717,6 +748,20 @@ const styles1 = StyleSheet.create({
         //    backgroundColor :"red",
         paddingBottom: 0,
         marginTop: 10
+    },
+
+    minus1: {
+        position: "absolute",
+        right: 45,
+        top: 6,
+        zIndex: 100
+    },
+
+    minus: {
+        position: "absolute",
+        right: 45,
+        top: -3,
+        zIndex: 100
     },
 
 

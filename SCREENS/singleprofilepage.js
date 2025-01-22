@@ -31,7 +31,7 @@ const Singleprofilepage = ({ navigation, props }) => {
   // console.log(item);
   // console.log(messages);
   // console.log(mypage);
-  
+
 
 
 
@@ -55,7 +55,7 @@ const Singleprofilepage = ({ navigation, props }) => {
   async function getdata(params) {
     try {
       // console.log(`${url}api/getUsersProfiles/${id}`);
-      
+
       const response = await fetch(`${url}api/getUsersProfiles/${id}`, {
         method: 'GET',
         headers: {
@@ -65,24 +65,27 @@ const Singleprofilepage = ({ navigation, props }) => {
         },
       });
       const data = await response.json();
-console.log(data);
+      console.log(data);
 
-      console.log(data.status , "abhi ka");
-      
+      console.log(data.status, "abhi ka");
+
       // console.log(data.data.user_id.profilePhoto);
       // console.log(response.status);
       // console.log(data);
-      
-      
+
+
 
       setinvestorarray(data.data.chatUsers.filter((e) => e.role == "Investor"))
       setnoninvestor(data.data.chatUsers.filter((e) => e.role != "Investor"))
       // console.log(data.data);
       setposts(data.data.posts)
+      console.log('====================================');
+      console.log(data.data.hiddenInfo);
+      console.log('====================================');
       setuserdata(data.data)
 
-      console.log(data.data.status ,  "oiuy");
-      
+      console.log(data.data.status, "oiuy");
+
       setconnecteddata(data.status)
 
     }
@@ -313,7 +316,7 @@ console.log(data);
 
   async function sendfollowrequest(id) {
 
-    if(connecteddata == "Followed"){
+    if (connecteddata == "Followed") {
       return
     }
 
@@ -385,7 +388,7 @@ console.log(data);
             </View>
 
             <Text style={styles1.u1}>
-              {userdata.user_id.userName}  <Text style={styles1.role}>{userdata.user_id.role}</Text>
+              {userdata.user_id.userName}  <Text style={styles1.role}>{userdata.user_id.role == "CommunityMember" ? "Member" : userdata.user_id.role}</Text>
             </Text>
 
             {!mypage && <Pressable onPress={() => { sendfollowrequest(userdata.user_id._id) }} style={styles1.f1}><Text style={styles1.ft}>{connecteddata}</Text></Pressable>}
@@ -401,7 +404,7 @@ console.log(data);
             }
 
             {userdata.user_id.role == "Founder" &&
-              <Text style={styles1.fund}>{userdata.hiddenInfo.stageOfStartup} : {(+userdata.hiddenInfo.fundingStatus).toLocaleString("en-IN")}</Text>
+              <Text style={styles1.fund}>{userdata.hiddenInfo.stageOfStartup} : {+(userdata.hiddenInfo.fundingStatus).toLocaleString("en-IN")}</Text>
             }
 
             {userdata.user_id.role == "Investor" &&
@@ -414,11 +417,11 @@ console.log(data);
 
 
             {userdata.user_id.role == "CommunityMember" &&
-              <Text style={styles1.goal}>Bio : {userdata.skills}</Text>
+              <Text style={styles1.goal}>Bio : {userdata.tagline}</Text>
             }
 
             {userdata.user_id.role == "CommunityMember" &&
-              <Text style={styles1.fund}>Skills : {userdata.tagline}</Text>
+              <Text style={styles1.fund}>Skills : {userdata.skills}</Text>
             }
 
 
@@ -438,7 +441,7 @@ console.log(data);
                       source={
                         investor[index]
                           ? { uri: investor[index].profilePhoto } // Profile photo if available
-                          : require("../assets/images/p2.png")   // Dummy image if not
+                          : require("../assets/images/blank1.png")   // Dummy image if not
                       }
                     />
                   </View>
@@ -457,7 +460,7 @@ console.log(data);
                       source={
                         noninvestor[index]
                           ? { uri: noninvestor[index].profilePhoto } // Profile photo if available
-                          : require("../assets/images/p2.png")   // Dummy image if not
+                          : require("../assets/images/blank1.png")   // Dummy image if not
                       }
                     />
                   </View>
@@ -677,6 +680,8 @@ const styles1 = StyleSheet.create({
     height: "100%",
     borderRadius: 100,
     marginBottom: 0,
+    borderWidth : 2,
+    borderColor : "#16181a"
   },
   t6: {
     fontFamily: "Alata",

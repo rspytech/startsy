@@ -59,32 +59,32 @@ const Signup10 = ({ navigation, route }) => {
     function nextpage(navigation, type) {
 
         let error;
-        if(name == ""){
+        if (name == "") {
             setnameerror(true)
             error = true
         }
-        if(goal == ""){
+        if (goal == "") {
             setgoalerror(true)
             error = true
 
         }
-        if(startupsector == ""){
+        if (startupsector == "") {
             setsserror(true)
             error = true
 
         }
-        if(stage1 == ""){
+        if (stage1 == "") {
             setstageerror(true)
             error = true
 
         }
-        if(sliderrange == ""){
-            setfunderror(true)
-            error = true
+        // if (sliderrange = ) {
+        //     setfunderror(true)
+        //     error = true
 
-        }
+        // }
 
-        if(error)return
+        if (error) return
 
         const final = new FormData();
         for (var items of form["_parts"]) {
@@ -99,21 +99,28 @@ const Signup10 = ({ navigation, route }) => {
         final.append("description", description)
         final.append("sector", startupsector)
         final.append("stageOfStartup", stage1)
-        
+
+
         if (sliderrange > 100000000) {
             tosend = sliderrange.toString().substring(0, 2)
         }
         else if (sliderrange < 100000000) {
             tosend = sliderrange.toString()[0]
-            
+
         }
-        
-       
-        tosend = tosend + 58;
+
+
+
+
+        tosend = +tosend + 58;
+        if (sliderrange == 0) {
+            tosend = 69
+        }
+
         final.append("fundingStatus", tosend)
-        console.log(tosend.toString() , "to send");
-        
-        
+        console.log(tosend.toString(), "to send");
+
+
         var array = url.map(e => e.url)
         final.append("socialProof", array)
 
@@ -179,7 +186,7 @@ const Signup10 = ({ navigation, route }) => {
         { label: "Impact Investing", value: "Impact Investing" },
         { label: "Philanthropy", value: "Philanthropy" }
     ];
-    
+
     var stage = [
         { label: "Ideation Stage", value: "Ideation Stage" },
         { label: "Pre-Seed Stage", value: "Pre-Seed Stage" },
@@ -214,6 +221,13 @@ const Signup10 = ({ navigation, route }) => {
 
         settextlength(text.length)
 
+    }
+
+    function deletecertificate(index) {
+        console.log(index);
+        var new1 = [...url]
+        new1.splice(index, 1)
+        seturl(new1);
     }
     const sliderImage = require("../assets/images/slider.png");
     return (
@@ -332,11 +346,17 @@ const Signup10 = ({ navigation, route }) => {
 
 
                             <Text allowFontScaling={false} style={[styles.t1, { marginTop: 20, marginBottom: 10 }]}>Social proof</Text>
-                            {url.map(items =>
+                            {url.map((items, index) =>
                                 <View style={styles.v1} key={items.id}>
                                     <Pressable onPress={addurl}>
                                         <Entypo style={styles.plus1} name="plus" size={24} color="#00DE62" />
                                     </Pressable>
+
+                                    {index > 0 && <Pressable onPress={() => { deletecertificate(index) }}>
+                                        <FontAwesome6 name="trash" style={styles.minus} size={15} color="#00DE62" />
+                                    </Pressable>}
+
+
                                     <TextInput
 
                                         allowFontScaling={false}
@@ -604,7 +624,13 @@ const styles = StyleSheet.create({
         color: "#E65858",
         fontSize: 12,
         fontFamily: "Roboto",
-    }
+    },
+    minus: {
+        position: "absolute",
+        right: 45,
+        top: -3,
+        zIndex: 100
+    },
 
 
 })
