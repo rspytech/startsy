@@ -6,6 +6,10 @@ const userSchema = new mongoose.Schema({
     googleId : {                /* For google log in */
         type: String,
     },
+    isProfileComplete: {
+        type: Boolean,
+        default: false,
+    },
     userName : {
         type : String,
     },

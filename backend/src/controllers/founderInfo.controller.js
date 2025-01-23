@@ -158,6 +158,7 @@ export const FounderInfo = async (req, res) => {
         // 7. Assign the first recommendation ID to the founder
         newFounder.recommendationId = recommendationIds[0];
 
+        currentUser.isProfileComplete = true;
         // 8. Save the current user and new founder profile
         await currentUser.save();
         await newFounder.save();

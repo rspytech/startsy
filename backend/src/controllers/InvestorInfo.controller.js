@@ -103,6 +103,8 @@ export const InvestorInfo = async (req, res) => {
 
         newInvestor.panCardPhoto = pancardPhotoUrl;
 
+        currentUser.isProfileComplete = true;
+
         await currentUser.save();
         await newInvestor.save();
 

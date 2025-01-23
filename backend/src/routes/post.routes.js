@@ -13,7 +13,7 @@ import { createComment } from "../controllers/postControllers/createComment.cont
 import { getComments } from "../controllers/postControllers/getComments.controller.js";
 import { getPosts } from "../controllers/postControllers/getPost.controller.js";
 import { deletePost } from "../controllers/postControllers/deletePost.controller.js";
-
+import { checkProfileCompletion } from "../middleware/checkUserProfileComplete.js";
 const router = express.Router();
 
 router.post("/createPost/:postType", verifyUser, upload.single("media"), createPost);   // TESTED
@@ -27,6 +27,6 @@ router.post("/upvotePost/:postId/:likeStatus", verifyUser, upvotePost);   // TES
 router.post("/createComment/:id", verifyUser, createComment);   // TESTED
 router.get("/getComments/:id", verifyUser, getComments);    // TESTED
 router.post("/deletePost/:id", verifyUser, deletePost);
-router.get("/getPosts", verifyUser, getPosts);
+router.get("/getPosts", verifyUser, checkProfileCompletion, getPosts);
 
 export default router;
