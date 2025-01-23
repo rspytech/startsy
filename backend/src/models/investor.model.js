@@ -28,7 +28,7 @@ const investorSchema = new mongoose.Schema({
     },
     areaOfInterest : [{
         type : String,
-        required: true,
+        // required: true,
     }],
     // Index is the hash of the original Pan card
     panCard : {

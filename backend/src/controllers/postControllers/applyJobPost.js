@@ -26,6 +26,7 @@ export const applyJobPost = async (req, res) => {
         await Notification.create({
             receivingUserId : post.user_id, 
             sendingUserId : req.user._id,
+            appliedJobRole : post.jobPosts.role,
             notificationType: "jobApplied",
             notificationMessage : "Applied for your job posting.",
         });

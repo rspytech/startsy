@@ -20,6 +20,9 @@ const notificationSchema = new mongoose.Schema({
     notificationMessage: {
         type: String,
     },
+    appliedJobRole : {
+        type: String,
+    },
     timestamp: {
         type: Date,
         default: Date.now,
