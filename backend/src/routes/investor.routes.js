@@ -9,13 +9,12 @@ import { getInvestorProfileDetails } from "../controllers/investorControllers/ge
 import { getRequestedFounders } from "../controllers/investorControllers/getRequestedFounders.js";
 import { getInvestorChatUserList } from "../controllers/investorControllers/getInvestorChatsUserList.js";
 import { editInvestorAccountProfileDetails } from "../controllers/editInvestorProfileAccountDetails.js";
-import { checkProfileCompletion } from "../middleware/checkUserProfileComplete.js";
 
 const router = express.Router();
 
 router.post('/updateFounderUpvoteCounter/:id', verifyUser, updateFounderUpvoteCounter); // id => FounderId   // TESTED
 router.post('/addFounderProfile/:id', verifyUser, addFounderProfile);  // id => FounderId     // TESTED
-router.get('/recommendation/getFounderProfile', verifyUser, checkProfileCompletion, getFounderProfile);
+router.get('/recommendation/getFounderProfile', verifyUser, getFounderProfile);
 router.get('/getProfilePageDetails', verifyUser, getInvestorProfileDetails);    // TESTED
 router.get('/getPendingRequestsByInvestor', verifyUser, getRequestedFounders);  // TESTED
 router.get('/getInvestorChatUserList', verifyUser, getInvestorChatUserList);    // TESTED

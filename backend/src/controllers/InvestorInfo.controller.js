@@ -1,6 +1,7 @@
 import { uploadOnCloudinary } from "../../cloudinary.js";
 import { Investor } from "../models/investor.model.js";
 import { User } from "../models/user.model.js";
+import jwt from "jsonwebtoken";
 
 export const InvestorInfo = async (req, res) => {
     try {
@@ -105,11 +106,26 @@ export const InvestorInfo = async (req, res) => {
 
         currentUser.isProfileComplete = true;
 
+        const newToken = jwt.sign(
+            {
+                _id : currentUserId,
+                userName : currentUser.userName,
+                // email : this.email,
+                role : currentUser.role,
+                status: true,
+            },
+                process.env.ACCESS_TOKEN_SECRET,
+            {
+                expiresIn : process.env.ACCESS_TOKEN_EXPIRY,
+            }
+        )
+
         await currentUser.save();
         await newInvestor.save();
 
         res.status(200).send({
-            message: "Investor Details uploaded successfully"
+            message: "Investor Details uploaded successfully",
+            newToken,
         });
     }
     catch (error) {

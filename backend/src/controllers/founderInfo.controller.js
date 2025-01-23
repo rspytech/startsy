@@ -6,6 +6,8 @@ import Recommendation from "../models/recommendation.model.js";
 import RecommendationBasic from "../algorithms/recommendation.js";
 import mappings from "../config/startupPrefrencesMapping.js"; // Assuming the mappings are available in this config file
 import mongoose from "mongoose";
+import jwt from "jsonwebtoken";
+
 // Initialize RecommendationBasic with mappings
 const recommender = new RecommendationBasic(mappings.stage, mappings.sector, mappings.location, mappings.fundingRange);
 
@@ -160,6 +162,21 @@ export const FounderInfo = async (req, res) => {
 
         currentUser.isProfileComplete = true;
         // 8. Save the current user and new founder profile
+
+        const newToken = jwt.sign(
+            {
+                _id : currentUserId,
+                userName : currentUser.userName,
+                // email : this.email,
+                role : currentUser.role,
+                status: true,
+            },
+                process.env.ACCESS_TOKEN_SECRET,
+            {
+                expiresIn : process.env.ACCESS_TOKEN_EXPIRY,
+            }
+        )
+
         await currentUser.save();
         await newFounder.save();
 
@@ -174,7 +191,7 @@ export const FounderInfo = async (req, res) => {
 
         res.status(200).send({
             message: "Founder Details uploaded successfully",
-            newFounder,
+            newToken,
         });
         console.log("founder succesfuly created ");
         

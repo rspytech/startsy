@@ -1,5 +1,6 @@
 import { uploadOnCloudinary } from "../../cloudinary.js";
 import { CommunityMember } from "../models/communityMember.model.js";
+import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
 
 export const CommunityMemeberInfo = async (req, res) => {
@@ -65,10 +66,27 @@ export const CommunityMemeberInfo = async (req, res) => {
 
         currentUser.isProfileComplete = true;
         
+        const newToken = jwt.sign(
+            {
+                _id : currentUserId,
+                userName : currentUser.userName,
+                // email : this.email,
+                role : currentUser.role,
+                status: true,
+            },
+                process.env.ACCESS_TOKEN_SECRET,
+            {
+                expiresIn : process.env.ACCESS_TOKEN_EXPIRY,
+            }
+        )
+
         await currentUser.save();
         await newCommunityMember.save();
 
-        res.status(200).json({message: "Community Member created successfully"});
+        res.status(200).json({
+            message: "Community Member created successfully",
+            newToken,
+        });
     }
     catch (error) {
         console.log(error);
