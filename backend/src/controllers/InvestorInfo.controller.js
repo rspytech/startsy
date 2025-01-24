@@ -13,7 +13,6 @@ export const InvestorInfo = async (req, res) => {
             gender,
             contactInfo,
             previousExperience,
-            areaOfInterest,
             startupStage,
             preferredSector,
             investmentRange,
@@ -26,7 +25,7 @@ export const InvestorInfo = async (req, res) => {
         const profilePhoto = req.files.profilePhoto;
         const pancardPhoto = req.files.panCardPhoto;
 
-        if (!contactInfo || !previousExperience || !areaOfInterest || !startupStage || !preferredSector || !investmentRange || 
+        if (!contactInfo || !previousExperience || !startupStage || !preferredSector || !investmentRange || 
             !fullName || !email || !country || !age || !gender
         ) {
             return res.status(400).json({ message: "Please fill in all the fields" });
@@ -48,7 +47,6 @@ export const InvestorInfo = async (req, res) => {
             gender,
             contactInfo,
             previousExperience,
-            areaOfInterest,
             panCard: {
                 index: hashedPanCard,
                 pan: encryptedPanCard

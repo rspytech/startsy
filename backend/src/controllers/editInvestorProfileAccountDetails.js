@@ -13,7 +13,6 @@ export const editInvestorAccountProfileDetails = async (req, res) => {
         country,
         contactInfo,
         previousExperience,
-        areaOfInterest,
         startupStage,
         preferredSector,
         investmentRange
@@ -41,7 +40,6 @@ export const editInvestorAccountProfileDetails = async (req, res) => {
             country,
             contactInfo,
             previousExperience,
-            areaOfInterest,
             startupStage,
             preferredSector,
             investmentRange
