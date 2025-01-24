@@ -17,7 +17,7 @@ import { getUsersProfiles } from '../controllers/getUsersProfile.js';
 import { uploadProfileCoverImage } from '../controllers/uploadProfileCoverImage.js';
 import { getInvestorProfile } from '../controllers/getInvestorProfile.js';
 import { getUserNameSuggestions } from '../controllers/getUserNameSuggestions.js';
-import { deleteUnAuthenticatedUser } from '../controllers/authenticateUser/deleteUnauthenticatedUser.js';
+import { deleteUnAuthenticatedUser } from '../controllers/authenticateUser/deleteUnAuthenticatedUser.js';
 const router = express.Router();
 
 router.post('/register', registerUser);
