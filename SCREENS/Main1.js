@@ -56,9 +56,8 @@ const Main1 = ({ navigation }) => {
         useCallback(() => {
             console.log(globaldata, "global data");
             setToken(globaldata.token);
-
         }, [globaldata])
-    );
+    );;
 
     useFocusEffect(() => {
         StatusBar.setBackgroundColor("#16181a"); // Set your desired color
@@ -70,6 +69,9 @@ const Main1 = ({ navigation }) => {
         }
 
     })
+
+
+
 
 
 

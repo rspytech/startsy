@@ -58,7 +58,7 @@ import * as SystemUI from "expo-system-ui";
 // import { StatusBar } from 'expo-status-bar';
 import { GlobalProvider } from "../../Global/globalcontext.js";
 // import style from "../"
-
+import { LogBox } from "react-native";
 import { StatusBar, Platform } from "react-native";
 import { useFocusEffect } from "expo-router";
 // import ReadMore1 from "../../SCREENS/trial-1.js";
@@ -66,6 +66,23 @@ import { useFocusEffect } from "expo-router";
 SplashScreen.preventAutoHideAsync();
 const Stack = createNativeStackNavigator();
 
+LogBox.ignoreLogs([
+  // "VirtualizedLists should never be nested", // Example warning
+  'Warning: Each child in a list should have a unique "key" prop.',
+  "VirtualizedList: Encountered an error while measuring a list's offset from its containing VirtualizedList.",
+]);
+
+const originalConsoleWarn = console.warn;
+console.warn = (message, ...args) => {
+  if (
+    // message.includes("VirtualizedLists should never be nested") || // Suppress specific warning
+    message.includes('Each child in a list should have a unique "key" prop.') ||
+    message.includes("Encountered an error while measuring a list's offset from its containing VirtualizedList.") // Another specific warning
+  ) {
+    return; // Block these warnings
+  }
+  originalConsoleWarn(message, ...args); // Allow other warnings
+};
 // export const Global = createContext("ok");
 
 export default function App() {
@@ -82,7 +99,6 @@ export default function App() {
 
   const fontsLoaded = useLoadFonts();
   const [appisready, setappisready] = React.useState(false);
-  
 
   // if (!fontsLoaded) {
   // }

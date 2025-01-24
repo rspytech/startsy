@@ -16,11 +16,59 @@ import { url } from "../../config.js"
 
 const Chat = ({ navigation, route }) => {
 
-
+    const [newtext, setnewtext] = useState("")
     const { item, messages, token } = route.params;
-    // console.log('====================================');
+    const { extra } = route.params;
+
+    console.log(extra);
+
+    const btn11 = useRef(null)
+
+
+    function sendmessage() {
+
+        if (newtext == "") {
+            return
+        }
+        // if (inputRef.current) {
+        //     inputRef.current.focus();
+        // }
+
+
+
+        console.log(messages);
+
+        const finaldata = {
+            senderId: id,
+            receiverId: jisuserkosendkarnahaiuskiid,
+            message: newtext
+        }
+        socket.emit("privateMessage", finaldata)
+        setdata([...data, { message: newtext, senderId: id }])
+
+
+        if (flatListRef.current) {
+            flatListRef.current.scrollToOffset({
+                offset: data.length * 100,
+                animated: true,
+            });
+        }
+        setnewtext("")
+
+
+    }
+
+
+    useEffect(() => {
+        var decode = jwtDecode(token);
+        console.log(decode);
+        
+        if (extra && extra.status) {
+            setnewtext(`${decode.userName} has considered yout application for ${extra.jobrole} Now you can chat for further discussion.`)
+        }
+
+    }, [extra])
     console.log(item, "chatscreen ka item hai ");
-    // console.log(messages, "chatscreen ka item hai ");
 
     const jisuserkosendkarnahaiuskiid = item.user._id;
     console.log(jisuserkosendkarnahaiuskiid);
@@ -41,7 +89,7 @@ const Chat = ({ navigation, route }) => {
     const [keyboardstatus, setkeyboardstatus] = useState(false)
     const inputRef = useRef(null);
     const [offset, setoffset] = useState(320)
-    const [newtext, setnewtext] = useState("")
+
 
 
 
@@ -152,6 +200,10 @@ const Chat = ({ navigation, route }) => {
             // Keyboard event listeners
             const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", (e) => {
                 if (isActive) setoffset(e.endCoordinates.height);
+                console.log(e.endCoordinates.height);
+                console.log(height);
+
+
             });
 
             const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
@@ -175,32 +227,7 @@ const Chat = ({ navigation, route }) => {
 
 
 
-    function sendmessage() {
-
-        if (newtext == "") {
-            return
-        }
-        console.log(messages);
-
-        const finaldata = {
-            senderId: id,
-            receiverId: jisuserkosendkarnahaiuskiid,
-            message: newtext
-        }
-        socket.emit("privateMessage", finaldata)
-        setdata([...data, { message: newtext, senderId: id }])
-
-
-        if (flatListRef.current) {
-            flatListRef.current.scrollToOffset({
-                offset: data.length * 100,
-                animated: true,
-            });
-        }
-        setnewtext("")
-
-
-    }
+    
 
     const renderItem = ({ item }) => {
         return (
@@ -248,14 +275,14 @@ const Chat = ({ navigation, route }) => {
 
     function handlenext() {
         var decode = jwtDecode(token)
-        if(decode.role == "Investor"){
+        if (decode.role == "Investor") {
             return
         }
         navigation.navigate("Singleprofilepage", { token: token, id: item.user._id, page: "Chat", item, messages, })
     }
 
     return (
-        <View style={{ flex: 1, backgroundColor: "#16181a" }}>
+        <SafeAreaView style={{ flex: 1, paddingVertical: 10, backgroundColor: "#16181a" }}>
             <View style={[styles.header]}>
                 <Pressable onPress={() => { navigation.goBack() }}>
                     <Ionicons name="arrow-back-circle-outline" size={40} color="#00DE62" />
@@ -275,8 +302,8 @@ const Chat = ({ navigation, route }) => {
                 </Pressable>
             </View>
 
-            <KeyboardAvoidingView keyboardVerticalOffset={-50}
-                style={{ flex: keyboardstatus ? 0.5 : 1 }}
+            <KeyboardAvoidingView keyboardVerticalOffset={-100}
+                style={{ flex: keyboardstatus ? (1 - (offset / height) - 0.06) : 1 }}
             >
 
 
@@ -300,20 +327,22 @@ const Chat = ({ navigation, route }) => {
             <KeyboardAvoidingView behavior="padding" >
                 <ScrollView style={{}}>
                     <Pressable onPress={() => { setkeyboardstatus(true) }}>
-                        <Animated.View style={[styles.searchContainer]}>
+                        <Animated.View style={[styles.searchContainer, marginBottom]}>
                             <TextInput
                                 ref={inputRef}
                                 allowFontScaling={false}
                                 multiline={true}
                                 style={styles.searchInput}
-                                placeholder="Search"
+                                placeholder="Type ..."
                                 placeholderTextColor="#828282"
                                 onFocus={handleFocus}
                                 onBlur={() => setkeyboardstatus(false)}
                                 onChangeText={(val) => setnewtext(val)}
                                 value={newtext}
                             />
-                            <Pressable style={styles.send} onPress={sendmessage}>
+                            <Pressable
+                                ref={btn11}
+                             style={styles.send} onPress={sendmessage}>
                                 <Ionicons name="send" size={24} color="#00DE62" />
                             </Pressable>
                         </Animated.View>
@@ -328,7 +357,7 @@ const Chat = ({ navigation, route }) => {
 
 
 
-        </View >
+        </SafeAreaView >
     )
 }
 
@@ -363,8 +392,13 @@ const styles = StyleSheet.create({
         alignItems: "center",
         alignContent: "center",
         display: "flex",
+        width: "98%",
         // marginBottom: 320,
-        backgroundColor: "transparent",
+        // backgroundColor: "yellow",
+        borderColor: "#00DE62",
+        borderWidth: 1,
+        borderRadius: 30,
+        justifyContent: "flex-start",
 
 
         // position : "absolute",
@@ -373,15 +407,23 @@ const styles = StyleSheet.create({
     searchInput: {
         height: "auto",
         minHeight: 50,
-        width: width * 0.95,
-        borderColor: "#00DE62",
-        borderWidth: 1,
+        width: width * 0.90,
+        justifyContent: "flex-start",
+        right: 0,
+        alignSelf: "flex-start",
+
+        // borderColor: "#00DE62",
+
+        // borderWidth: 1,
         borderRadius: 30,
         paddingHorizontal: 20,
-        color: "#828282",
+        color: "#bbbbbb",
         fontFamily: "Roboto",
         fontSize: 18,
         maxHeight: 100,
+        // backgroundColor : "red",
+
+
 
         // marginBottom  :20
     },
@@ -502,6 +544,8 @@ const styles = StyleSheet.create({
         // width: 20,
         // height: 20,
         position: "absolute",
+        elevation: 1000,
+        zIndex: 1000,
         top: 12,
         right: 10,
         transform: [{ scale: 1.1 }],

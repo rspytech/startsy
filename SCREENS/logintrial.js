@@ -4,7 +4,7 @@ import * as React from "react";
 import { useState, useEffect, useRef, useContext } from "react";
 import styles from "../styles/l.js"
 // import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, BackHandler, Text, Pressable, ActivityIndicator, TextInput, View, Image, StyleSheet, Dimensions, StatusBar, Animated, Easing, Platform, KeyboardAvoidingView, ScrollView, Alert } from "react-native";
+import { SafeAreaView, BackHandler, Text, Pressable, ActivityIndicator, TextInput, View, Image, StyleSheet, Dimensions, StatusBar, Animated, Easing, Platform, KeyboardAvoidingView, ScrollView, Alert, ToastAndroid } from "react-native";
 import { TouchableOpacity } from "react-native-gesture-handler";
 import ReadMore1 from "./trial-1.js";
 import { useFonts } from 'expo-font';
@@ -17,11 +17,73 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { jwtDecode } from "jwt-decode";
 import { GlobalContext } from "@/Global/globalcontext.js";
 import { url } from "../config.js"
-const Login1 = ({ navigation }) => {
+
+
+
+// import Toast from 'react-native-toast-message';
+const Login1 = ({ navigation, showtoast, falsetoken }) => {
   // const navigation = useNavigation();
   // console.log(navigation);
 
+
+  // const showStyledToast = () => {
+  //   Toast.show({
+  //     type: 'success', // Types: 'success', 'error', 'info'
+  //     text1: 'Notice',
+  //     text2: `You don't have to apply to this community`,
+  //     position: 'top', // Toast appears at the top
+  //     visibilityTime: 3000, // Duration in ms
+  //     topOffset: 50, // Offset from the top
+  //   });
+  // };
+  console.log(falsetoken, "tmep hai yeh");
+
+  console.log(showtoast, "toast staus");
+
+
+
   const { globaldata, updateField } = useContext(GlobalContext);
+
+  const showToastWithGravity = (message) => {
+    ToastAndroid.showWithGravityAndOffset(
+      `${message}`,
+      ToastAndroid.LONG,
+      ToastAndroid.TOP,
+      100, 100
+    );
+  };
+
+
+  async function deleteuser() {
+    try {
+      const response = await fetch(`${url}api/deleteUnAuthenticatedUser`, {
+        method: 'POST',
+        body: "",
+        headers: {
+          accept: "application/json",
+          "Authorization": `Bearer ${falsetoken}`,
+        },
+      });
+      const data = await response.json();
+      // setloading(false)
+      console.log(data);
+      console.log(response.status);
+    }
+    catch (err) {
+      console.log(err);
+
+    }
+  }
+  useEffect(() => {
+    if (showtoast == true) {
+      showToastWithGravity("Your profile was left incomplete hence it is deleted, you may create it again.")
+      deleteuser()
+
+
+
+    }
+
+  }, [showtoast])
 
 
   useFocusEffect(() => {
@@ -105,7 +167,7 @@ const Login1 = ({ navigation }) => {
   const handlelogin = async (navigation) => {
 
     console.log("login route called");
-    
+
 
     setemailerror(false)
     setpassworderror(false)
@@ -125,7 +187,7 @@ const Login1 = ({ navigation }) => {
     //   setpassworderror1(true)
     //   return;
     // }
-    
+
     setloading(true)
 
     var final = {
@@ -172,7 +234,7 @@ const Login1 = ({ navigation }) => {
 
         }
       }
-      else{
+      else {
         setwrongcredential(true)
       }
 
@@ -404,7 +466,7 @@ const Login1 = ({ navigation }) => {
 
     <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={-100} style={[styles.container]}>
       <Animated.View style={[{ backgroundColor: "#16181a" }, animatedtop1]}>
-
+        {/* <Toast /> */}
         {!isForm1Visible && (
           <Pressable style={[styles.back, { zIndex: (attop) ? 1 : 0 }]} onPress={() => {
             setForm1Visible(true);
@@ -471,7 +533,7 @@ const Login1 = ({ navigation }) => {
               {loading && <ActivityIndicator size={24} color="#fff" />}
             </Pressable>
             <Text allowFontScaling={false} style={[styles.white, styles.p]}>Or continue with</Text>
-            <Pressable style={styles.googlebutton}>
+            <Pressable onPress={() => { showToastWithGravity("This functionality is yet to come!") }} style={styles.googlebutton}>
               <Image
                 source={require("../assets/images/google.png")}
                 style={styles.googleIcon}

@@ -43,6 +43,7 @@ import NewsletterPage from "./main-2/news1.js"
 import Singleprofilepage from "../SCREENS/singleprofilepage.js"
 import { GlobalContext } from "@/Global/globalcontext.js";
 
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 
 const Main2 = ({ navigation }) => {
@@ -51,13 +52,27 @@ const Main2 = ({ navigation }) => {
     const [token, setToken] = useState("");
     const { globaldata } = useContext(GlobalContext);
 
-    useFocusEffect(
-        useCallback(() => {
-            console.log(globaldata, "global data");
-            setToken(globaldata.token);
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         console.log(globaldata, "global data");
+    //         setToken(globaldata.token);
 
-        }, [globaldata])
-    );
+    //     }, [globaldata])
+    // );
+
+
+    useEffect(() => {
+        async function getToken() {
+
+            const temp = await AsyncStorage.getItem("accessToken");
+            console.log('====================================');
+            console.log("main screen pe anne ke baad ke token" , temp);
+            console.log('====================================');
+            setToken(temp);
+        }
+        getToken();
+    }, []);
+
 
 
 
@@ -123,8 +138,8 @@ const Main2 = ({ navigation }) => {
 
                 {/* <NavigationContainer independent={true}> */}
                 <Tab.Navigator
-              
-                
+
+
                     initialRouteName="Startsy"
                     screenOptions={{
                         animationEnabled: true,
@@ -198,8 +213,8 @@ const Main2 = ({ navigation }) => {
                     <Tab.Screen
                         name="Profile"
                         // component={Profile}
-                        children={()=><Apnauser navigation={navigation} token={token} />}
-                     
+                        children={() => <Apnauser navigation={navigation} token={token} />}
+
 
                         options={{
                             tabBarLabel: "",
@@ -211,7 +226,7 @@ const Main2 = ({ navigation }) => {
                     <Tab.Screen
                         name="NewsletterPage"
                         component={NewsletterPage} // Replace with the desired component
-                        
+
                         options={{
                             tabBarButton: () => null, // Hides the tab from the bar
                             tabBarVisible: false,     // Ensures it doesn't take space in the bar
@@ -220,7 +235,7 @@ const Main2 = ({ navigation }) => {
                     <Tab.Screen
                         name="Singleuserpage"
                         // component={Singleprofilepage} // Replace with the desired component
-                        children={()=><Singleprofilepage navigation={navigation}/>}
+                        children={() => <Singleprofilepage navigation={navigation} />}
                         options={{
                             tabBarButton: () => null, // Hides the tab from the bar
                             tabBarVisible: false,     // Ensures it doesn't take space in the bar

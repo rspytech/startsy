@@ -47,12 +47,18 @@ const ConnectionsScreen = ({ navigation, search, token }) => {
     const { globaldata } = useContext(GlobalContext);
 
 
+
+    useFocusEffect(
+        useCallback(() => {
+            fetchData()
+        }, [])
+    )
+
     const [data, setData] = useState(null)
     const [loading, setloading] = useState(false)
 
     const fetchData = async () => {
         var route = ""
-
         const decoded = jwtDecode(token);
         console.log(decoded);
 
@@ -89,17 +95,31 @@ const ConnectionsScreen = ({ navigation, search, token }) => {
                 );
                 const result = await response.json();
                 console.log(result, "investor");
+
+
                 const uniqueData = result.filter((item, index, self) =>
                     self.findIndex(innerItem => innerItem.user.userName === item.user.userName) === index
                 );
+
+
+                const sortedData = uniqueData.sort((a, b) => {
+                    if (a.lastMessage === null && b.lastMessage === null) return 0;
+                    if (a.lastMessage === null) return 1;
+                    if (b.lastMessage === null) return -1;
+
+                    const dateA = new Date(a.lastMessage.createdAt);
+                    const dateB = new Date(b.lastMessage.createdAt);
+                    return dateB - dateA; // Sort in descending order of time
+                });
+
                 // console.log(result.data, "investor");
                 // console.log(result.data.messages.length, "investor");
 
                 if (response.status === 200) {
                     // You can update the data state here if needed
                     // setData(result); // Example, you can handle the response data
-                    setData(uniqueData)
-                    setfiltereddata(uniqueData)
+                    setData(sortedData)
+                    setfiltereddata(sortedData)
                     // setdata1(result)
                 }
             } catch (err) {

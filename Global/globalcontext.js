@@ -10,11 +10,28 @@ export const GlobalProvider = ({ children }) => {
     token: "",
   });
 
-  const updateField = (field, value) => {
+  const updateField = async(field, value) => {
     setGlobalData((prevData) => ({
       ...prevData,
       [field]: value,
     }));
+
+
+
+
+    console.log(value, "value hai yeh");
+    console.log(value, "value hai yeh");
+    console.log(value, "value hai yeh");
+    console.log(value, "value hai yeh");
+    console.log(value, "value hai yeh");
+    console.log(value, "value hai yeh");
+    
+    // try {
+    //   await AsyncStorage.setItem('accessToken', value);
+    //   console.log('Data saved successfully!');
+    // } catch (error) {
+    //   console.error('Error saving data:', error);
+    // }
   };
 
   useEffect(() => {

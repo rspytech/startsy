@@ -19,6 +19,7 @@ import {
     TouchableWithoutFeedback
 } from "react-native";
 // import { FlatList, ScrollView } from 'react-native-gesture-handler';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { LinearGradient } from "expo-linear-gradient";
@@ -193,7 +194,17 @@ const Signup11 = ({ navigation, route }) => {
             console.log(response.status);
 
             if (response.status == 200) {
-                navigation.navigate("Main2")
+
+                try {
+                    await AsyncStorage.setItem('accessToken', data.newToken);
+                    updateField("token", data.newToken);
+                    console.log('Data saved successfully!');
+                    navigation.navigate("Main2")
+                } catch (error) {
+                    console.error('Error saving data:', error);
+                }
+
+
             }
             else if (response.status == 555) {
                 for (items of data.invalidTeamMates) {
@@ -250,10 +261,10 @@ const Signup11 = ({ navigation, route }) => {
     function handleworkchange(id, field, value) {
         var array = teammember.map((e) => {
             if (e.id === id) {
-                return { ...e, [field]: value , nameError : false , roleError : false , usernameError : false };
+                return { ...e, [field]: value, nameError: false, roleError: false, usernameError: false };
 
             }
-            else return {...e , roleError : false , usernameError : false , nameError : false}
+            else return { ...e, roleError: false, usernameError: false, nameError: false }
         })
         setteammember(array);
     }

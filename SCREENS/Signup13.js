@@ -13,7 +13,8 @@ import {
     StyleSheet,
     Dimensions,
     StatusBar,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
+    ActivityIndicator
 
 } from "react-native";
 
@@ -30,7 +31,7 @@ import { url } from "../config.js"
 
 const Signup13 = ({ navigation, route }) => {
     const { form, image } = route.params;
-// const form = ""
+    // const form = ""
 
     // const [final, setFormData] = useState(new FormData());
     // useFocusEffect(
@@ -42,6 +43,7 @@ const Signup13 = ({ navigation, route }) => {
 
 
     const [token, settoken] = useState("")
+    const [loading, setloading] = useState("")
     const [role1, setrole] = useState("")
     const { globaldata, updateField } = useContext(GlobalContext);
 
@@ -54,7 +56,7 @@ const Signup13 = ({ navigation, route }) => {
 
     const t1 = () => {
         setOpen1(!open1);
-       
+
     }
     useFocusEffect(() => {
         StatusBar.setBackgroundColor("#16181a")
@@ -195,7 +197,7 @@ const Signup13 = ({ navigation, route }) => {
 
 
 
-
+        setloading(true)
         const response = await fetch(`${url}api/investorInfo`, {
             method: 'POST',
             body: final,
@@ -209,7 +211,21 @@ const Signup13 = ({ navigation, route }) => {
 
         const data = await response.json();
         console.log(data, "investor");
-        navigation.navigate("Main1")
+
+        if (response.status == 200) {
+
+            try {
+                await AsyncStorage.setItem('accessToken', data.newToken);
+                updateField("token", data.newToken);
+                console.log('Data saved successfully!');
+                navigation.navigate("Main1")
+            } catch (error) {
+                console.error('Error saving data:', error);
+            }
+        }
+
+        setloading(false)
+
 
 
     }
@@ -266,7 +282,7 @@ const Signup13 = ({ navigation, route }) => {
                                 allowFontScaling={false}
                                 placeholder="LinkedIN URL*"
                                 placeholderTextColor="#B8B8B8"
-                                style={[styles.input , {marginTop : 20}]}
+                                style={[styles.input, { marginTop: 20 }]}
                                 value={linkedinurl}
                                 onChangeText={(text) => { setlinkedinurl(text) }}
                             />
@@ -317,7 +333,10 @@ const Signup13 = ({ navigation, route }) => {
                                     navigation.goBack();
                                 }}><FontAwesome6 name="chevron-left" size={45} color="#00DF60" /></Pressable>
                                 <Pressable style={styles.btn} onPress={() => { finalsubmit() }}>
-                                    <Text allowFontScaling={false} style={styles.nexttext}>Submit</Text>
+
+                                    {loading && <ActivityIndicator size={24} color="#16181a" />}
+                                    {!loading && <Text allowFontScaling={false} style={styles.nexttext}>Submit</Text>
+                                    }
                                 </Pressable>
                             </View>
 

@@ -178,6 +178,16 @@ const Founder1 = ({ navigation }) => {
         setOpen4(!open4);
     }
 
+    var edulist = [
+        { label: "10th", value: "10TH" },
+        { label: "12th", value: "12th" },
+        { label: "Graduate", value: "Graduate" },
+        { label: "Post-Graduate", value: "Post-Graduate" },
+        { label: "P.H.D", value: "P.H.D" },
+
+
+    ]
+
 
 
     function addworkexperience() {
@@ -280,7 +290,7 @@ const Founder1 = ({ navigation }) => {
                         />
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginTop: 25, marginBottom: 10, paddingLeft: 7 }]}>Education </Text>
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>List your highest degree achieved, which helps to establish your academic background and qualifications. </Text>
-                        <Drop items={areaofinterestlist} onValueChange={(value) => { seteducation(value) }} setOpen={t2} open={open2} nestedScrollEnabled={true} />
+                        <Drop items={edulist} onValueChange={(value) => { seteducation(value) }} setOpen={t2} open={open2} nestedScrollEnabled={true} />
 
 
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 25, paddingLeft: 7 }]}>Previous Work Experience </Text>

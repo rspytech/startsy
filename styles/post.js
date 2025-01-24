@@ -1,5 +1,5 @@
 import React from "react";
-import { StyleSheet , Dimensions } from "react-native";
+import { StyleSheet, Dimensions } from "react-native";
 const { height, width } = Dimensions.get("window")
 
 var a = width / 360;
@@ -170,11 +170,16 @@ const styles = StyleSheet.create({
     },
 
     add: {
-        position: "absolute",
+        // position: "absolute",
         bottom: 80,
+        width : 50,
+        elevation: 19,
         right: 20,
+        alignSelf : "flex-end",
         backgroundColor: "#16181a",
         borderRadius: 100,
+        // zIndex  : 100,
+
     },
     bottomSheetContent: {
         display: "flex",
@@ -349,6 +354,7 @@ const styles = StyleSheet.create({
         height: 50,
         borderRadius: 25,
         marginRight: 15,
+        alignSelf: "flex-start"
     },
     textContainer: {
         flex: 1,
@@ -373,6 +379,9 @@ const styles = StyleSheet.create({
         fontSize: 12,
         color: "#B8B8B8",
         fontFamily: "Roboto",
+        position: "absolute",
+        top: 20,
+        right: 0
     },
 
     searchContainer: {
@@ -412,7 +421,7 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto",
         marginBottom: 20,
         fontSize: 18,
-        paddingBottom : 10,
+        paddingBottom: 10,
         alignSelf: "flex-start",
         backgroundColor: "transparent",
         maxHeight: 200,
@@ -444,6 +453,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 5,
         marginVertical: 10,
         color: "#B8B8B8",
+        fontSize : 20,
         fontFamily: "Roboto",
 
     },

@@ -11,7 +11,7 @@ import Svg, {
 const Up1 = (props) => (
   <Svg xmlns="http://www.w3.org/2000/svg" fill="none" {...props}>
     <G filter="url(#a)">
-      <Circle cx={33.5} cy={33.5} r={33.5} fill="url(#b)" />
+      <Circle cx={33.5} cy={33.5} r={33.5} fill="#16181a" />
       <Circle
         cx={33.5}
         cy={33.5}

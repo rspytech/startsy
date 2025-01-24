@@ -320,7 +320,7 @@ const NewsLetter = ({ navigation, route }) => {
 
                     <View style={styles.textContainer}>
                         <Text allowFontScaling={false} style={styles.username}>{item.userName}</Text>
-                        <Text allowFontScaling={false} style={styles.message}>{item.role == "CommunityMember"  ? "Member" : item.role}</Text>
+                        <Text allowFontScaling={false} style={styles.message}>{item.role == "CommunityMember" ? "Member" : item.role}</Text>
                     </View>
                     {/* <Text allowFontScaling={false} style={styles.time}> "today"}</Text> */}
                 </View>
@@ -331,7 +331,7 @@ const NewsLetter = ({ navigation, route }) => {
         const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
             if (showbox) {
                 console.log("hiiiii");
-                
+
                 setshowbox(false)
                 return true; // This prevents the default back action
             }
@@ -349,6 +349,7 @@ const NewsLetter = ({ navigation, route }) => {
             {!filterednewsletter && <Render />}
 
             {showbox && <FlatList
+                keyExtractor={(item, index) => index}
                 data={suggestionarray}
                 renderItem={renderSuggestion}
                 style={styles.suggestionbox}>
@@ -356,19 +357,27 @@ const NewsLetter = ({ navigation, route }) => {
             </FlatList>}
 
             {filterednewsletter && <FlatList
+
+                getItemLayout={(data, index) => ({
+                    length: 300, // Fixed height of each item
+                    offset: 300 * index,
+                    index,
+                })}
                 onTouchStart={() => setshowbox(false)}
                 style={styles.container}
                 data={filterednewsletter}
                 contentContainerStyle={{ paddingBottom: 100 }}
                 renderItem={renderItem1}
-                refreshControl={<RefreshControl onRefresh={() => {
-                    setRefreshing(true)
+                refreshControl={<RefreshControl
+                    keyExtractor={(item, index) => index}
+                    onRefresh={() => {
+                        setRefreshing(true)
 
-                    getdata()
-                    setTimeout(() => {
-                        setRefreshing(false)
-                    }, 1000);
-                }} refreshing={(refreshing)} />}
+                        getdata()
+                        setTimeout(() => {
+                            setRefreshing(false)
+                        }, 1000);
+                    }} refreshing={(refreshing)} />}
                 // style={styles.scroll1}
                 ListHeaderComponent={
                     <>

@@ -21,6 +21,7 @@ import {
     ActivityIndicator
 } from "react-native";
 // import { FlatList, ScrollView } from 'react-native-gesture-handler';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import { LinearGradient } from "expo-linear-gradient";
@@ -42,7 +43,7 @@ import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view
 const Signup7 = ({ navigation, route }) => {
 
     const [token, settoken] = useState("")
-    const [loading, setloading] = useState(true)
+    const [loading, setloading] = useState(false)
     const { globaldata, updateField } = useContext(GlobalContext);
 
     useEffect(() => {
@@ -316,6 +317,13 @@ const Signup7 = ({ navigation, route }) => {
             const data = await response.json();
             console.log(data);
             if (response.status === 200) {
+                try {
+                    await AsyncStorage.setItem('accessToken', data.newToken);
+                    console.log('Data saved successfully!');
+                } catch (error) {
+                    console.error('Error saving data:', error);
+                }
+                updateField("token" , data.newToken);
                 navigation.navigate("Main2")
             }
             else if (response.status === 400) {
@@ -332,9 +340,9 @@ const Signup7 = ({ navigation, route }) => {
 
         // console.log(final);
 
-       
+
         // setloading(false)
-       
+
     }
     return (
 

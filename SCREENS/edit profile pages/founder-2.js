@@ -61,16 +61,46 @@ const Founder2 = ({ navigation, route }) => {
 
 
     var areaofinterestlist = [
-        { label: "Technology", value: "Technology" },
-        { label: "Healthcare", value: "Healthcare" },
-        { label: "Finance", value: "Finance" },
-        { label: "Consumer Goods", value: "Consumer Goods" },
-        { label: "Education", value: "Education" },
-        { label: "Energy", value: "Energy" },
-        { label: "Real Estate", value: "Real Estate" },
+        { label: "AI", value: "AI" },
+        { label: "AR/VR", value: "AR/VR" },
+        { label: "Blockchain", value: "Blockchain" },
+        { label: "Social Media", value: "Social Media" },
+        { label: "Marketing", value: "Marketing" },
+        { label: "Social media marketing", value: "Social media marketing" },
+        { label: "SaaS", value: "SaaS" },
+        { label: "IoT", value: "IoT" },
+        { label: "Cybersecurity", value: "Cybersecurity" },
+        { label: "Cloud Computing", value: "Cloud Computing" },
+        { label: "Biotech", value: "Biotech" },
+        { label: "MedTech", value: "MedTech" },
+        { label: "Digital Health", value: "Digital Health" },
+        { label: "Pharma", value: "Pharma" },
+        { label: "HealthTech", value: "HealthTech" },
+        { label: "D2C", value: "D2C" },
+        { label: "B2C", value: "B2C" },
+        { label: "B2B", value: "B2B" },
+        { label: "Marketplaces", value: "Marketplaces" },
         { label: "Logistics", value: "Logistics" },
-
-    ]
+        { label: "FinTech", value: "FinTech" },
+        { label: "InsurTech", value: "InsurTech" },
+        { label: "Decentralized Finance", value: "Decentralized Finance" },
+        { label: "EdTech", value: "EdTech" },
+        { label: "Online Learning Platforms", value: "Online Learning Platforms" },
+        { label: "Cleantech", value: "Cleantech" },
+        { label: "Renewable Energy", value: "Renewable Energy" },
+        { label: "Sustainability", value: "Sustainability" },
+        { label: "Media", value: "Media" },
+        { label: "Gaming", value: "Gaming" },
+        { label: "Content Platforms", value: "Content Platforms" },
+        { label: "EVs", value: "EVs" },
+        { label: "Autonomous Vehicles", value: "Autonomous Vehicles" },
+        { label: "Ride-Sharing", value: "Ride-Sharing" },
+        { label: "AgriTech", value: "AgriTech" },
+        { label: "FoodTech", value: "FoodTech" },
+        { label: "Non-profits", value: "Non-profits" },
+        { label: "Impact Investing", value: "Impact Investing" },
+        { label: "Philanthropy", value: "Philanthropy" }
+    ];
 
     var country1 = [
         { label: "10th", value: "10TH" },
@@ -250,6 +280,17 @@ const Founder2 = ({ navigation, route }) => {
 
     }
 
+    
+    var stage = [
+        { label: "Ideation Stage", value: "Ideation Stage" },
+        { label: "Pre-Seed Stage", value: "Pre-Seed Stage" },
+        { label: "Seed Stage ", value: "Seed Stage" },
+        { label: "Early Stage", value: "Early Stage" },
+        { label: "Growth Stage", value: "Growth Stage" },
+        { label: "Expansion Stage", value: "Mature Stage" },
+
+    ]
+
 
     useFocusEffect(() => {
         StatusBar.setBackgroundColor("#16181A")
@@ -328,7 +369,7 @@ const Founder2 = ({ navigation, route }) => {
 
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 25, paddingLeft: 7 }]}>Startup stage  </Text>
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>Detail any relevant industry experience, particularly if you’ve worked in a specific company or held roles that have prepared you for your current venture.</Text>
-                        <Drop width={"88%"} width1={"86%"} items={country1} onValueChange={(value) => setStageOfStartup(value)} open={open1} setOpen={t1} />
+                        <Drop width={"88%"} width1={"86%"} items={stage} onValueChange={(value) => setStageOfStartup(value)} open={open1} setOpen={t1} />
 
 
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 25, paddingLeft: 7 }]}>Funding Status</Text>

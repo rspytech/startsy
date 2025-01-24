@@ -27,15 +27,35 @@ const Green = ({ navigation }) => {
 
     const [state, setstate] = useState("")
     const [animationover, setanimationover] = useState(false)
-
+    const [showtoast, setshowtoast] = useState(false)
+    const [falsetoken, setfalsetoken] = useState("")
+    var temp;
     useEffect(() => {
         async function getToken() {
-            const temp = await AsyncStorage.getItem("accessToken");
+            temp = await AsyncStorage.getItem("accessToken");
+            console.log(temp, "app khulte vakt toke hai ya nai");
+
+            setfalsetoken(temp)
+
+
+
+            if (temp == "" || temp == null || temp == undefined) {
+                setstate("")
+                return
+            }
             if (temp) {
                 var decode = jwtDecode(temp)
                 console.log(decode);
 
-                if (decode && decode.role == "Investor") {
+                if (decode.status == false) {
+                    setstate("")
+
+                    console.log("unauthorized user hai yeh");
+
+                    setshowtoast(true)
+                }
+
+                else if (decode && decode.role == "Investor") {
                     setstate("Investor")
                 }
                 else if (decode && decode.role == "Founder") {
@@ -115,7 +135,7 @@ const Green = ({ navigation }) => {
 
 
     return (
-        <SafeAreaView style={{flex : 1 , backgroundColor : "#000"}}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#000" }}>
             <View style={greenstyle.green}>
                 <StatusBar backgroundColor="#16181a" barStyle={"light-content"} />
                 {/* <StatusBar translucent={true} /> */}
@@ -143,7 +163,7 @@ const Green = ({ navigation }) => {
 
 
                 {state == "" && <Animated.View style={[greenstyle.login, { top: animatedtop1 }]}>
-                    <Login1 navigation={navigation} />
+                    <Login1 navigation={navigation} showtoast={showtoast} falsetoken={falsetoken} />
                 </Animated.View>}
                 {/* <Animated.View style={[greenstyle.login, { top: animatedtop1 }]}>
                 <Login1 navigation={navigation} />

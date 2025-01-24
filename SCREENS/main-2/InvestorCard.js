@@ -276,15 +276,15 @@ const InvestorCard = ({ token, navigation }) => {
 
         return (
             <Animated.View
-                // style={[
-                //     {
-                //         transform: [
-                //             { translateX: animatedValues.current[item.id]?.translateX },
-                //             { scaleY: animatedValues.current[item.id]?.scaleY },
-                //         ],
-                //         opacity: animatedValues.current[item.id]?.opacity,
-                //     },
-                // ]}
+            // style={[
+            //     {
+            //         transform: [
+            //             { translateX: animatedValues.current[item.id]?.translateX },
+            //             { scaleY: animatedValues.current[item.id]?.scaleY },
+            //         ],
+            //         opacity: animatedValues.current[item.id]?.opacity,
+            //     },
+            // ]}
             >
                 <LinearGradient
                     style={styles.card}
@@ -334,8 +334,8 @@ const InvestorCard = ({ token, navigation }) => {
                     {item.investor.role == "Founder" && <Text style={styles.info}>Stage of Startup - {item.investor.roleId.hiddenInfo.stageOfStartup} </Text>}
                     {item.investor.role == "Founder" && <Text style={styles.info1}>Startup Sector - {item.investor.roleId.hiddenInfo.sector}</Text>}
 
-                    {item.investor.role == "CommunityMember" && <Text style={styles.info}>Investing experience - {item.investor.roleId.previousExperience} years</Text>}
-                    {item.investor.role == "CommunityMember" && <Text style={styles.info1}>Investing Capacity - {item.investor.roleId.investmentRange}</Text>}
+                    {item.investor.role == "CommunityMember" && <Text style={styles.info}>Goal - {item.investor.roleId.previousExperience} years</Text>}
+                    {item.investor.role == "CommunityMember" && <Text style={styles.info1}>Skills - {item.investor.roleId.investmentRange}</Text>}
 
 
 
@@ -354,22 +354,15 @@ const InvestorCard = ({ token, navigation }) => {
 
     function Header1() {
         return (
-            <ScrollView
-                refreshControl={
-                    <RefreshControl progressViewOffset={0} refreshing={refreshing11}
-                        onRefresh={() => {
-                            // setRefreshing11(true);
-                            
-                            getData()
-                            console.log("royet called");
-                            
-                            setTimeout(() => {
-                                setRefreshing11(false); // Stop refreshing after fetching data
-                            }, 2000); // Adjust the delay as needed
-                        }} />}
-            >
+            <View>
                 <Text style={styles.no}>No new notification found</Text>
-            </ScrollView>
+            </View>
+        )
+    }
+
+    function header1(){
+        return(
+            <>{items && items.length == 0 && <Header1 />}</>
         )
     }
 
@@ -379,9 +372,9 @@ const InvestorCard = ({ token, navigation }) => {
         <View
             // refreshControl={<RefreshControl progressViewOffset={0} refreshing={refreshing}/>
             style={{ flex: 1, backgroundColor: "#16181a" }}>
-            {items && items.length == 0 && <Header1 />}
-            {items && items.length > 0 && <FlatList
 
+            <FlatList
+                ListHeaderComponent={header1}
 
                 refreshControl={<RefreshControl progressViewOffset={0} refreshing={refreshing}
                     onRefresh={() => {
@@ -400,7 +393,7 @@ const InvestorCard = ({ token, navigation }) => {
                 data={items}
                 renderItem={rendercard} // Correct integration
             // keyExtractor={(item, index) => index.toString()} // Ensure keys are unique
-            />}
+            />
 
             {/* <Text>hello</Text> */}
         </View>

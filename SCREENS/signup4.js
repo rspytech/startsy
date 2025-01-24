@@ -11,7 +11,7 @@ import { CommonActions } from "@react-navigation/native";
 import { LinearGradient } from "expo-linear-gradient";
 import { useFocusEffect } from "expo-router";
 const Signup4 = ({ navigation, route }) => {
-    const { type } = route.params;
+    const { type , username , password } = route.params;
     function nav() {
 
     }
@@ -72,7 +72,7 @@ const Signup4 = ({ navigation, route }) => {
                     </Text>
 
 
-                    <Pressable style={styles.btn} onPress={() => { navigation.navigate("Signup5", { type }) }}>
+                    <Pressable style={styles.btn} onPress={() => { navigation.navigate("Signup5", { type , username , password }) }}>
                         <Text allowFontScaling={false} style={signupstyles.nexttext}>Yes</Text>
                     </Pressable>
                     <Pressable style={styles.btn} onPress={()=>{navigation.navigate("Signup3")}}>

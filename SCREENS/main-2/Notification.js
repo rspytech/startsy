@@ -13,7 +13,8 @@ import InvestorCard from "./InvestorCard.js"
 import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
 import B2 from "@/assets/icons/b2.js";
 import { jwtDecode } from "jwt-decode";
-
+import Upvotedata from "./Upvotedata.js"
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
 const Notification = ({ token, navigation }) => {
 
@@ -27,286 +28,312 @@ const Notification = ({ token, navigation }) => {
 
     })
 
-    async function getData1() {
-        try {
-            const response = await fetch(
-                `${url}notification/getUserNotifiation`,
-                {
-                    method: "GET",
-                    headers: {
-                        accept: "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-            const result = await response.json();
-
-
-            console.log(result.data, "top 3 data ajilffkhedskfh");
-
-            var array = result.data.reverse()
-
-            setsubnotification(array);
-
-
-
-        } catch (err) {
-            console.log(err);
-        }
-        finally {
-            setloading(false);
-        }
-    }
-
-    useEffect(() => {
-        getData1();
-    }, [])
-
-    useFocusEffect(
-        useCallback(() => {
-            async function getData1() {
-                try {
-                    const response = await fetch(
-                        `${url}notification/getUserNotifiation`,
-                        {
-                            method: "GET",
-                            headers: {
-                                accept: "application/json",
-                                Authorization: `Bearer ${token}`,
-                            },
-                        }
-                    );
-                    const result = await response.json();
-
-                    console.log(result.data, "doubt");
-                    setsubnotification(result.data.reverse());
-
-                } catch (err) {
-                    console.log(err);
-                }
-                finally {
-                    setloading(false);
-                }
-            }
-            getData1()
-        }, [token])
-    )
-
-
-
-
-
-
+    
     const Tab = createMaterialTopTabNavigator();
 
 
-    function Upvotedata() {
+    // function Upvotedata() {
 
-        const [refreshing, setRefreshing] = useState(false)
-
-
-
-        async function getdata() {
-            try {
-                const response = await fetch(
-                    `${url}founder/getFounderProfileDetails`,
-                    {
-                        method: "GET",
-                        headers: {
-                            accept: "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
-                const result = await response.json();
-                console.log(result.data.totalUpvotes, "a");
-                console.log(result.data.upvotesPerDay, "b");
-                console.log(result.data.investorUpvotes, "c");
-
-                var object = {
-                    totalUpvotes: result.data.upvotesPerDay,
-                    upvotesPerDay: result.data.upvotesPerDay,
-                    investorUpvotes: result.data.investorUpvotes
-                }
-
-                console.log(object, "object");
-                setstatistic(object);
-
-            } catch (err) {
-                console.log(err);
-            }
-            finally {
-                setloading(false);
-            }
-        }
-
-        // getdata()
+    //     const [refreshing, setRefreshing] = useState(false)
 
 
-        function rendersub({ item }) {
 
-            function time(time) {
-                // console.log('====================================');
-                // console.log(time);
-                var data1 = new Date(time)
-                // console.log('====================================');
-                // console.log(data1);
-                // console.log('====================================');
-                // console.log('====================================');
-                var seconds = Math.floor((new Date() - data1) / 1000);
+    //     async function getdata() {
+    //         try {
+    //             const response = await fetch(
+    //                 `${url}founder/getFounderProfileDetails`,
+    //                 {
+    //                     method: "GET",
+    //                     headers: {
+    //                         accept: "application/json",
+    //                         Authorization: `Bearer ${token}`,
+    //                     },
+    //                 }
+    //             );
+    //             const result = await response.json();
+    //             console.log(result.data.totalUpvotes, "a");
+    //             console.log(result.data.upvotesPerDay, "b");
+    //             console.log(result.data.investorUpvotes, "c");
 
-                var interval = seconds / 31536000;
+    //             var object = {
+    //                 totalUpvotes: result.data.upvotesPerDay,
+    //                 upvotesPerDay: result.data.upvotesPerDay,
+    //                 investorUpvotes: result.data.investorUpvotes
+    //             }
 
-                if (interval > 1) {
-                    return Math.floor(interval) + " years ago";
-                }
-                interval = seconds / 2592000;
-                if (interval > 1) {
-                    return Math.floor(interval) + " months ago";
-                }
-                interval = seconds / 86400;
-                if (interval > 1) {
-                    return Math.floor(interval) + " days ago";
-                }
-                interval = seconds / 3600;
-                if (interval > 1) {
-                    return Math.floor(interval) + " hours ago";
-                }
-                interval = seconds / 60;
-                if (interval > 1) {
-                    return Math.floor(interval) + " minutes ago";
-                }
-                return Math.floor(seconds) + " seconds ago";
-            }
-            return (
-                <View
-                    style={styles.box1}>
-                    <View style={styles.left}>
+    //             console.log(object, "object");
+    //             setstatistic(object);
+
+    //         } catch (err) {
+    //             console.log(err);
+    //         }
+    //         finally {
+    //             setloading(false);
+    //         }
+    //     }
+
+    //     // getdata()
 
 
-                        <Pressable
-                            style={{ paddingTop: 10 }}
-                            onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.sendingUserId._id, page: "bell" }) }}
-
-                        >
-                            <Image style={styles.topimage} source={{ uri: item.sendingUserId.profilePhoto }} />
-
-                        </Pressable>
-                        <View style={styles.bottominfo1}>
-                            <View style={{ display: "flex", flexDirection: "row" }}>
-
-                                <Pressable
-                                    onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.sendingUserId._id, page: "bell" }) }}
-
-                                >
-                                    <Text style={styles.topu1}>{item.sendingUserId.userName}  <Text style={styles.topu2}>{item.sendingUserId.role == "CommunityMember" ? "Member" : item.sendingUserId.role}</Text>  <View style={styles.circle}></View>  <AutoSizeText
-                                        numberOfLines={1}
-                                        fontSize={12}
-                                        mode={ResizeTextMode.max_lines}
-                                        ellipsizeMode='tail'
-                                        style={styles.time}>{time(item.timestamp)}
-                                    </AutoSizeText>
-
-                                    </Text>
-                                </Pressable>
-                                {/* <Text style={styles.time}>{time(item.taggedUser.createdAt)}</Text> */}
 
 
-                            </View>
-                            {/* <Text style={styles.sub2}>{item.notificationMessage}</Text> */}
-                            <AutoSizeText
-                                numberOfLines={1}
-                                fontSize={12}
-                                mode={ResizeTextMode.max_lines}
-                                ellipsizeMode='tail'
-                                style={styles.sub2}>{item.notificationMessage}
-                            </AutoSizeText>
-                        </View>
-                    </View>
-                    <View style={styles.right}>
-                        {item.notificationType == "upvoteProfile"}
-                        {item.notificationType == "jobApplied"}
-                        {item.notificationType == "joinCommunity"}
-                        {/* {item.notificationType == "upvotePost" && item.postId?.type == "blogPost" && <B2 width={40} height={40} />} */}
-                        {/* {item.notificationType == "upvotePost" && item.postId?.type == "photo" && <Image style={styles.image1} source={{ uri: item.postId.mediaUrl }} />} */}
-                        {item.notificationType == "commentPost"}
+    //     function rendersub({ item }) {
 
-                    </View>
-                </View>
-            )
-        }
-
-        function top3data() {
-
-            var decode = jwtDecode(token)
-
-            return (
-                <View style={styles.container1}>
-                    <View style={styles.textbox}>
-                        <Text style={styles.t1}>{statistic.totalUpvotes}</Text>
-                        <Text style={styles.t2}>Total UpVotes</Text>
-                    </View>
-                    <View style={styles.textbox}>
-                        <Text style={styles.t1}>{statistic.upvotesPerDay}</Text>
-                        <Text style={styles.t2}>Today </Text>
-                    </View>
-                    {decode.role != "CommunityMember" && <View style={styles.textbox}>
-                        <Text style={styles.t1}>{statistic.investorUpvotes}</Text>
-                        <Text style={styles.t2}>By Investors </Text>
-                    </View>}
-
-                    {/* <Text> {JSON.stringify(token)}</Text> */}
-                </View>
-            )
-        }
+    //         async function sendmessage() {
 
 
-        return (
-            <ScrollView
-                refreshControl={
-                    <RefreshControl
-                        progressViewOffset={0}
-                        refreshing={refreshing}
-                        onRefresh={async () => {
-                            setRefreshing(true);
-                            getData1()
-                            await getdata(); // Call the data fetching function
-                            setRefreshing(false); // Stop refreshing after data is fetched
-                        }}
-                    />
-                }
-                //  refreshControl={}
-                style={{ flex: 1, backgroundColor: "#16181a" }}>
+    //             var message = item.sendingUserId._id
+    //             var jobrole = item.appliedJobRole;
 
-                <View style={styles.divider}></View>
+    //             try {
+    //                 const response = await fetch(`${url}chats/addToChatDirectly/${message}`, {
+    //                     method: 'POST',
+    //                     body: "",
+    //                     headers: {
+    //                         accept: "application/json",
+    //                         "Authorization": `Bearer ${token}`,
+    //                     },
+    //                 });
+    //                 const data = await response.json();
+    //                 // setloading(false)
+    //                 console.log(data);
+    //             }
+    //             catch (err) {
 
-
-                {subnotification && <FlatList
-
-
-                    ListHeaderComponent={top3data}
-                    data={subnotification}
-                    renderItem={rendersub}
-                    contentContainerStyle={{ paddingBottom: 100 }}
+    //             }
+    //             console.log(item.sendingUserId._id);
 
 
-                />}
+    //             console.log(message);
+    //             var first = {
+    //                 user: {
+    //                     _id: item.sendingUserId._id,
+    //                     profilePhoto: item.sendingUserId.profilePhoto,
+    //                     userName: item.sendingUserId.userName
+    //                 }
+
+    //             }
+
+    //             var extra = {
+    //                 status: true,
+    //                 jobrole
+
+    //             }
+
+    //             // console.log(item);
 
 
-            </ScrollView>
+    //             navigation.navigate("Chat", { item: first, messages: [], token, navigation, extra });
 
-        )
-    }
+    //         }
+
+
+    //         function time(time) {
+    //             // console.log('====================================');
+    //             // console.log(time);
+    //             var data1 = new Date(time)
+    //             // console.log('====================================');
+    //             // console.log(data1);
+    //             // console.log('====================================');
+    //             // console.log('====================================');
+    //             var seconds = Math.floor((new Date() - data1) / 1000);
+
+    //             var interval = seconds / 31536000;
+
+    //             if (interval > 1) {
+    //                 return Math.floor(interval) + " years ago";
+    //             }
+    //             interval = seconds / 2592000;
+    //             if (interval > 1) {
+    //                 return Math.floor(interval) + " months ago";
+    //             }
+    //             interval = seconds / 86400;
+    //             if (interval > 1) {
+    //                 return Math.floor(interval) + " days ago";
+    //             }
+    //             interval = seconds / 3600;
+    //             if (interval > 1) {
+    //                 return Math.floor(interval) + " hours ago";
+    //             }
+    //             interval = seconds / 60;
+    //             if (interval > 1) {
+    //                 return Math.floor(interval) + " minutes ago";
+    //             }
+    //             return Math.floor(seconds) + " seconds ago";
+    //         }
+    //         return (
+    //             // <View style={styles.box1}>
+    //             //     <View style={styles.left}>
+
+
+    //             //         <Pressable
+    //             //             style={{ paddingTop: 10 }}
+    //             //             onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.sendingUserId._id, page: "bell" }) }}
+
+    //             //         >
+    //             //             {item.sendingUserId.profilePhoto && <Image style={styles.topimage} source={{ uri: item.sendingUserId.profilePhoto }} />}
+    //             //             {!item.sendingUserId.profilePhoto && <Image style={styles.topimage} source={require("../../assets/images/p2.png")} />}
+
+    //             //         </Pressable>
+    //             //         <View style={styles.bottominfo1}>
+    //             //             <View style={{ display: "flex", flexDirection: "row" }}>
+
+    //             //                 <Pressable
+    //             //                     onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.sendingUserId._id, page: "bell" }) }}
+
+    //             //                 >
+    //             //                     <Text style={styles.topu1}>{item.sendingUserId.userName}  <Text style={styles.topu2}>{item.sendingUserId.role == "CommunityMember" ? "Member" : item.sendingUserId.role}</Text>  <View style={styles.circle}></View>  <AutoSizeText
+    //             //                         numberOfLines={1}
+    //             //                         fontSize={12}
+    //             //                         mode={ResizeTextMode.max_lines}
+    //             //                         ellipsizeMode='tail'
+    //             //                         style={styles.time}>{time(item.timestamp)}
+    //             //                     </AutoSizeText>
+
+    //             //                     </Text>
+    //             //                 </Pressable>
+    //             //                 {/* <Text style={styles.time}>{time(item.taggedUser.createdAt)}</Text> */}
+
+
+    //             //             </View>
+    //             //             {/* <Text style={styles.sub2}>{item.notificationMessage}</Text> */}
+    //             //             <AutoSizeText
+    //             //                 numberOfLines={1}
+    //             //                 fontSize={12}
+    //             //                 mode={ResizeTextMode.max_lines}
+    //             //                 ellipsizeMode='tail'
+    //             //                 style={styles.sub2}>{item.notificationMessage}
+    //             //             </AutoSizeText>
+    //             //         </View>
+    //             //     </View>
+    //             //     <View style={styles.right}>
+    //             //         {item.notificationType == "upvoteProfile"}
+    //             //         {item.notificationType == "jobApplied" &&
+    //             //             <Pressable onPress={sendmessage} style={{ top: 16, right: 5 }}>
+    //             //                 <MaterialCommunityIcons name="message-text-outline" size={34} color={"#00DE62"} />
+    //             //             </Pressable>
+    //             //         }
+    //             //         {item.notificationType == "joinCommunity"}
+    //             //         {/* {item.notificationType == "upvotePost" && item.postId?.type == "blogPost" && <B2 width={40} height={40} />} */}
+    //             //         {/* {item.notificationType == "upvotePost" && item.postId?.type == "photo" && <Image style={styles.image1} source={{ uri: item.postId.mediaUrl }} />} */}
+    //             //         {item.notificationType == "commentPost"}
+
+    //             //     </View>
+    //             // </View>
+
+    //             <Text>okk</Text>
+
+               
+    //         )
+
+
+    //         // return ( <Text>hello</Text>)
+    //     }
+
+    //     function top3data() {
+
+    //         var decode = jwtDecode(token)
+
+    //         return (
+    //             <View style={styles.container1}>
+    //                 <View style={styles.textbox}>
+    //                     <Text style={styles.t1}>{statistic.totalUpvotes}</Text>
+    //                     <Text style={styles.t2}>Total UpVotes</Text>
+    //                 </View>
+    //                 <View style={styles.textbox}>
+    //                     <Text style={styles.t1}>{statistic.upvotesPerDay}</Text>
+    //                     <Text style={styles.t2}>Today </Text>
+    //                 </View>
+    //                 {decode.role != "CommunityMember" && <View style={styles.textbox}>
+    //                     <Text style={styles.t1}>{statistic.investorUpvotes}</Text>
+    //                     <Text style={styles.t2}>By Investors </Text>
+    //                 </View>}
+
+    //                 {/* <Text> {JSON.stringify(token)}</Text> */}
+    //             </View>
+    //         )
+    //     }
+
+
+    //     function top1() {
+    //         return (
+    //             <>
+    //                 <View style={styles.divider}></View>
+
+
+    //                 <FlatList
+
+
+
+
+    //                     ListHeaderComponent={top3data}
+    //                     data={subnotification}
+    //                     renderItem={rendersub}
+    //                     contentContainerStyle={{ paddingBottom: 100, elevation: 10 }}
+
+
+    //                 />
+    //             </>
+    //         )
+    //     }
+
+
+    //     return (
+    //         // <View style={{ flex: 1, backgroundColor: "#16181a" }}>
+
+
+    //         // <View style={styles.divider}></View>
+
+
+    //         <FlatList
+    //             // style={{marginTop : 300}}
+    //             // style={{flex:1 , height : 100}}
+
+    //             refreshControl={
+    //                 <RefreshControl
+
+    //                     progressViewOffset={0}
+    //                     refreshing={refreshing}
+    //                     refreshControl={<RefreshControl progressViewOffset={0} refreshing={refreshing}
+    //                     onRefresh={() => {
+    //                         console.log("start");
+    //                         // setRefreshing(true)
+
+    //                         // getData();
+
+    //                         setTimeout(() => {
+    //                             setRefreshing(false); // Stop refreshing after fetching data
+    //                         }, 2000); // Adjust the delay as needed
+    //                     }} />}
+    //                 />
+    //             }
+
+    //             ListHeaderComponent={top3data}
+    //             data={subnotification}
+    //             renderItem={rendersub}
+    //             contentContainerStyle={{ paddingBottom: 100, elevation: 1, backgroundColor: "red" }}
+
+
+    //         />
+
+
+
+    //         // </View>
+
+    //     )
+    // }
 
     return (
 
 
 
-        <SafeAreaView style={{
+        <View style={{
             flex: 1,
-            backgroundColor: "#16181A"
+            // minHeight : 700,
+            backgroundColor: "#16181a"
         }}>
             <Text allowFontScaling={false} style={styles.headerText}>Notification</Text>
+
             <Tab.Navigator
                 initialRouteName="Requests"
                 screenOptions={({ route }) => ({
@@ -332,8 +359,7 @@ const Notification = ({ token, navigation }) => {
                 })}
             >
                 <Tab.Screen
-                    name="Connections"
-
+                    name="Connections" 
                     children={(props) => <InvestorCard token={token} navigation={navigation} />}
 
                     options={{
@@ -363,7 +389,8 @@ const Notification = ({ token, navigation }) => {
                 <Tab.Screen
 
                     name="Requests"
-                    component={Upvotedata}
+                    // component={Upvotedata}
+                    children={(props) => <Upvotedata token={token} navigation={navigation} />}
                     options={{
                         tabBarLabel: ({ focused }) => (
                             <View >
@@ -387,7 +414,7 @@ const Notification = ({ token, navigation }) => {
                     }}
                 />
             </Tab.Navigator>
-        </SafeAreaView>
+        </View>
     )
 }
 
@@ -570,6 +597,8 @@ const styles = StyleSheet.create({
         marginHorizontal: 6,
         display: "flex",
         flexDirection: "row",
+        zIndex: 0,
+        elevation: 0
 
 
     },

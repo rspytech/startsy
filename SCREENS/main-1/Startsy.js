@@ -81,9 +81,8 @@ export default function Startsy({ navigation, token }) {
     }
 
     useEffect(() => {
-        if (token) {
+        if (token != null && token !== undefined && token != "") {
             setloading(true)
-
             getData();
         }
     }, [token, dataFetched])
@@ -106,6 +105,11 @@ export default function Startsy({ navigation, token }) {
     }
 
     function renderCard(item, index) {
+
+
+        if(item.user_id == null || item.user_id == undefined){
+            return
+        }
 
         return (
             <TouchableWithoutFeedback key={item._id} onPress={() => {
@@ -384,6 +388,7 @@ export default function Startsy({ navigation, token }) {
                 {loading && <ActivityIndicator color={"#fff"} size={'large'} />}
 
                 <View style={styles.iconcontainer}>
+                    
                     <Pressable onPress={swipeLeft} style={{ width: 80, height: 80, backgroundColor: "transparent" }}><Trash /></Pressable>
                     <Pressable onPress={() => {
                         setselected(true)

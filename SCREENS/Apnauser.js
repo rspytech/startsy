@@ -74,12 +74,13 @@ const Apnauser = ({ navigation, props, token }) => {
                 {posts?.length == 0 && <Text style={styles1.no}>You have not posted anything yet</Text>}
 
                 <FlatList
+                    scrollEnabled={false}
                     getItemLayout={(data, index) => ({
                         length: 400,
                         offset: 400 * index,
                         index,
                     })}
-                    keyExtractor={(item, index) => index.toString()}
+                    keyExtractor={(item, index) => item._id.toString()}
                     data={posts}
                     renderItem={renderItem}
 
@@ -159,7 +160,13 @@ const Apnauser = ({ navigation, props, token }) => {
 
             setinvestorarray(data.data.chatUsers.filter((e) => e.role == "Investor"))
             setnoninvestor(data.data.chatUsers.filter((e) => e.role != "Investor"))
-            setPosts(data.data.posts)
+            if(data.data.posts && data.data.posts.length > 0){
+                setPosts(data.data.posts.reverse())
+            }
+            else{
+                setPosts([])
+                
+            }
             setuserdata(data.data)
             setfollowstatus(data.data.status)
             setMinHeight(data.data.posts.length * 700)
@@ -219,71 +226,13 @@ const Apnauser = ({ navigation, props, token }) => {
     const [image, setImage] = useState("")
     const [followstatus, setfollowstatus] = useState("Follow")
 
-    // async function deletepost(postid) {
-
-    //     console.log(postid);
-    //     console.log("hioiiiii");
-    //     console.log("hioiiiii");
-    //     console.log("hioiiiii");
-    //     console.log("hioiiiii");
-    //     console.log("hioiiiii");
-    //     console.log("hioiiiii");
-    //     console.log("hioiiiii");
-    //     console.log("hioiiiii");
-    //     console.log("hioiiiii");
-    //     console.log("hioiiiii");
-    //     console.log("hioiiiii");
-
-    //     console.log("hioiiiii");
-    //     // try {
-    //     //     const response = await fetch(`${url}posts/deletepost/${postid}`, {
-    //     //         method: 'POST',
-    //     //         body: "",
-    //     //         headers: {
-    //     //             accept: "application/json",
-    //     //             "Authorization": `Bearer ${token}`,
-    //     //         },
-    //     //     });
-    //     //     const data = await response.json();
-    //     //     console.log(data);
-    //     //     // var array = posts.map((e)=>{
-    //     //     //     console.log(e);
-
-    //     //     //     if(e._id != id){
-    //     //     //         return e
-    //     //     //     }
-    //     //     // })
-    //     //     // var array = posts.splice(posts.indexOf(postid) , 1)
-    //     //     // setPosts(array)
-
-    //     // }
-    //     // catch (err) {
-    //     //     console.log(err);
-
-    //     // }
-
-    // }
-
-
-
-
     const renderItem = ({ item, index }) => {
 
 
         async function deletepost(postid) {
 
             console.log(postid);
-            console.log("hioiiiii");
-            console.log("hioiiiii");
-            console.log("hioiiiii");
-            console.log("hioiiiii");
-            console.log("hioiiiii");
-            console.log("hioiiiii");
-            console.log("hioiiiii");
-            console.log("hioiiiii");
-            console.log("hioiiiii");
-            console.log("hioiiiii");
-            console.log("hioiiiii");
+
 
             console.log("hioiiiii");
             try {
@@ -330,7 +279,7 @@ const Apnauser = ({ navigation, props, token }) => {
 
         if (item.type == "photo" || item.type == "textBlog" || item.type == "video") {
             return (
-                <View style={styles.box}>
+                <View key={index} style={styles.box}>
                     <View style={[styles.top, { marginBottom: 10 }]} >
                         <View
                             onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.user_id._id, page: "Startsy" }) }}
@@ -385,7 +334,7 @@ const Apnauser = ({ navigation, props, token }) => {
         }
         else if (item.type == "communityPost") {
             return (
-                <View style={styles.box}>
+                <View key={index} style={styles.box}>
 
                     <View style={styles.top} >
                         <Pressable
@@ -420,7 +369,7 @@ const Apnauser = ({ navigation, props, token }) => {
         }
         else if (item.type == "jobPost") {
             return (
-                <View style={styles.box}>
+                <View key={index} style={styles.box}>
                     <View style={styles.top} >
 
                         <Pressable
@@ -535,7 +484,7 @@ const Apnauser = ({ navigation, props, token }) => {
     }
     async function logout() {
         try {
-            await AsyncStorage.removeItem('token'); // Replace 'token' with your key
+            await AsyncStorage.removeItem('accessToken'); // Replace 'token' with your key
             console.log('Token removed successfully');
         } catch (error) {
             console.error('Error removing token:', error);
@@ -561,7 +510,7 @@ const Apnauser = ({ navigation, props, token }) => {
 
     const Header = function () {
         return (
-            <>
+            <View key={1}>
                 <Pressable onPress={logout}>
                     <View style={styles1.header}>
                         <Text style={styles1.username}>{userdata.user_id.userName}</Text>
@@ -642,7 +591,7 @@ const Apnauser = ({ navigation, props, token }) => {
 
 
                                 {Array(3).fill(null).map((_, index) => (
-                                    <View style={styles1.circle}>
+                                    <View key={index} style={styles1.circle}>
                                         <Image
                                             key={index}
                                             style={styles1.profileImage1}
@@ -661,7 +610,7 @@ const Apnauser = ({ navigation, props, token }) => {
                             <View style={styles1.connectionContainer}>
 
                                 {Array(3).fill(null).map((_, index) => (
-                                    <View style={styles1.circle}>
+                                    <View key={index} style={styles1.circle}>
                                         <Image
                                             key={index}
                                             style={styles1.profileImage1}
@@ -682,7 +631,7 @@ const Apnauser = ({ navigation, props, token }) => {
 
                     </View>
                 </View>
-            </>
+            </View>
         )
     }
 
@@ -703,9 +652,9 @@ const Apnauser = ({ navigation, props, token }) => {
 
 
 
-    const render = () => (
+    const render = ({ item, index }) => (
 
-        < View style={{ flex: 1, minHeight: minHeight, backgroundColor: "#16181a" }} >
+        < View key={index} style={{ flex: 1, minHeight: minHeight, backgroundColor: "#16181a" }} >
 
             {!userdata && <ActivityIndicator size={24} color="#16181a" />}
             {userdata && <Header />}
@@ -905,6 +854,8 @@ const Apnauser = ({ navigation, props, token }) => {
 
 
             {userdata && <FlatList
+                scrollEnabled={true}
+
 
                 keyExtractor={(item, index) => index.toString()}
                 onViewableItemsChanged={onViewableItemsChanged}

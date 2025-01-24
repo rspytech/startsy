@@ -44,7 +44,7 @@ const Signup12 = ({ navigation, route }) => {
     const validateInputs = () => {
         const newErrors = {};
         if (!sliderrange1) newErrors.years = "Please select the years of experience.";
-        if (!areaofinterest) newErrors.areaOfInterest = "Please select an area of interest.";
+        // if (!areaofinterest) newErrors.areaOfInterest = "Please select an area of interest.";
         if (!startupstage) newErrors.startupStage = "Please select a startup stage.";
         if (!sector) newErrors.sector = "Please select a preferred sector.";
         if (!sliderrange) newErrors.capacity = "Please enter your investment capacity.";
@@ -268,12 +268,12 @@ const Signup12 = ({ navigation, route }) => {
                             {errors.years && <Text style={signup3styles.errorText}>{errors.years}</Text>}
 
 
-                            <Text allowFontScaling={false} style={[styles.t1, { marginTop: 25, marginBottom: 10 }]}>Area of interest </Text>
+                            {/* <Text allowFontScaling={false} style={[styles.t1, { marginTop: 25, marginBottom: 10 }]}>Area of interest </Text>
                             <Text allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>In this section, specify the fields and industries that capture your investment interest. </Text>
                             <Drop items={areaofinterestlist} onValueChange={(value) => { setareafofinterest(value) }} setOpen={setOpen1} open={open1} nestedScrollEnabled={true} />
                             {errors.areaOfInterest && (
                                 <Text style={signup3styles.errorText}>{errors.areaOfInterest}</Text>
-                            )}
+                            )} */}
 
 
                             <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 25 }]}>Preferred startup stage </Text>

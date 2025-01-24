@@ -2,10 +2,13 @@ import React, { useState } from "react";
 import { Pressable, TextInput } from "react-native";
 import { View, Text, StyleSheet, StatusBar, Dimensions, SafeAreaView } from "react-native";
 import{url} from "../config.js"
-const ChangePassword2 = ({navigation , route }) => {
+const ChangePassword2 = ({navigation , route  }) => {
 
     const{token} = route.params;
    
+
+
+    
     
 
     

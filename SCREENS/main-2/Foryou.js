@@ -23,6 +23,9 @@ import {
     ToastAndroid,
 
 } from "react-native";
+
+import AsyncStorage from "@react-native-async-storage/async-storage";
+
 import Ionicons from '@expo/vector-icons/Ionicons';
 import styles from "../../styles/post.js"
 
@@ -62,8 +65,19 @@ const Foryou = ({ scroll, navigation, token }) => {
 
     const [allpost, setallpost] = useState([])
     const [willopen, setwillopen] = useState(false)
+    const [ready, setready] = useState(false)
     // console.log(token);
 
+
+    // useEffect(async() => {
+    //     try {
+    //       var token = await AsyncStorage.getItem('accessToken');
+    //       setready(true)
+    //       console.log('Data got successfully!');
+    //     } catch (error) {
+    //       console.error('Error saving data:', error);
+    //     }
+    // }, [])
 
 
     // const [token, settoken] = useState("")
@@ -137,7 +151,7 @@ const Foryou = ({ scroll, navigation, token }) => {
 
             // console.log(data.data[0]);
             console.log(response.status);
-            console.log(data);
+            console.log(data, "data hau yeh");
 
 
             var data1 = data.data.map(e => {
@@ -150,6 +164,10 @@ const Foryou = ({ scroll, navigation, token }) => {
 
 
             if (data.data.length > 0) {
+
+                console.log('====================================');
+                console.log("mai set karyungs data usestae me ");
+                console.log('====================================');
                 setallpost(data1.reverse())
             }
 
@@ -168,15 +186,15 @@ const Foryou = ({ scroll, navigation, token }) => {
     useEffect(() => {
         // console.log("start");
 
+        console.log('====================================');
+        console.log("all post function call karne se pehle yeh hai token", token);
+        console.log("all post function call karne se pehle yeh hai token", allpost);
+        console.log('====================================');
+        if (token != "" && token != null && token != undefined) {
+            getpost()
+        }
 
-        getpost()
-        // setTimeout(() => {
-        //     getpost()
-        //     // console.log(allpost);
-
-        // }, 1000);
-
-    }, [token])
+    }, [token, ready])
 
 
 
@@ -488,6 +506,9 @@ const Foryou = ({ scroll, navigation, token }) => {
     // Function to open the bottom sheet
     const openBottomSheet = () => {
         setwillopen(true)
+
+        console.log("open");
+
         // setfirstbottomsheet(true)
         function open() {
             bottomSheetRef.current?.expand();
@@ -782,6 +803,9 @@ const Foryou = ({ scroll, navigation, token }) => {
                     else return e
                 }))
             }
+            if (response.status === 400) {
+                showToastWithGravity("You have already applied for this job")
+            }
 
         }
         catch (err) {
@@ -795,129 +819,157 @@ const Foryou = ({ scroll, navigation, token }) => {
     const renderItem = useMemo(
         () => ({ item, index }) => {
 
+
+
+
+
             const isVideoPlaying = videoStates[item._id] || false;
 
-            function currency(pay) {
-                // console.log(pay);
-                // console.log(typeof pay);
-                pay = Number(pay);
-                return pay.toLocaleString("en-IN")
+            if (item.user_id == null) {
+                return
             }
-            if (item.type == "photo" || item.type == "textBlog" || item.type == "video") {
-                return (
-                    <View onTouchStart={closebottomsheet} style={styles.box}>
-                        <View style={styles.top} >
-                            <Pressable
-                                onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.user_id._id, page: "Startsy" }) }}
-                                style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                                <Image style={styles.userimg} source={{ uri: item.user_id.profilePhoto }} />
-                                <View style={styles.userdetail}>
-                                    <Text allowFontScaling={false} style={styles.u1}>{item.user_id.userName}</Text>
-                                    <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role == "CommunityMember" ? "Member" : item.user_id.role}</Text>
-                                </View>
-                            </Pressable>
-                        </View>
-                        {item.type == "photo" && <Image style={styles.template} source={{ uri: item.mediaUrl }} />}
-                        {item.type == "video" &&
-                            <Video
-                                ref={ref => videoRefs.current[item._id] = ref}
-                                style={styles.template}
-                                source={{ uri: item.mediaUrl }}
-                                useNativeControls // Enables native playback controls
-                                resizeMode="contain" // Adjusts video to fit within the view
-                                isLooping // Loops the video
-                                shouldPlay={isVideoPlaying}
-                            />
 
-                        }
-                        {item.type == "textBlog" && <Text style={styles.blogtext}>{item.content}</Text>}
+            else {
 
-                        <View style={styles.iconcontainer}>
-                            <View style={styles.icon2}>
-                                <Pressable onPress={() => { upvotepost(item._id, index) }}>
-                                    {!item.isliked && <Upvote width={36} height={36} style={{ marginHorizontal: 5 }} />}
-                                    {item.isliked && <Upvote width={36} height={36} style={{ marginHorizontal: 5 }} selected={true} />}
+                function currency(pay) {
+                    // console.log(pay);
+                    // console.log(typeof pay);
+                    pay = Number(pay);
+                    return pay.toLocaleString("en-IN")
+                }
+                if (item.type == "photo" || item.type == "textBlog" || item.type == "video") {
+                    return (
+                        <View onTouchStart={closebottomsheet} style={styles.box}>
+                            <View style={styles.top} >
+                                <Pressable
+                                    onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.user_id._id, page: "Startsy" }) }}
+                                    style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                                    <Image style={styles.userimg} source={{ uri: item.user_id.profilePhoto }} />
+                                    <View style={styles.userdetail}>
+                                        <Text allowFontScaling={false} style={styles.u1}>{item.user_id.userName}</Text>
+                                        <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role == "CommunityMember" ? "Member" : item.user_id.role}</Text>
+                                    </View>
                                 </Pressable>
-                                <Pressable onPress={() => { opencomment(item._id) }}><FontAwesome name="comment-o" size={30} color="#00DE62" /></Pressable>
                             </View>
-                            <Share style={{ marginTop: 5, marginRight: 10, right: 0 }} />
+                            {item.type == "photo" && <Image style={styles.template} source={{ uri: item.mediaUrl }} />}
+                            {item.type == "video" &&
+                                <Video
+                                    ref={ref => videoRefs.current[item._id] = ref}
+                                    style={styles.template}
+                                    source={{ uri: item.mediaUrl }}
+                                    useNativeControls // Enables native playback controls
+                                    resizeMode="contain" // Adjusts video to fit within the view
+                                    isLooping // Loops the video
+                                    shouldPlay={isVideoPlaying}
+                                />
 
+                            }
+                            {item.type == "textBlog" && <Text style={styles.blogtext}>{item.content}</Text>}
 
-                        </View>
-                        <View style={styles.lower}>
-                            <Text allowFontScaling={false} style={styles.u3}>{item.caption != undefined ? item.caption : "caption"} </Text>
-                            <Pressable onPress={() => { opencomment(item._id) }} allowFontScaling={false} style={styles.u4}>
-                                <Text style={styles.u4}>View {item.postComments.length} comments</Text>
-                            </Pressable>
-
-                        </View>
-
-                    </View>
-                )
-            }
-            else if (item.type == "communityPost") {
-                return (
-                    <View onTouchStart={closebottomsheet} style={styles.box}>
-
-                        <View style={styles.top} >
-                            <Pressable
-                                onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.user_id._id, page: "Startsy" }) }}
-                                style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                                <View style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                                    <Image style={styles.userimg} source={{ uri: item.user_id.profilePhoto }} />
-                                    <View style={styles.userdetail}>
-                                        <Text allowFontScaling={false} style={styles.u1}>{item.user_id.userName}</Text>
-                                        <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role == "CommunityMember" ? "Member" : item.user_id.role}</Text>
-                                    </View>
+                            <View style={styles.iconcontainer}>
+                                <View style={styles.icon2}>
+                                    <Pressable onPress={() => { upvotepost(item._id, index) }}>
+                                        {!item.isliked && <Upvote width={36} height={36} style={{ marginHorizontal: 5 }} />}
+                                        {item.isliked && <Upvote width={36} height={36} style={{ marginHorizontal: 5 }} selected={true} />}
+                                    </Pressable>
+                                    <Pressable onPress={() => { opencomment(item._id) }}><FontAwesome name="comment-o" size={30} color="#00DE62" /></Pressable>
                                 </View>
-                            </Pressable>
+                                <Share style={{ marginTop: 5, marginRight: 10, right: 0 }} />
+
+
+                            </View>
+                            <View style={styles.lower}>
+                                <Text allowFontScaling={false} style={styles.u3}>{item.caption != undefined ? item.caption : "caption"} </Text>
+                                <Pressable onPress={() => { opencomment(item._id) }} allowFontScaling={false} style={styles.u4}>
+                                    <Text style={styles.u4}>View {item.postComments.length} comments</Text>
+                                </Pressable>
+
+                            </View>
+
                         </View>
-                        <View style={styles.lower}>
-                            <Text style={styles.com1}>{item.communityPost.communityName}</Text>
-                            <Text style={styles.com2}><Text style={styles.desc1}>Community description: </Text>{item.communityPost.communityDescription}</Text>
-                            <Text allowFontScaling={false} style={styles.u6}><Text style={styles.desc1}>Members Count :</Text> {item.communityPost.communityMembers.length}</Text>
-                            <Text allowFontScaling={false} style={styles.u7}>Rules & Guidelines: {item.communityPost.communityRules}</Text>
+                    )
+                }
+                else if (item.type == "communityPost") {
+                    return (
+                        <View onTouchStart={closebottomsheet} style={styles.box}>
 
-                            <Pressable onPress={() => { applycommunity(item._id) }} style={[styles.next]} >
-                                <Text allowFontScaling={false} style={styles.nexttext}>{item.Applied ? "Join" : "Join Community"}</Text>
-                            </Pressable>
-                        </View>
-
-                    </View>
-                )
-            }
-            else if (item.type == "jobPost") {
-                return (
-                    <View onTouchStart={closebottomsheet} style={styles.box}>
-                        <View style={styles.top} >
-
-                            <Pressable
-                                onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.user_id._id, page: "Startsy" }) }}
-                                style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                                <View style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                                    <Image style={styles.userimg} source={{ uri: item.user_id.profilePhoto }} />
-                                    <View style={styles.userdetail}>
-                                        <Text allowFontScaling={false} style={styles.u1}>{item.user_id.userName}</Text>
-                                        <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role == "CommunityMember" ? "Member" : item.user_id.role}</Text>
+                            <View style={styles.top} >
+                                <Pressable
+                                    onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.user_id._id, page: "Startsy" }) }}
+                                    style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                                    <View style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                                        <Image style={styles.userimg} source={{ uri: item.user_id.profilePhoto }} />
+                                        <View style={styles.userdetail}>
+                                            <Text allowFontScaling={false} style={styles.u1}>{item.user_id.userName}</Text>
+                                            <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role == "CommunityMember" ? "Member" : item.user_id.role}</Text>
+                                        </View>
                                     </View>
-                                </View>
+                                </Pressable>
+                            </View>
+                            <View style={styles.lower}>
+                                <Text style={styles.com1}>{item.communityPost.communityName}</Text>
+                                <Text style={styles.com2}><Text style={styles.desc1}>Community description: </Text>{item.communityPost.communityDescription}</Text>
+                                <Text allowFontScaling={false} style={styles.u6}><Text style={styles.desc1}>Members Count :</Text> {item.communityPost.communityMembers.length}</Text>
+                                <Text allowFontScaling={false} style={styles.u7}>Rules & Guidelines: {item.communityPost.communityRules}</Text>
 
-                            </Pressable>
+                                <Pressable onPress={() => { applycommunity(item._id) }} style={[styles.next]} >
+                                    <Text allowFontScaling={false} style={styles.nexttext}>{item.Applied ? "Join" : "Join Community"}</Text>
+                                </Pressable>
+                            </View>
+
                         </View>
-                        <View style={styles.lower}>
-                            <Text style={styles.com1}>Role: {item.jobPosts.role}</Text>
-                            <Text style={styles.com2}><Text style={styles.desc1}>Community description: </Text>{item.jobPosts.description}</Text>
-                            <Text allowFontScaling={false} style={styles.u8}>Duration: {item.jobPosts.duration} months</Text>
-                            <Text allowFontScaling={false} style={styles.u8}>Pay: {currency(item.jobPosts.pay)} Rs</Text>
+                    )
+                }
+                else if (item.type == "jobPost") {
+                    return (
+                        <View onTouchStart={closebottomsheet} style={styles.box}>
+                            <View style={styles.top} >
 
-                            <Pressable onPress={() => { applyjob(item._id, index) }} style={[styles.next]} >
-                                <Text allowFontScaling={false} style={styles.nexttext}>{item.Applied ? 'Applied' : "Apply"}</Text>
-                            </Pressable>
+                                <Pressable
+                                    onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.user_id._id, page: "Startsy" }) }}
+                                    style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                                    <View style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                                        <Image style={styles.userimg} source={{ uri: item.user_id.profilePhoto }} />
+                                        <View style={styles.userdetail}>
+                                            <Text allowFontScaling={false} style={styles.u1}>{item.user_id.userName}</Text>
+                                            <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role == "CommunityMember" ? "Member" : item.user_id.role}</Text>
+                                        </View>
+                                    </View>
+
+                                </Pressable>
+                            </View>
+                            <View style={styles.lower}>
+                                <Text style={styles.com1}>Role: {item.jobPosts.role}</Text>
+                                <Text style={styles.com2}><Text style={styles.desc1}>Community description: </Text>{item.jobPosts.description}</Text>
+                                <Text allowFontScaling={false} style={styles.u8}>Duration: {item.jobPosts.duration} months</Text>
+                                <Text allowFontScaling={false} style={styles.u8}>Pay: {currency(item.jobPosts.pay)} Rs</Text>
+
+                                <Pressable onPress={() => { applyjob(item._id, index) }} style={[styles.next]} >
+                                    <Text allowFontScaling={false} style={styles.nexttext}>{item.Applied ? 'Applied' : "Apply"}</Text>
+                                </Pressable>
+                            </View>
+
                         </View>
-
-                    </View>
-                )
+                    )
+                }
             }
+
+
+            // if(item.user_id != null){
+            //     return(
+            //         <Text style={{color : "red"}}>{JSON.stringify(item.user_id)}</Text>
+            //     )
+            // }
+            // else{
+            //     return(
+            //         <Text style={{color : "yellow"}}>yeh chutiya hai</Text>
+            //     )
+            // }
+
+
+
+
+
         }
     )
 
@@ -1126,7 +1178,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                     <RefreshControl progressViewOffset={0} refreshing={refreshing1}
                         onRefresh={() => {
                             setRefreshing1(true);
-                            getdata()
+                            getpost()
 
 
                             setTimeout(() => {
@@ -1135,6 +1187,8 @@ const Foryou = ({ scroll, navigation, token }) => {
                         }} />}
                 style={[main.header, { backgroundColor: "#16181a" }]}>
                 <Text allowFontScaling={false} style={main.headertext}>For you</Text>
+                {/* <Pressable onPress={()=>{console.log(token)}}><Text style={{color : "yellow"}}>okkkkkkkkkkk</Text></Pressable> */}
+
             </ScrollView>
         )
     }
@@ -1161,14 +1215,28 @@ const Foryou = ({ scroll, navigation, token }) => {
 
                 <Text allowFontScaling={false} style={main.headertext}>For you</Text>
             </Animated.View> */}
+           
 
-            <GestureHandlerRootView nestedScrollEnabled style={{ flex: 1 }} >
+            <GestureHandlerRootView
+
+                gestureHandlerProps={{
+                    waitFor: ['anotherGesture'],
+                    simultaneousHandlers: ['flatListScroll'],
+                }}
+                nestedScrollEnabled style={{ flex: 1}}
+            >
 
                 {/* <TouchableWithoutFeedback onPress={closebottomsheet}> */}
                 {/* <View style={{ position: "absolute" }}> */}
+
+                {/* </View> */}
+
+                {/* </TouchableWithoutFeedback> */}
+
+
                 {allpost.length == 0 && <Header />}
                 {allpost.length > 0 && <FlatList
-
+                    simultaneousHandlers="bottomSheet"
                     ListHeaderComponent={Header}
                     // scrollEventThrottle={0}
                     showsVerticalScrollIndicator={false}
@@ -1196,7 +1264,7 @@ const Foryou = ({ scroll, navigation, token }) => {
 
 
                     refreshControl={
-                        <RefreshControl progressViewOffset={30} refreshing={refreshing}
+                        <RefreshControl progressViewOffset={0} refreshing={refreshing}
                             onRefresh={() => {
                                 // console.log("start");
 
@@ -1214,13 +1282,13 @@ const Foryou = ({ scroll, navigation, token }) => {
                 >
 
                 </FlatList>}
-                {/* </View> */}
 
-                {/* </TouchableWithoutFeedback> */}
 
                 <Pressable onPress={openBottomSheet} style={styles.add}>
-                    <AntDesign name="pluscircle" size={50} color="#00de62" />
-                </Pressable>
+                <AntDesign name="pluscircle" size={50} color="#00de62" />
+            </Pressable>
+
+
 
 
                 <BottomSheet
@@ -1770,6 +1838,9 @@ const Foryou = ({ scroll, navigation, token }) => {
 
                 {/* bottomsheet 4 */}
             </GestureHandlerRootView>
+
+
+
         </SafeAreaView >
 
     );

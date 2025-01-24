@@ -78,7 +78,15 @@ const Singleprofilepage = ({ navigation, props }) => {
       setinvestorarray(data.data.chatUsers.filter((e) => e.role == "Investor"))
       setnoninvestor(data.data.chatUsers.filter((e) => e.role != "Investor"))
       // console.log(data.data);
-      setposts(data.data.posts)
+      setposts(data.data.posts.reverse())
+
+      if(data.data.posts && data.data.posts.length > 0){
+        setposts(data.data.posts.reverse())
+    }
+    else{
+        setPosts([])
+        
+    }
       console.log('====================================');
       console.log(data.data.hiddenInfo);
       console.log('====================================');

@@ -66,11 +66,8 @@ const main = StyleSheet.create({
     scroll1: {
 
 
-
-        // paddingTop: 60,
-        // position : "absolute",
-        // top : 60,
         maxHeight: 1 * height,
+        zIndex : 1,
         overflow: "scroll",
         backgroundColor: "#16181A",
     }
