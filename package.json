@@ -31,6 +31,7 @@
     "@react-spring/native": "^9.5.5",
     "@rneui/themed": "^4.0.0-rc.8",
     "axios": "^1.7.9",
+    "eas-cli": "^14.5.0",
     "expo-asset": "~10.0.10",
     "expo-av": "14.0.0",
     "expo-blur": "~13.0.2",

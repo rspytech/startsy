@@ -58,9 +58,13 @@ const Signup2 = function ({ navigation, route }) {
                 }
             });
             const data = await response.json();
+
+
+            console.log(data);
+            
             await AsyncStorage.setItem('accessToken', data.accessToken);
             if (type === "Investor") {
-                navigation.navigate("Signup4", { type });
+                navigation.navigate("Signup4", { type ,username, password});
             } else {
                 navigation.navigate("Signup5", { type, username, password });
             }
