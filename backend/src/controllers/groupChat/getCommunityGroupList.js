@@ -1,6 +1,6 @@
 import { User } from "../../models/user.model.js"
 
-export const getCommunnityGroupChatList = async () => {
+export const getCommunnityGroupChatList = async (req, res) => {
     try{
         const user_id = req.user._id;
 
