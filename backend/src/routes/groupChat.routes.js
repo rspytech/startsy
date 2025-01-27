@@ -1,8 +1,8 @@
 import express from "express";
 import {verifyUser} from "../middleware/user.auth.middleware.js";
-import { getCommunnityGroupChatList } from "../controllers/groupChat/getCommunityGroupList.js";
+import { getCommunityGroupChatList } from "../controllers/groupChat/getCommunityGroupList.js";
 const router = express.Router();
 
-router.get("/getCommunnityGroupChatList", verifyUser, getCommunnityGroupChatList);
+router.get("/getCommunityGroupChatList", verifyUser, getCommunityGroupChatList);
 
 export default router;
