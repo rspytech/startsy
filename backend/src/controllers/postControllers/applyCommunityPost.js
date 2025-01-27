@@ -17,6 +17,9 @@ export const applyCommunity = async (req, res) => {
             switch(communityRules){
                 case "Only for Founders":
                     if(user.role === "Founder"){
+                        console.log("aefihaefjaofjoafjoaf");
+                        console.log(user.role);
+                        console.log(communityRules);
                         return true;
                     }
                     return false;
@@ -61,8 +64,6 @@ export const applyCommunity = async (req, res) => {
                     return false;
             }
         }
-
-        checkCommunityAccess();
 
         if (!checkCommunityAccess) {
             return res.status(403).json({ message: "You don't have permission to apply to this community" });
