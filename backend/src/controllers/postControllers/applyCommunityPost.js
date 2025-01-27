@@ -10,10 +10,61 @@ export const applyCommunity = async (req, res) => {
         const post = await Post.findById(communityPostId).populate("communityPost");
         if (!post) return res.status(404).json({ message: "Community not found" });
 
-        const user = await User.findById(userId);
+        const user = await User.findById(userId).populate("roleId");
         const communityRules = post.communityPost.communityRules;
 
-        if (!communityRules.toLowerCase().includes(user.role.toLowerCase())) {
+        const checkCommunityAccess = () => {
+            switch(communityRules){
+                case "Only for Founders":
+                    if(user.role === "Founder"){
+                        return true;
+                    }
+                    return false;
+                case "Only for Community Members":
+                    if((user.role === "CommunityMember")){
+                        return true;
+                    }
+                    return false;
+                case "Jobseeker":
+                    if((user.role === "CommunityMember" && user.roleId.communityMemberRole === "Job seeker")){
+                        return true;
+                    }
+                    return false;
+                case "Mentor":
+                    if((user.role === "CommunityMember" && user.roleId.communityMemberRole === "Mentor")){
+                        return true;
+                    }
+                    return false;
+                case "Startup Enthusiast":
+                    if((user.role === "CommunityMember" && user.roleId.communityMemberRole === "Startup Enthusiast")){
+                        return true;
+                    }
+                    return false;
+                case "Networker":
+                    if((user.role === "CommunityMember" && user.roleId.communityMemberRole === "Networker")){
+                        return true;
+                    }
+                    return false;
+                case "Founder or Mentor":
+                    if((user.role === "CommunityMember" && user.roleId.communityRole === "Mentor") || (user.role === "Founder")){
+                        return true;
+                    }
+                    return false;
+                case "Founder or Startup Enthusiast":
+                    if((user.role === "CommunityMember" && user.roleId.communityRole === "Startup Enthusiast") || (user.role === "Founder")){
+                        return true;
+                    }
+                    return false;
+                case "No rules":
+                    return true;
+                default:
+                    return false;
+            }
+        }
+
+        checkCommunityAccess();
+
+        if (checkCommunityAccess) {
             return res.status(403).json({ message: "You don't have permission to apply to this community" });
         }
 
