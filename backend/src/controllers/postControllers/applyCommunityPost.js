@@ -64,7 +64,7 @@ export const applyCommunity = async (req, res) => {
 
         checkCommunityAccess();
 
-        if (checkCommunityAccess) {
+        if (!checkCommunityAccess) {
             return res.status(403).json({ message: "You don't have permission to apply to this community" });
         }
 
