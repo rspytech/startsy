@@ -35,6 +35,7 @@ export const createCommunityPost = async (req, res) => {
             await Conversation.create({
                 communityId : community._id,
                 isGroup : true,
+                members : [user_id]     // Changes here !!
             });
             await user.save();
             await user.roleId.save();

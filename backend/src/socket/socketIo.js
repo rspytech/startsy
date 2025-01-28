@@ -68,6 +68,35 @@ export const configureSocketIO = (server) => {
                 console.error("Error handling privateMessage:", error.message);
             }
         });
+
+        socket.on("joinGroup", async ({ groupId, userId }) => {
+            try {
+                const conversation = await Conversation.findOne({ 
+                    communityId: groupId, 
+                    isGroup: true,
+                });
+                
+                if (!conversation) {
+                    socket.emit("error", { message: "Group not found" });
+                    return;
+                }
+                
+                if(!conversation.members.includes(userId)){
+                    conversation.members.push(userId);
+                    await conversation.save();
+                }
+                
+                socket.join(groupId);
+
+                console.log(`User ${userId} joined group ${groupId}`);
+                
+                // Agar info dalna ho to ki this user joined the group
+                // socket.to(groupId).emit("userJoined", { userId, groupId });
+            } catch (error) {
+                console.error("Error joining group:", error.message);
+                socket.emit("error", { message: "Failed to join group" });
+            }
+        });
     
         // Handle group messages
         socket.on("groupMessage", async ({ senderId, groupId, message }) => {
@@ -92,6 +121,11 @@ export const configureSocketIO = (server) => {
             }
         });
     
+        socket.on("leaveGroup", ({ groupId }) => {
+            socket.leave(groupId);
+            socket.to(groupId).emit("userLeft", { userId: socket.userId, groupId });
+        });
+
         // Handle disconnection
         socket.on("disconnect", () => {
             for (const userId in userSocketMap) {

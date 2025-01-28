@@ -13,7 +13,13 @@ export const getMessage = async (req, res) => {
         if(chatType === "individual"){
             conversation = await Conversation.findOne({
                 members: {$all: [senderId, receiverId]}
-            }).populate("messages");    
+            }).populate({
+                path: 'messages',
+                populate:{
+                    path: 'senderId',
+                    select: "profilePhoto"
+                }
+            });    
         }
         else{
             conversation = await Conversation.findOne({

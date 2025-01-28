@@ -61,6 +61,8 @@ export const upvotePost = async (req, res) => {
                 { postId, userId },
                 { upsert: true, new: true, setDefaultsOnInsert: true }
             );
+            post.likedBy.push(userId);
+            await post.save();
         }
 
         if (user.role === "Investor") {
@@ -89,14 +91,17 @@ export const upvotePost = async (req, res) => {
             });
             return res.status(200).json({ message: "Post liked successfully" });
         } else if (likeStatus === "unlike") {
-            await post.updateOne({ $inc: { postUpvotes: -1 } });
+            await post.updateOne({
+                $inc: { postUpvotes: -1 },
+                $pull: { likedBy: userId },
+            });
             await roleDetails.roleId.updateOne({
                 $inc: {
                     totalUpvotes: -1,
                     upvotesPerDay: -1,
                 },
             });
-            await Upvote.findOneAndDelete({ postId, userId });
+            await UpvotePost.findOneAndDelete({ postId, userId });
             return res.status(200).json({ message: "Post unliked successfully" });
         } else {
             return res.status(400).json({ message: "Invalid like status" });
