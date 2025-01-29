@@ -109,6 +109,8 @@ export const configureSocketIO = (server) => {
     
                 // Save group message
                 const newMessage = await Message.create({ senderId, message, groupId });
+
+                console.log(newMessage);
     
                 conversation.messages.push(newMessage._id);
                 conversation.lastMessage = newMessage._id;
