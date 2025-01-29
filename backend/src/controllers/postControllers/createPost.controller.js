@@ -6,6 +6,7 @@ const createPost = async (req, res) => {
     try {
         const type = req.params.postType;
         const { caption, content, aspectRatio } = req.body;
+        console.log(aspectRatio);
         const user_id = req.user._id;
 
         let mediaUrl = null;
@@ -50,7 +51,7 @@ const createPost = async (req, res) => {
             mediaType,
             content: type === "textBlog" ? content : undefined,
         };
-
+        console.log(newPostData);
         const newPost = new Post(newPostData);
         await newPost.save();
 
