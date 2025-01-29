@@ -23,7 +23,9 @@ export const getFounderChatUserList = async (req, res) => {
         // Fetch the last message for each user in chatUsers
         const chatList = await Promise.all(founderProfile.chatUsers.map(async (chatUser) => {
             const conversation = await Conversation.findOne({
-                members: { $all: [founderId, chatUser._id] }
+                members: { $all: [founderId, chatUser._id] },
+                $expr: { $eq: [{ $size: "$members" }, 2] },
+                isGroup: false,
             })
             .sort({ updatedAt: -1 })
             .populate("lastMessage");
