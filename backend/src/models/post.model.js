@@ -39,6 +39,9 @@ const postSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Comment",
     }],
+    aspectRatio:{
+        type: "String",
+    },
     likedBy : [{
         type : mongoose.Schema.Types.ObjectId,
         ref : "User",

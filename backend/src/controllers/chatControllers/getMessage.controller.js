@@ -1,7 +1,7 @@
 // NOTE : Pass the chatType as (group or individual) from frontend
 
 import { Conversation } from "../../models/conversation.model.js";
-
+import { User } from "../../models/user.model.js";
 export const getMessage = async (req, res) => {
     try{
         const receiverId = req.params.id;
@@ -9,17 +9,19 @@ export const getMessage = async (req, res) => {
         const chatType = req.params.chatType;
         
         let conversation;
+        let senderProfilePhoto;
+        let recieverProfilePhoto;
 
         if(chatType === "individual"){
+            const [sender, receiver] = await Promise.all([
+                User.findById(senderId).select("profilePhoto"),
+                User.findById(receiverId).select("profilePhoto"),
+            ]);
+            senderProfilePhoto = sender?.profilePhoto;
+            recieverProfilePhoto = receiver?.profilePhoto;
             conversation = await Conversation.findOne({
                 members: {$all: [senderId, receiverId]}
-            }).populate({
-                path: 'messages',
-                populate:{
-                    path: 'senderId',
-                    select: "profilePhoto"
-                }
-            });    
+            }).populate("messages");    
         }
         else{
             conversation = await Conversation.findOne({
@@ -35,6 +37,8 @@ export const getMessage = async (req, res) => {
         return res.status(200).json({
             message : "Messages fetched successfully",
             data : conversation,
+            senderProfilePhoto,
+            recieverProfilePhoto,
         })
     }
     catch (error) {

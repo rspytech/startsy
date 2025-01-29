@@ -5,7 +5,7 @@ import {Post} from '../../models/post.model.js';
 const createPost = async (req, res) => {
     try {
         const type = req.params.postType;
-        const { caption, content } = req.body;
+        const { caption, content, aspectRatio } = req.body;
         const user_id = req.user._id;
 
         let mediaUrl = null;
@@ -45,6 +45,7 @@ const createPost = async (req, res) => {
             user_id,
             type,
             caption,
+            aspectRatio : type === "photo" || "video" ? aspectRatio : null,
             mediaUrl,
             mediaType,
             content: type === "textBlog" ? content : undefined,
