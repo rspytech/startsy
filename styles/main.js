@@ -63,11 +63,22 @@ const main = StyleSheet.create({
         // backgroundColor : "red"
         // elevation : 1000
     },
+    // scroll1: {
+
+
+    //     maxHeight: 1 * height,
+    //     zIndex : 1,
+    //     overflow: "scroll",
+    //     backgroundColor: "#16181A",
+    // },
     scroll1: {
 
 
         maxHeight: 1 * height,
-        zIndex : 1,
+        zIndex: 2,
+        position: "relative",
+        top  :0, 
+        left : 0,
         overflow: "scroll",
         backgroundColor: "#16181A",
     }

@@ -36,9 +36,9 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
   //     topOffset: 50, // Offset from the top
   //   });
   // };
-  console.log(falsetoken, "tmep hai yeh");
+  // console.log(falsetoken, "tmep hai yeh");
 
-  console.log(showtoast, "toast staus");
+  // console.log(showtoast, "toast staus");
 
 
 
@@ -505,6 +505,7 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
               style={styles.input}
               placeholder="xyz@gmail.com"
               value={email}
+              autoComplete="email"
               onChangeText={(text) => { setemail(text) }}
 
             />
@@ -515,6 +516,7 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
                 style={styles.input2}
                 placeholder="Password"
                 value={password}
+                autoComplete="password"
                 onChangeText={(text) => { setpassword(text) }}
                 secureTextEntry={true}
               />

@@ -109,7 +109,7 @@ const NewsletterPage = ({ navigation, route }) => {
             </View>
             <View style={styles.postContainer}>
                 <Image source={{ uri: item.newsletterImage }} style={styles.postImage} />
-                <Text style={styles.postTitle}>{item.content}</Text>
+                <Text style={styles.postTitle}>{item.title}</Text>
                 <View style={styles.authorInfo}>
                     <Image source={{ uri: item.taggedUser.profilePhoto }} style={styles.profileImage} />
                     <View style={styles.userinfo}>
@@ -170,12 +170,13 @@ const styles = StyleSheet.create({
         padding: 10,
     },
     postContainer: {
-        backgroundColor: "#1C1C1C",
+        backgroundColor: "#16181a",
         borderRadius: 10,
         marginBottom: 20,
         padding: 10,
         flex: 1,
-        minHeight: height
+        minHeight: height,
+        paddingBottom : 50
     },
     postImage: {
         width: width,
@@ -215,9 +216,9 @@ const styles = StyleSheet.create({
         color: "#00DE62",
         fontSize: 10,
         fontFamily: "Roboto",
-        paddingLeft: 5,
+        paddingLeft: 10,
         alignSelf: "center",
-        marginTop: 5,
+        marginTop: 8,
         //    top : -10,
         textAlignVertical: "center"
 

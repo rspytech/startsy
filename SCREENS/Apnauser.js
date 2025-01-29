@@ -1,5 +1,5 @@
 import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { View, Text, Image, FlatList, StatusBar, RefreshControl, ActivityIndicator, StyleSheet, BackHandler, SafeAreaView, ScrollView, Pressable, Dimensions } from "react-native";
+import { View, Text, Image, FlatList, StatusBar, RefreshControl, ActivityIndicator, StyleSheet, BackHandler, SafeAreaView, ScrollView, Pressable, Dimensions, TouchableOpacity } from "react-native";
 import Entypo from '@expo/vector-icons/Entypo';
 import EvilIcons from '@expo/vector-icons/EvilIcons';
 import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
@@ -18,6 +18,7 @@ import styles from "../styles/post.js"
 import { jwtDecode } from 'jwt-decode';
 import { useFocusEffect } from 'expo-router';
 import Logout from "../assets/icons/logout.js"
+import { Alert } from 'react-native';
 const Apnauser = ({ navigation, props, token }) => {
     // console.log(token);
     var mypage = true
@@ -29,7 +30,7 @@ const Apnauser = ({ navigation, props, token }) => {
     var editprofilepage;
 
 
-    const [minHeight, setMinHeight] = useState(500);
+    const [minHeight, setMinHeight] = useState(100);
     const [tabIndex, setTabIndex] = useState(0);
     const [isLoading, setIsLoading] = useState(false);
     const [investor, setinvestorarray] = useState([]);
@@ -160,21 +161,26 @@ const Apnauser = ({ navigation, props, token }) => {
 
             setinvestorarray(data.data.chatUsers.filter((e) => e.role == "Investor"))
             setnoninvestor(data.data.chatUsers.filter((e) => e.role != "Investor"))
-            if(data.data.posts && data.data.posts.length > 0){
+            if (data.data.posts && data.data.posts.length > 0) {
                 setPosts(data.data.posts.reverse())
             }
-            else{
+            else {
                 setPosts([])
-                
+
             }
             setuserdata(data.data)
             setfollowstatus(data.data.status)
+
+            console.log(data.data.posts.length , "post ka length");
+            
             setMinHeight(data.data.posts.length * 700)
+            console.log(data.data.posts.length* 500);
+            
             setImage(data.data.user_id.bannerImage)
 
-            console.log(data.data);
-            console.log(data.data.user_id.bannerImage);
-            console.log(image);
+            // console.log(data.data);
+            // console.log(data.data.user_id.bannerImage);
+            // console.log(image);
 
 
 
@@ -229,40 +235,49 @@ const Apnauser = ({ navigation, props, token }) => {
     const renderItem = ({ item, index }) => {
 
 
+
         async function deletepost(postid) {
-
             console.log(postid);
-
-
-            console.log("hioiiiii");
-            try {
-                const response = await fetch(`${url}posts/deletepost/${postid}`, {
-                    method: 'POST',
-                    body: "",
-                    headers: {
-                        accept: "application/json",
-                        "Authorization": `Bearer ${token}`,
+        
+            Alert.alert(
+                "Delete Post",
+                "Are you sure you want to delete this post?",
+                [
+                    {
+                        text: "Cancel",
+                        onPress: () => console.log("Deletion canceled"),
+                        style: "cancel"
                     },
-                });
-                const data = await response.json();
-                console.log(data);
-                // var array = posts.map((e)=>{
-                //     console.log(e);
-
-                //     if(e._id != id){
-                //         return e
-                //     }
-                // })
-                // var array = posts.splice(posts.indexOf(postid) , 1)
-                // setPosts(array)
-
-            }
-            catch (err) {
-                console.log(err);
-
-            }
-
+                    {
+                        text: "Delete",
+                        onPress: async () => {
+                            console.log("Deleting post...");
+                            try {
+                                const response = await fetch(`${url}posts/deletepost/${postid}`, {
+                                    method: 'POST',
+                                    body: "",
+                                    headers: {
+                                        accept: "application/json",
+                                        "Authorization": `Bearer ${token}`,
+                                    },
+                                });
+        
+                                const data = await response.json();
+                                console.log(data);
+        
+                                // Remove the post from the local state
+                                const updatedPosts = posts.filter((post) => post._id !== postid);
+                                setPosts(updatedPosts);
+                            } catch (err) {
+                                console.log(err);
+                            }
+                        }
+                    }
+                ],
+                { cancelable: true }
+            );
         }
+        
         // console.log(item);
         // console.log(item.type);
 
@@ -289,12 +304,12 @@ const Apnauser = ({ navigation, props, token }) => {
                                 <Text allowFontScaling={false} style={styles.u1}>{userdata.user_id.userName}</Text>
                                 <Text allowFontScaling={false} style={styles.u2}>{userdata.user_id.role == "CommunityMember" ? "Member" : userdata.user_id.role}</Text>
                             </View>
-                            <Pressable onPress={() => deletepost(item._id)}>
+                            <TouchableOpacity onPress={() => deletepost(item._id)}>
                                 <FontAwesome6 name="trash" style={styles1.minus} size={22} color="#00DE62" />
-                            </Pressable>
+                            </TouchableOpacity>
                         </View>
                     </View>
-                    {item.type == "photo" && <Image style={styles.template} source={{ uri: item.mediaUrl }} />}
+                    {item.type == "photo" && <Image style={[styles.template , {aspectRatio : item.aspectRatio ? item.aspectRatio : 1/1}]} source={{ uri: item.mediaUrl }} />}
                     {item.type == "video" &&
                         <Video
                             ref={ref => videoRefs.current[item._id] = ref}
@@ -574,11 +589,11 @@ const Apnauser = ({ navigation, props, token }) => {
 
 
                         {decode.role == "CommunityMember" &&
-                            <Text style={styles1.goal}>Bio : {userdata.tagline}</Text>
+                            <Text style={styles1.goal}>{userdata.tagline}</Text>
                         }
 
                         {decode.role == "CommunityMember" &&
-                            <Text style={styles1.fund}>Skills : {userdata.skills}</Text>
+                            <Text style={styles1.fund}>{userdata.skills}</Text>
                         }
 
 
@@ -779,14 +794,14 @@ const Apnauser = ({ navigation, props, token }) => {
             );
             setPosts((prevPosts) => [...prevPosts, ...newPosts]);
             setIsLoading(false);
-            setMinHeight(minHeight + 500)
+            // setMinHeight(minHeight + 300)
 
             console.log('====================================');
             console.log(posts);
             console.log(minHeight);
 
             console.log('====================================');
-            setMinHeight(minHeight + 500); // Adjust minHeight for new posts
+            setMinHeight(minHeight + 300); // Adjust minHeight for new posts
         }, 2000); // Simulate API delay
     };
 
@@ -1074,24 +1089,27 @@ const styles1 = StyleSheet.create({
 
     profilephoto: {
         width: 130,
-        aspectRatio: 1 / 1,
+        height: 130,
+        // aspectRatio: 1 / 1,
         position: "absolute",
         left: 10,
         top: -45,
         // backgroundColor : "red",
         justifyContent: "center",
         alignItems: "center",
-        borderWidth: 3,
+        borderWidth: 4,
         borderColor: "#000",
-        borderRadius: 100
+        borderRadius: 100,
+        overflow: "hidden",
 
 
     },
     img2: {
         objectFit: "cover",
-        width: "100%",
-        height: "100%",
-        borderRadius: 100,
+        width: "103%",
+        alignSelf: "center",
+        height: "103%",
+        // borderRadius: 100,
 
     },
     bimg: {

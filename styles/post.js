@@ -11,6 +11,7 @@ const scalingfactor = Math.sqrt(a * b)
 const styles = StyleSheet.create({
     container: {
         flex: 1,
+        position : "relative",
         backgroundColor: "#16181a"
 
     },
@@ -34,10 +35,13 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
     },
     template: {
-        width: "96%",
+        width: width * 0.9,
+        // aspectRatio : 1/1,
+        objectFit : "cover",
+
         borderRadius: 10,
-        height: 182,
-        maxHeight: 182
+        // height: 182,
+        // maxHeight: 182
     },
     userimg: {
         borderRadius: 100,
@@ -169,8 +173,20 @@ const styles = StyleSheet.create({
 
     },
 
+    // add: {
+    //     // position: "absolute",
+    //     bottom: 80,
+    //     width : 50,
+    //     elevation: 19,
+    //     right: 20,
+    //     alignSelf : "flex-end",
+    //     backgroundColor: "#16181a",
+    //     borderRadius: 100,
+    //     // zIndex  : 100,
+
+    // },
     add: {
-        // position: "absolute",
+        position: "absolute",
         bottom: 80,
         width : 50,
         elevation: 19,
@@ -178,7 +194,7 @@ const styles = StyleSheet.create({
         alignSelf : "flex-end",
         backgroundColor: "#16181a",
         borderRadius: 100,
-        // zIndex  : 100,
+        // zIndex  : 1000,
 
     },
     bottomSheetContent: {
@@ -318,8 +334,8 @@ const styles = StyleSheet.create({
     },
     img: {
         margin: "auto",
-        width: "92%",
-        aspectRatio: 4 / 3,
+        width: width*0.9,
+        aspectRatio: 1/1,
         // borderRadius: 100,
         marginBottom: 50,
         borderRadius: 16

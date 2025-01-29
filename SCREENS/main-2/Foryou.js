@@ -21,8 +21,13 @@ import {
     ActivityIndicator,
     BackHandler,
     ToastAndroid,
+    Alert,
+    TouchableOpacity,
 
 } from "react-native";
+
+const { width } = Dimensions.get('window');
+var newwidth = width*0.9
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -59,15 +64,17 @@ import { GlobalContext } from "@/Global/globalcontext.js";
 import { url } from "../../config.js"
 import { useRoute } from "@react-navigation/native";
 import { Keyboard } from "react-native";
-const Foryou = ({ scroll, navigation, token }) => {
+import { jwtDecode } from "jwt-decode";
+const Foryou = ({ scroll, navigation, token, mainpagebottomsheet }) => {
 
 
 
     const [allpost, setallpost] = useState([])
     const [willopen, setwillopen] = useState(false)
     const [ready, setready] = useState(false)
+    const [uploadingcomment, setuploadingcomment] = useState(false)
     // console.log(token);
-
+    const [loggedinUserID, setloggedInuserID] = useState("")
 
     // useEffect(async() => {
     //     try {
@@ -78,6 +85,19 @@ const Foryou = ({ scroll, navigation, token }) => {
     //       console.error('Error saving data:', error);
     //     }
     // }, [])
+
+
+    useEffect(() => {
+        if (token != "") {
+            console.log(token, "foryou page ka token fuck");
+
+            const decode = jwtDecode(token);
+            console.log(decode);
+
+
+            setloggedInuserID(decode._id)
+        }
+    }, [token])
 
 
     // const [token, settoken] = useState("")
@@ -107,6 +127,9 @@ const Foryou = ({ scroll, navigation, token }) => {
     //     settoken(globaldata.token)
     // }, [])
 
+
+
+    const mainflatlist = useRef()
     useFocusEffect(() => {
         StatusBar.setBackgroundColor("#16181A");
         StatusBar.setBarStyle("light-content");
@@ -149,13 +172,19 @@ const Foryou = ({ scroll, navigation, token }) => {
             });
             const data = await response.json();
 
+            console.log(data.data);
+            
+
             // console.log(data.data[0]);
             console.log(response.status);
-            console.log(data, "data hau yeh");
+            // console.log(data.data[data.data.length - 1]);
+            
+            // console.log(data.data[data.data.length - 1].communityPost.communityMembers, "data hau yeh");
 
 
             var data1 = data.data.map(e => {
-                var object = { ...e, isliked: false, Applied: false }
+                
+                var object = { ...e, isliked: e.likedBy.includes(loggedinUserID), Applied: e.communityPost ? e.communityPost.communityMembers.includes(loggedinUserID) : false , Jobapplied : e.jobPosts ? e.jobPosts.jobApplicants.includes(loggedinUserID) : false}
                 return object
             })
 
@@ -256,6 +285,12 @@ const Foryou = ({ scroll, navigation, token }) => {
     const [err4, seterr4] = useState(false)
     const [err5, seterr5] = useState(false)
     const [err6, seterr6] = useState(false)
+    const [err10, seterr10] = useState(false)
+    const [err11, seterr11] = useState(false)
+    const [err12, seterr12] = useState(false)
+    const [err13, seterr13] = useState(false)
+    const [err14, seterr14] = useState(false)
+    const [err15, seterr15] = useState(false)
     // const [err7, seterr7] = useState(false)
 
     const [firstbottomsheet, setfirstbottomsheet] = useState(false)
@@ -295,9 +330,13 @@ const Foryou = ({ scroll, navigation, token }) => {
             hasError = true
         }
 
-        if (hasError) { return };
+        if (hasError) {
+            setp1u(false)
+            return
+        };
 
         if (p1u) {
+            setp1u(false)
             return
         }
 
@@ -326,10 +365,17 @@ const Foryou = ({ scroll, navigation, token }) => {
 
             const data = await response.json();
             setp1text("Posted")
+            setcommunityname("")
+            setdescription("")
+            setrules("")
+            setdropdownvalue("")
+
+
             console.log(data);
             bottomSheetRef.current?.close()
             setTimeout(() => {
                 bottomSheetRef1.current?.close();
+                setp1text("Post")
             }, 1000);
         } catch (err) {
             console.error("Error:", err);
@@ -385,6 +431,10 @@ const Foryou = ({ scroll, navigation, token }) => {
             console.log(data);
             bottomSheetRef.current?.close()
             setTimeout(() => {
+                setcontent("")
+                setcaption("")
+                setp2text("Post")
+
                 bottomSheetRef2.current?.close();
             }, 1000);
         } catch (err) {
@@ -392,11 +442,53 @@ const Foryou = ({ scroll, navigation, token }) => {
         }
         finally {
             setp2u(false)
+            seterr4(false)
+            seterr5(false)
         }
     };
     const post4 = async function () {
+        let joberror = false
 
         setp4u(true);
+        if (role4 == "") {
+            seterr10(true)
+            joberror = true
+        }
+        if (description4 == "") {
+            seterr11(true)
+            joberror = true
+
+        }
+        if (duration4 == "") {
+            seterr12(true)
+            joberror = true
+        }
+        if (pay4 == "") {
+            seterr13(true)
+            joberror = true
+        }
+
+        if (joberror == true) {
+            setp4u(false)
+            return
+        }
+
+        if (isNaN(duration4) || duration4 < 0 || duration4 > 100) {
+            seterr14(true)
+            setp4u(false)
+            joberror = true
+            return
+        }
+        if (isNaN(pay4) || pay4 < 0 || pay4 > 1000000000) {
+            seterr15(true)
+            setp4u(false)
+            joberror = true
+            return
+        }
+        if (joberror == true) {
+            setp4u(false)
+            return
+        }
 
         const postType = "jobPost"; // Define postType value
         const finaldata = {
@@ -432,8 +524,13 @@ const Foryou = ({ scroll, navigation, token }) => {
             console.log(data);
             bottomSheetRef.current?.close()
             setTimeout(() => {
+                setrole4("")
+                setduration4("")
+                setpay4("")
+                setdescription4("")
+                setp4text("Post")
                 bottomSheetRef4.current?.close();
-            }, 3000);
+            }, 1000);
         } catch (err) {
             console.error("Error:", err);
         }
@@ -454,8 +551,14 @@ const Foryou = ({ scroll, navigation, token }) => {
             hasError = true
         }
 
-        if (hasError) { return };
-        if (p3u) return;
+        if (hasError) {
+            setp3u(false)
+            return
+        };
+        if (p3u) {
+            setp3u(false)
+            return
+        };
 
         // Define postType value
 
@@ -468,6 +571,12 @@ const Foryou = ({ scroll, navigation, token }) => {
             })
         }
         finaldata.append("caption", c2)
+        finaldata.append("aspectRatio", newaspect)
+
+
+
+        console.log(finaldata);
+
 
         try {
             if (type == "images") {
@@ -499,6 +608,11 @@ const Foryou = ({ scroll, navigation, token }) => {
         }
         finally {
             setp3u(false)
+            seterr6(false)
+            seterr7(false)
+            setc2("")
+            setp3text("Post")
+
         }
     };
 
@@ -506,6 +620,11 @@ const Foryou = ({ scroll, navigation, token }) => {
     // Function to open the bottom sheet
     const openBottomSheet = () => {
         setwillopen(true)
+        // mainflatlist.current.setNativeProps({
+        //     style: {
+        //         position: "absolute",
+        //     },
+        // });
 
         console.log("open");
 
@@ -514,24 +633,38 @@ const Foryou = ({ scroll, navigation, token }) => {
             bottomSheetRef.current?.expand();
             setstatus(true)
         };
+        // mainpagebottomsheet.current?.expand();
         open()
     }
     const openBottomSheet1 = () => {
         setfirstbottomsheet1(true)
         bottomSheetRef1.current?.expand();
+        seterr1(false)
+        seterr2(false)
+        seterr3(false)
         setstatus(true)
     };
     const openBottomSheet2 = () => {
         bottomSheetRef2.current?.expand();
+        seterr4(false)
+        seterr5(false)
         setstatus(true)
     };
     const openBottomSheet3 = () => {
         bottomSheetRef3.current?.expand();
         setstatus(true)
+        seterr7(false)
+        seterr6(false)
     };
     const openBottomSheet4 = () => {
         bottomSheetRef4.current?.expand();
         setstatus(true)
+        seterr10(false)
+        seterr11(false)
+        seterr12(false)
+        seterr13(false)
+        seterr14(false)
+        seterr15(false)
     };
 
 
@@ -557,7 +690,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                 <Text style={styles.bottomsheettext}>Blog</Text>
             </Pressable>
             <Pressable style={styles.iconButton} onPress={() => {
-                fileupload().then(() => openBottomSheet3)
+                askAspectRatio()
             }
             }>
                 <View style={[styles.ic, { flex: 1, width: "100%", alignSelf: "center" }]}>
@@ -619,7 +752,7 @@ const Foryou = ({ scroll, navigation, token }) => {
         console.log("doing comment");
         console.log(postid);
         console.log(commenttext);
-
+        setuploadingcomment(true)
 
 
         try {
@@ -639,7 +772,6 @@ const Foryou = ({ scroll, navigation, token }) => {
             console.log(response.status);
             setcommenttext("");
 
-
             var object = {
                 comment: commenttext,
                 createdAt: new Date(),
@@ -648,8 +780,9 @@ const Foryou = ({ scroll, navigation, token }) => {
                     userName: data.userName,
                 }
             }
-            var newarray = allcomments.unshift(object)
-            setallcomments(allcomments)
+            var newarray = [...allcomments]
+            newarray.unshift(object)
+            setallcomments(newarray)
 
 
             const scrollToTop = () => {
@@ -664,7 +797,8 @@ const Foryou = ({ scroll, navigation, token }) => {
 
         }
         finally {
-            Keyboard.dismiss();
+            setuploadingcomment(false)
+            // Keyboard.dismiss();
         }
 
     }
@@ -744,7 +878,23 @@ const Foryou = ({ scroll, navigation, token }) => {
         );
     };
 
-    async function applycommunity(id) {
+    async function applycommunity(id, index) {
+
+
+        if(allpost[index].Applied){
+            console.log("vaapis");
+            return
+            
+        }
+
+
+        setallpost(allpost.map((e, i) => {
+            if (i == index) {
+                var object = { ...e, Applied: true }
+                return object
+            }
+            else return e
+        }))
         try {
             const response = await fetch(`${url}posts/applyCommunity/${id}`, {
                 method: 'POST',
@@ -770,6 +920,15 @@ const Foryou = ({ scroll, navigation, token }) => {
                     else return e
                 }))
             }
+            else {
+                setallpost(allpost.map((e, i) => {
+                    if (i == index) {
+                        var object = { ...e, Applied: false }
+                        return object
+                    }
+                    else return e
+                }))
+            }
 
 
         }
@@ -779,7 +938,22 @@ const Foryou = ({ scroll, navigation, token }) => {
         }
     }
     async function applyjob(id, index) {
-        console.log(index);
+        // console.log(index);
+        // console.log(allpost[index]);
+        // console.log(allpost[index].Applied);
+
+        if (allpost[index].Jobapplied) {
+            return
+        }
+
+
+        setallpost(allpost.map((e, i) => {
+            if (i == index) {
+                var object = { ...e, Applied: true }
+                return object
+            }
+            else return e
+        }))
 
         try {
             const response = await fetch(`${url}posts/applyJobPost/${id}`, {
@@ -804,7 +978,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                 }))
             }
             if (response.status === 400) {
-                showToastWithGravity("You have already applied for this job")
+
             }
 
         }
@@ -821,13 +995,19 @@ const Foryou = ({ scroll, navigation, token }) => {
 
 
 
+            // console.log(allpost[1].mediaUrl);
 
 
             const isVideoPlaying = videoStates[item._id] || false;
 
+            // console.log(item.aspectRatio);
             if (item.user_id == null) {
                 return
             }
+
+            
+
+
 
             else {
 
@@ -836,6 +1016,10 @@ const Foryou = ({ scroll, navigation, token }) => {
                     // console.log(typeof pay);
                     pay = Number(pay);
                     return pay.toLocaleString("en-IN")
+                }
+
+                function getVideoHeight(){
+                    return item.aspectRatio === "16/9" ? newwidth * (9 / 16) : newwidth * (1 / 1);
                 }
                 if (item.type == "photo" || item.type == "textBlog" || item.type == "video") {
                     return (
@@ -851,27 +1035,31 @@ const Foryou = ({ scroll, navigation, token }) => {
                                     </View>
                                 </Pressable>
                             </View>
-                            {item.type == "photo" && <Image style={styles.template} source={{ uri: item.mediaUrl }} />}
+                            {item.type == "photo" && <Image style={[styles.template, { aspectRatio: item.aspectRatio ? item.aspectRatio : 1 / 1 }]} source={{ uri: item.mediaUrl }} />}
                             {item.type == "video" &&
                                 <Video
                                     ref={ref => videoRefs.current[item._id] = ref}
-                                    style={styles.template}
+                                    style={[styles.template ,{width: newwidth,  height: getVideoHeight(item.aspectRatio)}]}
                                     source={{ uri: item.mediaUrl }}
                                     useNativeControls // Enables native playback controls
-                                    resizeMode="contain" // Adjusts video to fit within the view
+                                    resizeMode="cover" // Adjusts video to fit within the view
                                     isLooping // Loops the video
                                     shouldPlay={isVideoPlaying}
                                 />
-
                             }
+                            <Text> {item.aspectRatio}</Text>
                             {item.type == "textBlog" && <Text style={styles.blogtext}>{item.content}</Text>}
 
                             <View style={styles.iconcontainer}>
                                 <View style={styles.icon2}>
-                                    <Pressable onPress={() => { upvotepost(item._id, index) }}>
-                                        {!item.isliked && <Upvote width={36} height={36} style={{ marginHorizontal: 5 }} />}
-                                        {item.isliked && <Upvote width={36} height={36} style={{ marginHorizontal: 5 }} selected={true} />}
-                                    </Pressable>
+                                    <TouchableOpacity onPress={() => { upvotepost(item._id, index) }}>
+                                        {/* {item.likedBy.includes(loggedinUserID) && <Upvote width={36} height={36} style={{ marginHorizontal: 0 }} selected={true} />} */}
+                                        {/* {!item.likedBy.includes(loggedinUserID)   && <Upvote width={36} height={36} style={{ marginLeft: 5, marginRight: -5 }} />} */}
+
+                                        {!item.isliked && <Upvote width={36} height={36} style={{ marginLeft: 5, marginRight: -5 }} />}
+                                        {item.isliked && <Upvote width={36} height={36} style={{ marginHorizontal: 0 }} selected={true} />}
+                                    </TouchableOpacity>
+                                    <Text style={{ left: -5, top: 12, color: "#00de62" }}>{item.likedBy.length}</Text>
                                     <Pressable onPress={() => { opencomment(item._id) }}><FontAwesome name="comment-o" size={30} color="#00DE62" /></Pressable>
                                 </View>
                                 <Share style={{ marginTop: 5, marginRight: 10, right: 0 }} />
@@ -894,7 +1082,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                         <View onTouchStart={closebottomsheet} style={styles.box}>
 
                             <View style={styles.top} >
-                                <Pressable
+                                <TouchableOpacity
                                     onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.user_id._id, page: "Startsy" }) }}
                                     style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                     <View style={{ display: "flex", flexDirection: "row", width: "100%" }}>
@@ -904,7 +1092,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                                             <Text allowFontScaling={false} style={styles.u2}>{item.user_id.role == "CommunityMember" ? "Member" : item.user_id.role}</Text>
                                         </View>
                                     </View>
-                                </Pressable>
+                                </TouchableOpacity>
                             </View>
                             <View style={styles.lower}>
                                 <Text style={styles.com1}>{item.communityPost.communityName}</Text>
@@ -912,9 +1100,9 @@ const Foryou = ({ scroll, navigation, token }) => {
                                 <Text allowFontScaling={false} style={styles.u6}><Text style={styles.desc1}>Members Count :</Text> {item.communityPost.communityMembers.length}</Text>
                                 <Text allowFontScaling={false} style={styles.u7}>Rules & Guidelines: {item.communityPost.communityRules}</Text>
 
-                                <Pressable onPress={() => { applycommunity(item._id) }} style={[styles.next]} >
-                                    <Text allowFontScaling={false} style={styles.nexttext}>{item.Applied ? "Join" : "Join Community"}</Text>
-                                </Pressable>
+                                <TouchableOpacity onPress={() => { applycommunity(item._id, index) }} style={[styles.next]} >
+                                    <Text allowFontScaling={false} style={styles.nexttext}>{item.Applied ? "Joined" : "Join Community"}</Text>
+                                </TouchableOpacity>
                             </View>
 
                         </View>
@@ -925,7 +1113,7 @@ const Foryou = ({ scroll, navigation, token }) => {
                         <View onTouchStart={closebottomsheet} style={styles.box}>
                             <View style={styles.top} >
 
-                                <Pressable
+                                <TouchableOpacity
                                     onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.user_id._id, page: "Startsy" }) }}
                                     style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                                     <View style={{ display: "flex", flexDirection: "row", width: "100%" }}>
@@ -936,17 +1124,17 @@ const Foryou = ({ scroll, navigation, token }) => {
                                         </View>
                                     </View>
 
-                                </Pressable>
+                                </TouchableOpacity>
                             </View>
                             <View style={styles.lower}>
                                 <Text style={styles.com1}>Role: {item.jobPosts.role}</Text>
-                                <Text style={styles.com2}><Text style={styles.desc1}>Community description: </Text>{item.jobPosts.description}</Text>
+                                <Text style={styles.com2}><Text style={styles.desc1}>Job description: </Text>{item.jobPosts.description}</Text>
                                 <Text allowFontScaling={false} style={styles.u8}>Duration: {item.jobPosts.duration} months</Text>
                                 <Text allowFontScaling={false} style={styles.u8}>Pay: {currency(item.jobPosts.pay)} Rs</Text>
 
-                                <Pressable onPress={() => { applyjob(item._id, index) }} style={[styles.next]} >
-                                    <Text allowFontScaling={false} style={styles.nexttext}>{item.Applied ? 'Applied' : "Apply"}</Text>
-                                </Pressable>
+                                <TouchableOpacity onPress={() => { applyjob(item._id, index) }} style={[styles.next]} >
+                                    <Text allowFontScaling={false} style={styles.nexttext}>{item.Jobapplied ? 'Applied' : "Apply"}</Text>
+                                </TouchableOpacity>
                             </View>
 
                         </View>
@@ -1024,12 +1212,20 @@ const Foryou = ({ scroll, navigation, token }) => {
         setOpen1(!open1);
     }
 
+    var [aspect, setaspect] = useState("")
+    var [newaspect, setnewaspect] = useState("")
+
     var role = [
         { label: "Only for Founders", value: "Only for Founders" },
+        { label: "Only for Community Members", value: "Only for Community Members" },
+        { label: "Job seeker", value: "Jobseeker" },
         { label: "Startup Enthusiast", value: "Startup Enthusiast" },
-        // { label: "Mentor", value: "Mentor" },
-        // { label: "Networker", value: "Networker" },
-        // { label: "Contributor", value: "Contributor" },
+        { label: "Mentor", value: "Mentor" },
+        { label: "Networker", value: "Networker" },
+        { label: "Founder or Mentor", value: "Founder or Mentor" },
+        { label: "Founder or Startup Enthusiast", value: "Founder or Startup Enthusiast" },
+        { label: "No rules", value: "No rules" },
+
 
 
     ]
@@ -1068,20 +1264,45 @@ const Foryou = ({ scroll, navigation, token }) => {
         )
     }
 
+    const askAspectRatio = async () => {
+        // Ask user to choose aspect ratio
+        const options = [
+            { label: "1:1 (Square)", aspect: [1, 1] },
+            { label: "16:9 (Wide)", aspect: [16, 9] },
+            { label: "4:3 (Standard)", aspect: [4, 3] },
+        ];
+
+        Alert.alert("Choose Aspect Ratio", "", options.map(({ label, aspect }) => ({
+            text: label,
+            onPress: () => {
+
+                var newaspect = `${aspect[0]}/${aspect[1]}`;
+                console.log(newaspect);
+                setnewaspect(newaspect)
+
+                setaspect(aspect)
+                fileupload(aspect).then(() => openBottomSheet3())
+            }
+        })), { cancelable: true });
 
 
-    const fileupload = async () => {
+    };
+
+    const fileupload = async (aspect) => {
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (permissionResult.granted === false) {
             alert("Permission to access camera roll is required!");
             return;
         }
 
+
+
+
         // Launch the image picker
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.All,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: aspect,
             quality: 1,
 
         });
@@ -1121,6 +1342,14 @@ const Foryou = ({ scroll, navigation, token }) => {
             opacity={0.7} // Set opacity for the backdrop
         />
     );
+
+
+    function del() {
+        seterr10(false)
+        seterr11(false)
+        seterr12(false)
+        seterr13(false)
+    }
 
     const comments = ({ item, index }) => {
 
@@ -1215,115 +1444,454 @@ const Foryou = ({ scroll, navigation, token }) => {
 
                 <Text allowFontScaling={false} style={main.headertext}>For you</Text>
             </Animated.View> */}
-           
 
-            <GestureHandlerRootView
+            {allpost.length > 0 && <FlatList
+                simultaneousHandlers="bottomSheet"
+                ListHeaderComponent={Header}
+                // scrollEventThrottle={0}
+                ref={mainflatlist}
+                showsVerticalScrollIndicator={false}
+                style={main.scroll1}
+                initialNumToRender={5}
+                windowSize={10}
+                maxToRenderPerBatch={5}
+                scrollEventThrottle={16}
+                keyExtractor={(item, index) => { return index }}
+                removeClippedSubview={false}
 
-                gestureHandlerProps={{
-                    waitFor: ['anotherGesture'],
-                    simultaneousHandlers: ['flatListScroll'],
+                // onScroll={(e) => {
+                //     scrollY.setValue(e.nativeEvent.contentOffset.y)
+                // }}
+
+                contentContainerStyle={{
+                    // marginTop : 200,
+                    paddingBottom: 100
                 }}
-                nestedScrollEnabled style={{ flex: 1}}
+                data={allpost}
+                renderItem={renderItem}
+
+                onViewableItemsChanged={onViewableItemsChanged}
+                viewabilityConfig={viewabilityConfig}
+
+
+                refreshControl={
+                    <RefreshControl progressViewOffset={0} refreshing={refreshing}
+                        onRefresh={() => {
+                            // console.log("start");
+
+                            setRefreshing(true);
+                            // setbg("transparent")
+                            getpost()
+
+                            setTimeout(() => {
+                                setRefreshing(false); // Stop refreshing after fetching data
+                            }, 2000); // Adjust the delay as needed
+                        }} />}
+
+                bounces={true}
+                contentInset={{ top: 10 }}
             >
 
-                {/* <TouchableWithoutFeedback onPress={closebottomsheet}> */}
-                {/* <View style={{ position: "absolute" }}> */}
-
-                {/* </View> */}
-
-                {/* </TouchableWithoutFeedback> */}
+            </FlatList>}
 
 
-                {allpost.length == 0 && <Header />}
-                {allpost.length > 0 && <FlatList
-                    simultaneousHandlers="bottomSheet"
-                    ListHeaderComponent={Header}
-                    // scrollEventThrottle={0}
-                    showsVerticalScrollIndicator={false}
-                    style={main.scroll1}
-                    initialNumToRender={5}
-                    windowSize={10}
-                    maxToRenderPerBatch={5}
-                    scrollEventThrottle={16}
-                    keyExtractor={(item, index) => { return index }}
-                    removeClippedSubview={false}
+            {/* <TouchableWithoutFeedback onPress={closebottomsheet}> */}
+            {/* <View style={{ position: "absolute" }}> */}
 
-                    // onScroll={(e) => {
-                    //     scrollY.setValue(e.nativeEvent.contentOffset.y)
-                    // }}
+            {/* </View> */}
 
-                    contentContainerStyle={{
-                        // marginTop : 200,
-                        paddingBottom: 100
-                    }}
-                    data={allpost}
-                    renderItem={renderItem}
-
-                    onViewableItemsChanged={onViewableItemsChanged}
-                    viewabilityConfig={viewabilityConfig}
+            {/* </TouchableWithoutFeedback> */}
 
 
-                    refreshControl={
-                        <RefreshControl progressViewOffset={0} refreshing={refreshing}
-                            onRefresh={() => {
-                                // console.log("start");
-
-                                setRefreshing(true);
-                                // setbg("transparent")
-                                getpost()
-
-                                setTimeout(() => {
-                                    setRefreshing(false); // Stop refreshing after fetching data
-                                }, 2000); // Adjust the delay as needed
-                            }} />}
-
-                    bounces={true}
-                    contentInset={{ top: 10 }}
-                >
-
-                </FlatList>}
+            {allpost.length == 0 && <Header />}
 
 
-                <Pressable onPress={openBottomSheet} style={styles.add}>
+
+            <Pressable onPress={openBottomSheet} style={styles.add}>
                 <AntDesign name="pluscircle" size={50} color="#00de62" />
             </Pressable>
 
 
 
 
+            <BottomSheet
+
+
+                overlayColor="rgba(0, 0, 0, 0.9)"
+                // backdropComponent={renderBackdrop}
+                enablePanDownToClose
+                backgroundStyle={{ backgroundColor: '#16181a', borderRadius: 30 }} // Changes the background of the sheet itself
+                handleIndicatorStyle={{ backgroundColor: '#00de62' }}
+                style={{ zIndex: 10 }}
+                ref={bottomSheetRef}
+                snapPoints={snapPoints}
+                onClose={() => {
+                    // setTimeout(() => {
+                    //     // setfirstbottomsheet(false)
+                    // }, 1000);
+                    // Keyboard.dismiss()
+
+                    // mainflatlist.current.setNativeProps({
+                    //     style: {
+                    //         position: "relative",
+                    //     },
+                    // });
+                    setstatus(false)
+                    setp1u(false)
+                    setwillopen(false)
+
+                }}
+                index={-1} // Initially closed
+
+
+            >
+                <BottomSheetContent />
+            </BottomSheet>
+
+            {/* bottomsheet 1 */}
+
+            {willopen && <BottomSheet
+                nestedScrollEnabled={true}
+                overlayColor="rgba(0, 0, 0, 0.5)"
+                enablePanDownToClose
+                backgroundStyle={{ backgroundColor: '#16181a', borderRadius: 30 }}
+                // backgroundStyle={{ backgroundColor: 'red', borderRadius: 30 }}
+                // height={100}
+                handleIndicatorStyle={{
+                    backgroundColor: '#00de62',
+                    width: 70,
+                    marginTop: 20
+
+                }}
+                onClose={() => { setp2u(false) }}
+                style={{ marginTop: 60 }}
+
+                ref={bottomSheetRef1}
+                snapPoints={snapPoints1}
+                index={-1} // Initially closed
+
+            >
+
+                <View style={{ height: 80, marginTop: -5 }} ><B1 /></View>
+                <BottomSheetScrollView
+                    nestedScrollEnabled={true} style={{
+                        flex: 1,
+                        minHeight: 2000,
+                        // backgroundColor: "red",
+                        flexGrow: 1
+
+                    }}>
+                    <BottomSheetTextInput
+                        allowFontScaling={false}
+                        placeholder="Community name"
+                        placeholderTextColor="#B8B8B8"
+                        style={styles.input}
+                        value={communityname}
+                        onTextInput={() => {
+                            if (err1) seterr1(false)
+                            if (err2) seterr2(false)
+                            if (err3) seterr3(false)
+                        }
+                        }
+                        onChangeText={(text) => { setcommunityname(text) }}
+                    />
+                    {err1 && <Text style={styles.error}> *please enter this field</Text>}
+
+
+                    <Text style={{
+                        fontSize: 20,
+                        width: "92%",
+                        paddingLeft: 10,
+                        marginHorizontal: "auto",
+                        color: "#B8B8B8"
+                    }}>Description:</Text>
+
+                    <BottomSheetView style={{ position: "relative" }}>
+                        <Text style={[styles.t2, styles.count]}>{textlength}/100</Text>
+                        <BottomSheetTextInput
+                            keyboardBehavior="interactive"
+
+                            allowFontScaling={false}
+                            placeholder=""
+                            placeholderTextColor="#B8B8B8"
+                            style={styles.input1}
+                            maxLength={100}
+                            multiline={true}
+                            // onFocus={handleOutsideTouch}
+                            // onPress={handleOutsideTouch}
+                            value={description}
+                            onTextInput={() => {
+                                if (err1) seterr1(false)
+                                if (err2) seterr2(false)
+                                if (err3) seterr3(false)
+                            }
+                            }
+                            onChangeText={(text) => {
+                                setdescription(text)
+                                counttext(text)
+                            }}
+                        />
+
+                    </BottomSheetView>
+                    {err2 && <Text style={styles.error}> *please enter this field</Text>}
+
+                    {/* <Drop items={role} onValueChange={handlerule} open={open1} setOpen={setOpen1} nestedScrollEnabled={true} extra={true} bottomsheet /> */}
+                    <Pressable style={styles.dropdownbox} onPress={() => {
+                        if (err1) seterr1(false)
+                        if (err2) seterr2(false)
+                        if (err3) seterr3(false)
+                        setlist(!list)
+                    }}>
+                        <TextInput
+                            editable={false}
+
+
+                            placeholder="Rules"
+                            placeholderTextColor={"#AEAFAF"}
+                            value={rule1}
+                            style={{
+                                color: '#AEAFAF',
+                                fontFamily: 'Alata',
+                                fontSize: 20,
+                                marginTop: -3,
+                            }}
+
+                        />
+                        {!list && <FontAwesome6 style={styles.icon} name="chevron-down" size={20} color="#00DE62" />}
+                        {list && <FontAwesome6 style={styles.icon} name="chevron-up" size={20} color="#00DE62" />}
+                    </Pressable>
+                    {list && <BottomSheetScrollView
+                        nestedScrollEnabled
+
+                        vertical
+
+                        style={{
+                            height: 200,
+                            width: "90%",
+                            margin: "auto",
+                            // justifyContent: 'center',
+                            backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                            borderBottomColor: 'black',
+                            borderBottomWidth: 1,
+                            height: 200,
+                            includeFontPadding: false,
+                        }}
+                    >
+
+                        {role.map(item => {
+                            return (
+                                <Pressable key={item.value} onPress={() => {
+                                    setrules(rules)
+                                    setdropdownvalue(item)
+                                }}>
+                                    <Text style={{
+                                        color: '#AEAFAF',
+                                        textAlign: 'left',
+                                        fontSize: 20,
+                                        fontFamily: "abeeze",
+                                        includeFontPadding: false,
+                                        justifyContent: 'center',
+                                        backgroundColor: 'rgba(0, 0, 0, 0.1)',
+                                        borderBottomColor: 'black',
+                                        borderBottomWidth: 1,
+                                        height: 50,
+                                        paddingLeft: 10,
+                                        textAlignVertical: 'center'
+                                        , includeFontPadding: false,
+                                    }}>{item.label}</Text>
+                                </Pressable>
+                            )
+                        })}
+
+
+                    </BottomSheetScrollView>}
+                    {err3 && <Text style={styles.error1}> *please enter this field</Text>}
+
+                    <Pressable onPress={post1} style={styles.post}>
+                        {!p1u && <Text style={styles.posttext}>{p1text}</Text>}
+                        {p1u && <ActivityIndicator size={24} color="#16181a" />}
+                    </Pressable>
+
+
+                </BottomSheetScrollView>
+
+
+
+            </BottomSheet>}
+            {/* bottomsheet1  */}
+
+
+            {/* bottomsheet 2 */}
+
+            {willopen && <BottomSheet
+                nestedScrollEnabled={true}
+                overlayColor="rgba(0, 0, 0, 0.5)"
+                enablePanDownToClose
+                backgroundStyle={{ backgroundColor: '#16181a', borderRadius: 30 }}
+                // backgroundStyle={{ backgroundColor: 'red', borderRadius: 30 }}
+                // height={100}
+                handleIndicatorStyle={{
+                    backgroundColor: '#00de62',
+                    width: 70,
+                    marginTop: 20
+
+                }}
+                style={{ marginTop: 60 }}
+
+                ref={bottomSheetRef2}
+                snapPoints={snapPoints2}
+                index={-1} // Initially closed
+
+            >
+
+                <View style={{ height: 80, marginTop: -5 }} ><B2 /></View>
+                <BottomSheetScrollView
+                    nestedScrollEnabled={true} style={{
+                        flex: 1,
+                        minHeight: 2000,
+                        // backgroundColor: "red",
+                        flexGrow: 1
+
+                    }}>
+
+
+                    <Text style={{
+                        fontSize: 20,
+                        width: "92%",
+                        paddingLeft: 10,
+                        marginHorizontal: "auto",
+                        color: "#B8B8B8"
+                    }}>Write a Blog:</Text>
+
+                    <BottomSheetView style={{ position: "relative" }}>
+                        <Text style={[styles.t2, styles.count]}>{content.length}/100</Text>
+                        <BottomSheetTextInput
+
+                            allowFontScaling={false}
+                            placeholder=""
+                            placeholderTextColor="#B8B8B8"
+                            style={styles.input1}
+                            maxLength={100}
+                            multiline={true}
+                            // onFocus={handleOutsideTouch}
+                            // onPress={handleOutsideTouch}
+                            value={content}
+                            onTextInput={() => {
+                                if (err4) seterr4(false)
+                                if (err5) seterr5(false)
+                            }}
+                            onChangeText={(text) => {
+                                setcontent(text)
+                                // counttext(text)
+                            }}
+                        />
+                    </BottomSheetView>
+                    {err4 && <Text style={styles.error}> *please enter this field</Text>}
+
+
+                    <BottomSheetTextInput
+                        allowFontScaling={false}
+                        placeholder="Caption"
+                        placeholderTextColor="#B8B8B8"
+                        style={styles.input}
+                        value={caption}
+                        onTextInput={() => {
+                            if (err4) seterr4(false)
+                            if (err5) seterr5(false)
+                        }}
+                        onChangeText={(text) => { setcaption(text) }}
+                    />
+                    {err5 && <Text style={styles.error}> *please enter this field</Text>}
+
+
+
+                    <Pressable onPress={post2} style={styles.post}>
+
+                        {!p2u && <Text style={styles.posttext}>{p2text}</Text>}
+                        {p2u && <ActivityIndicator size={24} color="#16181a" />}
+                    </Pressable>
+
+
+                </BottomSheetScrollView>
+
+
+
+            </BottomSheet>}
+
+            {/* 222 */}
+
+            {willopen && <BottomSheet
+                nestedScrollEnabled={true}
+                overlayColor="rgba(0, 0, 0, 0.5)"
+                enablePanDownToClose
+                backgroundStyle={{ backgroundColor: '#16181a', borderRadius: 30 }}
+
+                handleIndicatorStyle={{ backgroundColor: '#00de62', width: 70, marginTop: 20 }}
+                style={{ marginTop: 60 }}
+                ref={bottomSheetRef3}
+                snapPoints={snapPoints3}
+                index={-1}
+                keyboardBehavior="fillParent"
+                enableDynamicSizing={true}
+            >
+                <View style={{ height: 80, marginTop: -5 }} ><B3 /></View>
+                <BottomSheetScrollView
+                    nestedScrollEnabled={true} style={{
+                        flex: 1,
+                        // minHeight: 2000,
+                        // flexGrow: 1
+                    }}>
+
+                    <BottomSheetView style={{ position: "relative" }}>
+                        {type == "photo" && <Image style={[styles.img, { aspectRatio: newaspect }]} source={{ uri: uri }} />}
+                        {type == "video" && (
+                            <Video
+                                style={[styles.img , {aspectRatio : 1/1} ]}
+                                source={{ uri: uri }}
+                                useNativeControls // Enables native playback controls
+                                resizeMode="contain" // Adjusts video to fit within the view
+                                isLooping // Loops the video
+                                shouldPlay // Automatically plays the video
+                            />
+                        )}
+
+                    </BottomSheetView>
+                    {err6 && <Text style={styles.error}> *please enter this field</Text>}
+
+
+
+                    <BottomSheetTextInput
+                        allowFontScaling={false}
+                        placeholder="Caption"
+                        placeholderTextColor="#B8B8B8"
+                        style={styles.input}
+                        value={c2}
+                        onClose={() => { setp3u(false) }}
+                        onTextInput={() => { if (err7) seterr7(false) }}
+                        onChangeText={(text) => { setc2(text) }}
+                    />
+                    {err7 && <Text style={styles.error}> *please enter this field</Text>}
+
+
+
+
+
+
+                    <Pressable onPress={post3} style={styles.post}>
+                        {/* <Text style={styles.posttext}>Post</Text> */}
+
+                        {!p3u && <Text style={styles.posttext}>{p3text}</Text>}
+                        {p3u && <ActivityIndicator size={24} color="#16181a" />}
+                    </Pressable>
+
+
+                </BottomSheetScrollView>
+            </BottomSheet>}
+
+            {/* 333 */}
+
+            {willopen &&
                 <BottomSheet
-
-
-                    overlayColor="rgba(0, 0, 0, 0.9)"
-                    backdropComponent={renderBackdrop}
-                    enablePanDownToClose
-                    backgroundStyle={{ backgroundColor: '#16181a', borderRadius: 30 }} // Changes the background of the sheet itself
-                    handleIndicatorStyle={{ backgroundColor: '#00de62' }}
-
-                    ref={bottomSheetRef}
-                    snapPoints={snapPoints}
-                    onClose={() => {
-                        // setTimeout(() => {
-                        //     // setfirstbottomsheet(false)
-                        // }, 1000);
-                        // Keyboard.dismiss()
-                        setstatus(false)
-                        setp1u(false)
-                        setwillopen(false)
-
-                    }}
-                    index={-1} // Initially closed
-
-
-                >
-                    <BottomSheetContent />
-                </BottomSheet>
-
-
-                {/* bottomsheet 1 */}
-
-
-                {willopen && <BottomSheet
                     nestedScrollEnabled={true}
                     overlayColor="rgba(0, 0, 0, 0.5)"
                     enablePanDownToClose
@@ -1336,16 +1904,19 @@ const Foryou = ({ scroll, navigation, token }) => {
                         marginTop: 20
 
                     }}
-                    onClose={() => { setp2u(false) }}
+                    onClose={() => {
+                        setp4u(false)
+                    }}
                     style={{ marginTop: 60 }}
-
-                    ref={bottomSheetRef1}
-                    snapPoints={snapPoints1}
+                    enableDynamicSizing={true}
+                    keyboardBehavior="fill-parent"
+                    ref={bottomSheetRef4}
+                    snapPoints={snapPoints4}
                     index={-1} // Initially closed
 
                 >
 
-                    <View style={{ height: 80, marginTop: -5 }} ><B1 /></View>
+                    <View style={{ height: 80, marginTop: -5 }} ><B4 /></View>
                     <BottomSheetScrollView
                         nestedScrollEnabled={true} style={{
                             flex: 1,
@@ -1354,21 +1925,21 @@ const Foryou = ({ scroll, navigation, token }) => {
                             flexGrow: 1
 
                         }}>
+
                         <BottomSheetTextInput
                             allowFontScaling={false}
-                            placeholder="Community name"
+                            placeholder="Role"
                             placeholderTextColor="#B8B8B8"
                             style={styles.input}
-                            value={communityname}
-                            onTextInput={() => {
-                                if (err1) seterr1(false)
-                                if (err2) seterr2(false)
-                                if (err3) seterr3(false)
-                            }
-                            }
-                            onChangeText={(text) => { setcommunityname(text) }}
+                            value={role4}
+                            onChangeText={(text) => {
+                                del()
+
+                                setrole4(text)
+                            }}
                         />
-                        {err1 && <Text style={styles.error}> *please enter this field</Text>}
+                        {err10 && <Text style={styles.error}>*Please enter a role</Text>}
+
 
 
                         <Text style={{
@@ -1382,8 +1953,6 @@ const Foryou = ({ scroll, navigation, token }) => {
                         <BottomSheetView style={{ position: "relative" }}>
                             <Text style={[styles.t2, styles.count]}>{textlength}/100</Text>
                             <BottomSheetTextInput
-                                keyboardBehavior="interactive"
-
                                 allowFontScaling={false}
                                 placeholder=""
                                 placeholderTextColor="#B8B8B8"
@@ -1392,453 +1961,134 @@ const Foryou = ({ scroll, navigation, token }) => {
                                 multiline={true}
                                 // onFocus={handleOutsideTouch}
                                 // onPress={handleOutsideTouch}
-                                value={description}
-                                onTextInput={() => {
-                                    if (err1) seterr1(false)
-                                    if (err2) seterr2(false)
-                                    if (err3) seterr3(false)
-                                }
-                                }
+                                value={description4}
                                 onChangeText={(text) => {
-                                    setdescription(text)
+                                    setdescription4(text)
+                                    del()
                                     counttext(text)
                                 }}
                             />
-
                         </BottomSheetView>
-                        {err2 && <Text style={styles.error}> *please enter this field</Text>}
-
-                        {/* <Drop items={role} onValueChange={handlerule} open={open1} setOpen={setOpen1} nestedScrollEnabled={true} extra={true} bottomsheet /> */}
-                        <Pressable style={styles.dropdownbox} onPress={() => {
-                            if (err1) seterr1(false)
-                            if (err2) seterr2(false)
-                            if (err3) seterr3(false)
-                            setlist(!list)
-                        }}>
-                            <TextInput
-                                editable={false}
-
-
-                                placeholder="Rules"
-                                placeholderTextColor={"#AEAFAF"}
-                                value={rule1}
-                                style={{
-                                    color: '#AEAFAF',
-                                    fontFamily: 'Alata',
-                                    fontSize: 20,
-                                    marginTop: -3,
-                                }}
-
-                            />
-                            {!list && <FontAwesome6 style={styles.icon} name="chevron-down" size={20} color="#00DE62" />}
-                            {list && <FontAwesome6 style={styles.icon} name="chevron-up" size={20} color="#00DE62" />}
-                        </Pressable>
-                        {list && <BottomSheetScrollView
-                            nestedScrollEnabled
-
-                            vertical
-
-                            style={{
-                                height: 200,
-                                width: "90%",
-                                margin: "auto",
-                                // justifyContent: 'center',
-                                backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                                borderBottomColor: 'black',
-                                borderBottomWidth: 1,
-                                height: 200,
-                                includeFontPadding: false,
-                            }}
-                        >
-
-                            {role.map(item => {
-                                return (
-                                    <Pressable key={item.value} onPress={() => {
-                                        setrules(rules)
-                                        setdropdownvalue(item)
-                                    }}>
-                                        <Text style={{
-                                            color: '#AEAFAF',
-                                            textAlign: 'left',
-                                            fontSize: 20,
-                                            fontFamily: "abeeze",
-                                            includeFontPadding: false,
-                                            justifyContent: 'center',
-                                            backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                                            borderBottomColor: 'black',
-                                            borderBottomWidth: 1,
-                                            height: 50,
-                                            paddingLeft: 10,
-                                            textAlignVertical: 'center'
-                                            , includeFontPadding: false,
-                                        }}>{item.label}</Text>
-                                    </Pressable>
-                                )
-                            })}
-
-
-                        </BottomSheetScrollView>}
-                        {err3 && <Text style={styles.error1}> *please enter this field</Text>}
-
-                        <Pressable onPress={post1} style={styles.post}>
-                            {!p1u && <Text style={styles.posttext}>{p1text}</Text>}
-                            {p1u && <ActivityIndicator size={24} color="#16181a" />}
-                        </Pressable>
-
-
-                    </BottomSheetScrollView>
-
-
-
-                </BottomSheet>}
-                {/* bottomsheet1  */}
-
-
-
-
-                {/* bottomsheet 2 */}
-
-                {willopen && <BottomSheet
-                    nestedScrollEnabled={true}
-                    overlayColor="rgba(0, 0, 0, 0.5)"
-                    enablePanDownToClose
-                    backgroundStyle={{ backgroundColor: '#16181a', borderRadius: 30 }}
-                    // backgroundStyle={{ backgroundColor: 'red', borderRadius: 30 }}
-                    // height={100}
-                    handleIndicatorStyle={{
-                        backgroundColor: '#00de62',
-                        width: 70,
-                        marginTop: 20
-
-                    }}
-                    style={{ marginTop: 60 }}
-
-                    ref={bottomSheetRef2}
-                    snapPoints={snapPoints2}
-                    index={-1} // Initially closed
-
-                >
-
-                    <View style={{ height: 80, marginTop: -5 }} ><B2 /></View>
-                    <BottomSheetScrollView
-                        nestedScrollEnabled={true} style={{
-                            flex: 1,
-                            minHeight: 2000,
-                            // backgroundColor: "red",
-                            flexGrow: 1
-
-                        }}>
-
-
-                        <Text style={{
-                            fontSize: 20,
-                            width: "92%",
-                            paddingLeft: 10,
-                            marginHorizontal: "auto",
-                            color: "#B8B8B8"
-                        }}>Write a Blog:</Text>
-
-                        <BottomSheetView style={{ position: "relative" }}>
-                            <Text style={[styles.t2, styles.count]}>{content.length}/100</Text>
-                            <BottomSheetTextInput
-
-                                allowFontScaling={false}
-                                placeholder=""
-                                placeholderTextColor="#B8B8B8"
-                                style={styles.input1}
-                                maxLength={100}
-                                multiline={true}
-                                // onFocus={handleOutsideTouch}
-                                // onPress={handleOutsideTouch}
-                                value={content}
-                                onTextInput={() => {
-                                    if (err4) seterr4(false)
-                                    if (err5) seterr5(false)
-                                }}
-                                onChangeText={(text) => {
-                                    setcontent(text)
-                                    // counttext(text)
-                                }}
-                            />
-                        </BottomSheetView>
-                        {err4 && <Text style={styles.error}> *please enter this field</Text>}
+                        {err11 && <Text style={styles.error}>*Please enter a description</Text>}
 
 
                         <BottomSheetTextInput
                             allowFontScaling={false}
-                            placeholder="Caption"
+                            placeholder="Duration"
                             placeholderTextColor="#B8B8B8"
                             style={styles.input}
-                            value={caption}
-                            onTextInput={() => {
-                                if (err4) seterr4(false)
-                                if (err5) seterr5(false)
+                            value={duration4}
+                            onChangeText={(text) => {
+                                del()
+
+                                setduration4(text)
                             }}
-                            onChangeText={(text) => { setcaption(text) }}
                         />
-                        {err5 && <Text style={styles.error}> *please enter this field</Text>}
-
-
-
-                        <Pressable onPress={post2} style={styles.post}>
-
-                            {!p2u && <Text style={styles.posttext}>{p2text}</Text>}
-                            {p2u && <ActivityIndicator size={24} color="#16181a" />}
-                        </Pressable>
-
-
-                    </BottomSheetScrollView>
-
-
-
-                </BottomSheet>}
-
-                {/* 222 */}
-
-                {willopen && <BottomSheet
-                    nestedScrollEnabled={true}
-                    overlayColor="rgba(0, 0, 0, 0.5)"
-                    enablePanDownToClose
-                    backgroundStyle={{ backgroundColor: '#16181a', borderRadius: 30 }}
-
-                    handleIndicatorStyle={{ backgroundColor: '#00de62', width: 70, marginTop: 20 }}
-                    style={{ marginTop: 60 }}
-                    ref={bottomSheetRef3}
-                    snapPoints={snapPoints3}
-                    index={-1}
-                    keyboardBehavior="fillParent"
-                    enableDynamicSizing={true}
-                >
-                    <View style={{ height: 80, marginTop: -5 }} ><B3 /></View>
-                    <BottomSheetScrollView
-                        nestedScrollEnabled={true} style={{
-                            flex: 1,
-                            // minHeight: 2000,
-                            // flexGrow: 1
-                        }}>
-
-                        <BottomSheetView style={{ position: "relative" }}>
-                            {type == "photo" && <Image style={styles.img} source={{ uri: uri }} />}
-                            {type == "video" && (
-                                <Video
-                                    style={styles.img}
-                                    source={{ uri: uri }}
-                                    useNativeControls // Enables native playback controls
-                                    resizeMode="contain" // Adjusts video to fit within the view
-                                    isLooping // Loops the video
-                                    shouldPlay // Automatically plays the video
-                                />
-                            )}
-
-                        </BottomSheetView>
-                        {err6 && <Text style={styles.error}> *please enter this field</Text>}
+                        {err12 && <Text style={styles.error}>*Please enter a duration</Text>}
+                        {err14 && <Text style={styles.error}>*Please enter a valid duration</Text>}
 
 
 
                         <BottomSheetTextInput
                             allowFontScaling={false}
-                            placeholder="Caption"
+                            placeholder="Pay"
                             placeholderTextColor="#B8B8B8"
                             style={styles.input}
-                            value={c2}
-                            onClose={() => { setp3u(false) }}
-                            onTextInput={() => { if (err7) seterr7(false) }}
-                            onChangeText={(text) => { setc2(text) }}
+                            value={pay4}
+                            onChangeText={(text) => {
+                                del()
+                                setpay4(text)
+                            }}
                         />
-                        {err7 && <Text style={styles.error}> *please enter this field</Text>}
+                        {err13 && <Text style={styles.error}>*Please enter a duration</Text>}
+                        {err15 && <Text style={styles.error}>*Please enter a valid duration</Text>}
 
 
 
 
+                        <Pressable onPress={post4} style={styles.post}>
+                            {/* <Text style={styles.posttext}>{p4text}</Text> */}
 
-
-                        <Pressable onPress={post3} style={styles.post}>
-                            {/* <Text style={styles.posttext}>Post</Text> */}
-
-                            {!p3u && <Text style={styles.posttext}>{p3text}</Text>}
-                            {p3u && <ActivityIndicator size={24} color="#16181a" />}
+                            {!p4u && <Text style={styles.posttext}>{p4text}</Text>}
+                            {p4u && <ActivityIndicator size={24} color="#16181a" />}
                         </Pressable>
 
 
                     </BottomSheetScrollView>
+
                 </BottomSheet>}
 
-                {/* 333 */}
-
-                {willopen &&
-                    <BottomSheet
-                        nestedScrollEnabled={true}
-                        overlayColor="rgba(0, 0, 0, 0.5)"
-                        enablePanDownToClose
-                        backgroundStyle={{ backgroundColor: '#16181a', borderRadius: 30 }}
-                        // backgroundStyle={{ backgroundColor: 'red', borderRadius: 30 }}
-                        // height={100}
-                        handleIndicatorStyle={{
-                            backgroundColor: '#00de62',
-                            width: 70,
-                            marginTop: 20
-
-                        }}
-                        style={{ marginTop: 60 }}
-                        enableDynamicSizing={true}
-                        keyboardBehavior="fill-parent"
-                        ref={bottomSheetRef4}
-                        snapPoints={snapPoints4}
-                        index={-1} // Initially closed
-
-                    >
-
-                        <View style={{ height: 80, marginTop: -5 }} ><B4 /></View>
-                        <BottomSheetScrollView
-                            nestedScrollEnabled={true} style={{
-                                flex: 1,
-                                minHeight: 2000,
-                                // backgroundColor: "red",
-                                flexGrow: 1
-
-                            }}>
-
-                            <BottomSheetTextInput
-                                allowFontScaling={false}
-                                placeholder="Role"
-                                placeholderTextColor="#B8B8B8"
-                                style={styles.input}
-                                value={role4}
-                                onChangeText={(text) => { setrole4(text) }}
-                            />
+            {/* 333 */}
 
 
-                            <Text style={{
-                                fontSize: 20,
-                                width: "92%",
-                                paddingLeft: 10,
-                                marginHorizontal: "auto",
-                                color: "#B8B8B8"
-                            }}>Description:</Text>
+            {/* 444 */}
 
-                            <BottomSheetView style={{ position: "relative" }}>
-                                <Text style={[styles.t2, styles.count]}>{textlength}/100</Text>
-                                <BottomSheetTextInput
-                                    allowFontScaling={false}
-                                    placeholder=""
-                                    placeholderTextColor="#B8B8B8"
-                                    style={styles.input1}
-                                    maxLength={100}
-                                    multiline={true}
-                                    // onFocus={handleOutsideTouch}
-                                    // onPress={handleOutsideTouch}
-                                    value={description4}
-                                    onChangeText={(text) => {
-                                        setdescription4(text)
-                                        counttext(text)
-                                    }}
-                                />
-                            </BottomSheetView>
-
-                            <BottomSheetTextInput
-                                allowFontScaling={false}
-                                placeholder="Duration"
-                                placeholderTextColor="#B8B8B8"
-                                style={styles.input}
-                                value={duration4}
-                                onChangeText={(text) => { setduration4(text) }}
-                            />
-
-                            <BottomSheetTextInput
-                                allowFontScaling={false}
-                                placeholder="Pay"
-                                placeholderTextColor="#B8B8B8"
-                                style={styles.input}
-                                value={pay4}
-                                onChangeText={(text) => { setpay4(text) }}
-                            />
+            <BottomSheet
 
 
-                            <Pressable onPress={post4} style={styles.post}>
-                                {/* <Text style={styles.posttext}>{p4text}</Text> */}
+                overlayColor="rgba(0, 0, 0, 0.9)"
+                backdropComponent={renderBackdrop}
+                enablePanDownToClose
+                backgroundStyle={{ backgroundColor: '#1A1D1F', borderRadius: 30 }} // Changes the background of the sheet itself
+                handleIndicatorStyle={{ backgroundColor: '#00de62' }}
 
-                                {!p4u && <Text style={styles.posttext}>{p4text}</Text>}
-                                {p4u && <ActivityIndicator size={24} color="#16181a" />}
-                            </Pressable>
+                ref={bottomSheetRef5}
+                snapPoints={snapPoints5}
+                onClose={() => {
+                    setcomment(false)
+                    setstatus(false)
 
-
-                        </BottomSheetScrollView>
-
-                    </BottomSheet>}
-
-                {/* 333 */}
-
-
-
-
-                {/* 444 */}
-
-                <BottomSheet
-
-
-                    overlayColor="rgba(0, 0, 0, 0.9)"
-                    backdropComponent={renderBackdrop}
-                    enablePanDownToClose
-                    backgroundStyle={{ backgroundColor: '#1A1D1F', borderRadius: 30 }} // Changes the background of the sheet itself
-                    handleIndicatorStyle={{ backgroundColor: '#00de62' }}
-
-                    ref={bottomSheetRef5}
-                    snapPoints={snapPoints5}
-                    onClose={() => {
-                        setcomment(false)
-                        setstatus(false)
-                        setp4u(false)
-                        // Keyboard.dismiss()
-                        // headeref.current.setNativeProps({
-                        //     style: { zIndex: 1 }, // Change the style here
-                        // });
-                    }}
-                    index={-1} // Initially closed
-                    contentContainerStyle={{ zIndex: 100, elevation: 20, }}
+                    // Keyboard.dismiss()
+                    // headeref.current.setNativeProps({
+                    //     style: { zIndex: 1 }, // Change the style here
+                    // });
+                }}
+                index={-1} // Initially closed
+                contentContainerStyle={{ zIndex: 100, elevation: 20, }}
 
 
-                >
-                    <View style={{ flex: 0.92 }}>
+            >
+                <View style={{ flex: 0.92 }}>
 
-                        <Text style={styles.comment}>Comments</Text>
-                        {/* <KeyboardAvoidingView behavior="" keyboardVerticalOffset={-100} style={{ flex: 1 }}> */}
-                        {emptycomment && <Text style={styles.no}>No comments yet</Text>}
-                        <BottomSheetFlatList
-                            ref={flatListRef}
-                            data={allcomments}
-                            renderItem={comments}
-                            scrollEnabled={true}
-                            style={{ flex: 0.7, height: "100", overflow: "hidden" }}
-                        // contentContainerStyle={  }}
+                    <Text style={styles.comment}>Comments</Text>
+                    {/* <KeyboardAvoidingView behavior="" keyboardVerticalOffset={-100} style={{ flex: 1 }}> */}
+                    {emptycomment && <Text style={styles.no}>No comments yet</Text>}
+                    <BottomSheetFlatList
+                        ref={flatListRef}
+                        data={allcomments}
+                        renderItem={comments}
+                        scrollEnabled={true}
+                        style={{ flex: 0.7, height: "100", overflow: "hidden" }}
+                    // contentContainerStyle={  }}
 
+                    />
+                    {/* </KeyboardAvoidingView> */}
+                    <View
+                        style={styles.sc1}>
+                        <TextInput
+                            placeholder=""
+
+                            placeholderTextColor="#828282"
+                            style={styles.searchInput}
+                            value={commenttext}
+                            multiline={true}
+                            onChangeText={text => setcommenttext(text)}
                         />
-                        {/* </KeyboardAvoidingView> */}
-                        <View
-                            style={styles.sc1}>
-                            <TextInput
-                                placeholder=""
+                        <Pressable onPress={docomment} style={styles.send} >
 
-                                placeholderTextColor="#828282"
-                                style={styles.searchInput}
-                                value={commenttext}
-                                multiline={true}
-                                onChangeText={text => setcommenttext(text)}
-                            />
-                            <Pressable onPress={docomment} style={styles.send} >
-                                <Ionicons name="send" size={24} color="#00DE62" />
-                            </Pressable>
-                        </View>
-
-
-
-
+                            {uploadingcomment && <ActivityIndicator size={24} color="#00de62" />}
+                            {!uploadingcomment && <Ionicons name="send" size={24} color="#00DE62" />}
+                        </Pressable>
                     </View>
 
-                </BottomSheet>
 
-                {/* bottomsheet 4 */}
-            </GestureHandlerRootView>
 
+
+                </View>
+
+            </BottomSheet>
+
+            {/* bottomsheet 4 */}
 
 
         </SafeAreaView >

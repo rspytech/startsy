@@ -1,6 +1,6 @@
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
-import { SafeAreaView, Text, Pressable, TextInput, View, Image, StyleSheet, StatusBar, Platform, Animated, Easing, Dimensions, FlatList, ScrollView, Keyboard, KeyboardAvoidingView } from "react-native";
+import { SafeAreaView, Text, Pressable, TextInput, View, Image, StyleSheet, StatusBar, Platform, Animated, Easing, Dimensions, FlatList, ScrollView, Keyboard, KeyboardAvoidingView, TouchableOpacity, Linking } from "react-native";
 import Ionicons from '@expo/vector-icons/Ionicons';
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 // import { ScrollView } from "react-native-gesture-handler";
@@ -17,15 +17,22 @@ import { url } from "../../config.js"
 const Chat = ({ navigation, route }) => {
 
     const [newtext, setnewtext] = useState("")
-    const { item, messages, token } = route.params;
+    const { item, messages, token, photo1, photo2 } = route.params;
     const { extra } = route.params;
 
-    console.log(extra);
+    console.log(extra, "extra ");
+
+    console.log(messages, "message");
+
 
     const btn11 = useRef(null)
 
 
     function sendmessage() {
+
+
+        console.log("hiiii");
+
 
         if (newtext == "") {
             return
@@ -62,16 +69,16 @@ const Chat = ({ navigation, route }) => {
     useEffect(() => {
         var decode = jwtDecode(token);
         console.log(decode);
-        
+
         if (extra && extra.status) {
-            setnewtext(`${decode.userName} has considered yout application for ${extra.jobrole} Now you can chat for further discussion.`)
+            setnewtext(`${decode.userName} has considered your application for ${extra.jobrole} Now you can chat for further discussion.`)
         }
 
     }, [extra])
     console.log(item, "chatscreen ka item hai ");
 
     const jisuserkosendkarnahaiuskiid = item.user._id;
-    console.log(jisuserkosendkarnahaiuskiid);
+    console.log(jisuserkosendkarnahaiuskiid, "user id");
 
 
     const [data, setdata] = useState(null)
@@ -199,9 +206,13 @@ const Chat = ({ navigation, route }) => {
 
             // Keyboard event listeners
             const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", (e) => {
-                if (isActive) setoffset(e.endCoordinates.height);
                 console.log(e.endCoordinates.height);
                 console.log(height);
+
+                if (e.endCoordinates.height > 1) {
+
+                    if (isActive) setoffset(e.endCoordinates.height);
+                }
 
 
             });
@@ -227,32 +238,62 @@ const Chat = ({ navigation, route }) => {
 
 
 
-    
+    const urlRegex = /(https?:\/\/[^\s]+)/g;
+    const handlePress = (url) => {
+        Linking.openURL(url);
+    };
 
-    const renderItem = ({ item }) => {
+    const renderItem = ({ item, index }) => {
+
+        const renderMessage = (message) => {
+            const parts = message.split(urlRegex);
+
+            return parts.map((part, index) => {
+                if (part.match(urlRegex)) {
+                    return (
+                        
+                            <Text  onPress={() => handlePress(part)} style={{ color: '#000', alignSelf  : "flex-start", paddingTop : 0, fontSize : 16, fontWeight : "bold", textDecorationLine: 'underline'}}>
+                                {part}
+                            </Text>
+                       
+                    );
+                }
+                return <Text style={{backgroundColor : "" , marginTop : -10}} key={index}>{part}</Text>;
+            });
+        };
+
+
+
+        const dataLength = data.length;
         return (
-            <View style={[styles.message,
-            (item.senderId == jisuserkosendkarnahaiuskiid) ? styles.received : styles.sent
-            ]}>
-                <Text allowFontScaling={false} style={[(item.senderId != jisuserkosendkarnahaiuskiid) ? styles.senttext : styles.receivedtext]}>{item.message}</Text>
+            <View style={{ display: "flex", flex: 1, width: "100%" }}>
+                {index < dataLength - 1 && item.senderId != data[index + 1].senderId && <Image style={item.senderId == jisuserkosendkarnahaiuskiid ? styles.pfpleft : styles.pfpright} source={{ uri: item.senderId == jisuserkosendkarnahaiuskiid ? photo2 : photo1 }} />}
+
+                {index == dataLength - 1 && <Image style={item.senderId == jisuserkosendkarnahaiuskiid ? styles.pfpleft : styles.pfpright} source={{ uri: item.senderId == jisuserkosendkarnahaiuskiid ? photo2 : photo1 }} />}
+                <View style={[styles.message,
+                (item.senderId == jisuserkosendkarnahaiuskiid) ? styles.received : styles.sent
+                ]}>
+                    <Text allowFontScaling={false} style={[(item.senderId != jisuserkosendkarnahaiuskiid) ? styles.senttext : styles.receivedtext]}>
+                        {renderMessage(item.message)}
+                    </Text>
+                </View>
             </View>
         );
     };
 
-    const handleFocus = async (e) => {
+    const handleFocus = (e) => {
 
         setkeyboardstatus(true)
 
     };
     const marginBottom = new Animated.Value(0);
     useEffect(() => {
-
         Animated.timing(marginBottom, {
             toValue: keyboardstatus ? offset : 0, // Transition to either the offset or 0
             duration: 0, // 300ms transition
             useNativeDriver: false, // MarginBottom can't be animated natively
         }).start();
-    }, [keyboardstatus, offset]);
+    }, [keyboardstatus]);
 
     useEffect(() => {
         const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
@@ -287,6 +328,7 @@ const Chat = ({ navigation, route }) => {
                 <Pressable onPress={() => { navigation.goBack() }}>
                     <Ionicons name="arrow-back-circle-outline" size={40} color="#00DE62" />
                 </Pressable>
+
                 <Pressable
                     onPress={() => { handlenext() }}
                 >
@@ -300,10 +342,16 @@ const Chat = ({ navigation, route }) => {
                         </View>
                     </View>
                 </Pressable>
+
+
             </View>
 
+
+
+
             <KeyboardAvoidingView keyboardVerticalOffset={-100}
-                style={{ flex: keyboardstatus ? (1 - (offset / height) - 0.06) : 1 }}
+                keyboardShouldPersistTaps={false}
+                style={{ flex: keyboardstatus ? (1 - (offset / height) - 0.08) : 1 }}
             >
 
 
@@ -324,31 +372,47 @@ const Chat = ({ navigation, route }) => {
 
 
 
-            <KeyboardAvoidingView behavior="padding" >
-                <ScrollView style={{}}>
-                    <Pressable onPress={() => { setkeyboardstatus(true) }}>
-                        <Animated.View style={[styles.searchContainer, marginBottom]}>
-                            <TextInput
-                                ref={inputRef}
-                                allowFontScaling={false}
-                                multiline={true}
-                                style={styles.searchInput}
-                                placeholder="Type ..."
-                                placeholderTextColor="#828282"
-                                onFocus={handleFocus}
-                                onBlur={() => setkeyboardstatus(false)}
-                                onChangeText={(val) => setnewtext(val)}
-                                value={newtext}
-                            />
-                            <Pressable
-                                ref={btn11}
-                             style={styles.send} onPress={sendmessage}>
-                                <Ionicons name="send" size={24} color="#00DE62" />
-                            </Pressable>
-                        </Animated.View>
-                    </Pressable>
-                </ScrollView>
-            </KeyboardAvoidingView>
+
+
+            <View behavior="padding" >
+                {/* <ScrollView style={{}}> */}
+                {/* <Pressable onPress={() => { setkeyboardstatus(true) }}> */}
+                <Animated.View style={[styles.searchContainer, marginBottom]}>
+                    <TextInput
+                        ref={inputRef}
+                        autoCorrect={true}
+                        allowFontScaling={false}
+                        multiline={true}
+                        style={styles.searchInput}
+                        placeholder="Type ..."
+                        placeholderTextColor="#828282"
+                        onFocus={handleFocus}
+                        // onBlur={() => setkeyboardstatus(false)}
+                        onChangeText={(val) => setnewtext(val)}
+                        value={newtext}
+
+                        onTouchStart={(e) => {
+                            e.preventDefault(); // Prevent immediate focus
+                            setTimeout(() => {
+                                inputRef.current.focus();
+                            }, 500); // Delay focus by 500ms
+                        }}
+                    />
+
+
+
+                </Animated.View>
+
+                <TouchableOpacity
+
+                    ref={btn11}
+                    onTouchStart={() => { inputRef.current.focus(); }}
+                    style={styles.send} onPress={sendmessage}>
+                    <Ionicons name="send" size={24} color="#00DE62" />
+                </TouchableOpacity>
+                {/* </Pressable> */}
+                {/* </ScrollView> */}
+            </View>
 
 
 
@@ -392,6 +456,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         alignContent: "center",
         display: "flex",
+        // height: 100,
         width: "98%",
         // marginBottom: 320,
         // backgroundColor: "yellow",
@@ -407,7 +472,7 @@ const styles = StyleSheet.create({
     searchInput: {
         height: "auto",
         minHeight: 50,
-        width: width * 0.90,
+        width: width * 0.85,
         justifyContent: "flex-start",
         right: 0,
         alignSelf: "flex-start",
@@ -421,7 +486,7 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto",
         fontSize: 18,
         maxHeight: 100,
-        // backgroundColor : "red",
+        // backgroundColor: "red",
 
 
 
@@ -493,7 +558,8 @@ const styles = StyleSheet.create({
         height: "auto",
         minHeight: 42,
         marginBottom: 10,
-        marginTop: 0
+        marginTop: 0,
+        marginLeft: 30
     },
     senttext: {
         fontFamily: "Roboto",
@@ -503,14 +569,17 @@ const styles = StyleSheet.create({
         fontWeight: "bold",
         // backgroundColor: "red",
         borderRadius: 20,
+        alignSelf: "flex-end",
+
         borderBottomRightRadius: 2,
         borderWidth: 2,
         borderColor: "#00DE62",
         backgroundColor: "transparent",
         backgroundColor: "#00DE62",
         maxWidth: width * 0.6,
-        padding: 20,
+        padding: 15,
         paddingVertical: 10,
+        marginRight: 30
 
     },
     receivedtext: {
@@ -544,15 +613,32 @@ const styles = StyleSheet.create({
         // width: 20,
         // height: 20,
         position: "absolute",
-        elevation: 1000,
-        zIndex: 1000,
+        elevation: 10000,
+        zIndex: 100000,
         top: 12,
-        right: 10,
+        right: 20,
         transform: [{ scale: 1.1 }],
         alignSelf: "center",
         verticalAlign: "center",
         bottom: 0,
-    }
+    },
+    pfpleft: {
+        position: "absolute",
+        width: 25,
+        height: 25,
+        borderRadius: 100,
+        bottom: 10,
+    },
+    pfpright: {
+        position: "absolute",
+        width: 25,
+        height: 25,
+        right: 0,
+        borderRadius: 100,
+        bottom: 10,
+    },
+
+
 })
 
 

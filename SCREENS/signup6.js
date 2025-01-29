@@ -48,12 +48,10 @@ const Signup6 = ({ navigation, route }) => {
     // const final = new FormData
 
     var role = [
-        { label: "Learner", value: "Learner" },
         { label: "Job seeker", value: "Job seeker" },
         { label: "Startup Enthusiast", value: "Startup Enthusiast" },
         { label: "Mentor", value: "Mentor" },
         { label: "Networker", value: "Networker" },
-        { label: "Contributor", value: "Contributor" },
 
     ]
 

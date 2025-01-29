@@ -30,8 +30,8 @@ const data1 = Array(5).fill({
 
 const ConnectionsScreen = ({ navigation, search, token }) => {
 
-    console.log(search);
-    console.log(navigation);
+    // console.log(search);
+    // console.log(navigation);
 
 
     const [filtereddata, setfiltereddata] = useState([])
@@ -60,9 +60,9 @@ const ConnectionsScreen = ({ navigation, search, token }) => {
     const fetchData = async () => {
         var route = ""
         const decoded = jwtDecode(token);
-        console.log(decoded);
+        // console.log(decoded);
 
-        console.log(decoded.role);
+        // console.log(decoded.role);
 
 
         if (decoded.role == "Founder") {
@@ -72,7 +72,7 @@ const ConnectionsScreen = ({ navigation, search, token }) => {
             route = "investor/getInvestorChatUserList"
         }
         else if (decoded.role == "CommunityMember") {
-            console.log("fuck");
+            // console.log("fuck");
 
             route = "founder/getFounderChatUserList"
 
@@ -160,10 +160,10 @@ const ConnectionsScreen = ({ navigation, search, token }) => {
                     }
                 );
                 const result = await response.json();
-                // console.log(result.data.messages);
+                console.log(result , "chatscreen pe jaane se pehle");
                 // setData(result.data);
                 // setloading(false);
-                navigation.navigate("Chat", { item, messages: result.data?.messages || [], token, navigation });
+                navigation.navigate("Chat", { item, messages: result.data?.messages || [], token, navigation , photo1 : result.senderProfilePhoto , photo2 :result.recieverProfilePhoto });
 
             } catch (err) {
                 console.log(err, "eror");

@@ -138,7 +138,7 @@ const NewsLetter = ({ navigation, route }) => {
                     <Text style={styles.text}>
                         <Text numberOfLines={2}
                             ellipsizeMode="tail"
-                            allowFontScaling={false} style={styles.des}>Description:</Text> {item.title}
+                            allowFontScaling={false} style={styles.des}></Text>{item.title}
 
                     </Text>
 
@@ -150,7 +150,7 @@ const NewsLetter = ({ navigation, route }) => {
 
                         <AutoSizeText
                             numberOfLines={1}
-                            fontSize={12}
+                            fontSize={8}
                             mode={ResizeTextMode.max_lines}
                             ellipsizeMode='tail'
                             style={styles.time}>{time(item.taggedUser.createdAt)}
@@ -226,7 +226,7 @@ const NewsLetter = ({ navigation, route }) => {
                         <Text style={styles.text}>
                             <Text numberOfLines={2}
                                 ellipsizeMode="tail"
-                                allowFontScaling={false} style={styles.des}>Description: </Text>{item.content}
+                                allowFontScaling={false} style={styles.des}></Text>{item.title}
 
                         </Text>
 
@@ -356,6 +356,8 @@ const NewsLetter = ({ navigation, route }) => {
 
             </FlatList>}
 
+            
+
             {filterednewsletter && <FlatList
 
                 getItemLayout={(data, index) => ({
@@ -467,7 +469,7 @@ const styles = StyleSheet.create({
     },
     des: {
         fontFamily: "Roboto",
-        fontSize: scalingfactor * 12,
+        fontSize: scalingfactor * 14,
         fontWeight: "bold",
         color: "#D9D9D9",
         width: "80%"
@@ -494,12 +496,12 @@ const styles = StyleSheet.create({
         // margin: "auto",
         borderRadius: 12,
         alignSelf: "center",
-        width: "99%",
+        width: "102%",
         overflow: "hidden",
 
         marginBottom: 15,
         height: 140,
-        objectFit: "fill",
+        objectFit: "cover",
         maxHeight: 140,
     },
     image1: {
@@ -515,7 +517,7 @@ const styles = StyleSheet.create({
 
     },
     text: {
-        fontSize: 12,
+        fontSize: 13,
         fontFamily: "Roboto",
         color: "#B8B8B8",
         lineHeight: 16,
@@ -554,7 +556,7 @@ const styles = StyleSheet.create({
         fontFamily: "Alata",
         color: "#E9E9E9",
         fontSize: 14,
-        marginLeft: 10,
+        marginLeft: 5,
         // marginTop : -2
     },
     topu2: {
@@ -570,10 +572,10 @@ const styles = StyleSheet.create({
     time: {
         fontFamily: "Roboto",
         color: "#828282",
-        fontSize: 10,
+        fontSize: 8,
         alignSelf: "center",
         marginLeft: 5,
-        width: 60,
+        width: 50,
         // backgroundColor : "red"
     },
     circle: {

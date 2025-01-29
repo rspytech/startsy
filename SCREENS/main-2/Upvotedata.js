@@ -1,7 +1,7 @@
 
 import { useFocusEffect } from "expo-router";
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Text, StatusBar, View, Image,FlatList, TouchableOpacity, SafeAreaView, StyleSheet, RefreshControl, Dimensions, ScrollView, Pressable } from "react-native";
+import { Text, StatusBar, View, Image, FlatList, TouchableOpacity, SafeAreaView, StyleSheet, RefreshControl, Dimensions, ScrollView, Pressable } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import Upvote from "../../assets/icons/upvote.js"
 import Useradd from "../../assets/icons/useradd.js"
@@ -102,7 +102,9 @@ function Upvotedata({ navigation, token }) {
 
             console.log(result.data, "top 3 data ajilffkhedskfh");
 
-            var array = result.data.reverse()
+            var array = result.data.sort((a,b)=>new Date(b.timestamp) - new Date(a.timestamp))
+
+            // var array = result.data.reverse()
 
             setsubnotification(array);
 
@@ -336,39 +338,32 @@ function Upvotedata({ navigation, token }) {
         <View style={{ flex: 1, backgroundColor: "#16181a" }}>
 
 
-         <View style={styles.divider}></View>
+            <View style={styles.divider}></View>
 
 
             <FlatList
                 // style={{marginTop : 300}}
                 // style={{flex:1 , height : 100}}
                 scrollEnabled={true}
-                refreshControl={
-                    <RefreshControl
+                refreshControl={<RefreshControl progressViewOffset={0} refreshing={refreshing}
+                    onRefresh={() => {
+                        console.log("start");
+                        // setRefreshing(true)
 
-                        progressViewOffset={0}
-                        refreshing={refreshing}
-                        refreshControl={<RefreshControl progressViewOffset={0} refreshing={refreshing}
-                            onRefresh={() => {
-                                console.log("start");
-                                // setRefreshing(true)
+                        getdata();
+                        getData1()
 
-                                getdata();
-                                getData1()
-
-                                setTimeout(() => {
-                                    setRefreshing(false);
-                                }, 2000);
-                            }} />}
-                    />
-                }
+                        setTimeout(() => {
+                            setRefreshing(false);
+                        }, 2000);
+                    }} />}
 
                 ListHeaderComponent={top3data}
                 data={subnotification}
                 // data={[1, 2, 3, 4, 5, 6, 7, 8, 9, 10]}
                 renderItem={rendersub}
                 // renderItem={rendersub1}
-                contentContainerStyle={{   paddingBottom: 100, elevation: 1, backgroundColor: "#16181a" }}
+                contentContainerStyle={{ paddingBottom: 100, elevation: 1, backgroundColor: "#16181a" }}
 
 
             />

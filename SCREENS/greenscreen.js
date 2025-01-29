@@ -23,6 +23,7 @@ const Green = ({ navigation }) => {
     useFocusEffect(() => {
         StatusBar.setBackgroundColor("#16181a")
         StatusBar.setBarStyle("light-content")
+
     })
 
     const [state, setstate] = useState("")
@@ -30,13 +31,14 @@ const Green = ({ navigation }) => {
     const [showtoast, setshowtoast] = useState(false)
     const [falsetoken, setfalsetoken] = useState("")
     var temp;
+
+
     useEffect(() => {
         async function getToken() {
             temp = await AsyncStorage.getItem("accessToken");
             console.log(temp, "app khulte vakt toke hai ya nai");
 
             setfalsetoken(temp)
-
 
 
             if (temp == "" || temp == null || temp == undefined) {
@@ -46,6 +48,21 @@ const Green = ({ navigation }) => {
             if (temp) {
                 var decode = jwtDecode(temp)
                 console.log(decode);
+
+             console.log();
+             console.log(decode.exp * 1000 , "exp ");
+             console.log(new Date(decode.exp) , "new dtae ");
+             
+             console.log(Date.now());
+             
+                if(decode.exp*1000 < Date.now()) {
+                    console.log("expired");
+                    
+                   setstate("");
+                   return
+                    
+                }
+                
 
                 if (decode.status == false) {
                     setstate("")

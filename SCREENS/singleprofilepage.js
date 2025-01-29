@@ -14,6 +14,7 @@ import { Video } from 'expo-av';
 import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Share from "@/assets/icons/share.js";
 import styles from "../styles/post.js"
+import { useFocusEffect } from 'expo-router';
 
 const Singleprofilepage = ({ navigation, props }) => {
 
@@ -32,6 +33,25 @@ const Singleprofilepage = ({ navigation, props }) => {
   // console.log(messages);
   // console.log(mypage);
 
+
+
+
+  // useEffect(()=>{
+
+  //   console.log("newww single proile called");
+
+  //   setuserdata(null)
+  //   setposts(null)
+  // } , [token , props])
+
+ 
+
+  useFocusEffect(
+    React.useCallback(() => {
+      setuserdata(null)
+      setposts([])
+    }, [])
+  );
 
 
 
@@ -80,13 +100,13 @@ const Singleprofilepage = ({ navigation, props }) => {
       // console.log(data.data);
       setposts(data.data.posts.reverse())
 
-      if(data.data.posts && data.data.posts.length > 0){
+      if (data.data.posts && data.data.posts.length > 0) {
         setposts(data.data.posts.reverse())
-    }
-    else{
-        setPosts([])
-        
-    }
+      }
+      else {
+        setposts([])
+
+      }
       console.log('====================================');
       console.log(data.data.hiddenInfo);
       console.log('====================================');
@@ -451,11 +471,11 @@ const Singleprofilepage = ({ navigation, props }) => {
 
 
             {userdata.user_id.role == "CommunityMember" &&
-              <Text style={styles1.goal}>Bio : {userdata.tagline}</Text>
+              <Text style={styles1.goal}>{userdata.tagline}</Text>
             }
 
             {userdata.user_id.role == "CommunityMember" &&
-              <Text style={styles1.fund}>Skills : {userdata.skills}</Text>
+              <Text style={styles1.fund}>{userdata.skills}</Text>
             }
 
 

@@ -334,8 +334,13 @@ const InvestorCard = ({ token, navigation }) => {
                     {item.investor.role == "Founder" && <Text style={styles.info}>Stage of Startup - {item.investor.roleId.hiddenInfo.stageOfStartup} </Text>}
                     {item.investor.role == "Founder" && <Text style={styles.info1}>Startup Sector - {item.investor.roleId.hiddenInfo.sector}</Text>}
 
-                    {item.investor.role == "CommunityMember" && <Text style={styles.info}>Goal - {item.investor.roleId.previousExperience} years</Text>}
-                    {item.investor.role == "CommunityMember" && <Text style={styles.info1}>Skills - {item.investor.roleId.investmentRange}</Text>}
+                    {(item.investor.role == "CommunityMember" && item.investor.roleId.skills != "") &&
+                        <Text style={styles.info}>Goal - {item.investor.roleId.skills}</Text >}
+                    {(item.investor.role == "CommunityMember" && item.investor.roleId.tagline != "") &&
+                        <Text style={styles.info}>Goal - {item.investor.roleId.tagline}</Text >}
+
+
+                    
 
 
 
@@ -348,7 +353,7 @@ const InvestorCard = ({ token, navigation }) => {
                         </Pressable>
                     </View>
                 </LinearGradient>
-            </Animated.View>
+            </Animated.View >
         );
     }
 
@@ -360,8 +365,8 @@ const InvestorCard = ({ token, navigation }) => {
         )
     }
 
-    function header1(){
-        return(
+    function header1() {
+        return (
             <>{items && items.length == 0 && <Header1 />}</>
         )
     }

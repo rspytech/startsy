@@ -130,7 +130,8 @@ const ChatScreen = ({ navigation, token }) => {
                 <Tab.Screen
 
                     name="Requests"
-                    component={Communities}
+                    // component={Communities}
+                    children={(props) => <Communities navigation={navigation} token={token} />}
                     options={{
                         tabBarLabel: ({ focused }) => (
                             <Text allowFontScaling={false} style={[
@@ -172,16 +173,17 @@ const styles = StyleSheet.create({
         fontSize: 35,
         fontWeight: "bold",
         color: "#00DE62",
-        marginVertical: 20,
+        marginVertical: 5,
+        marginBottom : 10,
         marginLeft: 20,
         fontFamily: "myanmar",
     },
     searchContainer: {
-        marginHorizontal: 20,
-        marginBottom: 10,
+        marginHorizontal: 15,
+        marginBottom: 6,
     },
     searchInput: {
-        height: 50,
+        height: 45,
         borderColor: "#00DE62",
         borderWidth: 1,
         borderRadius: 30,
@@ -244,17 +246,17 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 30,
         textAlign: "center",
-        height: 48,
+        height: 50,
         display: "flex",
         justifyContent: "center",
-        alignItems: "center",
-        alignSelf: "center",
+        alignItems: "flex-start",
         width: width * 0.44,
         // zIndex: 100,
         fontFamily: "Alata",
         fontSize: 20,
         textAlign: "center",
         textAlignVertical: "center",
+        // paddingTop : 4,
         textTransform: "capitalize",
         borderWidth: 1,
         borderRadius: 30,

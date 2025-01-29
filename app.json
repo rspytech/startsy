@@ -9,7 +9,8 @@
     "resizeMode": "contain",
     "userInterfaceStyle": "dark",
     "splash": {
-      "resizeMode": "cover",
+      "image": "./assets/images/logofinal.png", 
+      "resizeMode": "contain",
       "backgroundColor": "#16181a"
     },
     "ios": {

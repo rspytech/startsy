@@ -66,7 +66,7 @@ const Main2 = ({ navigation }) => {
 
             const temp = await AsyncStorage.getItem("accessToken");
             console.log('====================================');
-            console.log("main screen pe anne ke baad ke token" , temp);
+            console.log("main screen pe anne ke baad ke token", temp);
             console.log('====================================');
             setToken(temp);
         }
@@ -130,6 +130,8 @@ const Main2 = ({ navigation }) => {
         )
     }
 
+    const mainpagebottomsheet = useRef()
+    const snap = useMemo(() => ['70%'], []);
 
     return (
 
@@ -190,7 +192,7 @@ const Main2 = ({ navigation }) => {
                     />
                     <Tab.Screen
                         name="Startsy"
-                        children={(props) => <Foryou navigation={navigation} scroll={updatescroll} token={token} />}
+                        children={(props) => <Foryou navigation={navigation} scroll={updatescroll} token={token} mainpagebottomsheet={mainpagebottomsheet} />}
                         options={{
                             tabBarLabel: "",
                             tabBarIcon: ({ focused }) => (
@@ -243,6 +245,84 @@ const Main2 = ({ navigation }) => {
                     />
 
                 </Tab.Navigator>
+
+                <BottomSheet
+
+
+                    enablePanDownToClose
+                    backgroundStyle={{ backgroundColor: '#1A1D1F', borderRadius: 30 }} // Changes the background of the sheet itself
+                    handleIndicatorStyle={{ backgroundColor: '#00de62' }}
+                    ref={mainpagebottomsheet}
+                    snapPoints={snap}
+                    index={-1} // Initially closed
+                    contentContainerStyle={{ zIndex: 100, elevation: 20, }}
+
+
+                >
+                    <View style={{ flex: 0.92 }}>
+                    </View>
+
+                </BottomSheet>
+
+                <BottomSheet
+
+
+                    enablePanDownToClose
+                    backgroundStyle={{ backgroundColor: '#1A1D1F', borderRadius: 30 }} // Changes the background of the sheet itself
+                    handleIndicatorStyle={{ backgroundColor: '#00de62' }}
+                    ref={mainpagebottomsheet}
+                    snapPoints={snap}
+                    index={-1} // Initially closed
+                    contentContainerStyle={{ zIndex: 100, elevation: 20, }}
+
+
+                >
+                    <View style={{ flex: 0.92 }}>
+                    </View>
+
+                </BottomSheet>
+
+                <BottomSheet
+
+
+                    enablePanDownToClose
+                    backgroundStyle={{ backgroundColor: '#1A1D1F', borderRadius: 30 }} // Changes the background of the sheet itself
+                    handleIndicatorStyle={{ backgroundColor: '#00de62' }}
+                    ref={mainpagebottomsheet}
+                    snapPoints={snap}
+                    index={-1} // Initially closed
+                    contentContainerStyle={{ zIndex: 100, elevation: 20, }}
+
+
+                >
+                    <View style={{ flex: 0.92 }}>
+                    </View>
+
+                </BottomSheet>
+
+                <BottomSheet
+
+
+                    enablePanDownToClose
+                    backgroundStyle={{ backgroundColor: '#1A1D1F', borderRadius: 30 }} // Changes the background of the sheet itself
+                    handleIndicatorStyle={{ backgroundColor: '#00de62' }}
+                    ref={mainpagebottomsheet}
+                    snapPoints={snap}
+                    index={-1} // Initially closed
+                    contentContainerStyle={{ zIndex: 100, elevation: 20, }}
+
+
+                >
+                    <View style={{ flex: 0.92 }}>
+                    </View>
+
+                </BottomSheet>
+
+
+
+
+
+
 
 
                 {/* </NavigationContainer> */}

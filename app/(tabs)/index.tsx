@@ -27,6 +27,7 @@ import Signup13 from "../../SCREENS/Signup13.js";
 import Main1 from "../../SCREENS/Main1.js";
 import Main2 from "../../SCREENS/Main2.js";
 import Chat from "../../SCREENS/main-1/CHATSCREEN.js";
+import Chat1 from "../../SCREENS/main-1/GROUPCHATSCREEN.js";
 import ChatScreen from "../../SCREENS/main-1/Message.js";
 import ConnectionsScreen from "../../SCREENS/main-1/connection.js";
 import Card from "../../SCREENS/main-1/Card.js";
@@ -63,8 +64,8 @@ import { StatusBar, Platform } from "react-native";
 import { useFocusEffect } from "expo-router";
 // import ReadMore1 from "../../SCREENS/trial-1.js";
 
-SplashScreen.preventAutoHideAsync();
 const Stack = createNativeStackNavigator();
+SystemUI.setBackgroundColorAsync("#16181a");
 
 LogBox.ignoreLogs([
   // "VirtualizedLists should never be nested", // Example warning
@@ -77,7 +78,10 @@ console.warn = (message, ...args) => {
   if (
     // message.includes("VirtualizedLists should never be nested") || // Suppress specific warning
     message.includes('Each child in a list should have a unique "key" prop.') ||
-    message.includes("Encountered an error while measuring a list's offset from its containing VirtualizedList.") // Another specific warning
+    message.includes('Non-serializable') ||
+    message.includes(
+      "Encountered an error while measuring a list's offset from its containing VirtualizedList."
+    ) // Another specific warning
   ) {
     return; // Block these warnings
   }
@@ -90,6 +94,12 @@ export default function App() {
   useEffect(() => {
     StatusBar.setBackgroundColor("#16181a");
     StatusBar.setBarStyle("light-content");
+  }, []);
+
+  useEffect(() => {
+    setTimeout(() => {
+      SplashScreen.preventAutoHideAsync();
+    }, 0);
   }, []);
 
   useFocusEffect(() => {
@@ -147,6 +157,7 @@ export default function App() {
           <Stack.Screen name="Wait" component={Wait} />
           {/* <Stack.Screen name="Connectionscreen" component={ConnectionsScreen} /> */}
           <Stack.Screen name="Chat" component={Chat} />
+          <Stack.Screen name="Chat1" component={Chat1} />
 
           {/* <Stack.Screen name="Main1" component={Main1} /> */}
           {/* <Stack.Screen name="Main2" component={Main2} /> */}
