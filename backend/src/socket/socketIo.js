@@ -85,7 +85,7 @@ export const configureSocketIO = (server) => {
                     conversation.members.push(userId);
                     await conversation.save();
                 }
-                
+
                 socket.join(groupId);
 
                 console.log(`User ${userId} joined group ${groupId}`);
@@ -108,7 +108,7 @@ export const configureSocketIO = (server) => {
                 }
     
                 // Save group message
-                const newMessage = await Message.create({ senderId, message });
+                const newMessage = await Message.create({ senderId, message, groupId });
     
                 conversation.messages.push(newMessage._id);
                 conversation.lastMessage = newMessage._id;

@@ -16,6 +16,10 @@ const messageSchema = new mongoose.Schema({
             }
         ]
     },
+    groupId:{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Community",
+    },
     createdAt: {
         type: Date,
         default: Date.now,
