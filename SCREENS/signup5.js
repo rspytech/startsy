@@ -333,6 +333,7 @@ const Signup5 = ({ navigation, route }) => {
     }
 
     // const [open, setOpen] = useState(false);
+    const [open11, setOpen11] = useState(false);
 
 
     const handleOutsideTouch = () => {
@@ -362,6 +363,12 @@ const Signup5 = ({ navigation, route }) => {
         { label: "Others (Type)", value: "OTHERS" },
 
     ]
+
+    const genderlist = [
+        { label: "Male", value: "Male" },
+        { label: "Female", value: "Female" },
+        { label: "Other", value: "Other" },
+    ]
     // const [open , setOpen] = useState(true)
     function seteducation() {
         console.log("education");
@@ -375,58 +382,58 @@ const Signup5 = ({ navigation, route }) => {
     return (
 
 
-        <SafeAreaView style={{ flex: 1 , backgroundColor : "#16181a" }}>
-            <ScrollView nestedScrollEnabled={true} style={[{ flex: 1, backgroundColor: "#16181a", paddingBottom: 50 , paddingBottom : 50  } ,signup3styles.container]}>
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#16181a" }}>
+            <ScrollView nestedScrollEnabled={true} style={[{ flex: 1, backgroundColor: "#16181a", paddingBottom: 50, paddingBottom: 50 }, signup3styles.container]}>
                 {/* <KeyboardAwareScrollView enableOnAndroid={true} extraHeight={0} extraScrollHeight={0} enableAutomaticScroll={true} style={signup3styles.container}> */}
-                    {/* <ScrollView style={signup3styles.row}> */}
+                {/* <ScrollView style={signup3styles.row}> */}
 
 
 
-                    {/* Top Section */}
-                    <View style={signup3styles.top}>
-                        <View style={signup3styles.left}>
-                            <Image style={signup3styles.logo} source={require("../assets/images/logo.png")} />
-                        </View>
-                        <View style={signup3styles.right}>
-                            {renderline()}
-                        </View>
+                {/* Top Section */}
+                <View style={signup3styles.top}>
+                    <View style={signup3styles.left}>
+                        <Image style={signup3styles.logo} source={require("../assets/images/logo.png")} />
                     </View>
+                    <View style={signup3styles.right}>
+                        {renderline()}
+                    </View>
+                </View>
 
 
 
-                    {/* Bottom Section */}
-                    <ScrollView nestedScrollEnabled={true} style={s5.bottom}>
-                        <View style={{ paddingBottom: 10, flex: 1, borderTopLeftRadius: 100 }}>
-                            <Pressable onPress={fileupload}>
-                                {image != "xyz" ? (
-                                    <Image style={styles.img} source={{ uri: image }} />
-                                ) : (
-                                    // <Image style={styles.img1} source={require("../assets/images/User_light.png")} />
-                                    <Profile />
-                                )}
-                            </Pressable>
-                            <Text style={s5.t1}>Upload a profile picture</Text>
-                            {errors.image && <Text style={[styles.errorText, { textAlign: "center" }]}>{errors.image}</Text>}
-                            <View style={{ marginTop: 30 }}>
-                                <TextInput
-                                    allowFontScaling={false}
-                                    placeholder="Full name"
-                                    placeholderTextColor="#B8B8B8"
-                                    style={s5.input}
-                                    value={fullname}
-                                    onChangeText={(text) => { setfullname(text) }}
-                                />
-                                {errors.fullname && <Text style={styles.errorText}>{errors.fullname}</Text>}
-                                <TextInput
-                                    allowFontScaling={false}
-                                    placeholder="Email address"
-                                    placeholderTextColor="#B8B8B8"
-                                    style={[s5.input, { marginBottom: 12 }]}
-                                    value={email}
-                                    onChangeText={(text) => { setemail(text) }}
-                                />
-                                {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
-                                {/* <View>
+                {/* Bottom Section */}
+                <ScrollView nestedScrollEnabled={true} style={s5.bottom}>
+                    <View style={{ paddingBottom: 10, flex: 1, borderTopLeftRadius: 100 }}>
+                        <Pressable onPress={fileupload}>
+                            {image != "xyz" ? (
+                                <Image style={styles.img} source={{ uri: image }} />
+                            ) : (
+                                // <Image style={styles.img1} source={require("../assets/images/User_light.png")} />
+                                <Profile />
+                            )}
+                        </Pressable>
+                        <Text style={s5.t1}>Upload a profile picture</Text>
+                        {errors.image && <Text style={[styles.errorText, { textAlign: "center" }]}>{errors.image}</Text>}
+                        <View style={{ marginTop: 30 }}>
+                            <TextInput
+                                allowFontScaling={false}
+                                placeholder="Full name"
+                                placeholderTextColor="#B8B8B8"
+                                style={s5.input}
+                                value={fullname}
+                                onChangeText={(text) => { setfullname(text) }}
+                            />
+                            {errors.fullname && <Text style={styles.errorText}>{errors.fullname}</Text>}
+                            <TextInput
+                                allowFontScaling={false}
+                                placeholder="Email address"
+                                placeholderTextColor="#B8B8B8"
+                                style={[s5.input, { marginBottom: 12 }]}
+                                value={email}
+                                onChangeText={(text) => { setemail(text) }}
+                            />
+                            {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+                            {/* <View>
                                         <Pressable onPress={handleRotate}>
                                             <TextInput
                                                 ref={myElementRef}
@@ -457,54 +464,56 @@ const Signup5 = ({ navigation, route }) => {
                                         </Pressable>
                                     </View> */}
 
-                                <Drop items={country1} open={open} setOpen={setOpen} onValueChange={setcountry} nestedScrollEnabled={true} extra={true} />
-                                {errors.country && <Text style={styles.errorText}>{errors.country}</Text>}
+                            <Drop items={country1} open={open} setOpen={setOpen} onValueChange={setcountry} nestedScrollEnabled={true} extra={true} />
+                            {errors.country && <Text style={styles.errorText}>{errors.country}</Text>}
 
 
 
-                                <TextInput
+                            <TextInput
 
 
-                                    allowFontScaling={false}
-                                    placeholder="Phone number"
-                                    placeholderTextColor="#B8B8B8"
-                                    style={[s5.input, { marginTop: 20 }]}
-                                    value={number}
-                                    onChangeText={(text) => { setnumber(text) }}
-                                />
-                                {errors.number && <Text style={styles.errorText}>{errors.number}</Text>}
-                                <TextInput
-                                    allowFontScaling={false}
-                                    placeholder="Age (Years)"
-                                    placeholderTextColor="#B8B8B8"
-                                    style={s5.input}
-                                    value={age}
-                                    onChangeText={(text) => { setage(text) }}
-                                />
-                                {errors.age && <Text style={styles.errorText}>{errors.age}</Text>}
-                                <TextInput
-                                    allowFontScaling={false}
-                                    placeholder="Gender"
-                                    placeholderTextColor="#B8B8B8"
-                                    style={s5.input}
-                                    value={gender}
-                                    onChangeText={(text) => { setgender(text) }}
-                                />
-                                {errors.gender && <Text style={styles.errorText}>{errors.gender}</Text>}
+                                allowFontScaling={false}
+                                placeholder="Phone number"
+                                placeholderTextColor="#B8B8B8"
+                                style={[s5.input, { marginTop: 20 }]}
+                                value={number}
+                                onChangeText={(text) => { setnumber(text) }}
+                            />
+                            {errors.number && <Text style={styles.errorText}>{errors.number}</Text>}
+                            <TextInput
+                                allowFontScaling={false}
+                                placeholder="Age (Years)"
+                                placeholderTextColor="#B8B8B8"
+                                style={s5.input}
+                                value={age}
+                                onChangeText={(text) => { setage(text) }}
+                            />
+                            {errors.age && <Text style={styles.errorText}>{errors.age}</Text>}
+                            {/* <TextInput
+                                allowFontScaling={false}
+                                placeholder="Gender"
+                                placeholderTextColor="#B8B8B8"
+                                style={s5.input}
+                                value={gender}
+                                onChangeText={(text) => { setgender(text) }}
+                            /> */}
+                            <Drop up={true} items={genderlist} open={open11} setOpen={setOpen11} onValueChange={(e)=>setgender(e)} nestedScrollEnabled={true} extra={true} gender={true} />
 
-                                <View style={s5.icons}>
-                                    <Pressable onPress={() => { navigation.goBack() }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
-                                    <Pressable onPress={() => { handleSubmit() }}><FontAwesome6 name="chevron-right" size={40} color="#00DF60" /></Pressable>
-                                </View>
+                            {errors.gender && <Text style={styles.errorText}>{errors.gender}</Text>}
 
+                            <View style={s5.icons}>
+                                <Pressable onPress={() => { navigation.goBack() }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
+                                <Pressable onPress={() => { handleSubmit() }}><FontAwesome6 name="chevron-right" size={40} color="#00DF60" /></Pressable>
                             </View>
-
 
                         </View>
 
-                    </ScrollView>
 
-                    {/* </ScrollView> */}
+                    </View>
+
+                </ScrollView>
+
+                {/* </ScrollView> */}
                 {/* </KeyboardAwareScrollView> */}
             </ScrollView>
         </SafeAreaView>

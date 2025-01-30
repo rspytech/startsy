@@ -1,5 +1,5 @@
-import React, { useEffect, useState, useRef, useCallback } from 'react';
-import { View, Text, Image, FlatList, StatusBar, ActivityIndicator, RefreshControl, StyleSheet, BackHandler, SafeAreaView, ScrollView, Pressable } from "react-native";
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
+import { View, Text, Image, FlatList, StatusBar, ActivityIndicator, RefreshControl, StyleSheet, BackHandler, SafeAreaView, ScrollView, Pressable, TextInput } from "react-native";
 import Entypo from '@expo/vector-icons/Entypo';
 import EvilIcons from '@expo/vector-icons/EvilIcons'; import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
 import Banner from "../assets/icons/banner.js"
@@ -15,6 +15,10 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Share from "@/assets/icons/share.js";
 import styles from "../styles/post.js"
 import { useFocusEffect } from 'expo-router';
+import { jwtDecode } from 'jwt-decode';
+import BottomSheet, { BottomSheetView, BottomSheetScrollView, BottomSheetTextInput, BottomSheetDraggableView, BottomSheetFlatList, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+
+import Ionicons from '@expo/vector-icons/Ionicons';
 
 const Singleprofilepage = ({ navigation, props }) => {
 
@@ -25,6 +29,9 @@ const Singleprofilepage = ({ navigation, props }) => {
   const item = route.params.item
   const messages = route.params.messages
   const mypage = route.params.mypage
+
+  const snapPoints5 = useMemo(() => ["50%", "100%"], []);
+
 
   // console.log(id);
   // console.log(token);
@@ -44,7 +51,64 @@ const Singleprofilepage = ({ navigation, props }) => {
   //   setposts(null)
   // } , [token , props])
 
- 
+
+
+
+  async function docomment() {
+    console.log("doing comment");
+    console.log(postid);
+    console.log(commenttext);
+    setuploadingcomment(true)
+
+
+    try {
+
+      const response = await fetch(`${url}posts/createComment/${postid}`, {
+        method: 'POST',
+        body: JSON.stringify({ comment: commenttext }),
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+      setemptycomment(false)
+
+      console.log(response.status);
+      setcommenttext("");
+
+      var object = {
+        comment: commenttext,
+        createdAt: new Date(),
+        userId: {
+          profilePhoto: data.profilePhoto,
+          userName: data.userName,
+        }
+      }
+      var newarray = [...allcomments]
+      newarray.unshift(object)
+      setallcomments(newarray)
+
+
+      const scrollToTop = () => {
+        flatListRef.current?.scrollToOffset({ offset: 0, animated: false });
+      };
+      scrollToTop();
+      scrollToTop();
+
+    }
+    catch (err) {
+      console.log(err);
+
+    }
+    finally {
+      setuploadingcomment(false)
+      // Keyboard.dismiss();
+    }
+
+  }
+
 
   useFocusEffect(
     React.useCallback(() => {
@@ -53,7 +117,54 @@ const Singleprofilepage = ({ navigation, props }) => {
     }, [])
   );
 
+  const comments = ({ item, index }) => {
 
+    function time(time) {
+      // console.log('====================================');
+      // console.log(time);
+      var data1 = new Date(time)
+      // console.log('====================================');
+      // console.log(data1);
+      // console.log('====================================');
+      // console.log('====================================');
+      var seconds = Math.floor((new Date() - data1) / 1000);
+
+      var interval = seconds / 31536000;
+
+      if (interval > 1) {
+        return Math.floor(interval) + " years ago";
+      }
+      interval = seconds / 2592000;
+      if (interval > 1) {
+        return Math.floor(interval) + " months ago";
+      }
+      interval = seconds / 86400;
+      if (interval > 1) {
+        return Math.floor(interval) + " days ago";
+      }
+      interval = seconds / 3600;
+      if (interval > 1) {
+        return Math.floor(interval) + " hours ago";
+      }
+      interval = seconds / 60;
+      if (interval > 1) {
+        return Math.floor(interval) + " minutes ago";
+      }
+      return Math.floor(seconds) + " seconds ago";
+    }
+    return (
+      <View key={index} style={styles.listItem}>
+        <Image
+          source={{ uri: item.userId.profilePhoto }}
+          style={styles.avatar} />
+        <View style={styles.textContainer}>
+          <Text allowFontScaling={false} style={styles.username}>{item.userId.userName}</Text>
+          <Text allowFontScaling={false} style={styles.message}>{item.comment.trim()}</Text>
+        </View>
+        <Text allowFontScaling={false} style={styles.time}>{time(item.createdAt)}</Text>
+      </View>
+    )
+  }
 
   const [investor, setinvestorarray] = useState([]);
   const [noninvestor, setnoninvestor] = useState([]);
@@ -85,36 +196,57 @@ const Singleprofilepage = ({ navigation, props }) => {
         },
       });
       const data = await response.json();
-      console.log(data);
+      // console.log(data.data.posts[0]);
+      // console.log(data.data.posts[0]);
 
-      console.log(data.status, "abhi ka");
+      // console.log(data.status, "abhi ka");
 
       // console.log(data.data.user_id.profilePhoto);
       // console.log(response.status);
-      // console.log(data);
+      // console.log(data.data.posts, "yeh saara data hai");
+      // console.log(data.data);
+
 
 
 
       setinvestorarray(data.data.chatUsers.filter((e) => e.role == "Investor"))
       setnoninvestor(data.data.chatUsers.filter((e) => e.role != "Investor"))
-      // console.log(data.data);
-      setposts(data.data.posts.reverse())
+      console.log(data.data.user_id._id, "okkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkkk");
 
-      if (data.data.posts && data.data.posts.length > 0) {
-        setposts(data.data.posts.reverse())
+      var decode = jwtDecode(token)
+
+
+
+
+      var data1 = data.data.posts.map(e => {
+
+        console.log(e);
+
+        var object = { ...e, isliked: e.likedBy ? e.likedBy.includes(decode._id) : false, Applied: e.communityPost ? e.communityPost.communityMembers.includes(decode._id) : false, Jobapplied: e.jobPosts ? e.jobPosts.jobApplicants.includes(decode._id) : false }
+        return object
+      })
+
+      console.log(data1);
+
+
+
+
+
+      if (data1) {
+        setposts(data1)
       }
       else {
         setposts([])
 
       }
-      console.log('====================================');
-      console.log(data.data.hiddenInfo);
-      console.log('====================================');
+      // console.log('====================================');
+      // console.log(data.data.hiddenInfo);
+      // console.log('====================================');
       setuserdata(data.data)
 
       setImage(data.data.user_id.bannerImage)
 
-      console.log(data.status, "oiuy");
+      // console.log(data.status, "oiuy");
       // setImage(data.data.user_id.bannerImage)
       setconnecteddata(data.status)
 
@@ -163,6 +295,8 @@ const Singleprofilepage = ({ navigation, props }) => {
 
   const renderItem = ({ item, index }) => {
 
+
+
     const isVideoPlaying = videoStates[item._id] || false;
 
     function currency(pay) {
@@ -181,11 +315,12 @@ const Singleprofilepage = ({ navigation, props }) => {
               <Image style={styles.userimg} source={{ uri: userdata.user_id.profilePhoto }} />
               <View style={styles.userdetail}>
                 <Text allowFontScaling={false} style={styles.u1}>{userdata.user_id.userName}</Text>
-                <Text allowFontScaling={false} style={styles.u2}>{userdata.user_id.role}</Text>
+                <Text allowFontScaling={false} style={styles.u2}>{userdata.user_id.role == "CommunityMember" ? "Member" : userdata.user_id.role}</Text>
+                <Text allowFontScaling={false} style={styles.u1}>hello</Text>
               </View>
             </Pressable>
           </View>
-          {item.type == "photo" && <Image style={styles.template} source={{ uri: item.mediaUrl }} />}
+          {item.type == "photo" && <Image style={[styles.template, { aspectRatio: item.aspectRatio ? item.aspectRatio : 1 / 1 }]} source={{ uri: item.mediaUrl }} />}
           {item.type == "video" &&
             <Video
               ref={ref => videoRefs.current[item._id] = ref}
@@ -206,6 +341,7 @@ const Singleprofilepage = ({ navigation, props }) => {
                 {!item.isliked && <Upvote width={36} height={36} style={{ marginHorizontal: 5 }} />}
                 {item.isliked && <Upvote width={36} height={36} style={{ marginHorizontal: 5 }} selected={true} />}
               </Pressable>
+              <Text style={{ left: -10, top: 13, color: "#00de62" }}>{item.likedBy.length}</Text>
               <Pressable onPress={() => { opencomment(item._id) }}><FontAwesome name="comment-o" size={30} color="#00DE62" /></Pressable>
             </View>
             <Share style={{ marginTop: 5, marginRight: 10, right: 0 }} />
@@ -534,13 +670,99 @@ const Singleprofilepage = ({ navigation, props }) => {
   }
 
 
-  function upvotepost() {
+  async function upvotepost(id, index) {
+    // console.log(id);
+    // console.log(index);
+
+    var toset = !posts[index].isliked
+    console.log(toset);
+
+    var status = toset ? "like" : "unlike"
+
+    setposts(posts.map((e, i) => {
+      if (i == index) {
+        var object = { ...e, isliked: !e.isliked }
+        return object
+      }
+      else return e
+    }))
+
+    try {
+
+      const response = await fetch(`${url}posts/upvotePost/${id}/${status}`, {
+        method: 'POST',
+        body: "",
+        headers: {
+          "Content-Type": "application/json",
+          accept: "application/json",
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      console.log(data);
+      console.log(response.status);
+
+    }
+    catch (err) {
+      // setloading(false)
+      console.log(err);
+
+    }
+
 
   }
 
-  function opencomment() {
+
+  const [comment, setcomment] = useState(false)
+  const [co, setiscommentopen] = useState(false)
+  const [allcomments, setallcomments] = useState([])
+  const [postid, setpostid] = useState(null)
+  const bottomSheetRef5 = useRef(null);
+  const [emptycomment, setemptycomment] = useState(false)
+
+
+
+
+  async function opencomment(id) {
+    setcomment(true)
+    bottomSheetRef5.current?.expand();
+    setpostid(id);
+    setiscommentopen(true)
+
+    console.log("open comment");
+
+
+    try {
+      console.log(token);
+      const response = await fetch(`${url}posts/getComments/${id}`, {
+        method: 'GET',
+        headers: {
+          "Authorization": `Bearer ${token}`,
+        },
+      });
+      const data = await response.json();
+      // console.log(response.status);
+      console.log(data.data);
+      setallcomments(data.data)
+      if (data.data.length == 0) {
+        setemptycomment(true)
+      }
+      else {
+        setemptycomment(false)
+
+      }
+
+    }
+    catch (err) {
+      console.log(err);
+    }
+
+
 
   }
+
+
+
   const [viewableItems, setViewableItems] = useState([]);
   const [videoStates, setVideoStates] = useState({});
   const videoRefs = useRef({});
@@ -571,6 +793,22 @@ const Singleprofilepage = ({ navigation, props }) => {
     viewAreaCoveragePercentThreshold: 80, // Item is considered viewable if 50% is visible
   };
 
+  const [status1, setstatus] = useState(false)
+  const renderBackdrop = (props) => (
+    <BottomSheetBackdrop
+      {...props}
+      disappearsOnIndex={-1} // Backdrop disappears when BottomSheet is closed
+      appearsOnIndex={0} // Backdrop appears when BottomSheet is open
+      opacity={0.7} // Set opacity for the backdrop
+    />
+  );
+
+  const flatListRef = useRef(null);
+  const [commenttext, setcommenttext] = useState("")
+  const [uploadingcomment, setuploadingcomment] = useState(false)
+
+
+
   return (
 
 
@@ -595,6 +833,68 @@ const Singleprofilepage = ({ navigation, props }) => {
         renderItem={renderItem}
         contentContainerStyle={{ paddingBottom: 50 }}
       />}
+
+
+      <BottomSheet
+
+
+        overlayColor="rgba(0, 0, 0, 0.9)"
+        backdropComponent={renderBackdrop}
+        enablePanDownToClose
+        backgroundStyle={{ backgroundColor: '#1A1D1F', borderRadius: 30 }} // Changes the background of the sheet itself
+        handleIndicatorStyle={{ backgroundColor: '#00de62' }}
+
+        ref={bottomSheetRef5}
+        snapPoints={snapPoints5}
+        onClose={() => {
+          setcomment(false)
+          setstatus(false)
+          setiscommentopen(false);
+        }}
+        index={-1} // Initially closed
+        contentContainerStyle={{ zIndex: 100, elevation: 20, }}
+
+
+      >
+        <View style={{ flex: 0.92 }}>
+
+          <Text style={styles.comment}>Comments</Text>
+          {/* <KeyboardAvoidingView behavior="" keyboardVerticalOffset={-100} style={{ flex: 1 }}> */}
+          {emptycomment && <Text style={styles.no}>No comments yet</Text>}
+          <BottomSheetFlatList
+            ref={flatListRef}
+            data={allcomments}
+            renderItem={comments}
+            scrollEnabled={true}
+            style={{ flex: 0.7, height: "100", overflow: "hidden" }}
+          // contentContainerStyle={  }}
+
+          />
+          {/* </KeyboardAvoidingView> */}
+          <View
+            style={styles.sc1}>
+            <TextInput
+              placeholder=""
+
+              placeholderTextColor="#828282"
+              style={styles.searchInput}
+              value={commenttext}
+              multiline={true}
+              onChangeText={text => setcommenttext(text)}
+            />
+            <Pressable onPress={docomment} style={styles.send} >
+
+              {uploadingcomment && <ActivityIndicator size={24} color="#00de62" />}
+              {!uploadingcomment && <Ionicons name="send" size={24} color="#00DE62" />}
+            </Pressable>
+          </View>
+
+
+
+
+        </View>
+
+      </BottomSheet>
 
 
     </SafeAreaView>

@@ -21,6 +21,7 @@ import NewsletterPage from "./main-2/news1.js"
 
 import NewsLettericon from "../assets/icons/Newsletter.js"
 import Box from "../assets/icons/box.js"
+import Startsy2 from "../assets/icons/startsy2.js"
 import main from "../styles/main.js"
 import Foryou from "./main-1/Foryou.js"
 import Apnauser from "./Apnauser.js"
@@ -112,6 +113,11 @@ const Main1 = ({ navigation }) => {
         extrapolate: "clamp",
     })
 
+    function closeall() {
+        console.log("hi");
+
+    }
+
 
     return (
         <SafeAreaView style={main.container}>
@@ -173,6 +179,12 @@ const Main1 = ({ navigation }) => {
                             tabBarLabel: "",
                             tabBarIcon: ({ focused }) => (
                                 <Image style={{ width: 45, height: 45 }} source={require("../assets/images/logo.png")} />
+                                // focused ? (
+                                // ) : (
+                                //     <View style={{ flex: 1, width: 38, marginLeft: 0, justifyContent: "center", height: 30 }}>
+                                //         <Startsy2/>
+                                //     </View>
+                                // )
                             ),
                         }}
                     />
@@ -189,8 +201,8 @@ const Main1 = ({ navigation }) => {
                     />
                     <Tab.Screen
                         name="Profile"
-                       
-                        children={()=><Apnauser navigation={navigation} token={token} />}
+
+                        children={() => <Apnauser closeall={closeall} mainpagebottomsheet={"mainpagebottomsheet"} navigation={navigation} token={token} />}
                         options={{
 
                             tabBarLabel: "",
@@ -199,10 +211,10 @@ const Main1 = ({ navigation }) => {
                             ),
                         }}
                     />
-                     <Tab.Screen
+                    <Tab.Screen
                         name="NewsletterPage"
                         component={NewsletterPage} // Replace with the desired component
-                        
+
                         options={{
                             tabBarButton: () => null, // Hides the tab from the bar
                             tabBarVisible: false,     // Ensures it doesn't take space in the bar
@@ -211,7 +223,7 @@ const Main1 = ({ navigation }) => {
                     <Tab.Screen
                         name="Singleprofilepage"
                         // component={Singleprofilepage} // Replace with the desired component
-                        children={()=><Singleprofilepage navigation={navigation}/>}
+                        children={() => <Singleprofilepage navigation={navigation} />}
                         options={{
                             tabBarButton: () => null, // Hides the tab from the bar
                             tabBarVisible: false,     // Ensures it doesn't take space in the bar

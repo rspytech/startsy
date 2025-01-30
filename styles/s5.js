@@ -37,7 +37,7 @@ const s5 = StyleSheet.create({
         // paddingBottom: scalingfactor * 5,
         width: "92%",
         paddingBottom : 8,
-        fontFamily: "Alata",
+        fontFamily: "Roboto",
         fontWeight: '0',
         lineHeight: scalingfactor * 18,
         marginTop: scalingfactor * 20,

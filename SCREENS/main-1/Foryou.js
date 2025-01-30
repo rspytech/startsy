@@ -327,11 +327,11 @@ const Foryou = ({ scroll, navigation, token }) => {
                                 </View>
                             </Pressable>
                         </View>
-                        {item.type == "photo" && <Image style={styles.template} source={{ uri: item.mediaUrl }} />}
+                        {item.type == "photo" && <Image style={[styles.template, { aspectRatio: item.aspectRatio ? item.aspectRatio : 1 / 1 }]} source={{ uri: item.mediaUrl }} />}
                         {item.type == "video" &&
                             <Video
                                 ref={ref => videoRefs.current[item._id] = ref}
-                                style={styles.template}
+                                style={[styles.template, { aspectRatio: item.aspectRatio ? item.aspectRatio : 1 / 1 }]}
                                 source={{ uri: item.mediaUrl }}
                                 useNativeControls // Enables native playback controls
                                 resizeMode="contain" // Adjusts video to fit within the view
@@ -348,8 +348,16 @@ const Foryou = ({ scroll, navigation, token }) => {
                                     {!item.isliked && <Upvote width={36} height={36} style={{ marginHorizontal: 5 }} />}
                                     {item.isliked && <Upvote width={36} height={36} style={{ marginHorizontal: 5 }} selected={true} />}
                                 </Pressable>
+                                <Text style={{ left: -10, top: 13, color: "#00de62" }}>{item.likedBy.length}</Text>
+
                             </View>
                             <Share style={{ marginTop: 5, marginRight: 10, right: 0 }} />
+
+
+
+                        </View>
+                        <View style={styles.lower}>
+                            <Text allowFontScaling={false} style={[styles.u3, { paddingLeft: 10 }]}>{item.caption != undefined ? item.caption : "caption"} </Text>
 
 
                         </View>

@@ -40,7 +40,7 @@ const RequestsScreen = () => (
 );
 
 
-const ChatScreen = ({ navigation, token }) => {
+const ChatScreen = ({ navigation, token , mainpagebottomsheet , closeall }) => {
 
     // console.log(token, "dskljkuyhfdsajjsd");
 
@@ -50,18 +50,16 @@ const ChatScreen = ({ navigation, token }) => {
 
     useFocusEffect(
         useCallback(() => {
+            closeall()
             const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-
-                console.log('====================================');
-                console.log("hiiiiiiiiiii");
-                console.log('====================================');
+               
                 navigation.navigate("Startsy");
                 return true;
             });
 
             return () => backHandler.remove();
 
-        })
+        } , [])
     )
 
 

@@ -296,7 +296,7 @@ const InvestorCard = ({ token, navigation }) => {
                     <View style={styles.header}>
                         <Pressable
                             onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.investor._id, page: "bell" }) }}
-                            style={{ display: "flex", flexDirection: "row", width: "80%" }}
+                            style={{ display: "flex", flexDirection: "row", width: "70%" }}
                         >
                             <Image
                                 source={{ uri: item.investor.profilePhoto }}

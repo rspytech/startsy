@@ -16,7 +16,7 @@ import { jwtDecode } from "jwt-decode";
 import Upvotedata from "./Upvotedata.js"
 import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
 
-const Notification = ({ token, navigation }) => {
+const Notification = ({ token, navigation , mainpagebottomsheet , closeall }) => {
 
     const [data, setdata] = useState(null)
     const [subnotification, setsubnotification] = useState([])
@@ -27,6 +27,10 @@ const Notification = ({ token, navigation }) => {
         investorUpvotes: 0
 
     })
+
+    useFocusEffect(
+        useCallback(()=>{closeall()} , [])
+    )
 
     
     const Tab = createMaterialTopTabNavigator();

@@ -29,7 +29,7 @@ import { url } from "../../config.js"
 import { GlobalContext } from "@/Global/globalcontext.js";
 // import styles from "@/styles/l.js";
 
-const NewsLetter = ({ navigation, route }) => {
+const NewsLetter = ({ navigation, route , mainpagebottomsheet , closeall }) => {
 
 
     const data = [1, 2, 3]
@@ -43,6 +43,12 @@ const NewsLetter = ({ navigation, route }) => {
         console.log(globaldata, "global data");
         setToken(globaldata.token);
     }, [globaldata])
+
+    useFocusEffect(
+        useCallback(()=>{
+           closeall()
+        } , [])
+    )
 
 
     const [newsletter, setnewsletter] = useState([])

@@ -132,7 +132,7 @@ const NewsLetter = ({ navigation, route }) => {
                     <Text style={styles.text}>
                         <Text numberOfLines={2}
                             ellipsizeMode="tail"
-                            allowFontScaling={false} style={styles.des}>Description:</Text> {item.title}
+                            allowFontScaling={false} style={styles.des}></Text>{item.title}
 
                     </Text>
 
@@ -208,7 +208,7 @@ const NewsLetter = ({ navigation, route }) => {
                         <Text style={styles.text}>
                             <Text numberOfLines={2}
                                 ellipsizeMode="tail"
-                                allowFontScaling={false} style={styles.des}>Description: </Text>{item.content}
+                                allowFontScaling={false} style={styles.des}></Text>{item.title}
 
                         </Text>
 
@@ -382,7 +382,7 @@ const styles = StyleSheet.create({
 
         marginBottom: 15,
         height: 140,
-        objectFit: "fill",
+        objectFit: "cover",
         maxHeight: 140,
     },
     image1: {
@@ -437,7 +437,7 @@ const styles = StyleSheet.create({
         fontFamily: "Alata",
         color: "#E9E9E9",
         fontSize: 14,
-        marginLeft: 10,
+        marginLeft: 4,
         // marginTop : -2
     },
     topu2: {

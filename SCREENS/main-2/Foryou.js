@@ -23,11 +23,12 @@ import {
     ToastAndroid,
     Alert,
     TouchableOpacity,
+    Modal
 
 } from "react-native";
 
 const { width } = Dimensions.get('window');
-var newwidth = width*0.9
+var newwidth = width * 0.9
 
 import AsyncStorage from "@react-native-async-storage/async-storage";
 
@@ -65,11 +66,12 @@ import { url } from "../../config.js"
 import { useRoute } from "@react-navigation/native";
 import { Keyboard } from "react-native";
 import { jwtDecode } from "jwt-decode";
-const Foryou = ({ scroll, navigation, token, mainpagebottomsheet }) => {
+const Foryou = ({ scroll, navigation, token, mainpagebottomsheet, opencomment, visible, setVisible, co }) => {
 
 
 
     const [allpost, setallpost] = useState([])
+
     const [willopen, setwillopen] = useState(false)
     const [ready, setready] = useState(false)
     const [uploadingcomment, setuploadingcomment] = useState(false)
@@ -90,7 +92,6 @@ const Foryou = ({ scroll, navigation, token, mainpagebottomsheet }) => {
     useEffect(() => {
         if (token != "") {
             console.log(token, "foryou page ka token fuck");
-
             const decode = jwtDecode(token);
             console.log(decode);
 
@@ -105,17 +106,9 @@ const Foryou = ({ scroll, navigation, token, mainpagebottomsheet }) => {
     const [loading, setloading] = useState(true)
     const [loading1, setloading1] = useState(true)
 
-    const [p1u, setp1u] = useState(false)
-    const [p2u, setp2u] = useState(false)
-    const [p3u, setp3u] = useState(false)
-    const [p4u, setp4u] = useState(false)
 
-    const [p1text, setp1text] = useState("Post")
-    const [p2text, setp2text] = useState("Post")
-    const [p3text, setp3text] = useState("Post")
-    const [p4text, setp4text] = useState("Post")
 
-    const [co, setiscommentopen] = useState(false)
+    // const [co, setiscommentopen] = useState(false)
     const [allcomments, setallcomments] = useState([])
 
     const [postid, setpostid] = useState(null)
@@ -137,20 +130,28 @@ const Foryou = ({ scroll, navigation, token, mainpagebottomsheet }) => {
 
 
     useEffect(() => {
-        // Listener for the hardware back button
         const backAction = () => {
             console.log(co);
             console.log(co, "cooo");
 
+            console.log("exiting");
+
+
 
             if (co == true) {
+                console.log("ok");
+
                 bottomSheetRef5.current?.close();
                 setiscommentopen(false);
                 return true; // Prevent default behavior
             }
 
             else {
-                BackHandler.exitApp()
+
+                console.log("hahahah");
+
+                // BackHandler.exitApp()
+                return true; // Prevent default behavior
             }
         };
 
@@ -173,22 +174,16 @@ const Foryou = ({ scroll, navigation, token, mainpagebottomsheet }) => {
             const data = await response.json();
 
             console.log(data.data);
-            
-
-            // console.log(data.data[0]);
-            console.log(response.status);
-            // console.log(data.data[data.data.length - 1]);
-            
-            // console.log(data.data[data.data.length - 1].communityPost.communityMembers, "data hau yeh");
-
+            var decode = jwtDecode(token)
+            var loggedinUserID = decode._id
 
             var data1 = data.data.map(e => {
-                
-                var object = { ...e, isliked: e.likedBy.includes(loggedinUserID), Applied: e.communityPost ? e.communityPost.communityMembers.includes(loggedinUserID) : false , Jobapplied : e.jobPosts ? e.jobPosts.jobApplicants.includes(loggedinUserID) : false}
+
+                var object = { ...e, isliked: e.likedBy.includes(loggedinUserID), Applied: e.communityPost ? e.communityPost.communityMembers.includes(loggedinUserID) : false, Jobapplied: e.jobPosts ? e.jobPosts.jobApplicants.includes(loggedinUserID) : false }
                 return object
             })
 
-            // console.log(data1[0]);
+            console.log(data1[0], "data1");
 
 
 
@@ -215,17 +210,31 @@ const Foryou = ({ scroll, navigation, token, mainpagebottomsheet }) => {
     useEffect(() => {
         // console.log("start");
 
-        console.log('====================================');
-        console.log("all post function call karne se pehle yeh hai token", token);
-        console.log("all post function call karne se pehle yeh hai token", allpost);
-        console.log('====================================');
+
         if (token != "" && token != null && token != undefined) {
             getpost()
         }
 
     }, [token, ready])
 
+    const openBottomSheet = () => {
+        setwillopen(true)
+        // mainflatlist.current.setNativeProps({
+        //     style: {
+        //         position: "absolute",
+        //     },
+        // });
 
+        console.log("open");
+
+        setfirstbottomsheet(true)
+        function open() {
+            bottomSheetRef.current?.expand();
+            setstatus(true)
+        };
+        mainpagebottomsheet.current?.expand();
+        open()
+    }
 
 
     const [uri, setImage] = useState(null)
@@ -308,367 +317,9 @@ const Foryou = ({ scroll, navigation, token, mainpagebottomsheet }) => {
 
 
 
-    const post1 = async function () {
-        setp1u(true)
-        let hasError = false;
-        if (communityname == "") {
-            console.log("1");
-
-            seterr1(true)
-            hasError = true
-        }
-        if (description == "") {
-            console.log("2");
-
-            seterr2(true)
-            hasError = true
-        }
-        if (rule1 == "") {
-            console.log("3");
-
-            seterr3(true)
-            hasError = true
-        }
-
-        if (hasError) {
-            setp1u(false)
-            return
-        };
-
-        if (p1u) {
-            setp1u(false)
-            return
-        }
-
-        const postType = "communityPost"; // Define postType value
-        const finaldata = {
-            "communityName": communityname,
-            "communityDescription": description,
-            "communityRules": rule1
-        };
-
-        try {
-            const response = await fetch(`${url}posts/createCommunityPost/${postType}`, {
-                method: 'POST',
-                body: JSON.stringify(finaldata), // Convert object to JSON string
-                headers: {
-                    'Content-Type': 'application/json', // Explicitly set content type
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Server Error: ${response.status} - ${errorText}`);
-            }
-
-            const data = await response.json();
-            setp1text("Posted")
-            setcommunityname("")
-            setdescription("")
-            setrules("")
-            setdropdownvalue("")
-
-
-            console.log(data);
-            bottomSheetRef.current?.close()
-            setTimeout(() => {
-                bottomSheetRef1.current?.close();
-                setp1text("Post")
-            }, 1000);
-        } catch (err) {
-            console.error("Error:", err);
-        }
-        finally {
-            setp1u(false)
-        }
-    };
-    const post2 = async function () {
-        setp2u(true)
-        let hasError = false;
-        if (content == "") {
-            seterr4(true)
-            hasError = true
-        }
-        if (caption == "") {
-            console.log("3");
-            seterr5(true)
-            hasError = true
-        }
-
-        if (hasError) { return };
-        if (p2u) return
-
-        const postType = "textBlog"; // Define postType value
-        const finaldata = {
-            "caption": caption,
-            "content": content,
-        };
-        console.log(finaldata);
-        console.log(`${url}posts/createPost/${postType}`);
-
-
-
-        try {
-            const response = await fetch(`${url}posts/createPost/${postType}`, {
-                method: 'POST',
-                body: JSON.stringify(finaldata), // Convert object to JSON string
-                headers: {
-                    "Content-Type": "application/json",
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Server Error: ${response.status} - ${errorText}`);
-            }
-
-            const data = await response.json();
-            setp2text("Posted")
-            console.log(data);
-            bottomSheetRef.current?.close()
-            setTimeout(() => {
-                setcontent("")
-                setcaption("")
-                setp2text("Post")
-
-                bottomSheetRef2.current?.close();
-            }, 1000);
-        } catch (err) {
-            console.error("Error:", err);
-        }
-        finally {
-            setp2u(false)
-            seterr4(false)
-            seterr5(false)
-        }
-    };
-    const post4 = async function () {
-        let joberror = false
-
-        setp4u(true);
-        if (role4 == "") {
-            seterr10(true)
-            joberror = true
-        }
-        if (description4 == "") {
-            seterr11(true)
-            joberror = true
-
-        }
-        if (duration4 == "") {
-            seterr12(true)
-            joberror = true
-        }
-        if (pay4 == "") {
-            seterr13(true)
-            joberror = true
-        }
-
-        if (joberror == true) {
-            setp4u(false)
-            return
-        }
-
-        if (isNaN(duration4) || duration4 < 0 || duration4 > 100) {
-            seterr14(true)
-            setp4u(false)
-            joberror = true
-            return
-        }
-        if (isNaN(pay4) || pay4 < 0 || pay4 > 1000000000) {
-            seterr15(true)
-            setp4u(false)
-            joberror = true
-            return
-        }
-        if (joberror == true) {
-            setp4u(false)
-            return
-        }
-
-        const postType = "jobPost"; // Define postType value
-        const finaldata = {
-            "role": role4,
-            "description": description4,
-            "duration": duration4,
-            "pay": pay4,
-        };
-        if (p4u) { return }
-
-        console.log('====================================');
-        console.log(finaldata);
-        console.log('====================================');
-
-        try {
-            const response = await fetch(`${url}posts/createJobPost/${postType}`, {
-                method: 'POST',
-                body: JSON.stringify(finaldata), // Convert object to JSON string
-                headers: {
-                    'Content-Type': 'application/json',
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Server Error: ${response.status} - ${errorText}`);
-            }
-
-            const data = await response.json();
-            setp4text("Posted")
-            console.log(data);
-            bottomSheetRef.current?.close()
-            setTimeout(() => {
-                setrole4("")
-                setduration4("")
-                setpay4("")
-                setdescription4("")
-                setp4text("Post")
-                bottomSheetRef4.current?.close();
-            }, 1000);
-        } catch (err) {
-            console.error("Error:", err);
-        }
-        finally {
-            setp4u(false);
-
-        }
-    };
-    const post3 = async function () {
-        setp3u(true)
-        let hasError = false;
-        if (uri == "") {
-            seterr6(true)
-            hasError = true
-        }
-        if (c2 == "") {
-            seterr7(true)
-            hasError = true
-        }
-
-        if (hasError) {
-            setp3u(false)
-            return
-        };
-        if (p3u) {
-            setp3u(false)
-            return
-        };
-
-        // Define postType value
-
-        const finaldata = new FormData()
-        if (uri) {
-            finaldata.append("media", {
-                uri: uri,
-                type: "image/jpeg",
-                name: `image_${Date.now()}.jpg`,
-            })
-        }
-        finaldata.append("caption", c2)
-        finaldata.append("aspectRatio", newaspect)
-
-
-
-        console.log(finaldata);
-
-
-        try {
-            if (type == "images") {
-                type = "photo"
-            }
-            const response = await fetch(`${url}posts/createPost/${type}`, {
-                method: 'POST',
-                body: finaldata, // Convert object to JSON string
-                headers: {
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
-            });
-
-            if (!response.ok) {
-                const errorText = await response.text();
-                throw new Error(`Server Error: ${response.status} - ${errorText}`);
-            }
-
-            const data = await response.json();
-            setp3text("Posted")
-            console.log(data);
-            bottomSheetRef.current?.close()
-            setTimeout(() => {
-                bottomSheetRef3.current?.close();
-            }, 3000);
-        } catch (err) {
-            console.error("Error:", err);
-        }
-        finally {
-            setp3u(false)
-            seterr6(false)
-            seterr7(false)
-            setc2("")
-            setp3text("Post")
-
-        }
-    };
-
-
-    // Function to open the bottom sheet
-    const openBottomSheet = () => {
-        setwillopen(true)
-        // mainflatlist.current.setNativeProps({
-        //     style: {
-        //         position: "absolute",
-        //     },
-        // });
-
-        console.log("open");
-
-        // setfirstbottomsheet(true)
-        function open() {
-            bottomSheetRef.current?.expand();
-            setstatus(true)
-        };
-        // mainpagebottomsheet.current?.expand();
-        open()
-    }
-    const openBottomSheet1 = () => {
-        setfirstbottomsheet1(true)
-        bottomSheetRef1.current?.expand();
-        seterr1(false)
-        seterr2(false)
-        seterr3(false)
-        setstatus(true)
-    };
-    const openBottomSheet2 = () => {
-        bottomSheetRef2.current?.expand();
-        seterr4(false)
-        seterr5(false)
-        setstatus(true)
-    };
-    const openBottomSheet3 = () => {
-        bottomSheetRef3.current?.expand();
-        setstatus(true)
-        seterr7(false)
-        seterr6(false)
-    };
-    const openBottomSheet4 = () => {
-        bottomSheetRef4.current?.expand();
-        setstatus(true)
-        seterr10(false)
-        seterr11(false)
-        seterr12(false)
-        seterr13(false)
-        seterr14(false)
-        seterr15(false)
-    };
-
 
     function closebottomsheet() {
+        mainpagebottomsheet.current?.close()
         bottomSheetRef1.current?.close();
         bottomSheetRef.current?.close();
 
@@ -709,43 +360,6 @@ const Foryou = ({ scroll, navigation, token, mainpagebottomsheet }) => {
     );
 
 
-    async function opencomment(id) {
-        setcomment(true)
-        bottomSheetRef5.current?.expand();
-        setpostid(id);
-        setiscommentopen(true)
-
-        console.log("open comment");
-
-
-        try {
-            console.log(token);
-            const response = await fetch(`${url}posts/getComments/${id}`, {
-                method: 'GET',
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                },
-            });
-            const data = await response.json();
-            // console.log(response.status);
-            console.log(data.data);
-            setallcomments(data.data)
-            if (data.data.length == 0) {
-                setemptycomment(true)
-            }
-            else {
-                setemptycomment(false)
-
-            }
-
-        }
-        catch (err) {
-            console.log(err);
-        }
-
-
-
-    }
 
 
     async function docomment() {
@@ -881,10 +495,10 @@ const Foryou = ({ scroll, navigation, token, mainpagebottomsheet }) => {
     async function applycommunity(id, index) {
 
 
-        if(allpost[index].Applied){
+        if (allpost[index].Applied) {
             console.log("vaapis");
             return
-            
+
         }
 
 
@@ -1005,7 +619,7 @@ const Foryou = ({ scroll, navigation, token, mainpagebottomsheet }) => {
                 return
             }
 
-            
+
 
 
 
@@ -1018,7 +632,7 @@ const Foryou = ({ scroll, navigation, token, mainpagebottomsheet }) => {
                     return pay.toLocaleString("en-IN")
                 }
 
-                function getVideoHeight(){
+                function getVideoHeight() {
                     return item.aspectRatio === "16/9" ? newwidth * (9 / 16) : newwidth * (1 / 1);
                 }
                 if (item.type == "photo" || item.type == "textBlog" || item.type == "video") {
@@ -1039,7 +653,7 @@ const Foryou = ({ scroll, navigation, token, mainpagebottomsheet }) => {
                             {item.type == "video" &&
                                 <Video
                                     ref={ref => videoRefs.current[item._id] = ref}
-                                    style={[styles.template ,{width: newwidth,  height: getVideoHeight(item.aspectRatio)}]}
+                                    style={[styles.template, { width: newwidth, height: getVideoHeight(item.aspectRatio) }]}
                                     source={{ uri: item.mediaUrl }}
                                     useNativeControls // Enables native playback controls
                                     resizeMode="cover" // Adjusts video to fit within the view
@@ -1047,7 +661,6 @@ const Foryou = ({ scroll, navigation, token, mainpagebottomsheet }) => {
                                     shouldPlay={isVideoPlaying}
                                 />
                             }
-                            <Text> {item.aspectRatio}</Text>
                             {item.type == "textBlog" && <Text style={styles.blogtext}>{item.content}</Text>}
 
                             <View style={styles.iconcontainer}>
@@ -1057,10 +670,10 @@ const Foryou = ({ scroll, navigation, token, mainpagebottomsheet }) => {
                                         {/* {!item.likedBy.includes(loggedinUserID)   && <Upvote width={36} height={36} style={{ marginLeft: 5, marginRight: -5 }} />} */}
 
                                         {!item.isliked && <Upvote width={36} height={36} style={{ marginLeft: 5, marginRight: -5 }} />}
-                                        {item.isliked && <Upvote width={36} height={36} style={{ marginHorizontal: 0 }} selected={true} />}
+                                        {item.isliked && <Upvote width={36} height={36} style={{ marginLeft: 5, marginRight: -5 }} selected={true} />}
                                     </TouchableOpacity>
-                                    <Text style={{ left: -5, top: 12, color: "#00de62" }}>{item.likedBy.length}</Text>
-                                    <Pressable onPress={() => { opencomment(item._id) }}><FontAwesome name="comment-o" size={30} color="#00DE62" /></Pressable>
+                                    <Text style={{ left: 0, top: 13, color: "#00de62" }}>{item.likedBy.length}</Text>
+                                    <Pressable onPress={() => { opencomment(item._id) }}><FontAwesome style={{ marginLeft: 4 }} name="comment-o" size={30} color="#00DE62" /></Pressable>
                                 </View>
                                 <Share style={{ marginTop: 5, marginRight: 10, right: 0 }} />
 
@@ -1264,6 +877,11 @@ const Foryou = ({ scroll, navigation, token, mainpagebottomsheet }) => {
         )
     }
 
+
+
+    // const [visible, setVisible] = useState(false);
+
+
     const askAspectRatio = async () => {
         // Ask user to choose aspect ratio
         const options = [
@@ -1272,66 +890,15 @@ const Foryou = ({ scroll, navigation, token, mainpagebottomsheet }) => {
             { label: "4:3 (Standard)", aspect: [4, 3] },
         ];
 
-        Alert.alert("Choose Aspect Ratio", "", options.map(({ label, aspect }) => ({
-            text: label,
-            onPress: () => {
 
-                var newaspect = `${aspect[0]}/${aspect[1]}`;
-                console.log(newaspect);
-                setnewaspect(newaspect)
+        setVisible(true)
 
-                setaspect(aspect)
-                fileupload(aspect).then(() => openBottomSheet3())
-            }
-        })), { cancelable: true });
+
 
 
     };
 
-    const fileupload = async (aspect) => {
-        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
-        if (permissionResult.granted === false) {
-            alert("Permission to access camera roll is required!");
-            return;
-        }
 
-
-
-
-        // Launch the image picker
-        const result = await ImagePicker.launchImageLibraryAsync({
-            mediaTypes: ImagePicker.MediaTypeOptions.All,
-            allowsEditing: true,
-            aspect: aspect,
-            quality: 1,
-
-        });
-
-
-        if (!result.canceled) {
-            const imageUri = result.assets[0].uri;
-
-            console.log('====================================');
-            console.log(result.assets[0].type);
-            console.log(result.assets[0].mimeType);
-            console.log('====================================');
-
-            setImage(imageUri); // Set the selected image URI
-
-            if (result.assets[0].type == "image") {
-                settype("photo")
-            }
-            else settype(result.assets[0].type)
-            // setfilename(result.assets)
-
-
-            openBottomSheet3()
-            console.log("Image URI:", imageUri);
-
-
-        }
-
-    }
 
 
     const renderBackdrop = (props) => (
@@ -1445,6 +1012,10 @@ const Foryou = ({ scroll, navigation, token, mainpagebottomsheet }) => {
                 <Text allowFontScaling={false} style={main.headertext}>For you</Text>
             </Animated.View> */}
 
+
+            {/* <CustomAlert visible={visible} onClose={() => setVisible(false)} /> */}
+
+
             {allpost.length > 0 && <FlatList
                 simultaneousHandlers="bottomSheet"
                 ListHeaderComponent={Header}
@@ -1514,581 +1085,10 @@ const Foryou = ({ scroll, navigation, token, mainpagebottomsheet }) => {
 
 
 
-            <BottomSheet
 
 
-                overlayColor="rgba(0, 0, 0, 0.9)"
-                // backdropComponent={renderBackdrop}
-                enablePanDownToClose
-                backgroundStyle={{ backgroundColor: '#16181a', borderRadius: 30 }} // Changes the background of the sheet itself
-                handleIndicatorStyle={{ backgroundColor: '#00de62' }}
-                style={{ zIndex: 10 }}
-                ref={bottomSheetRef}
-                snapPoints={snapPoints}
-                onClose={() => {
-                    // setTimeout(() => {
-                    //     // setfirstbottomsheet(false)
-                    // }, 1000);
-                    // Keyboard.dismiss()
 
-                    // mainflatlist.current.setNativeProps({
-                    //     style: {
-                    //         position: "relative",
-                    //     },
-                    // });
-                    setstatus(false)
-                    setp1u(false)
-                    setwillopen(false)
 
-                }}
-                index={-1} // Initially closed
-
-
-            >
-                <BottomSheetContent />
-            </BottomSheet>
-
-            {/* bottomsheet 1 */}
-
-            {willopen && <BottomSheet
-                nestedScrollEnabled={true}
-                overlayColor="rgba(0, 0, 0, 0.5)"
-                enablePanDownToClose
-                backgroundStyle={{ backgroundColor: '#16181a', borderRadius: 30 }}
-                // backgroundStyle={{ backgroundColor: 'red', borderRadius: 30 }}
-                // height={100}
-                handleIndicatorStyle={{
-                    backgroundColor: '#00de62',
-                    width: 70,
-                    marginTop: 20
-
-                }}
-                onClose={() => { setp2u(false) }}
-                style={{ marginTop: 60 }}
-
-                ref={bottomSheetRef1}
-                snapPoints={snapPoints1}
-                index={-1} // Initially closed
-
-            >
-
-                <View style={{ height: 80, marginTop: -5 }} ><B1 /></View>
-                <BottomSheetScrollView
-                    nestedScrollEnabled={true} style={{
-                        flex: 1,
-                        minHeight: 2000,
-                        // backgroundColor: "red",
-                        flexGrow: 1
-
-                    }}>
-                    <BottomSheetTextInput
-                        allowFontScaling={false}
-                        placeholder="Community name"
-                        placeholderTextColor="#B8B8B8"
-                        style={styles.input}
-                        value={communityname}
-                        onTextInput={() => {
-                            if (err1) seterr1(false)
-                            if (err2) seterr2(false)
-                            if (err3) seterr3(false)
-                        }
-                        }
-                        onChangeText={(text) => { setcommunityname(text) }}
-                    />
-                    {err1 && <Text style={styles.error}> *please enter this field</Text>}
-
-
-                    <Text style={{
-                        fontSize: 20,
-                        width: "92%",
-                        paddingLeft: 10,
-                        marginHorizontal: "auto",
-                        color: "#B8B8B8"
-                    }}>Description:</Text>
-
-                    <BottomSheetView style={{ position: "relative" }}>
-                        <Text style={[styles.t2, styles.count]}>{textlength}/100</Text>
-                        <BottomSheetTextInput
-                            keyboardBehavior="interactive"
-
-                            allowFontScaling={false}
-                            placeholder=""
-                            placeholderTextColor="#B8B8B8"
-                            style={styles.input1}
-                            maxLength={100}
-                            multiline={true}
-                            // onFocus={handleOutsideTouch}
-                            // onPress={handleOutsideTouch}
-                            value={description}
-                            onTextInput={() => {
-                                if (err1) seterr1(false)
-                                if (err2) seterr2(false)
-                                if (err3) seterr3(false)
-                            }
-                            }
-                            onChangeText={(text) => {
-                                setdescription(text)
-                                counttext(text)
-                            }}
-                        />
-
-                    </BottomSheetView>
-                    {err2 && <Text style={styles.error}> *please enter this field</Text>}
-
-                    {/* <Drop items={role} onValueChange={handlerule} open={open1} setOpen={setOpen1} nestedScrollEnabled={true} extra={true} bottomsheet /> */}
-                    <Pressable style={styles.dropdownbox} onPress={() => {
-                        if (err1) seterr1(false)
-                        if (err2) seterr2(false)
-                        if (err3) seterr3(false)
-                        setlist(!list)
-                    }}>
-                        <TextInput
-                            editable={false}
-
-
-                            placeholder="Rules"
-                            placeholderTextColor={"#AEAFAF"}
-                            value={rule1}
-                            style={{
-                                color: '#AEAFAF',
-                                fontFamily: 'Alata',
-                                fontSize: 20,
-                                marginTop: -3,
-                            }}
-
-                        />
-                        {!list && <FontAwesome6 style={styles.icon} name="chevron-down" size={20} color="#00DE62" />}
-                        {list && <FontAwesome6 style={styles.icon} name="chevron-up" size={20} color="#00DE62" />}
-                    </Pressable>
-                    {list && <BottomSheetScrollView
-                        nestedScrollEnabled
-
-                        vertical
-
-                        style={{
-                            height: 200,
-                            width: "90%",
-                            margin: "auto",
-                            // justifyContent: 'center',
-                            backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                            borderBottomColor: 'black',
-                            borderBottomWidth: 1,
-                            height: 200,
-                            includeFontPadding: false,
-                        }}
-                    >
-
-                        {role.map(item => {
-                            return (
-                                <Pressable key={item.value} onPress={() => {
-                                    setrules(rules)
-                                    setdropdownvalue(item)
-                                }}>
-                                    <Text style={{
-                                        color: '#AEAFAF',
-                                        textAlign: 'left',
-                                        fontSize: 20,
-                                        fontFamily: "abeeze",
-                                        includeFontPadding: false,
-                                        justifyContent: 'center',
-                                        backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                                        borderBottomColor: 'black',
-                                        borderBottomWidth: 1,
-                                        height: 50,
-                                        paddingLeft: 10,
-                                        textAlignVertical: 'center'
-                                        , includeFontPadding: false,
-                                    }}>{item.label}</Text>
-                                </Pressable>
-                            )
-                        })}
-
-
-                    </BottomSheetScrollView>}
-                    {err3 && <Text style={styles.error1}> *please enter this field</Text>}
-
-                    <Pressable onPress={post1} style={styles.post}>
-                        {!p1u && <Text style={styles.posttext}>{p1text}</Text>}
-                        {p1u && <ActivityIndicator size={24} color="#16181a" />}
-                    </Pressable>
-
-
-                </BottomSheetScrollView>
-
-
-
-            </BottomSheet>}
-            {/* bottomsheet1  */}
-
-
-            {/* bottomsheet 2 */}
-
-            {willopen && <BottomSheet
-                nestedScrollEnabled={true}
-                overlayColor="rgba(0, 0, 0, 0.5)"
-                enablePanDownToClose
-                backgroundStyle={{ backgroundColor: '#16181a', borderRadius: 30 }}
-                // backgroundStyle={{ backgroundColor: 'red', borderRadius: 30 }}
-                // height={100}
-                handleIndicatorStyle={{
-                    backgroundColor: '#00de62',
-                    width: 70,
-                    marginTop: 20
-
-                }}
-                style={{ marginTop: 60 }}
-
-                ref={bottomSheetRef2}
-                snapPoints={snapPoints2}
-                index={-1} // Initially closed
-
-            >
-
-                <View style={{ height: 80, marginTop: -5 }} ><B2 /></View>
-                <BottomSheetScrollView
-                    nestedScrollEnabled={true} style={{
-                        flex: 1,
-                        minHeight: 2000,
-                        // backgroundColor: "red",
-                        flexGrow: 1
-
-                    }}>
-
-
-                    <Text style={{
-                        fontSize: 20,
-                        width: "92%",
-                        paddingLeft: 10,
-                        marginHorizontal: "auto",
-                        color: "#B8B8B8"
-                    }}>Write a Blog:</Text>
-
-                    <BottomSheetView style={{ position: "relative" }}>
-                        <Text style={[styles.t2, styles.count]}>{content.length}/100</Text>
-                        <BottomSheetTextInput
-
-                            allowFontScaling={false}
-                            placeholder=""
-                            placeholderTextColor="#B8B8B8"
-                            style={styles.input1}
-                            maxLength={100}
-                            multiline={true}
-                            // onFocus={handleOutsideTouch}
-                            // onPress={handleOutsideTouch}
-                            value={content}
-                            onTextInput={() => {
-                                if (err4) seterr4(false)
-                                if (err5) seterr5(false)
-                            }}
-                            onChangeText={(text) => {
-                                setcontent(text)
-                                // counttext(text)
-                            }}
-                        />
-                    </BottomSheetView>
-                    {err4 && <Text style={styles.error}> *please enter this field</Text>}
-
-
-                    <BottomSheetTextInput
-                        allowFontScaling={false}
-                        placeholder="Caption"
-                        placeholderTextColor="#B8B8B8"
-                        style={styles.input}
-                        value={caption}
-                        onTextInput={() => {
-                            if (err4) seterr4(false)
-                            if (err5) seterr5(false)
-                        }}
-                        onChangeText={(text) => { setcaption(text) }}
-                    />
-                    {err5 && <Text style={styles.error}> *please enter this field</Text>}
-
-
-
-                    <Pressable onPress={post2} style={styles.post}>
-
-                        {!p2u && <Text style={styles.posttext}>{p2text}</Text>}
-                        {p2u && <ActivityIndicator size={24} color="#16181a" />}
-                    </Pressable>
-
-
-                </BottomSheetScrollView>
-
-
-
-            </BottomSheet>}
-
-            {/* 222 */}
-
-            {willopen && <BottomSheet
-                nestedScrollEnabled={true}
-                overlayColor="rgba(0, 0, 0, 0.5)"
-                enablePanDownToClose
-                backgroundStyle={{ backgroundColor: '#16181a', borderRadius: 30 }}
-
-                handleIndicatorStyle={{ backgroundColor: '#00de62', width: 70, marginTop: 20 }}
-                style={{ marginTop: 60 }}
-                ref={bottomSheetRef3}
-                snapPoints={snapPoints3}
-                index={-1}
-                keyboardBehavior="fillParent"
-                enableDynamicSizing={true}
-            >
-                <View style={{ height: 80, marginTop: -5 }} ><B3 /></View>
-                <BottomSheetScrollView
-                    nestedScrollEnabled={true} style={{
-                        flex: 1,
-                        // minHeight: 2000,
-                        // flexGrow: 1
-                    }}>
-
-                    <BottomSheetView style={{ position: "relative" }}>
-                        {type == "photo" && <Image style={[styles.img, { aspectRatio: newaspect }]} source={{ uri: uri }} />}
-                        {type == "video" && (
-                            <Video
-                                style={[styles.img , {aspectRatio : 1/1} ]}
-                                source={{ uri: uri }}
-                                useNativeControls // Enables native playback controls
-                                resizeMode="contain" // Adjusts video to fit within the view
-                                isLooping // Loops the video
-                                shouldPlay // Automatically plays the video
-                            />
-                        )}
-
-                    </BottomSheetView>
-                    {err6 && <Text style={styles.error}> *please enter this field</Text>}
-
-
-
-                    <BottomSheetTextInput
-                        allowFontScaling={false}
-                        placeholder="Caption"
-                        placeholderTextColor="#B8B8B8"
-                        style={styles.input}
-                        value={c2}
-                        onClose={() => { setp3u(false) }}
-                        onTextInput={() => { if (err7) seterr7(false) }}
-                        onChangeText={(text) => { setc2(text) }}
-                    />
-                    {err7 && <Text style={styles.error}> *please enter this field</Text>}
-
-
-
-
-
-
-                    <Pressable onPress={post3} style={styles.post}>
-                        {/* <Text style={styles.posttext}>Post</Text> */}
-
-                        {!p3u && <Text style={styles.posttext}>{p3text}</Text>}
-                        {p3u && <ActivityIndicator size={24} color="#16181a" />}
-                    </Pressable>
-
-
-                </BottomSheetScrollView>
-            </BottomSheet>}
-
-            {/* 333 */}
-
-            {willopen &&
-                <BottomSheet
-                    nestedScrollEnabled={true}
-                    overlayColor="rgba(0, 0, 0, 0.5)"
-                    enablePanDownToClose
-                    backgroundStyle={{ backgroundColor: '#16181a', borderRadius: 30 }}
-                    // backgroundStyle={{ backgroundColor: 'red', borderRadius: 30 }}
-                    // height={100}
-                    handleIndicatorStyle={{
-                        backgroundColor: '#00de62',
-                        width: 70,
-                        marginTop: 20
-
-                    }}
-                    onClose={() => {
-                        setp4u(false)
-                    }}
-                    style={{ marginTop: 60 }}
-                    enableDynamicSizing={true}
-                    keyboardBehavior="fill-parent"
-                    ref={bottomSheetRef4}
-                    snapPoints={snapPoints4}
-                    index={-1} // Initially closed
-
-                >
-
-                    <View style={{ height: 80, marginTop: -5 }} ><B4 /></View>
-                    <BottomSheetScrollView
-                        nestedScrollEnabled={true} style={{
-                            flex: 1,
-                            minHeight: 2000,
-                            // backgroundColor: "red",
-                            flexGrow: 1
-
-                        }}>
-
-                        <BottomSheetTextInput
-                            allowFontScaling={false}
-                            placeholder="Role"
-                            placeholderTextColor="#B8B8B8"
-                            style={styles.input}
-                            value={role4}
-                            onChangeText={(text) => {
-                                del()
-
-                                setrole4(text)
-                            }}
-                        />
-                        {err10 && <Text style={styles.error}>*Please enter a role</Text>}
-
-
-
-                        <Text style={{
-                            fontSize: 20,
-                            width: "92%",
-                            paddingLeft: 10,
-                            marginHorizontal: "auto",
-                            color: "#B8B8B8"
-                        }}>Description:</Text>
-
-                        <BottomSheetView style={{ position: "relative" }}>
-                            <Text style={[styles.t2, styles.count]}>{textlength}/100</Text>
-                            <BottomSheetTextInput
-                                allowFontScaling={false}
-                                placeholder=""
-                                placeholderTextColor="#B8B8B8"
-                                style={styles.input1}
-                                maxLength={100}
-                                multiline={true}
-                                // onFocus={handleOutsideTouch}
-                                // onPress={handleOutsideTouch}
-                                value={description4}
-                                onChangeText={(text) => {
-                                    setdescription4(text)
-                                    del()
-                                    counttext(text)
-                                }}
-                            />
-                        </BottomSheetView>
-                        {err11 && <Text style={styles.error}>*Please enter a description</Text>}
-
-
-                        <BottomSheetTextInput
-                            allowFontScaling={false}
-                            placeholder="Duration"
-                            placeholderTextColor="#B8B8B8"
-                            style={styles.input}
-                            value={duration4}
-                            onChangeText={(text) => {
-                                del()
-
-                                setduration4(text)
-                            }}
-                        />
-                        {err12 && <Text style={styles.error}>*Please enter a duration</Text>}
-                        {err14 && <Text style={styles.error}>*Please enter a valid duration</Text>}
-
-
-
-                        <BottomSheetTextInput
-                            allowFontScaling={false}
-                            placeholder="Pay"
-                            placeholderTextColor="#B8B8B8"
-                            style={styles.input}
-                            value={pay4}
-                            onChangeText={(text) => {
-                                del()
-                                setpay4(text)
-                            }}
-                        />
-                        {err13 && <Text style={styles.error}>*Please enter a duration</Text>}
-                        {err15 && <Text style={styles.error}>*Please enter a valid duration</Text>}
-
-
-
-
-                        <Pressable onPress={post4} style={styles.post}>
-                            {/* <Text style={styles.posttext}>{p4text}</Text> */}
-
-                            {!p4u && <Text style={styles.posttext}>{p4text}</Text>}
-                            {p4u && <ActivityIndicator size={24} color="#16181a" />}
-                        </Pressable>
-
-
-                    </BottomSheetScrollView>
-
-                </BottomSheet>}
-
-            {/* 333 */}
-
-
-            {/* 444 */}
-
-            <BottomSheet
-
-
-                overlayColor="rgba(0, 0, 0, 0.9)"
-                backdropComponent={renderBackdrop}
-                enablePanDownToClose
-                backgroundStyle={{ backgroundColor: '#1A1D1F', borderRadius: 30 }} // Changes the background of the sheet itself
-                handleIndicatorStyle={{ backgroundColor: '#00de62' }}
-
-                ref={bottomSheetRef5}
-                snapPoints={snapPoints5}
-                onClose={() => {
-                    setcomment(false)
-                    setstatus(false)
-
-                    // Keyboard.dismiss()
-                    // headeref.current.setNativeProps({
-                    //     style: { zIndex: 1 }, // Change the style here
-                    // });
-                }}
-                index={-1} // Initially closed
-                contentContainerStyle={{ zIndex: 100, elevation: 20, }}
-
-
-            >
-                <View style={{ flex: 0.92 }}>
-
-                    <Text style={styles.comment}>Comments</Text>
-                    {/* <KeyboardAvoidingView behavior="" keyboardVerticalOffset={-100} style={{ flex: 1 }}> */}
-                    {emptycomment && <Text style={styles.no}>No comments yet</Text>}
-                    <BottomSheetFlatList
-                        ref={flatListRef}
-                        data={allcomments}
-                        renderItem={comments}
-                        scrollEnabled={true}
-                        style={{ flex: 0.7, height: "100", overflow: "hidden" }}
-                    // contentContainerStyle={  }}
-
-                    />
-                    {/* </KeyboardAvoidingView> */}
-                    <View
-                        style={styles.sc1}>
-                        <TextInput
-                            placeholder=""
-
-                            placeholderTextColor="#828282"
-                            style={styles.searchInput}
-                            value={commenttext}
-                            multiline={true}
-                            onChangeText={text => setcommenttext(text)}
-                        />
-                        <Pressable onPress={docomment} style={styles.send} >
-
-                            {uploadingcomment && <ActivityIndicator size={24} color="#00de62" />}
-                            {!uploadingcomment && <Ionicons name="send" size={24} color="#00DE62" />}
-                        </Pressable>
-                    </View>
-
-
-
-
-                </View>
-
-            </BottomSheet>
-
-            {/* bottomsheet 4 */}
 
 
         </SafeAreaView >
@@ -2100,3 +1100,14 @@ export default Foryou
 
 
 
+const styles1 = StyleSheet.create({
+    container: { flex: 1, justifyContent: "center", alignItems: "center" },
+    overlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center", alignItems: "center" },
+    alertBox: { width: 300, backgroundColor: "#1A1D1F", padding: 20, borderRadius: 20, alignItems: "center" },
+    title: { fontSize: 20, fontWeight: "bold", color: "#D9D9D9", fontFamily: "Alata" },
+    message: { fontSize: 16, marginVertical: 10, textAlign: "center", color: "#D9D9D9", fontFamily: "Roboto" },
+    button: { marginTop: 15, backgroundColor: "#00de62", padding: 6, paddingHorizontal: 37, borderRadius: 10, minWidth: 200, textAlign: "center" },
+    buttonText: { color: "#1A1D1F", fontSize: 16, fontFamily: "Roboto", fontWeight: "bold", textAlign: "center" },
+    showButton: { backgroundColor: "#28a745", padding: 10, borderRadius: 5 },
+    showButtonText: { color: "#fff", fontSize: 16 },
+})

@@ -63,6 +63,11 @@ const styles = StyleSheet.create({
         fontSize: 20,
         color: "#E9E9E9"
     },
+    temp: {
+        fontFamily: "Alata",
+        fontSize: 20,
+        color: "#E9E9E9"
+    },
     u2: {
         fontFamily: "Roboto",
         fontSize: 11,

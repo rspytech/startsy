@@ -302,9 +302,9 @@ const Chat1 = ({ navigation, route }) => {
         const dataLength = data.length;
         return (
             <View style={{ display: "flex", flex: 1, width: "100%" }}>
-                {index < dataLength - 1 && item.senderId._id != data[index + 1].senderId._id && <Image style={item.senderId._id != id ? styles.pfpleft : styles.pfpright} source={require("../../assets/images/p2.png")} />}
+                {index < dataLength - 1 && item.senderId._id != data[index + 1].senderId._id && <Image style={item.senderId._id != id ? styles.pfpleft : styles.pfpright} source={{uri : item.senderId.profilePhoto}} />}
 
-                {index == dataLength - 1 && <Image style={item.senderId._id != id ? styles.pfpleft : styles.pfpright} source={require("../../assets/images/p2.png")} />}
+                {index == dataLength - 1 && <Image style={item.senderId._id != id ? styles.pfpleft : styles.pfpright} source={{uri : item.senderId.profilePhoto}} />}
 
 
                 <View style={[

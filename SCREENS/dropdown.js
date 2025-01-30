@@ -3,7 +3,7 @@ import { View, Text, ScrollView } from 'react-native';
 import DropDownPicker from 'react-native-dropdown-picker';
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
-export default function Drop({ items, onValueChange, open, setOpen, extra, bottomsheet, edit, width, width1 , up }) {
+export default function Drop({ items, onValueChange, open, setOpen, extra, bottomsheet, edit, width, width1, up, gender }) {
     // const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
     var placeholdertext;
@@ -11,7 +11,12 @@ export default function Drop({ items, onValueChange, open, setOpen, extra, botto
         if (bottomsheet) {
             placeholdertext = "Rules"
         }
+        else if (gender) {
+
+            placeholdertext = "Gender"
+        }
         else placeholdertext = "Country"
+
     }
 
     else placeholdertext = "Select"
@@ -49,19 +54,19 @@ export default function Drop({ items, onValueChange, open, setOpen, extra, botto
 
         <DropDownPicker
             searchable={true}
-            
+
             searchPlaceholder='Search'
             searchPlaceholderTextColor='#AEAFAF'
             searchTextInputStyle={{
-                borderColor : "transparent",
-                color : "#AEAFAF",
-                backgroundColor : "#24272A",
-                fontFamily : "Alata",
-                fontSize : 18,
+                borderColor: "transparent",
+                color: "#AEAFAF",
+                backgroundColor: "#24272A",
+                fontFamily: "Roboto",
+                fontSize: 18,
                 // padding : 20
             }}
-            
-            
+
+
 
             listMode='SCROLLVIEW'
             open={open}
@@ -70,13 +75,14 @@ export default function Drop({ items, onValueChange, open, setOpen, extra, botto
             setOpen={setOpen}
             setValue={handleValueChange}
             maxHeight={300}
-            dropDownDirection= {up ? "TOP" : "BOTTOM"}
+            dropDownDirection={up ? "TOP" : "BOTTOM"}
             placeholder={placeholdertext}
             placeholderTextColor="green"
             placeholderStyle={{
                 color: '#AEAFAF',
-                fontFamily: 'Alata',
-                fontSize: 20,
+                fontFamily: 'Roboto',
+                fontSize: 24,
+                // fontWeight : "bold",
                 marginTop: -3,
             }}
             ArrowDownIconComponent={({ style }) => (
@@ -141,16 +147,16 @@ export default function Drop({ items, onValueChange, open, setOpen, extra, botto
                 color: '#AEAFAF',
                 textAlign: 'left',
                 fontSize: 20,
-                fontFamily: "abeeze",
+                fontFamily: "Roboto",
                 includeFontPadding: false,
             }}
             labelStyle={{
                 // color : "red",
-                fontFamily: 'Alata',
+                fontFamily: 'Roboto',
                 fontSize: 20,
                 color: '#AEAFAF',
-                paddingBottom : 0,
-                marginBottom : -5,
+                paddingBottom: 0,
+                marginBottom: -5,
                 includeFontPadding: false,
             }}
             nestedScrollEnabled={true}

@@ -16,7 +16,7 @@ function Cards({ navigation, route }) {
     StatusBar.setBackgroundColor("#16181a")
   })
 
-  
+
 
   console.log(item);
   useEffect(() => {
@@ -28,6 +28,16 @@ function Cards({ navigation, route }) {
 
     return () => backHandler.remove();
   }, []);
+
+  function getfund(fund) {
+    if (fund == 69) {
+      return 0
+    }
+    fund = fund - 57
+    return (fund * 10000000).toLocaleString("en-IN")
+  }
+
+
 
   return (
 
@@ -60,7 +70,9 @@ function Cards({ navigation, route }) {
       {/* Startup Info */}
       <Text style={styles.title}>{item.nameOfStartup}</Text>
       <Text style={styles.subtitle}>Revolutionizing startup ecosystem.</Text>
-      <Text style={styles.status}>{item.hiddenInfo.stageOfStartup} stage - {item.hiddenInfo.fundingStatus}</Text>
+      <Text style={styles.status}>{item.hiddenInfo.stageOfStartup} - {getfund(item.hiddenInfo.fundingStatus)}</Text>
+
+      {/* <Text style={styles.status}>{item.hiddenInfo.stageOfStartup} stage - {item.hiddenInfo.fundingStatus}</Text> */}
 
       {/* Goal Section */}
       <Text style={styles.sectionHeader}>Goal: <Text style={styles.text}>

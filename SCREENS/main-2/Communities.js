@@ -13,85 +13,72 @@ const Communities = ({ token, navigation }) => {
     const [jisuserkosendkarnahaiuskiid, setjisuserkosendkarnahaiuskiid] = useState("")
 
     var [messages, setmessage] = useState(null)
+    async function getdata() {
+        setloading(true)
+        try {
 
-    useFocusEffect(
-        useCallback(() => {
-            console.log("group call");
+            const response = await fetch(`${url}groupChat/getCommunityGroupChatList`, {
+                method: 'GET',
+                headers: {
+                    accept: "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            console.log(data.data[0]);
 
-            async function getdata() {
-                setloading(true)
-                try {
+            console.log(data.data.length);
+            // console.log(response.status);
 
-                    const response = await fetch(`${url}groupChat/getCommunityGroupChatList`, {
-                        method: 'GET',
-                        headers: {
-                            accept: "application/json",
-                            "Authorization": `Bearer ${token}`,
-                        },
-                    });
-                    const data = await response.json();
-                    console.log(data.data.length);
-                    // console.log(response.status);
+            const uniqueData = data.data.filter((item, index, self) =>
+                self.findIndex(innerItem => innerItem.community.communityName === item.community.communityName) === index
 
-                    const uniqueData = data.data.filter((item, index, self) =>
-                        self.findIndex(innerItem => innerItem.communityName === item.communityName) === index
-                );
-
-                console.log(uniqueData.length);
-                setfiltereddata(uniqueData)
+            );
+            uniqueData.sort((a, b) => new Date(a.conversation.updatedAt) - new Date(b.conversation.updatedAt));
 
 
+            const sortedData = uniqueData.sort((a, b) => {
+                if (a.conversation.lastMessage === null && b.conversation.lastMessage === null) return 0;
+                if (a.conversation.lastMessage === null) return 1;
+                if (b.conversation.lastMessage === null) return -1;
 
-                }
-                catch (err) {
-                    console.log(err);
+                const dateA = new Date(a.conversation.lastMessage.createdAt);
+                const dateB = new Date(b.conversation.lastMessage.createdAt);
+                return dateB - dateA; // Sort in descending order of time
+            });
 
-                }
-                finally {
-                    setloading(false);
-                }
-            }
 
-            getdata();
+            console.log(uniqueData.length);
+            setfiltereddata(sortedData)
 
-        } , [])
-    )
+
+
+        }
+        catch (err) {
+            console.log(err);
+
+        }
+        finally {
+            setloading(false);
+        }
+    }
+
+    // useFocusEffect(
+    //     useCallback(() => {
+    //         console.log("group call");
+
+
+
+    //         getdata();
+
+    //     }, [])
+    // )
+
+
 
 
     useEffect(() => {
-        async function getdata() {
-            setloading(true)
-            try {
 
-                const response = await fetch(`${url}groupChat/getCommunityGroupChatList`, {
-                    method: 'GET',
-                    headers: {
-                        accept: "application/json",
-                        "Authorization": `Bearer ${token}`,
-                    },
-                });
-                const data = await response.json();
-                console.log(data.data.length);
-                // console.log(response.status);
-
-                const uniqueData = data.data.filter((item, index, self) =>
-                    self.findIndex(innerItem => innerItem.communityName === item.communityName) === index
-                );
-
-                console.log(uniqueData.length);
-                setfiltereddata(uniqueData)
-
-
-
-            }
-            catch (err) {
-                console.log(err);
-
-            }
-            finally {
-                setloading(false);
-            }
-        }
 
         getdata();
 
@@ -107,7 +94,7 @@ const Communities = ({ token, navigation }) => {
             // console.log(token, "second use focus effect");
             try {
                 const response = await fetch(
-                    `${url}groupChat/getGroupChatMessage/${item._id}`,
+                    `${url}groupChat/getGroupChatMessage/${item.community._id}`,
                     {
                         method: "GET",
                         headers: {
@@ -117,9 +104,10 @@ const Communities = ({ token, navigation }) => {
                     }
                 );
                 const result = await response.json();
-                // console.log(result.data, "investor");
+                console.log(result.data);
+                
                 // setmessage(result.data)
-                navigation.navigate("Chat1", { item, messages:result.data, token, navigation })
+                navigation.navigate("Chat1", { item: item.community, messages: result.data, token, navigation })
             } catch (err) {
                 console.log(err);
             } finally {
@@ -128,7 +116,41 @@ const Communities = ({ token, navigation }) => {
         }
 
 
-       
+
+    }
+
+    function time(time) {
+        // console.log('====================================');
+        // console.log(time);
+        var data1 = new Date(time)
+        // console.log('====================================');
+        // console.log(data1);
+        // console.log('====================================');
+        // console.log('====================================');
+        var seconds = Math.floor((new Date() - data1) / 1000);
+
+        var interval = seconds / 31536000;
+
+        if (interval > 1) {
+            return Math.floor(interval) + " years ago";
+        }
+        interval = seconds / 2592000;
+        if (interval > 1) {
+            return Math.floor(interval) + " months ago";
+        }
+        interval = seconds / 86400;
+        if (interval > 1) {
+            return Math.floor(interval) + " days ago";
+        }
+        interval = seconds / 3600;
+        if (interval > 1) {
+            return Math.floor(interval) + " hours ago";
+        }
+        interval = seconds / 60;
+        if (interval > 1) {
+            return Math.floor(interval) + " minutes ago";
+        }
+        return Math.floor(seconds) + " seconds ago";
     }
 
 
@@ -136,6 +158,10 @@ const Communities = ({ token, navigation }) => {
     return (
         <View style={styles.listContainer}>
             {filtereddata && <FlatList
+                refreshControl={<RefreshControl refreshing={refreshing}
+                    onRefresh={getdata}
+
+                />}
                 showsVerticalScrollIndicator={false}
                 contentContainerStyle={{ paddingBottom: 100 }}
 
@@ -162,17 +188,16 @@ const Communities = ({ token, navigation }) => {
                                     <Text
                                         numberOfLines={1}
                                         ellipsizeMode="tail"
-                                        allowFontScaling={false} style={styles.username}>{item.communityName}</Text>
+                                        allowFontScaling={false} style={styles.username}>{item.community.communityName}</Text>
                                     <Text
                                         numberOfLines={1}
                                         ellipsizeMode="tail"
 
-                                        allowFontScaling={false} style={styles.message}>{item.lastMessage?.message || "No chats yet"}</Text>
+                                        allowFontScaling={false} style={styles.message}>{item.conversation.lastMessage ? item.conversation.lastMessage.message : "No chats yet"}</Text>
                                 </View>
+
                                 <Text
-
-
-                                    allowFontScaling={false} style={styles.time}>{item.lastMessage ? time(item.lastMessage.createdAt) : "today"}</Text>
+                                    allowFontScaling={false} style={styles.time}>{item.conversation.lastMessage ? time(item.conversation.lastMessage.createdAt) : "today"}</Text>
                             </View>
                         </TouchableOpacity>
                     )
@@ -240,7 +265,7 @@ const styles = StyleSheet.create({
         alignSelf: "flex-start",
         marginTop: -5,
         marginBottom: 5,
-        backgroundColor: "red"
+        // backgroundColor: "red"
     },
     message: {
         fontSize: 14,
@@ -267,11 +292,11 @@ const styles = StyleSheet.create({
         color: '#E9E9E9',
         fontWeight: '600',
         fontSize: 22,
-        width: "80%",
+        width: "70%",
         fontFamily: "Alata",
         marginBottom: 3,
         marginTop: -2,
-        // backgroundColor : "red"
+        // backgroundColor: "red"
 
 
     },

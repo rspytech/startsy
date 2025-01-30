@@ -42,6 +42,8 @@ import Singleprofilepage from "../../SCREENS/singleprofilepage.js";
 import Logout from "../../SCREENS/Logout.js";
 import Login2 from "../../SCREENS/login2.js";
 import Test1 from "../../SCREENS/test1.js";
+
+import Modal1 from "../../SCREENS/Modal.js"
 import Wait from "../../SCREENS/Wait.js";
 import Editcommunity from "../../SCREENS/edit profile pages/Editcommunity.js";
 // import drop from "../../SCREENS/dropdown.js"
@@ -99,7 +101,7 @@ export default function App() {
   useEffect(() => {
     setTimeout(() => {
       SplashScreen.preventAutoHideAsync();
-    }, 0);
+    }, 300);
   }, []);
 
   useFocusEffect(() => {
@@ -158,6 +160,7 @@ export default function App() {
           {/* <Stack.Screen name="Connectionscreen" component={ConnectionsScreen} /> */}
           <Stack.Screen name="Chat" component={Chat} />
           <Stack.Screen name="Chat1" component={Chat1} />
+          <Stack.Screen name="Modal1" component={Modal1} />
 
           {/* <Stack.Screen name="Main1" component={Main1} /> */}
           {/* <Stack.Screen name="Main2" component={Main2} /> */}

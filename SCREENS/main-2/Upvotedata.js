@@ -250,6 +250,7 @@ function Upvotedata({ navigation, token }) {
                     </View>
                 </View>
                 <View style={styles.right}>
+                    {item.notificationType == "upvotePost"}
                     {item.notificationType == "upvoteProfile"}
                     {item.notificationType == "jobApplied" &&
                         <Pressable onPress={sendmessage} style={{ top: 16, right: 0 }}>
@@ -258,7 +259,7 @@ function Upvotedata({ navigation, token }) {
                     }
                     {item.notificationType == "joinCommunity"}
                     {/* {item.notificationType == "upvotePost" && item.postId?.type == "blogPost" && <B2 width={40} height={40} />} */}
-                    {/* {item.notificationType == "upvotePost" && item.postId?.type == "photo" && <Image style={styles.image1} source={{ uri: item.postId.mediaUrl }} />} */}
+                    {item.notificationType == "upvotePost" && item.postId?.type == "photo" && <Image style={styles.image1} source={{ uri: item.postId.mediaUrl }} />}
                     {item.notificationType == "commentPost"}
 
                 </View>
