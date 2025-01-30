@@ -316,7 +316,6 @@ const Singleprofilepage = ({ navigation, props }) => {
               <View style={styles.userdetail}>
                 <Text allowFontScaling={false} style={styles.u1}>{userdata.user_id.userName}</Text>
                 <Text allowFontScaling={false} style={styles.u2}>{userdata.user_id.role == "CommunityMember" ? "Member" : userdata.user_id.role}</Text>
-                <Text allowFontScaling={false} style={styles.u1}>hello</Text>
               </View>
             </Pressable>
           </View>
