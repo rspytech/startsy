@@ -5,7 +5,7 @@ export const getGroupChatMessage = async (req, res) => {
         const groupId = req.params.id;
         const groupChats = await Message.find({groupId}).populate({
             path: 'senderId',
-            select: "userName",
+            select: "userName profilePhoto",
         });
         if(!groupChats){
             return res.status(404).json({message: "No messages found in this group."});
