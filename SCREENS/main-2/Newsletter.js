@@ -18,8 +18,10 @@ import {
     TouchableOpacity
 
 } from "react-native";
+import { Skeleton } from 'moti/skeleton'
+import { MotiView } from 'moti';
+
 import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
-import Skeleton from "react-content-loader/native";
 import Profile from "@/assets/icons/profile.js";
 import Search from "../../assets/icons/Search.js";
 import main from "../../styles/main.js"
@@ -29,7 +31,7 @@ import { url } from "../../config.js"
 import { GlobalContext } from "@/Global/globalcontext.js";
 // import styles from "@/styles/l.js";
 
-const NewsLetter = ({ navigation, route , mainpagebottomsheet , closeall }) => {
+const NewsLetter = ({ navigation, route, mainpagebottomsheet, closeall }) => {
 
 
     const data = [1, 2, 3]
@@ -45,9 +47,9 @@ const NewsLetter = ({ navigation, route , mainpagebottomsheet , closeall }) => {
     }, [globaldata])
 
     useFocusEffect(
-        useCallback(()=>{
-           closeall()
-        } , [])
+        useCallback(() => {
+            closeall()
+        }, [])
     )
 
 
@@ -71,7 +73,7 @@ const NewsLetter = ({ navigation, route , mainpagebottomsheet , closeall }) => {
             const data = await response.json();
             console.log(data.data[0]);
             setnewsletter(data.data)
-            setfilterednewsletter(data.data)
+            // setfilterednewsletter(data.data)
 
 
 
@@ -172,11 +174,7 @@ const NewsLetter = ({ navigation, route , mainpagebottomsheet , closeall }) => {
 
     const Render = () => {
         return (
-            <View style={styles.skeletonWrapper}>
-                <Skeleton width={width * 0.7} height={200} />
-                <Skeleton width={width * 0.7} height={20} />
-                <Skeleton width={width * 0.7} height={20} />
-            </View>
+            <Text>ok</Text>
         );
     };
     const renderItem1 = ({ item }) => {
@@ -213,6 +211,11 @@ const NewsLetter = ({ navigation, route , mainpagebottomsheet , closeall }) => {
                 return Math.floor(interval) + " minutes ago";
             }
             return Math.floor(seconds) + " seconds ago";
+        }
+
+        if (filterednewsletter.length == 0) {
+            console.log("hiii");
+
         }
         return (
 
@@ -347,12 +350,13 @@ const NewsLetter = ({ navigation, route , mainpagebottomsheet , closeall }) => {
         return () => backHandler.remove();
     }, []);
 
+    const Spacer = ({ height = 16 }) => <View style={{ height }} />;
 
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#16181a", position: "relative" }}>
 
-            {!filterednewsletter && <Render />}
+            {/* {filterednewsletter.length == 0 && <Render />} */}
 
             {showbox && <FlatList
                 keyExtractor={(item, index) => index}
@@ -362,7 +366,7 @@ const NewsLetter = ({ navigation, route , mainpagebottomsheet , closeall }) => {
 
             </FlatList>}
 
-            
+
 
             {filterednewsletter && <FlatList
 
@@ -407,6 +411,19 @@ const NewsLetter = ({ navigation, route , mainpagebottomsheet , closeall }) => {
                         </View>
                         <View style={styles.divider}></View>
                         <Text allowFontScaling={false} style={styles.headline}>Leaderboard </Text>
+                        <MotiView
+                            transition={{ type: 'timing', duration: 2000 }}
+                            style={[styles.container, styles.padded]}
+                            animate={{backgroundColor: "#000" }}
+                        >
+                            <Skeleton colorMode="dark" radius="round" height={200} width={"100%"} />
+                            <Spacer />
+                            <Skeleton colorMode="dark" width={250} />
+                            <Spacer height={8} />
+                            <Skeleton colorMode="dark" width={'100%'} />
+                            <Spacer height={8} />
+                            <Skeleton colorMode="dark" width={'100%'} />
+                        </MotiView>
                         <FlatList
 
                             horizontal={true}

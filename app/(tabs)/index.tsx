@@ -42,6 +42,7 @@ import Singleprofilepage from "../../SCREENS/singleprofilepage.js";
 import Logout from "../../SCREENS/Logout.js";
 import Login2 from "../../SCREENS/login2.js";
 import Test1 from "../../SCREENS/test1.js";
+import Skeleton1 from "../../SCREENS/main-2/skeleton.js";
 
 import Modal1 from "../../SCREENS/Modal.js"
 import Wait from "../../SCREENS/Wait.js";
@@ -93,16 +94,19 @@ console.warn = (message, ...args) => {
 
 export default function App() {
   // <StatusBar style="dark" />
+
+
+  
   useEffect(() => {
     StatusBar.setBackgroundColor("#16181a");
     StatusBar.setBarStyle("light-content");
   }, []);
 
-  useEffect(() => {
-    setTimeout(() => {
-      SplashScreen.preventAutoHideAsync();
-    }, 300);
-  }, []);
+  // SplashScreen.preventAutoHideAsync();
+  // useEffect(() => {
+  //   setTimeout(() => {
+  //   }, 300);
+  // }, []);
 
   useFocusEffect(() => {
     StatusBar.setBackgroundColor("#16181a");
@@ -116,6 +120,7 @@ export default function App() {
   // }
   useEffect(() => {
     if (fontsLoaded) {
+      SplashScreen.hideAsync();
       setappisready(true);
     }
   }, [fontsLoaded]);
@@ -127,7 +132,7 @@ export default function App() {
       <StatusBar backgroundColor="#16181a" barStyle={"light-content"} />
       {appisready && (
         <Stack.Navigator
-          initialRouteName="Green"
+          initialRouteName="Skeleton1"
           screenOptions={{
             headerStyle: {
               backgroundColor: "#16181a",
@@ -161,6 +166,7 @@ export default function App() {
           <Stack.Screen name="Chat" component={Chat} />
           <Stack.Screen name="Chat1" component={Chat1} />
           <Stack.Screen name="Modal1" component={Modal1} />
+          <Stack.Screen name="Skeleton1" component={Skeleton1} />
 
           {/* <Stack.Screen name="Main1" component={Main1} /> */}
           {/* <Stack.Screen name="Main2" component={Main2} /> */}
