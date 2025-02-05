@@ -7,14 +7,8 @@ const messageSchema = new mongoose.Schema({
         required: true,
     },
     message: {
-        type: String,
+        type: mongoose.Schema.Types.Mixed,
         required: true,
-        validate: [
-            {
-                validator: (value) => value.length > 0,
-                message: "Message cannot be empty",
-            }
-        ]
     },
     groupId:{
         type: mongoose.Schema.Types.ObjectId,

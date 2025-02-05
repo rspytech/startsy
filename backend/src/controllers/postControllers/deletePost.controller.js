@@ -1,4 +1,5 @@
 import { Post } from "../../models/post.model.js";
+import { Community } from "../../models/community.model.js";
 
 export const deletePost = async (req, res) => {
     try {
@@ -9,6 +10,9 @@ export const deletePost = async (req, res) => {
         const post = await Post.findByIdAndDelete(postId);
         if(!post){
             return res.status(400).json({message: "Post not found"});
+        }
+        if(post.type === "communityPost"){
+            await Community.findByIdAndDelete({_id: post.communityPost});
         }
         return res.status(200).json({message: "Post deleted successfully"});
     }

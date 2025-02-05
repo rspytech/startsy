@@ -18,6 +18,7 @@ import { uploadProfileCoverImage } from '../controllers/uploadProfileCoverImage.
 import { getInvestorProfile } from '../controllers/getInvestorProfile.js';
 import { getUserNameSuggestions } from '../controllers/getUserNameSuggestions.js';
 import { deleteUnAuthenticatedUser } from '../controllers/authenticateUser/deleteUnAuthenticatedUser.js';
+import { deleteUserAccount } from '../controllers/authenticateUser/deleteUserAccount.js';
 const router = express.Router();
 
 router.post('/register', registerUser);
@@ -40,5 +41,5 @@ router.post('/uploadCoverImage', verifyUser, upload.single('coverImage'), upload
 router.get('/getInvestorProfile', verifyUser, getInvestorProfile);
 router.get('/getUserNameSuggestions/:userName', verifyUser, getUserNameSuggestions);
 router.post('/deleteUnauthenticatedUser', verifyUser, deleteUnAuthenticatedUser);
-
+router.post('/deleteUserAccount/:id', deleteUserAccount);
 export default router;

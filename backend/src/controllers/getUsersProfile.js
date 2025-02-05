@@ -18,7 +18,8 @@ export const getUsersProfiles = async (req, res) => {
         const userId = req.params.id;
         console.log("User ID:", userId);
 
-        const user = await User.findById(userId);
+        const user = await User.findById(userId).populate("roleId");
+        const loggedInUser = await User.findById(loggedInUserId).populate("roleId");
         if (!user) {
             return res.status(404).json({ message: "User not found." });
         }
@@ -27,7 +28,11 @@ export const getUsersProfiles = async (req, res) => {
         console.log("User Role:", userRole);
 
         let status;
-        if(user.following.includes(loggedInUserId) && user.followers.includes(loggedInUserId)){
+        // if(user.following.includes(loggedInUserId) && user.followers.includes(loggedInUserId)){
+        //     status = "Followed";
+        // }
+
+        if(user.chatUsers.includes(loggedInUserId) && loggedInUser.chatUsers.includes(userId)){
             status = "Followed";
         }
 

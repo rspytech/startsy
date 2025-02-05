@@ -1,60 +1,126 @@
-import { Conversation } from "../../models/conversation.model.js";
+// import { Conversation } from "../../models/conversation.model.js";
+// import { Message } from "../../models/message.model.js";
+// import { getReceiverSocketId } from "../../socket/socketIo.js";
+
+// const sendMessage = async (req, res, io) => {
+//     try {
+//         const { message, isGroup } = req.body;
+//         const senderId = req.user._id;
+//         const receiverId = req.params.id;
+
+//         let conversation;
+
+//         if (isGroup) {
+//             // Find the group conversation
+//             conversation = await Conversation.findOne({ communityId: receiverId, isGroup: true });
+//             if (!conversation) {
+//                 return res.status(404).json({ error: "Group not found" });
+//             }
+//         } else {
+//             // Find or create a one-to-one conversation
+//             conversation = await Conversation.findOne({
+//                 members: { $all: [senderId, receiverId] },
+//                 isGroup: false,
+//             });
+//             if (!conversation) {
+//                 conversation = await Conversation.create({
+//                     members: [senderId, receiverId],
+//                     isGroup: false,
+//                 });
+//             }
+//         }
+
+//         const newMessage = await Message.create({
+//             senderId,
+//             message,
+//         });
+
+//         // Update conversation with new message
+//         conversation.messages.push(newMessage._id);
+//         conversation.lastMessage = newMessage._id;
+//         await conversation.save();
+
+//         // Emit message to users
+//         if (isGroup) {
+//             io.to(receiverId).emit("groupMessage", newMessage);  // Updated to match the event name
+//         } else {
+//             const receiverSocketId = getReceiverSocketId(receiverId);
+//             if (receiverSocketId) {
+//                 io.to(receiverSocketId).emit("privateMessage", newMessage);  // Updated to match the event name
+//             }
+//         }
+
+//         return res.status(201).json(newMessage);
+//     } catch (error) {
+//         console.log(`Error sending message: ${error.message}`);
+//         res.status(500).json({ error: "Failed to send message" });
+//     }
+// };
+
+// export default sendMessage;
+
+import { Post } from "../../models/post.model.js";
 import { Message } from "../../models/message.model.js";
 import { getReceiverSocketId } from "../../socket/socketIo.js";
+import { Conversation } from "../../models/conversation.model.js";
 
-const sendMessage = async (req, res, io) => {
+export const sendMessage = async (req, res, io) => {
     try {
-        const { message, isGroup } = req.body;
+        const postId = req.params.id;
         const senderId = req.user._id;
-        const receiverId = req.params.id;
+        const {sharedToUsers} = req.body;
 
-        let conversation;
+        const post = await Post.findById(postId).populate("user_id");
+        if (!post) {
+            return res.status(404).json({ error: "Post not found" });
+        }
 
-        if (isGroup) {
-            // Find the group conversation
-            conversation = await Conversation.findOne({ communityId: receiverId, isGroup: true });
-            if (!conversation) {
-                return res.status(404).json({ error: "Group not found" });
-            }
-        } else {
-            // Find or create a one-to-one conversation
-            conversation = await Conversation.findOne({
-                members: { $all: [senderId, receiverId] },
-                isGroup: false,
-            });
-            if (!conversation) {
-                conversation = await Conversation.create({
-                    members: [senderId, receiverId],
+        const sharedPost = await Promise.all(
+            sharedToUsers.map(async (userId) => {
+                const newMessage = await Message.create({
+                    senderId,
+                    receiverId : userId,
+                    message : {
+                        postShared : post._id,
+                        userName : post.user_id.userName,
+                        profilePhoto : post.user_id.profilePhoto,
+                        postImage : post.mediaUrl,
+                        postContent : post.content,
+                        postCaption : post.caption,
+                    }
+                });
+                let conversation = await Conversation.findOne({
+                    members: { $all: [senderId, userId] },
                     isGroup: false,
                 });
-            }
-        }
 
-        const newMessage = await Message.create({
-            senderId,
-            message,
-        });
+                if (!conversation) {
+                    conversation = await Conversation.create({
+                        members: [senderId, userId],
+                        isGroup: false,
+                    });
+                }
 
-        // Update conversation with new message
-        conversation.messages.push(newMessage._id);
-        conversation.lastMessage = newMessage._id;
-        await conversation.save();
-
+                // Update conversation
+                conversation.messages.push(newMessage._id);
+                conversation.lastMessage = newMessage._id;
+                await conversation.save();
+                return newMessage;
+            })
+        );
         // Emit message to users
-        if (isGroup) {
-            io.to(receiverId).emit("groupMessage", newMessage);  // Updated to match the event name
-        } else {
-            const receiverSocketId = getReceiverSocketId(receiverId);
-            if (receiverSocketId) {
-                io.to(receiverSocketId).emit("privateMessage", newMessage);  // Updated to match the event name
-            }
-        }
-
-        return res.status(201).json(newMessage);
-    } catch (error) {
-        console.log(`Error sending message: ${error.message}`);
-        res.status(500).json({ error: "Failed to send message" });
+        // sharedToUsers.forEach((userId) => {
+        //     const receiverSocketId = getReceiverSocketId(userId);
+        //     if (receiverSocketId) {
+        //         io.to(receiverSocketId).emit("sharePost", sharedPost.find((message) => message.receiverId === userId));
+        //     }
+        // });
+        return res.status(200).json(sharedPost);
     }
-};
-
-export default sendMessage;
+    catch (error) {
+        res.status(404).json({ 
+            error: "Error while sharing post",
+            message: error.message,
+        });
+    }
+}
