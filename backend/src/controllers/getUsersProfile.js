@@ -32,7 +32,7 @@ export const getUsersProfiles = async (req, res) => {
         //     status = "Followed";
         // }
 
-        if(user.chatUsers.includes(loggedInUserId) && loggedInUser.chatUsers.includes(userId)){
+        if(user.roleId.chatUsers.includes(loggedInUserId) && loggedInUser.roleId.chatUsers.includes(userId)){
             status = "Followed";
         }
 
