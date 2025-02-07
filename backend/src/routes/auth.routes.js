@@ -19,6 +19,10 @@ import { getInvestorProfile } from '../controllers/getInvestorProfile.js';
 import { getUserNameSuggestions } from '../controllers/getUserNameSuggestions.js';
 import { deleteUnAuthenticatedUser } from '../controllers/authenticateUser/deleteUnAuthenticatedUser.js';
 import { deleteUserAccount } from '../controllers/authenticateUser/deleteUserAccount.js';
+import { sendOtp } from '../controllers/authenticateUser/sendOtp.js';
+import { verifyOtp } from '../controllers/authenticateUser/verifyOtp.js';
+import { forgotPassword } from '../controllers/authenticateUser/forgotPassword.js';
+
 const router = express.Router();
 
 router.post('/register', registerUser);
@@ -42,4 +46,9 @@ router.get('/getInvestorProfile', verifyUser, getInvestorProfile);
 router.get('/getUserNameSuggestions/:userName', verifyUser, getUserNameSuggestions);
 router.post('/deleteUnauthenticatedUser', verifyUser, deleteUnAuthenticatedUser);
 router.post('/deleteUserAccount/:id', deleteUserAccount);
+
+router.post('/sendOtp', verifyUser, sendOtp);
+router.post('/verifyOtp', verifyUser, verifyOtp);
+router.post('/forgotPassword', verifyUser, forgotPassword);
+
 export default router;
