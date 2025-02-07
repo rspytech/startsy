@@ -47,8 +47,8 @@ router.get('/getUserNameSuggestions/:userName', verifyUser, getUserNameSuggestio
 router.post('/deleteUnauthenticatedUser', verifyUser, deleteUnAuthenticatedUser);
 router.post('/deleteUserAccount/:id', deleteUserAccount);
 
-router.post('/sendOtp', verifyUser, sendOtp);
-router.post('/verifyOtp', verifyUser, verifyOtp);
-router.post('/forgotPassword', verifyUser, forgotPassword);
+router.post('/sendOtp', sendOtp);
+router.post('/verifyOtp', verifyOtp);
+router.post('/forgotPassword', forgotPassword);
 
 export default router;

@@ -3,8 +3,8 @@ import { User } from "../../models/user.model.js";
 export const forgotPassword = async(req, res) => {
     try {
         const {password, confirmPassword} = req.body;
-        const userId = req.user._id;
-        const user = await User.findById(userId);
+        const {email} = req.body;
+        const user = await User.findOne(email);
 
         if(!password || !confirmPassword){
             return res.status(400).json({message: "Please enter both password and confirm password."});
