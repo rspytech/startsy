@@ -87,6 +87,7 @@ export const sendMessage = async (req, res, io) => {
                         postImage : post.mediaUrl,
                         postContent : post.content,
                         postCaption : post.caption,
+                        userIdPosted : post.user_id._id,
                     }
                 });
                 let conversation = await Conversation.findOne({

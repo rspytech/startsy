@@ -12,7 +12,7 @@ const founderSchema = new mongoose.Schema({
         type: String,
     },
     age : {
-        type: Number,
+        type: Date,
     },
     gender : {
         type: String,
@@ -120,7 +120,12 @@ const founderSchema = new mongoose.Schema({
             required : true,
         },
         socialProof : [{
-            type: String,
+            name : {
+                type : String,
+            },
+            url : {
+                type : String,
+            }
         }],
     },
     recommendationId: {

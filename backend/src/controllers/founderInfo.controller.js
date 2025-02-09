@@ -80,6 +80,15 @@ export const FounderInfo = async (req, res) => {
         const currentUserId = req.user._id;
         const currentUser = await User.findById(currentUserId);
 
+        if (Array.isArray(socialProof)) {
+            socialProof = socialProof.map(item => ({
+                name: item.name || "",
+                url: item.url || ""
+            }));
+        } else {
+            socialProof = []; // Default to an empty array if input is invalid
+        }
+
         // 3. Create a new Founder profile
         const newFounder = new Founder({
             email,

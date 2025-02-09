@@ -22,7 +22,7 @@ import { deleteUserAccount } from '../controllers/authenticateUser/deleteUserAcc
 import { sendOtp } from '../controllers/authenticateUser/sendOtp.js';
 import { verifyOtp } from '../controllers/authenticateUser/verifyOtp.js';
 import { forgotPassword } from '../controllers/authenticateUser/forgotPassword.js';
-
+import { getProfileDetailsForEditProfile } from '../controllers/getProfileDetailsForEditProfile.js';
 const router = express.Router();
 
 router.post('/register', registerUser);
@@ -40,6 +40,7 @@ router.post('/founderInfo', verifyUser, upload.single('profilePhoto'), FounderIn
 router.post('/freelancerInfo', verifyUser, upload.single('profilePhoto'), FreelancerInfo);
 router.post('/communityMemberInfo', verifyUser, upload.single('profilePhoto'), CommunityMemeberInfo);
 router.get('/getUsersProfiles/:id', verifyUser, getUsersProfiles);
+router.get('/getProfileDetailsForEditProfile', verifyUser, getProfileDetailsForEditProfile);
 router.post('/doesUserExists', DoesUserExists);
 router.post('/uploadCoverImage', verifyUser, upload.single('coverImage'), uploadProfileCoverImage);
 router.get('/getInvestorProfile', verifyUser, getInvestorProfile);
