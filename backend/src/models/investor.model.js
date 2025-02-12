@@ -12,7 +12,7 @@ const investorSchema = new mongoose.Schema({
         type: String,
     },
     age : {
-        type: Date,
+        type: String,
     },
     gender : {
         type: String,

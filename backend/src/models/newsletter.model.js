@@ -26,6 +26,11 @@ const newsletterSchema = new mongoose.Schema({
         type : Date,
         default : Date.now
     },
+    leaderboardCategory: {
+        type: String,
+        enum: ["Investor", "Founder", "CommunityMember", "All"],
+        default: null,  // Null means it's not on the leaderboard
+    },
 });
 
 export const Newsletter = mongoose.model("Newsletter", newsletterSchema);
