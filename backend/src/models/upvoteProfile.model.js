@@ -15,6 +15,6 @@ const upvoteProfileSchema = new mongoose.Schema({
     },
 });
 
-upvoteProfileSchema.index({ userId: 1, postId: 1 }, { unique: true });
+// upvoteProfileSchema.index({ userId: 1, postId: 1 }, { unique: true });
 
 export const upvoteProfile = mongoose.model("upvoteProfile", upvoteProfileSchema);
