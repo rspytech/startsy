@@ -8,7 +8,7 @@ const jobPostSchema = new mongoose.Schema({
         type : String,
     },
     duration : {
-        type : Number,
+        type : String,
     },
     pay : {
         type : String,

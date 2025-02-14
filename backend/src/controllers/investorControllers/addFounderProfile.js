@@ -12,6 +12,8 @@ export const addFounderProfile = async(req, res) => {
         const investor = await Investor.findOne({user_id : investorId});
         const founderProfile = await Founder.findOne({user_id : id});
 
+        console.log(founderProfile.fullName);
+
         if (!investor) {
             return res.status(404).json({ message: 'Investor not found' });
         }
