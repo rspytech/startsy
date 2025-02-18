@@ -5,10 +5,10 @@ import { User } from "../../models/user.model.js";
 export const createJobPost = async (req, res) => {
     try {
         const type = req.params.postType;
-        const {role, description, duration, pay} = req.body;
+        const {role, description, duration, pay, amount} = req.body;
         const user_id = req.user._id;
 
-        const jobPost = await JobPost.create({role, description, duration, pay});
+        const jobPost = await JobPost.create({role, description, duration, pay, amount});
 
         if (!jobPost) {
             return res.status(400).json({ message: "Error while creating a job post" });

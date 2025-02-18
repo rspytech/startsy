@@ -13,6 +13,9 @@ const jobPostSchema = new mongoose.Schema({
     pay : {
         type : String,
     },
+    amount : {
+        type : String,
+    },
     jobApplicants : [{
         type : mongoose.Schema.Types.ObjectId,
         ref : 'User',
