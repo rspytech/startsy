@@ -20,7 +20,8 @@ export const getMessage = async (req, res) => {
             senderProfilePhoto = sender?.profilePhoto;
             recieverProfilePhoto = receiver?.profilePhoto;
             conversation = await Conversation.findOne({
-                members: {$all: [senderId, receiverId]}
+                members: {$all: [senderId, receiverId]},
+                isGroup : false,
             }).populate("messages");    
         }
         else{
