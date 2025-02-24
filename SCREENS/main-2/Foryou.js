@@ -1715,9 +1715,7 @@ const styles1 = StyleSheet.create({
         ...StyleSheet.absoluteFillObject,
         zIndex: 1,
     },
-    ok : {
-        height : "1000"
-    },
+
 
 
 
