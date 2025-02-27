@@ -2,20 +2,81 @@ import { User } from "../models/user.model.js";
 
 export const getUserNameSuggestions = async (req, res) => {
     try {
-        let {userName} = req.params;
-        userName = userName.substring(1,);
-        const userSuggestions = await User.find({ 
-            userName : {$regex: `^${userName}`, $options: "i"}
-        }).limit(3);
+        let { userName } = req.params;
+        const userId = req.user._id;
 
+
+
+        const user = await User.findById(userId).populate("roleId");
+        const LoggedinuserKeFollowing = user.following
+
+
+        console.log(LoggedinuserKeFollowing);
+        
+
+        console.log(new Set(user.roleId.chatUsers));
+        var list = user.roleId.chatUsers;
+
+        console.log(list);
+        
+
+
+
+
+
+
+
+        userName = userName.substring(1,);
+        const userSuggestions = await User.find({
+            userName: { $regex: `^${userName}`, $options: "i" }
+        }).limit(3);
         let newarray = userSuggestions.filter((user) => user.role !== "Investor");
 
-        if(!userSuggestions){
-            return res.status(400).json({message: "No matching users found"});
+
+
+
+
+
+        let finalarray = newarray.map((e) => {
+            var status = "ok";
+            let plainObj = e.toObject();
+            if (list.includes(e._id)) {
+                return { ...plainObj, status: "Connected" }
+            }
+            else if (!list.includes(e._id)) {
+
+                console.log("second");
+                
+                if (e.followers.includes(userId)) {
+                    return { ...plainObj, status: "Request Sent" }
+
+                }
+                else {
+                    return { ...plainObj, status: "Connect" }
+
+                }
+
+            }
+
+
+
+
+
+        })
+
+        console.log(finalarray, "okkkkkkkkkk");
+
+
+
+
+
+
+        if (!userSuggestions) {
+            return res.status(400).json({ message: "No matching users found" });
         }
         return res.status(200).json({
             message: "User name suggestions found",
-            data: newarray,
+            data: finalarray,
         })
     }
     catch (error) {

@@ -2,32 +2,33 @@ import mongoose from "mongoose";
 
 const investorSchema = new mongoose.Schema({
 
-    fullName : {
+    fullName: {
         type: String,
     },
-    email : {
+    email: {
         type: String,
     },
-    country : {
+    country: {
         type: String,
     },
-    age : {
+    age: {
         type: String,
     },
-    gender : {
+    gender: {
         type: String,
     },
 
-    contactInfo : {
+
+    contactInfo: {
         type: String,
-        unique : true,
+        unique: true,
     },
-    previousExperience : {
-        type : Number,
+    previousExperience: {
+        type: Number,
         required: true,
     },
     // Index is the hash of the original Pan card
-    panCard : {
+    panCard: {
         index: { type: String, required: true },
         // Below is the encrypted Pan card information
         pan: {
@@ -38,39 +39,45 @@ const investorSchema = new mongoose.Schema({
     investorType: {
         type: String,
     },
-    startupStage : {
-        type : String,
+    startupStage: {
+        type: String,
         required: true,
     },
-    preferredSector : {
-        type : String,
+    preferredSector: {
+        type: String,
         required: true,
     },
-    investmentRange : {
-        type : Number,
+    investmentRange: {
+        type: Number,
         required: true,
     },
-    linkedInUrl : {
+    linkedInUrl: {
         type: String,
     },
-    websiteUrl : {
+    websiteUrl: {
         type: String,
     },
-    domainEmail : {
+    domainEmail: {
         type: String,
     },
-    panCardPhoto : {
-        type : String,
+    panCardPhoto: {
+        type: String,
     },
 
-    requestedFounders : [{
-        founder : {
+
+    posts: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'Post'
+    }],
+
+    requestedFounders: [{
+        founder: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
         },
-        requestDate : {
-            type : Date,
-            default : Date.now,
+        requestDate: {
+            type: Date,
+            default: Date.now,
         }
     }],
 
@@ -79,10 +86,10 @@ const investorSchema = new mongoose.Schema({
         ref: 'User',
     }],
 
-    user_id : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'User',
+    user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
     },
-},{timestamps : true});
+}, { timestamps: true });
 
 export const Investor = mongoose.model("Investor", investorSchema);

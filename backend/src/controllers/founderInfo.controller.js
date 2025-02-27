@@ -44,7 +44,7 @@ export const FounderInfo = async (req, res) => {
     }
     teamInfo = teamInfo.filter((team) => team.tag !== "" && team.name !== "" && team.role !== "")
 
-    console.log("affafiajfiajfoajfofaofoadfkfake", teamInfo.length);
+    // console.log("affafiajfiajfoajfofaofoadfkfake", teamInfo.length);
 
     try {
         // 1. Process the team info
