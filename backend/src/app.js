@@ -19,6 +19,7 @@ import notificationRoute from "./routes/notifications.routes.js";
 import groupChatRoute from "./routes/groupChat.routes.js";
 import healthRoute from "./routes/health.routes.js"
 import reportRoute from './routes/report.routes.js';
+import { log } from "console";
 
 const app = express();
 const server = http.createServer(app); // Create the HTTP server
@@ -40,6 +41,11 @@ app.use(cookieSession({
 }));
 
 // Routes
+app.get("/" , (req,res)=>{
+    res.send("success")
+    console.log("called from app");
+    
+})
 app.use("/api", authRoute);
 app.use("/investor", investorRoute);
 app.use("/founder", founderRoute);

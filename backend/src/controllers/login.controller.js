@@ -1,6 +1,9 @@
 import { User } from "../models/user.model.js";
 
-export const loginUser = async (req, res) => {
+ const loginUser = async (req, res) => {
+
+    console.log("called login");
+    
     try {
         const { identifier, password } = req.body;
 
@@ -45,4 +48,10 @@ export const loginUser = async (req, res) => {
         console.error('Error logging in:', error);
         res.status(500).json({ message: 'Server error' });
     }
+
+
+
 };
+
+
+export default loginUser
