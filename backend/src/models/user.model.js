@@ -26,7 +26,7 @@ const userSchema = new mongoose.Schema({
     },
     role : {
         type: String,
-        enum: ['Admin', 'Investor', 'Founder', 'Freelancer', 'CommunityMember'],
+        enum: ['Admin', 'Investor', 'Founder', 'Freelancer', 'CommunityMember' , 'General' , "Job seeker"],
         default: 'CommunityMember'
     },
     profilePhoto : {
@@ -35,7 +35,8 @@ const userSchema = new mongoose.Schema({
     /* To connect from user model to the specific userType model */
     roleId : {                      
         type: mongoose.Schema.Types.ObjectId,
-        refPath: 'role',
+        // refPath: 'role',
+        ref  : "General"
     },
     communityList:[{
         type: mongoose.Schema.Types.ObjectId,

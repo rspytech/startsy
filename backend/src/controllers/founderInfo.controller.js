@@ -7,6 +7,7 @@ import RecommendationBasic from "../algorithms/recommendation.js";
 import mappings from "../config/startupPrefrencesMapping.js"; // Assuming the mappings are available in this config file
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
+import { General } from "../models/general.model.js";
 
 // Initialize RecommendationBasic with mappings
 const recommender = new RecommendationBasic(mappings.stage, mappings.sector, mappings.location, mappings.fundingRange);
@@ -34,10 +35,17 @@ export const FounderInfo = async (req, res) => {
         sector,
         fundingStatus,
         stageOfStartup,
-        socialProof
+        socialProof,
+        generalModelId
     } = req.body;
     console.log(req.body);
+
+
     const profilePhoto = req.file;
+
+
+
+    
 
     if (!profilePhoto) {
         return res.status(400).json({ message: "Please upload a profile photo" });
@@ -49,11 +57,11 @@ export const FounderInfo = async (req, res) => {
     try {
         // 1. Process the team info
         const invalidTeamMates = [];
-        if(teamInfo && teamInfo.length > 0){
+        if (teamInfo && teamInfo.length > 0) {
             for (let i = 0; i < teamInfo.length; i++) {
                 const team = teamInfo[i];
                 let teamMate;
-                if(team.tag.length > 0){
+                if (team.tag.length > 0) {
                     teamMate = await User.findOne({ userName: team.tag });
                     if (!teamMate) {
                         // Add invalid team member to the list
@@ -66,7 +74,7 @@ export const FounderInfo = async (req, res) => {
                 }
             }
         }
-        
+
 
         // If there are invalid team members, send a response but don't stop execution
         if (invalidTeamMates.length > 0) {
@@ -90,45 +98,75 @@ export const FounderInfo = async (req, res) => {
         }
 
         // 3. Create a new Founder profile
-        const newFounder = new Founder({
-            email,
-            country,
-            age,
-            gender,
-            contactInfo,
-            fullName,
-            previousWorkExperience,
-            education,
-            skills,
-            nameOfStartup,
-            goal,
-            description,
-            teamInfo,
-            hiddenInfo: {
-                sector,
-                fundingStatus,
-                stageOfStartup,
-                socialProof,
+
+        //commented
+        // const newFounder = new Founder({
+        //     email,
+        //     country,
+        //     age,
+        //     gender,
+        //     contactInfo,
+        //     fullName,
+        //     previousWorkExperience,
+        //     education,
+        //     skills,
+        //     nameOfStartup,
+        //     goal,
+        //     description,
+        //     teamInfo,
+        //     hiddenInfo: {
+        //         sector,
+        //         fundingStatus,
+        //         stageOfStartup,
+        //         socialProof,
+        //     },
+        //     user_id: req.user._id
+        // });
+
+        const newFounder = await General.findOneAndUpdate(
+            { _id: req.body.generalModelId },  // Find document by user_id
+            {
+                $set: {
+                    email,
+                    country,
+                    age,
+                    gender,
+                    contactInfo,
+                    fullName,
+                    previousWorkExperience,
+                    education,
+                    skills,
+                    nameOfStartup,
+                    goal,
+                    description,
+                    teamInfo,
+                    "hiddenInfo.sector": sector,
+                    "hiddenInfo.fundingStatus": fundingStatus,
+                    "hiddenInfo.stageOfStartup": stageOfStartup,
+                    "hiddenInfo.socialProof": socialProof,
+                }
             },
-            user_id: req.user._id
-        });
+            { new: true }
+        );
         
-        for(let i = 0; i < teamInfo.length; i++){
-            let teamMateTag = teamInfo[i].tag; 
+        
+
+        for (let i = 0; i < teamInfo.length; i++) {
+            let teamMateTag = teamInfo[i].tag;
             // TeamMateTag is now objectId as it converted now from code above as per the model using  teamInfo[i].tag = teamMate._id;
             let teamMate;
-            if(mongoose.Types.ObjectId.isValid(teamMateTag)) {
-              teamMate = await User.findById(teamMateTag);  
-            }   
-            if(teamMate){
+            if (mongoose.Types.ObjectId.isValid(teamMateTag)) {
+                teamMate = await User.findById(teamMateTag);
+            }
+            if (teamMate) {
                 await Notification.create({
-                    receivingUserId : teamInfo[i].tag,
-                    sendingUserId : req.user._id,
-                    notificationType : "teammateAdded",
-                    notificationMessage : "You have been added to a new startup as a team member",
+                    receivingUserId: teamInfo[i].tag,
+                    sendingUserId: req.user._id,
+                    notificationType: "teammateAdded",
+                    notificationMessage: "You have been added to a new startup as a team member",
                 });
             }
-            
+
         }
 
         // 4. Update current user details
@@ -142,18 +180,24 @@ export const FounderInfo = async (req, res) => {
 
         // 5. Upload profile photo to Cloudinary
         let uploadedPhoto;
-        try {
-            uploadedPhoto = await uploadOnCloudinary(profilePhoto.buffer);
-        } catch (err) {
-            console.error("Cloudinary Upload Error:", err.message);
-            return res.status(400).json({ message: "Error uploading to Cloudinary.", error: err.message });
-        }
+        if (profilePhoto) {
+            try {
+                uploadedPhoto = await uploadOnCloudinary(profilePhoto.buffer);
+            } catch (err) {
+                console.error("Cloudinary Upload Error:", err.message);
+                return res.status(400).json({ message: "Error uploading to Cloudinary.", error: err.message });
+            }
 
-        if (!uploadedPhoto || !uploadedPhoto.secure_url) {
-            return res.status(400).json({ message: "Failed to upload photo to Cloudinary." });
+            if (!uploadedPhoto || !uploadedPhoto.secure_url) {
+                return res.status(400).json({ message: "Failed to upload photo to Cloudinary." });
+            }
+            const photoUrl = uploadedPhoto.secure_url;
+            currentUser.profilePhoto = photoUrl;
         }
-        const photoUrl = uploadedPhoto.secure_url;  
-        currentUser.profilePhoto = photoUrl;
+        else{
+            currentUser.profilePhoto = process.env.DEFAULT_PROFILE_PHOTO;
+
+        }
         currentUser.roleId = newFounder._id;
 
         // 6. Generate Recommendation ID for the founder based on preferences
@@ -170,19 +214,21 @@ export const FounderInfo = async (req, res) => {
         newFounder.recommendationId = recommendationIds[0];
 
         currentUser.isProfileComplete = true;
+        currentUser.role = "Founder"
         // 8. Save the current user and new founder profile
 
         const newToken = jwt.sign(
             {
-                _id : currentUserId,
-                userName : currentUser.userName,
+                _id: currentUserId,
+                userName: currentUser.userName,
                 // email : this.email,
-                role : currentUser.role,
+                // role: currentUser.role, //commented
+                role: "Founder",
                 status: true,
             },
-                process.env.ACCESS_TOKEN_SECRET,
+            process.env.ACCESS_TOKEN_SECRET,
             {
-                expiresIn : process.env.ACCESS_TOKEN_EXPIRY,
+                expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
             }
         )
 
@@ -193,7 +239,7 @@ export const FounderInfo = async (req, res) => {
         const recommendation = await Recommendation.findOneAndUpdate(
             { recommendationId: recommendationIds[0] }, // Find or create the recommendation ID
             {
-                $push: { matchingFounders: newFounder._id }, // Push the founder's user ID into matchingFounders array
+                $push: { matchingFounders: req.body.generalModelId }, // Push the founder's user ID into matchingFounders array
             },
             { upsert: true, new: true } // Create a new record if it doesn't exist
         );
@@ -203,7 +249,7 @@ export const FounderInfo = async (req, res) => {
             newToken,
         });
         console.log("founder succesfuly created ");
-        
+
 
     } catch (error) {
         console.log(error);

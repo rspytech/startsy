@@ -33,20 +33,29 @@ cron.schedule('0 0 * * *', async () => {
 export const upvotePost = async (req, res) => {
     try {
         const userId = req.user._id;
+        console.log(userId);
+        
         const { postId, likeStatus } = req.params;
 
         const post = await Post.findById(postId);
+        // console.log(post);
+        
         if (!post) {
             return res.status(404).json({ message: "Post not found" });
         }
 
         const user = await User.findById(userId);
+        console.log(user);
+        
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
 
         const postUserId = post.user_id;
         const roleDetails = await User.findById(postUserId).populate("roleId");
+
+        console.log(likeStatus , postUserId , roleDetails);
+        
         
         if(likeStatus === "like"){
             await Notification.create({

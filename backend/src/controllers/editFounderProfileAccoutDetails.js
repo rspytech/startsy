@@ -5,6 +5,7 @@ import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../../cloudinary.js";
 import mongoose from "mongoose";
 import { Notification } from "../models/notification.model.js";
+import { General } from "../models/general.model.js";
 
 export const editFounderAccountProfileDetails = async (req, res) => {
 
@@ -78,7 +79,7 @@ export const editFounderAccountProfileDetails = async (req, res) => {
         }
 
         // Find the existing founder profile
-        let founder = await Founder.findOne({ user_id: currentUserId });
+        let founder = await General.findOne({ user_id: currentUserId });
 
         // Define the fields to be updated
         const fieldsToUpdate = {

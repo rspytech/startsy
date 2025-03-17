@@ -17,8 +17,8 @@ export const createComment = async(req, res) => {
             postId,
         }); 
 
-        let post;
         
+        let post;
         if(newComment){
             post = await Post.findByIdAndUpdate({
                 _id: postId

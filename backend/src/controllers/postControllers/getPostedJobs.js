@@ -11,6 +11,8 @@ export const getPostedJobs = async(req, res) => {
         if(!jobsPosted){
             return res.status(404).json({message: "No jobs posted"});
         }
+        console.log(jobsPosted);
+        
         
         return res.status(200).json({
             message : "Fetched posted jobs successfully",

@@ -7,7 +7,7 @@ const postSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ["photo", "video", "textBlog", "jobPost", "communityPost"],
+        enum: ["photo", "video", "textBlog", "jobPost", "communityPost" , "Question"],
         required: true,
     },
     caption: {
@@ -50,6 +50,7 @@ const postSchema = new mongoose.Schema({
         type: Date,
         default: Date.now
     },
+    
 });
 
 export const Post = mongoose.model("Post", postSchema);

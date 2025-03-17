@@ -3,6 +3,7 @@ import Recommendation from '../../models/recommendation.model.js';
 // Assuming RecommendationBasic is already imported
 import RecommendationBasic from '../../algorithms/recommendation.js';
 import mappings from '../../config/startupPrefrencesMapping.js';
+import { General } from '../../models/general.model.js';
 
 // Initialize RecommendationBasic with mappings
 const recommender = new RecommendationBasic(mappings.stage, mappings.sector, mappings.location, mappings.fundingRange);
@@ -12,7 +13,7 @@ export const getFounderProfile = async (req, res) => {
         const investorId = req.user._id;
 
         // 1. Fetch the investor's preferences
-        const investor = await Investor.findOne({ user_id: investorId });
+        const investor = await General.findOne({ user_id: investorId });
         if (!investor) {
             return res.status(404).json({
                 success: false,
@@ -42,7 +43,7 @@ export const getFounderProfile = async (req, res) => {
         console.log(regexList);
         // 4. Query Recommendation schema using regexList
         const matchingRecommendations = await Recommendation.find({
-            recommendationId: { $in: regexList },
+            // recommendationId: { $in: regexList },
         }).populate({
             path: 'matchingFounders',
             populate: {

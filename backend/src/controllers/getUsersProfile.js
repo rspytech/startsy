@@ -4,6 +4,8 @@ import { Freelancer } from "../models/freelancer.model.js";
 import { CommunityMember } from "../models/communityMember.model.js";
 import { Post } from "../models/post.model.js";
 import { Investor } from "../models/investor.model.js";
+import { General } from "../models/general.model.js";
+import { calculateProfileCompletion } from "./CustomController/ProfileCompletion.js";
 
 export const getUsersProfiles = async (req, res) => {
     try {
@@ -12,13 +14,24 @@ export const getUsersProfiles = async (req, res) => {
             Founder: Founder,
             Freelancer: Freelancer,
             CommunityMember: CommunityMember,
-            Investor : Investor
+            Investor: Investor
         };
         const loggedInUserId = req.user._id;
         const userId = req.params.id;
         console.log("User ID:", userId);
 
+        var temp = await User.find({ _id: userId })
+        console.log(temp);
+
+        var temp2 = await General.find({ _id: temp.roleId });
+        console.log(temp2);
+
+
+
+
         const user = await User.findById(userId).populate("roleId");
+        console.log(user);
+
         const loggedInUser = await User.findById(loggedInUserId).populate("roleId");
         if (!user) {
             return res.status(404).json({ message: "User not found." });
@@ -32,28 +45,29 @@ export const getUsersProfiles = async (req, res) => {
         //     status = "Followed";
         // }
 
-        if(user.roleId.chatUsers.includes(loggedInUserId) && loggedInUser.roleId.chatUsers.includes(userId)){
+        if (user.roleId.chatUsers.includes(loggedInUserId) && loggedInUser.roleId.chatUsers.includes(userId)) {
             status = "Followed";
         }
 
-        else if(user.followers.includes(loggedInUserId)){
+        else if (user.followers.includes(loggedInUserId)) {
             status = "Pending Request";
         }
 
-        else{
+        else {
             status = "Follow"
         }
 
-        const role = roleMap[userRole];
+        // const role = roleMap[userRole]; commented
+        const role = "General";
         if (!role) {
             return res.status(400).json({ message: "Invalid user role." });
         }
         let userProfile;
         // Fetch the user's profile with basic `posts` population
-        if(userRole !== "Investor"){
-            userProfile = await role.findOne({ user_id: userId })
+        if (true) {
+            userProfile = await General.findOne({ user_id: userId })
                 .populate({
-                    path : "user_id chatUsers",
+                    path: "user_id chatUsers",
                 }) // Populate user details
                 .populate({ path: "posts" }) // Basic population for `posts`
                 .lean();
@@ -83,24 +97,29 @@ export const getUsersProfiles = async (req, res) => {
             // Update `userProfile.posts` with the conditionally populated posts
             userProfile.posts = populatedPosts;
         }
-        
-        else{
-            userProfile = await role.findOne({ user_id: userId })
+
+        else {
+            userProfile = await General.findOne({ user_id: userId })
                 .populate({
-                    path : "user_id chatUsers",
+                    path: "user_id chatUsers",
                 }) // Populate user details
                 .lean();
 
-            console.log("User Profile:", userProfile);
+            // console.log("User Profile:", userProfile);
 
             if (!userProfile) {
                 return res.status(404).json({ message: "Profile not found. Ensure the user_id is correctly linked in the role-specific collection." });
-            }
+            } 
+            
         }
+        var profileCompletion = calculateProfileCompletion(userProfile, userRole)
+        // console.log(profileCompletion);
+
         return res.status(200).json({
             message: "Profile details fetched successfully.",
             data: userProfile,
             status: status,
+            profileCompletion: profileCompletion
             // connectionCount: counts[0] || { followersCount: 0, followingCount: 0 },
         });
     } catch (error) {

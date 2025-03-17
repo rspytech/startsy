@@ -8,6 +8,8 @@ const createPost = async (req, res) => {
         const { caption, content, aspectRatio } = req.body;
         console.log(aspectRatio);
         const user_id = req.user._id;
+        console.log(req.body);
+        
 
         let mediaUrl = null;
         let mediaType = null;
@@ -49,7 +51,7 @@ const createPost = async (req, res) => {
             aspectRatio : type === "photo" || "video" ? aspectRatio : null,
             mediaUrl,
             mediaType,
-            content: type === "textBlog" ? content : undefined,
+            content: type === "textBlog" || "Question" ? content : undefined,
         };
         console.log(newPostData);
         const newPost = new Post(newPostData);

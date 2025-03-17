@@ -23,6 +23,12 @@ import { sendOtp } from '../controllers/authenticateUser/sendOtp.js';
 import { verifyOtp } from '../controllers/authenticateUser/verifyOtp.js';
 import { forgotPassword } from '../controllers/authenticateUser/forgotPassword.js';
 import { getProfileDetailsForEditProfile } from '../controllers/getProfileDetailsForEditProfile.js';
+import { getCommunityMemberProfile } from '../controllers/getCommunityMemberProfile.js';
+import deleteMemberFromCommunity from '../controllers/deleteMemberFromCommunity.js';
+import PFP from '../controllers/PFP.js';
+import getjobs from '../controllers/getjobs.js';
+import { getProfiledetailForSwitch } from '../controllers/getProfileDetailsForswitch.js';
+import updateToJobSeeker from '../controllers/CustomController/ChangeToJobSeeker.js';
 const router = express.Router();
 
 router.post('/register', registerUser);
@@ -41,15 +47,21 @@ router.post('/freelancerInfo', verifyUser, upload.single('profilePhoto'), Freela
 router.post('/communityMemberInfo', verifyUser, upload.single('profilePhoto'), CommunityMemeberInfo);
 router.get('/getUsersProfiles/:id', verifyUser, getUsersProfiles);
 router.get('/getProfileDetailsForEditProfile', verifyUser, getProfileDetailsForEditProfile);
+router.get('/getProfiledetailForSwitch', verifyUser, getProfiledetailForSwitch);
 router.post('/doesUserExists', DoesUserExists);
 router.post('/uploadCoverImage', verifyUser, upload.single('coverImage'), uploadProfileCoverImage);
 router.get('/getInvestorProfile', verifyUser, getInvestorProfile);
 router.get('/getUserNameSuggestions/:userName', verifyUser, getUserNameSuggestions);
+router.post('/getCommunityMemberProfile', verifyUser, getCommunityMemberProfile);
 router.post('/deleteUnauthenticatedUser', verifyUser, deleteUnAuthenticatedUser);
+router.post('/deleteMemberFromCommunity', verifyUser, deleteMemberFromCommunity );
+router.get('/updateToJobSeeker', verifyUser, updateToJobSeeker );
 router.post('/deleteUserAccount/:id', deleteUserAccount);
 
 router.post('/sendOtp', sendOtp);
 router.post('/verifyOtp', verifyOtp);
 router.post('/forgotPassword', forgotPassword);
+router.get('/PFP', verifyUser , PFP);
+router.get('/getJobs', verifyUser , getjobs);
 
 export default router;

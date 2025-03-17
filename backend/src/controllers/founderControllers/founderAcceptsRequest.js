@@ -82,6 +82,7 @@
 import { User } from "../../models/user.model.js";
 import { Founder } from "../../models/founder.model.js";
 import { Investor } from "../../models/investor.model.js";
+import { General } from "../../models/general.model.js";
 
 export const acceptRequest = async (req, res) => {
     try {
@@ -90,6 +91,9 @@ export const acceptRequest = async (req, res) => {
 
         const investorUser = await User.findById(investorId).populate("roleId");
         const founderUser = await User.findById(founderId).populate("roleId");
+
+        console.log(investorUser);
+        
 
         if (!investorUser || !investorUser.roleId) {
             return res.status(404).json({ message: "Investor not found" });
@@ -111,12 +115,12 @@ export const acceptRequest = async (req, res) => {
                 return res.status(404).json({ message: "Founder not found in investor's request list" });
             }
 
-            await Investor.findByIdAndUpdate(investorProfile._id, {
+            await General.findByIdAndUpdate(investorProfile._id, {
                 $pull: { requestedFounders: { founder: founderId } },
                 $push: { chatUsers: founderId }
             });
 
-            await Founder.findByIdAndUpdate(founderUser.roleId._id, {
+            await General.findByIdAndUpdate(founderUser.roleId._id, {
                 $inc: {
                     investorConnections : 1,
                 },

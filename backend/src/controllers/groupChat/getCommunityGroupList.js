@@ -35,8 +35,12 @@ export const getCommunityGroupChatList = async (req, res) => {
         // Find user and populate community list
         const user = await User.findById(user_id).populate({
             path: "communityList",
-            select: "_id communityName communityDescription"
+            // select: "_id communityName communityDescription "
         });
+
+
+        console.log(user);
+
 
         if (!user) {
             return res.status(404).json({ message: "User not found" });
@@ -52,14 +56,14 @@ export const getCommunityGroupChatList = async (req, res) => {
                 communityId: community._id,
                 isGroup: true
             })
-            .sort({ updatedAt: -1 })
-            .populate("lastMessage")
+                .sort({ updatedAt: -1 })
+                .populate("lastMessage")
 
             return {
                 community: {
                     _id: community._id,
-                    communityName: community.communityName,
-                    communityDescription: community.communityDescription
+                    community
+
                 },
                 conversation: {
                     _id: conversation?._id,

@@ -1,6 +1,7 @@
 // Investor Feed (Chat Page) Recent Chatting User List
 import { Investor } from "../../models/investor.model.js";
 import { Conversation } from "../../models/conversation.model.js";
+import { General } from "../../models/general.model.js";
 
 export const getInvestorChatUserList = async (req, res) => {
     try {
@@ -10,7 +11,7 @@ export const getInvestorChatUserList = async (req, res) => {
         
         // If any error can also try this while testing
         // const investorProfile = await Investor.findOne({ user_id: investorId }).populate("chatUsers", "userName profilePhoto");
-        const investorProfile = await Investor.findOne({ user_id: investorId }).populate("chatUsers");
+        const investorProfile = await General.findOne({ user_id: investorId }).populate("chatUsers");
 
         if (!investorProfile) {
             return res.status(404).json({ error: "Investor profile not found" });

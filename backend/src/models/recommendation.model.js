@@ -8,7 +8,7 @@ const recommendationSchema = new mongoose.Schema({
     },
     matchingFounders: [{
         type: mongoose.Schema.Types.ObjectId, // This references the matching founders' IDs
-        ref: 'Founder',
+        ref: 'General',
     }],
 }, { timestamps: true });
 

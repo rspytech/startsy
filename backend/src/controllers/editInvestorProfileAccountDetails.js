@@ -1,6 +1,7 @@
 import { Investor } from "../models/investor.model.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../../cloudinary.js";
+import { General } from "../models/general.model.js";
 
 export const editInvestorAccountProfileDetails = async (req, res) => {
 
@@ -30,7 +31,7 @@ export const editInvestorAccountProfileDetails = async (req, res) => {
         }
 
         // Find the existing investor profile
-        let investor = await Investor.findOne({ user_id: currentUserId });
+        let investor = await General.findOne({ user_id: currentUserId });
         console.log(investor);
         
 

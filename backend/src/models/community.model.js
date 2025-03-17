@@ -18,6 +18,10 @@ const communitySchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     },
+    groupPhoto : {
+        type : String,
+    },
+
 });
 
 export const Community = mongoose.model('Community', communitySchema);

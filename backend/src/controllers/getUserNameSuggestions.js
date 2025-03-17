@@ -6,19 +6,17 @@ export const getUserNameSuggestions = async (req, res) => {
         const userId = req.user._id;
 
 
-
         const user = await User.findById(userId).populate("roleId");
         const LoggedinuserKeFollowing = user.following
 
 
         console.log(LoggedinuserKeFollowing);
-        
+
 
         console.log(new Set(user.roleId.chatUsers));
         var list = user.roleId.chatUsers;
 
         console.log(list);
-        
 
 
 
@@ -26,10 +24,23 @@ export const getUserNameSuggestions = async (req, res) => {
 
 
 
+
+        console.log(userName);
         userName = userName.substring(1,);
-        const userSuggestions = await User.find({
-            userName: { $regex: `^${userName}`, $options: "i" }
-        }).limit(3);
+
+        if (userName == "howAllUser" || userName == "" || userName == undefined ) {
+            var userSuggestions = await User.find();
+        }
+        else {
+            var userSuggestions = await User.find({
+                userName: { $regex: `^${userName}`, $options: "i" }
+            }).limit(3);
+            console.log(userSuggestions);
+        }
+
+
+
+
         let newarray = userSuggestions.filter((user) => user.role !== "Investor");
 
 
@@ -46,7 +57,7 @@ export const getUserNameSuggestions = async (req, res) => {
             else if (!list.includes(e._id)) {
 
                 console.log("second");
-                
+
                 if (e.followers.includes(userId)) {
                     return { ...plainObj, status: "Request Sent" }
 

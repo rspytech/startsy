@@ -1,93 +1,129 @@
 import mongoose from "mongoose";
 
+
+
 const founderSchema = new mongoose.Schema({
-    fullName : {                 
-        type : String,
-        required: true,
-    },
-    email : {
+    fullName: {
         type: String,
     },
-    country : {
+    email: {
         type: String,
     },
-    age : {
+    country: {
         type: String,
     },
-    gender : {
+    age: {
         type: String,
     },
-    contactInfo : {
+    gender: {
         type: String,
-        required: true,
     },
-    previousWorkExperience : [{
-        company : {
+    contactInfo: {
+        type: String,
+        unique: true,
+        required: false,  // Set required only if necessary for all types
+    },
+    previousExperience: {
+        type: Number,
+    },
+    previousWorkExperience: [{
+        company: {
             type: String,
         },
-        role : {                /* Founder */
+        role: {
             type: String,
         },
-        year : {
+        year: {
             type: Number,
         }
     }],
-    education : {
-        type: String,
-        required: true,
-    },
-    skills : {             
+    education: {
         type: String,
     },
-    nameOfStartup:{
-        type: String,
-        required: true,
-    },
-    goal:{
-        type: String,
-        required: true,
-    },
-    description :{
+    skills: {
         type: String,
     },
-    teamInfo : [{
-        tag : {
+    nameOfStartup: {
+        type: String,
+    },
+    goal: {
+        type: String,
+    },
+    description: {
+        type: String,
+    },
+    teamInfo: [{
+        tag: {
             type: mongoose.Schema.Types.ObjectId,
             ref: 'User',
         },
         name: {
-            type : String,
+            type: String,
         },
-        role : {                    /* Team member */
-            type : String,  
+        role: {
+            type: String,
         }
     }],
-
-    // Founder Account Total Upvotes
     totalUpvotes: {
         type: Number,
-        default : 0,
+        default: 0,
     },
-
-    upvotesPerDay : {
+    upvotesPerDay: {
         type: Number,
-        default : 0,
+        default: 0,
     },
-
     currentUpvoteDate: {
-        type : String,
+        type: String,
     },
-
     investorUpvotes: {
         type: Number,
-        default : 0,
+        default: 0,
     },
-
-    posts : [{
+    investorType: {
+        type: String,
+    },
+    startupStage: {
+        type: String,
+    },
+    preferredSector: {
+        type: String,
+    },
+    investmentRange: {
+        type: Number,
+    },
+    linkedInUrl: {
+        type: String,
+    },
+    websiteUrl: {
+        type: String,
+    },
+    domainEmail: {
+        type: String,
+    },
+    panCardPhoto: {
+        type: String,
+    },
+    panCard: {
+        index: { type: String },
+        pan: {
+            iv: { type: String },
+            data: { type: String },
+        }
+    },
+    posts: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Post'
     }],
-
+    requestedFounders: [{
+        founder: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: 'User',
+        },
+        requestDate: {
+            type: Date,
+            default: Date.now,
+        }
+    }],
     requestNotifications: [{
         investor: {
             type: mongoose.Schema.Types.ObjectId,
@@ -98,48 +134,70 @@ const founderSchema = new mongoose.Schema({
             default: Date.now,
         }
     }],
-
-    // !! Revisit chatUsers either make here or may be a separate model for it !!
-
     chatUsers: [{
         type: mongoose.Schema.Types.ObjectId,
         ref: 'User',
     }],
-
-    hiddenInfo : {
+    user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: 'User',
+    },
+    hiddenInfo: {
         sector: {
             type: String,
-            required: true,
         },
         fundingStatus: {
             type: String,
-            required : true,
         },
         stageOfStartup: {
             type: String,
-            required : true,
         },
-        socialProof : [{
-            name : {
-                type : String,
+        socialProof: [{
+            name: {
+                type: String,
             },
-            url : {
-                type : String,
+            url: {
+                type: String,
             }
         }],
     },
     recommendationId: {
         type: String,
-        required: true
     },
-    investorConnections : {
+    investorConnections: {
         type: Number,
-        default: 0
+        default: 0,
     },
-    user_id : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'User',
+    communityMemberRole: {
+        type: String,
     },
-});
+    areaOfInterest: {
+        type: String,
+    },
+    contentPrefrence: {
+        type: String,
+    },
+    tagline: {
+        type: String,
+    },
+    certification: [{
+        name: {
+            type: String,
+        },
+        url: {
+            type: String,
+        },
+    }],
+    portfolio: [{
+        name: {
+            type: String,
+        },
+        url: {
+            type: String,
+        },
+    }]
+}, { timestamps: true });
+
+
 
 export const Founder = mongoose.model("Founder", founderSchema);

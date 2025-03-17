@@ -3,14 +3,19 @@
 import { Investor } from "../../models/investor.model.js";
 import { Founder } from "../../models/founder.model.js";
 import { upvoteProfile } from "../../models/upvoteProfile.model.js";
+import { General } from "../../models/general.model.js";
 
 export const addFounderProfile = async(req, res) => {
     try {
         const { id } = req.params;
         const investorId = req.user._id;
         
-        const investor = await Investor.findOne({user_id : investorId});
-        const founderProfile = await Founder.findOne({user_id : id});
+        const investor = await General.findOne({user_id : investorId});
+        let founderProfile = await General.findOne({user_id : id});
+        if(founderProfile == null){
+             founderProfile = await Founder.findOne({user_id : id});
+
+        }
 
         console.log(founderProfile.fullName);
 

@@ -1,6 +1,7 @@
 import { User } from "../models/user.model.js";
 import { CommunityMember } from "../models/communityMember.model.js";
 import { uploadOnCloudinary } from "../../cloudinary.js";
+import { General } from "../models/general.model.js";
 
 export const editCommunityMemberAccountProfileDetails = async (req, res) => {
     try {
@@ -11,6 +12,11 @@ export const editCommunityMemberAccountProfileDetails = async (req, res) => {
         if (req.body.portfolio) {
             req.body.portfolio = JSON.parse(req.body.portfolio);
         }
+        if (req.body.socialProof) {
+            req.body.socialProof = JSON.parse(req.body.socialProof);
+        }
+        console.log(req.body.socialProof);
+        
 
         const {
             fullName,
@@ -24,6 +30,7 @@ export const editCommunityMemberAccountProfileDetails = async (req, res) => {
             education,
             certification,
             portfolio,
+            socialProof
         } = req.body;
 
         const profilePhoto = req.file;
@@ -41,7 +48,7 @@ export const editCommunityMemberAccountProfileDetails = async (req, res) => {
         }
 
         // Find the existing community member profile
-        let communityMember = await CommunityMember.findOne({ user_id: currentUserId });
+        let communityMember = await General.findOne({ user_id: currentUserId });
 
         if (!communityMember) {
             return res.status(404).json({ message: "Community Member profile not found" });
@@ -58,11 +65,18 @@ export const editCommunityMemberAccountProfileDetails = async (req, res) => {
             tagline,
             skills,
             education,
+            socialProof,
+            
         };
 
         // Update the fields dynamically
         for (const [key, value] of Object.entries(fieldsToUpdate)) {
-            if (value) {
+            // console.log(key , value , "okkkkkkkkkkkkk");
+            
+            if(key == "socialProof") {
+                communityMember["hiddenInfo"].socialProof =  value
+            }
+            else {
                 communityMember[key] = value;
             }
         }

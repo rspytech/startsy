@@ -13,19 +13,23 @@ import { createComment } from "../controllers/postControllers/createComment.cont
 import { getComments } from "../controllers/postControllers/getComments.controller.js";
 import { getPosts } from "../controllers/postControllers/getPost.controller.js";
 import { deletePost } from "../controllers/postControllers/deletePost.controller.js";
+import { getAppliedJobApplicants } from "../controllers/CustomController/AppliedJobPeople.js";
+import { UsersAppliedForJobs } from "../controllers/postControllers/getAppliedJobApplicants.js";
 const router = express.Router();
 
 router.post("/createPost/:postType", verifyUser, upload.single("media"), createPost);   // TESTED
 router.post("/createJobPost/:postType", verifyUser, createJobPost);     // TESTED
-router.post("/createCommunityPost/:postType", verifyUser, createCommunityPost);
+router.post("/createCommunityPost/:postType", verifyUser, upload.single("groupPhoto") , createCommunityPost);
 router.post("/applyJobPost/:id", verifyUser, applyJobPost);    // TESTED
 router.get("/getPostedJobs", verifyUser, getPostedJobs);    // TESTED
 router.post("/applyCommunity/:id", verifyUser, applyCommunity);     // TESTED
 router.get("/getCommunityChatList", verifyUser, getCommunityChatList);    // TESTED
+router.get("/GetappliedjobApplicants/:id", verifyUser, getAppliedJobApplicants);    // TESTED
 router.post("/upvotePost/:postId/:likeStatus", verifyUser, upvotePost);   // TESTED
 router.post("/createComment/:id", verifyUser, createComment);   // TESTED
 router.get("/getComments/:id", verifyUser, getComments);    // TESTED
 router.post("/deletePost/:id", verifyUser, deletePost);
 router.get("/getPosts", verifyUser, getPosts);
+router.post("/getAppliedJobApplicants", verifyUser, UsersAppliedForJobs);
 
 export default router;
