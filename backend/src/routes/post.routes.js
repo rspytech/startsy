@@ -15,6 +15,7 @@ import { getPosts } from "../controllers/postControllers/getPost.controller.js";
 import { deletePost } from "../controllers/postControllers/deletePost.controller.js";
 import { getAppliedJobApplicants } from "../controllers/CustomController/AppliedJobPeople.js";
 import { UsersAppliedForJobs } from "../controllers/postControllers/getAppliedJobApplicants.js";
+import { groupPhoto } from "../controllers/postControllers/groupPhoto.js";
 const router = express.Router();
 
 router.post("/createPost/:postType", verifyUser, upload.single("media"), createPost);   // TESTED
@@ -31,5 +32,7 @@ router.get("/getComments/:id", verifyUser, getComments);    // TESTED
 router.post("/deletePost/:id", verifyUser, deletePost);
 router.get("/getPosts", verifyUser, getPosts);
 router.post("/getAppliedJobApplicants", verifyUser, UsersAppliedForJobs);
+router.post("/groupPhoto/:comid", verifyUser, upload.single("media"),groupPhoto);
+
 
 export default router;
