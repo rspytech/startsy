@@ -5,6 +5,11 @@ export const followUser = async (req, res) => {
         const loggedInUserId = req.user._id;
         const followedUserId = req.params.id;
 
+        // Prevent users from following themselves
+        if (loggedInUserId.toString() === followedUserId.toString()) {
+            return res.status(400).json({ message: "You cannot follow yourself." });
+        }
+
         // Update both users in parallel
         const [updatedLoggedInUser, updatedFollowedUser] = await Promise.all([
             User.findByIdAndUpdate(
@@ -41,8 +46,9 @@ export const followUser = async (req, res) => {
             const messagingUser = messagingUserRole.roleId;
             const loggedInUser = loggedInUserRole.roleId;
 
-            await messagingUser.chatUsers.push(loggedInUserId);
-            await loggedInUser.chatUsers.push(followedUserId);
+            await messagingUser.updateOne({ $addToSet: { chatUsers: loggedInUserId } });
+            await loggedInUser.updateOne({ $addToSet: { chatUsers: followedUserId } });
+
 
             loggedInUser.requestNotifications = loggedInUser.requestNotifications.filter(
                 (notification) => notification.investor.toString() !== followedUserId

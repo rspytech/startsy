@@ -19,6 +19,7 @@ import notificationRoute from "./routes/notifications.routes.js";
 import groupChatRoute from "./routes/groupChat.routes.js";
 import healthRoute from "./routes/health.routes.js"
 import reportRoute from './routes/report.routes.js';
+import TestRoute from "./routes/test.route.js";
 
 const app = express();
 const server = http.createServer(app); // Create the HTTP server
@@ -53,5 +54,6 @@ app.use("/notification", notificationRoute);
 app.use("/groupChat", groupChatRoute);
 app.use("/health", healthRoute);
 app.use("/report", reportRoute);
+app.use("/test", TestRoute);
 
 export default server; // Export the server instead of starting it here

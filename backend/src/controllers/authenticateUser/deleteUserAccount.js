@@ -9,6 +9,9 @@ import { Message } from "../../models/message.model.js";
 import { Community } from "../../models/community.model.js";
 import { Notification } from "../../models/notification.model.js";
 
+import { General } from "../../models/general.model.js";
+
+
 export const deleteUserAccount = async (req, res) => {
     // Start a MongoDB session for transaction
     const userId = req.params.id;
@@ -84,15 +87,15 @@ export const deleteUserAccount = async (req, res) => {
         }, { session });
 
         if(userRole === "CommunityMember"){
-            await CommunityMember.deleteOne({user_id : userId});
+            await General.deleteOne({user_id : userId});
         }
 
         if(userRole === "Founder"){
-            await Founder.deleteOne({user_id : userId});
+            await General.deleteOne({user_id : userId});
         }
 
         if(userRole === "Investor"){
-            await Investor.deleteOne({user_id : userId});
+            await General.deleteOne({user_id : userId});
         }
 
         // 8. Delete the user document itself

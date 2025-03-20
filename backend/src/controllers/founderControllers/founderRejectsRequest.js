@@ -1,3 +1,4 @@
+import { General } from "../../models/general.model.js";
 import { User } from "../../models/user.model.js";
 
 export const rejectRequest = async (req, res) => {
@@ -5,8 +6,15 @@ export const rejectRequest = async (req, res) => {
         const investorId = req.params.id; // Investor ID from request params
         const founderId = req.user._id; // Founder ID from the logged-in user (req.user)
 
+        console.log(investorId);
+        console.log(founderId);
+        
+
         const investorUser = await User.findById(investorId).populate("roleId");
         const founderUser = await User.findById(founderId).populate("roleId");
+
+        const investorGeneralId = investorUser.roleId._id;
+        const founderGeneralId = founderUser.roleId._id;
 
         if (!investorUser || !investorUser.roleId) {
             return res.status(404).json({ message: "Investor not found" });
@@ -17,18 +25,38 @@ export const rejectRequest = async (req, res) => {
         }
 
         // Remove the founder request from the investor's requestedFounders list
-        if(investorUser.role === "Investor"){
+        // if(investorUser.role === "Investor"){
+        //     await investorUser.roleId.updateOne({
+        //         $pull: { requestedFounders: { founder: founderId } }
+        //     });
+        // }
+        if(true){
             await investorUser.roleId.updateOne({
                 $pull: { requestedFounders: { founder: founderId } }
             });
+            await investorUser.updateOne({
+                $pull: { following:founderId , followers:founderId }
+            });
+            
+            await General.findOneAndUpdate({_id: investorGeneralId},{
+                $pull: { chatUsers: founderId }
+            })
+
+            await General.findOneAndUpdate({_id: founderGeneralId},{
+                $pull: { chatUsers: investorId }
+            })
         }
         
-
+        
         // Remove the investor's request notification from the founder's requestNotifications list
         await founderUser.roleId.updateOne({
             $pull: { requestNotifications: { investor: investorId} }
         });
-
+        await founderUser.updateOne({
+            $pull: { following:investorId, followers:investorId }
+        });
+        console.log({message:"Request rejected successfully"});
+        
         return res.status(200).json({ message: "Request rejected successfully" });
     } catch (error) {
         console.error(error);

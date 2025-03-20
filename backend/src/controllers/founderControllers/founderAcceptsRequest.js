@@ -89,10 +89,14 @@ export const acceptRequest = async (req, res) => {
         const investorId = req.params.id;   // The one sending request
         const founderId = req.user._id;     // The one accepting request
 
+        console.log("✅",investorId);
+        console.log("✅",founderId);
+        
+
         const investorUser = await User.findById(investorId).populate("roleId");
         const founderUser = await User.findById(founderId).populate("roleId");
 
-        console.log(investorUser);
+        // console.log(investorUser);
         
 
         if (!investorUser || !investorUser.roleId) {
@@ -136,6 +140,17 @@ export const acceptRequest = async (req, res) => {
             founderProfile.requestNotifications = founderProfile.requestNotifications.filter(
                 (notification) => notification.investor.toString() !== investorId.toString()
             );
+
+            var rec1 =  await User.findByIdAndUpdate(
+                { _id: investorId },
+                { $addToSet: { followers: founderId } },
+                { new: true }
+            )
+            var rec2 = await User.findByIdAndUpdate(
+                { _id: founderId },
+                { $addToSet: { followers: investorId } },
+                { new: true }
+            )
             await founderProfile.save();
         }
         return res.status(200).json({ message: "Request accepted successfully" });
