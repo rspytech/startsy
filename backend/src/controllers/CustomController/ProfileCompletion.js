@@ -62,21 +62,21 @@ export const calculateProfileCompletion = (userProfile, userRole) => {
                 );
 
                 if (isValid) {
-                    // console.log(`✅ Adding ${weights[field]} for ${field} (Valid Object Found)`);
+                     console.log(`✅ Adding ${weights[field]} for ${field} (Valid Object Found)`);
                     completedWeight += weights[field];
                 } else {
-                    // console.log(`❌ Skipping ${field}, no valid object found`);
+                     console.log(`❌ Skipping ${field}, no valid object found`);
                 }
             } else {
-                // console.log(`✅ Adding ${weights[field]} for ${field} (Valid Direct Field)`);
+                console.log(`✅ Adding ${weights[field]} for ${field} (Valid Direct Field)`);
                 completedWeight += weights[field];
             }
         } else {
-            // console.log(`❌ Skipping ${field}, invalid or missing`);
+             console.log(`❌ Skipping ${field}, invalid or missing`);
         }
     }
 
-    // console.log(`Total Weight: ${totalWeight}, Completed Weight: ${completedWeight}`);
+    console.log(`Total Weight: ${totalWeight}, Completed Weight: ${completedWeight}`);
 
     return completedWeight;
 };

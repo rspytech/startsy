@@ -19,6 +19,7 @@ import { groupPhoto } from "../controllers/postControllers/groupPhoto.js";
 const router = express.Router();
 
 router.post("/createPost/:postType", verifyUser, upload.single("media"), createPost);   // TESTED
+router.post("/groupPhoto/:comid", verifyUser, upload.single("media"),groupPhoto);   // TESTED
 router.post("/createJobPost/:postType", verifyUser, createJobPost);     // TESTED
 router.post("/createCommunityPost/:postType", verifyUser, upload.single("groupPhoto") , createCommunityPost);
 router.post("/applyJobPost/:id", verifyUser, applyJobPost);    // TESTED
