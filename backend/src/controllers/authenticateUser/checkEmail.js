@@ -3,8 +3,8 @@ import {User} from "../../models/user.model.js"
 export const checkEmail = async (req, res) => {
     try {
         const { email /*contactInfo*/ } = req.body;
-        if(!email,!contactInfo){
-            return res.status(400).json({message : "EmailEmail and contact number not recieved",});
+        if(!email){
+            return res.status(400).json({message : "Email and contact number not recieved",});
         } 
         const user = await User.findOne({ email: email });
         if (user) {
