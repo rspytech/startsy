@@ -1,4 +1,4 @@
-import { Save } from "../../models/save.model";
+import { Save } from "../../models/save.model.js";
 
 export const getSavedPost = async (req, res) => {
     try {
