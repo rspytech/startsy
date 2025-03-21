@@ -34,6 +34,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser());
+app.use
 app.use(cookieSession({
     name: "session",
     keys: ["s5Lcz9k9mRkA5O5xT7n9R8l2sE6QvB8y"],
