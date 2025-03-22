@@ -6,6 +6,7 @@ import { verifyUser } from "../middleware/user.auth.middleware.js";
 import { savePost } from "../controllers/TestController/savePost.js";
 import { getSavedPost } from "../controllers/TestController/getSavedPost.js";
 import markAsRead from "../controllers/TestController/markAsRead.js";
+import APKcontroller from "../controllers/TestController/Apkcontroller.js";
 
 
 const TestRoute = express.Router();
@@ -16,5 +17,6 @@ TestRoute
 .post("/savePost/:saveId/:saveStatus",verifyUser,savePost)
 .get("/getSavedPost",verifyUser,getSavedPost)
 .post("/markAsRead",verifyUser , markAsRead)
+// .post("/downloadAPK",verifyUser , APKcontroller)
 
 export default TestRoute;

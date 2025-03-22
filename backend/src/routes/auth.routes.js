@@ -29,6 +29,7 @@ import PFP from '../controllers/PFP.js';
 import getjobs from '../controllers/getjobs.js';
 import { getProfiledetailForSwitch } from '../controllers/getProfileDetailsForswitch.js';
 import updateToJobSeeker from '../controllers/CustomController/ChangeToJobSeeker.js';
+import getApklink from '../controllers/adminControllers/GetApklink.js';
 const router = express.Router();
 
 router.post('/register', registerUser);
@@ -63,5 +64,6 @@ router.post('/verifyOtp', verifyOtp);
 router.post('/forgotPassword', forgotPassword);
 router.get('/PFP', verifyUser , PFP);
 router.get('/getJobs', verifyUser , getjobs);
+router.get('/getApiLink', verifyUser , getApklink);
 
 export default router;
