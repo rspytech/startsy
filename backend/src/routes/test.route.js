@@ -21,7 +21,7 @@ TestRoute
 .get("/getSavedPost",verifyUser,getSavedPost)
 .post("/markAsRead",verifyUser , markAsRead)
 .post("/addField" , addField)
-.get("/getAllUsersWithStatus", verifyUser, getAllUsersWithStatus)
+.post("/getAllUsersWithStatus", verifyUser, getAllUsersWithStatus)
 .get("/getPortfolioAndCertifications",verifyUser,getPortfolioAndCertifications)
 // .post("/downloadAPK",verifyUser , APKcontroller)
 
