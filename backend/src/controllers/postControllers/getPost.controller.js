@@ -1,10 +1,13 @@
 import { Post } from "../../models/post.model.js";
 import { Save } from "../../models/save.model.js";
+import { User } from "../../models/user.model.js";
 
 export const getPosts = async (req, res) => {
     try {
         // Retrieve posts with the user_id populated
         let posts = await Post.find().populate("user_id");
+        console.log(posts);
+        // Fetch the user's followers and following list
         var user_id = req.user._id;
         var savePosts = await Save.findOne({ userId: user_id });
         console.log(savePosts?.saveId);
@@ -18,10 +21,26 @@ export const getPosts = async (req, res) => {
         if (!posts || posts.length === 0) {
             return res.status(404).json({ message: "No posts found" });
         }
+        const currentUser = await User.findById(user_id).select("followers following");
+        
+        // Filter posts based on privacy settings
+        const visiblePosts = posts.filter((post) => {
+            if (!post.isPrivate) {
+                // Public posts are always visible
+                return true;
+            }
+
+        // Private posts are visible only if the user is a follower or following the post's owner
+        const postOwnerId = post.user_id;
+            return (
+                currentUser.followers.includes(postOwnerId) ||
+                currentUser.following.includes(postOwnerId)
+            );
+        });
 
         // Populate specific fields based on post type
         const populatedPosts = await Promise.all(
-            posts.map(async (post) => {
+            visiblePosts.map(async (post) => {
                 if (post.type === "jobPost") {
                     return await post.populate("jobPosts");
                 } else if (post.type === "communityPost") {

@@ -186,6 +186,10 @@ const generalSchema = new mongoose.Schema({
             type: String,
         },
     }],
+    isInvestorVerified : {
+        type: Boolean,
+        default: false,
+    },
     portfolio: [{
         name: {
             type: String,

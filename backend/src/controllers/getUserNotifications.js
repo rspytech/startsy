@@ -12,7 +12,7 @@ export const getUserNotifications = async (req, res) => {
 
         // Filter and transform notifications if needed
         notifications = notifications.map(notification => {
-            if (notification.notificationType !== "upvotePost") {
+            if (notification.notificationType !== "upvotePost" && notification.notificationType !== "commentPost") {
                 notification.postId = null; // Ensure postId is null for other types
             }
             return notification;

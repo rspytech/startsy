@@ -5,7 +5,9 @@ import { User } from "../../models/user.model.js";
 
 export const createComment = async(req, res) => {
     try {
-        const {comment} = req.body;
+        const {comment , message} = req.body;
+        console.log(message);
+        
         const userId = req.user._id;
         const postId = req.params.id;
 
@@ -33,8 +35,9 @@ export const createComment = async(req, res) => {
         await Notification.create({
             receivingUserId : post.user_id, 
             sendingUserId : req.user._id,
+            postId : post._id,
             notificationType: "commentPost",
-            notificationMessage : "Commented on your post",
+            notificationMessage : message != "" ? message :"Commented on your post",
         });
         
         return res.status(200).json({

@@ -27,7 +27,7 @@ configureSocketIO(server); // Configure Socket.IO with the server
 
 // Middleware
 app.use(cors({
-    origin: ["*"], // Adjust origin for production
+    origin: "*", // Adjust origin for production
 }));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));

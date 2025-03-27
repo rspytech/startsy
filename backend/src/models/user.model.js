@@ -59,6 +59,10 @@ const userSchema = new mongoose.Schema({
     },
     refreshToken : {
         type : String,
+    },
+    isInvestorVerified : {
+        type : Boolean,
+        default : false,
     }
 },{timestamps : true});
 
@@ -80,6 +84,7 @@ userSchema.methods.generateAccessToken = function(){
             // email : this.email,
             role : this.role,
             status: this.isProfileComplete,
+            isInvestorVerified : this.isInvestorVerified 
         },
             process.env.ACCESS_TOKEN_SECRET,
         {

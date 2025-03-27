@@ -27,7 +27,7 @@ export const InvestorInfo = async (req, res) => {
         const pancardPhoto = req.files.panCardPhoto;
 
         if (!contactInfo || !previousExperience || !startupStage || !preferredSector || !investmentRange ||
-            !fullName || !email 
+            !fullName || !email
         ) {
             return res.status(400).json({ message: "Please fill in all the fields" });
         }
@@ -91,25 +91,27 @@ export const InvestorInfo = async (req, res) => {
         currentUser.contactInfo = contactInfo;
 
         currentUser.roleId = newInvestor._id;           /* NOTE : Adding the roleId to the base user model */
-           currentUser.role = "Investor"
+        currentUser.role = "Investor"
 
         // const pancardUploadedPhoto = await uploadOnCloudinary(pancardPhoto[0].path);
         // const pancardPhotoUrl = pancardUploadedPhoto.secure_url;
 
         let pancardUploadedPhoto;
-        try {
-            pancardUploadedPhoto = await uploadOnCloudinary(pancardPhoto[0].buffer);
-        } catch (err) {
-            console.error("Cloudinary Upload Error:", err.message);
-            return res.status(400).json({ message: "Error uploading to Cloudinary.", error: err.message });
-        }
+        if (pancardPhoto) {
+            try {
+                pancardUploadedPhoto = await uploadOnCloudinary(pancardPhoto[0].buffer);
+            } catch (err) {
+                console.error("Cloudinary Upload Error:", err.message);
+                return res.status(400).json({ message: "Error uploading to Cloudinary.", error: err.message });
+            }
 
-        if (!pancardUploadedPhoto || !pancardUploadedPhoto.secure_url) {
-            return res.status(400).json({ message: "Failed to upload photo to Cloudinary." });
-        }
-        const pancardPhotoUrl = pancardUploadedPhoto.secure_url;
+            if (!pancardUploadedPhoto || !pancardUploadedPhoto.secure_url) {
+                return res.status(400).json({ message: "Failed to upload photo to Cloudinary." });
+            }
+            const pancardPhotoUrl = pancardUploadedPhoto.secure_url;
 
-        newInvestor.panCardPhoto = pancardPhotoUrl;
+            newInvestor.panCardPhoto = pancardPhotoUrl;
+        }
 
         currentUser.isProfileComplete = true;
 
@@ -131,7 +133,7 @@ export const InvestorInfo = async (req, res) => {
         await newInvestor.save();
 
         console.log("success");
-        
+
 
         res.status(200).send({
             message: "Investor Details uploaded successfully",

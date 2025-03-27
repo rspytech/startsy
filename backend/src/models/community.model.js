@@ -21,6 +21,10 @@ const communitySchema = new mongoose.Schema({
     groupPhoto : {
         type : String,
     },
+    isLock : {
+        type: Boolean,
+        default: false,
+    }
 
 });
 

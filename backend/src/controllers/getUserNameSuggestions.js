@@ -10,13 +10,13 @@ export const getUserNameSuggestions = async (req, res) => {
         const LoggedinuserKeFollowing = user.following
 
 
-        console.log(LoggedinuserKeFollowing);
+        // console.log(LoggedinuserKeFollowing);
 
 
-        console.log(new Set(user.roleId.chatUsers));
+        // console.log(new Set(user.roleId.chatUsers));
         var list = user.roleId.chatUsers;
 
-        console.log(list);
+        // console.log(list);
 
 
 
@@ -35,7 +35,7 @@ export const getUserNameSuggestions = async (req, res) => {
             var userSuggestions = await User.find({
                 userName: { $regex: `^${userName}`, $options: "i" }
             }).limit(3);
-            console.log(userSuggestions);
+            console.log(userSuggestions.length);
         }
 
 
@@ -56,7 +56,7 @@ export const getUserNameSuggestions = async (req, res) => {
             }
             else if (!list.includes(e._id)) {
 
-                console.log("second");
+                // console.log("second");
 
                 if (e.followers.includes(userId)) {
                     return { ...plainObj, status: "Request Sent" }
@@ -75,7 +75,7 @@ export const getUserNameSuggestions = async (req, res) => {
 
         })
 
-        console.log(finalarray, "okkkkkkkkkk");
+        // console.log(finalarray, "okkkkkkkkkk");
 
 
 

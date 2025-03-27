@@ -5,6 +5,11 @@ export const followUser = async (req, res) => {
         const loggedInUserId = req.user._id;
         const followedUserId = req.params.id;
 
+        // console.log(loggedInUserId, followedUserId);
+        // console.log(loggedInUserId, followedUserId);
+        // console.log(loggedInUserId, followedUserId);
+        
+
         // Prevent users from following themselves
         if (loggedInUserId.toString() === followedUserId.toString()) {
             return res.status(400).json({ message: "You cannot follow yourself." });
@@ -27,6 +32,10 @@ export const followUser = async (req, res) => {
         // Fetch the users after updates
         const loggedInUserRole = await User.findById(loggedInUserId).populate("roleId");    // F
         const messagingUserRole = await User.findById(followedUserId).populate("roleId");   // C
+
+        // console.log(loggedInUserRole);
+        console.log(messagingUserRole);
+        
 
         if (!messagingUserRole || !messagingUserRole.roleId) {
             return res.status(404).json({ message: "RoleId or user not found." });
