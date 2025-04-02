@@ -10,6 +10,10 @@ export const getUserNameSuggestions = async (req, res) => {
         const LoggedinuserKeFollowing = user.following
 
 
+        console.log(user.role);
+        
+
+
         // console.log(LoggedinuserKeFollowing);
 
 
@@ -41,7 +45,16 @@ export const getUserNameSuggestions = async (req, res) => {
 
 
 
-        let newarray = userSuggestions.filter((user) => user.role !== "Investor");
+        if(user.role != "Investor"){
+            var newarray = userSuggestions.filter((user) => user.role !== "Investor");
+        }
+        else{
+            var newarray = userSuggestions.filter((user) => user.role == "Investor");
+        }
+
+        console.log(newarray);
+        
+
 
 
 

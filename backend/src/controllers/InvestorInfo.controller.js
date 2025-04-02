@@ -8,7 +8,6 @@ export const InvestorInfo = async (req, res) => {
     try {
         const {
             fullName,
-            email,
             country,
             age,
             gender,
@@ -27,7 +26,7 @@ export const InvestorInfo = async (req, res) => {
         const pancardPhoto = req.files.panCardPhoto;
 
         if (!contactInfo || !previousExperience || !startupStage || !preferredSector || !investmentRange ||
-            !fullName || !email
+            !fullName 
         ) {
             return res.status(400).json({ message: "Please fill in all the fields" });
         }
@@ -87,7 +86,7 @@ export const InvestorInfo = async (req, res) => {
 
         // set profile photo link, email, contactInfo of the current user in the User Model
         currentUser.profilePhoto = photoUrl;
-        currentUser.email = email;
+        // currentUser.email = email;
         currentUser.contactInfo = contactInfo;
 
         currentUser.roleId = newInvestor._id;           /* NOTE : Adding the roleId to the base user model */
@@ -119,9 +118,10 @@ export const InvestorInfo = async (req, res) => {
             {
                 _id: currentUserId,
                 userName: currentUser.userName,
-                // email : this.email,
                 role: "Investor",
                 status: true,
+                isInvestorVerified : false,
+                investorRejected : false,
             },
             process.env.ACCESS_TOKEN_SECRET,
             {

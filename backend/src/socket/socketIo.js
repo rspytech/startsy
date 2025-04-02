@@ -52,14 +52,19 @@ export const configureSocketIO = (server) => {
                 }
 
                 // Save message
-                const newMessage = await Message.create({ senderId, message, receiverId });
+                const receiverSocketId = userSocketMap[receiverId];
+                var isRead
+                if(receiverSocketId){
+                     isRead = true
+                }
+                else {isRead = false}
+                const newMessage = await Message.create({ senderId, message, receiverId , isRead });
 
                 conversation.messages.push(newMessage._id);
                 conversation.lastMessage = newMessage._id;
                 await conversation.save();
 
                 // Deliver message
-                const receiverSocketId = userSocketMap[receiverId];
                 if (receiverSocketId) {
                     io.to(receiverSocketId).emit("privateMessage", newMessage);
                 } else {
@@ -109,20 +114,24 @@ export const configureSocketIO = (server) => {
                 }
 
                 // Save group message
+
                 const newMessage = await Message.create({ senderId, message, groupId });
-                const pfp = await User.findById(senderId).select("profilePhoto");
+                const pfp = await User.findById(senderId).select("profilePhoto userName");
 
                 const profilePhoto = pfp.profilePhoto;
+                newMessage.senderId = pfp; // Set senderId in the message object
+                console.log(newMessage);
+                
 
                 var obj = {
-                    ...newMessage , profilePhoto : profilePhoto
+                    ...newMessage 
                 }
 
                 console.log(obj);
                 
 
 
-                console.log({newMessage , profilePhoto});
+                // console.log({newMessage , profilePhoto});
 
                 conversation.messages.push(newMessage._id);
                 conversation.lastMessage = newMessage._id;

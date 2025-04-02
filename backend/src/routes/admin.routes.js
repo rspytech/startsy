@@ -12,17 +12,23 @@ import { getLeaderboardNewsletters } from '../controllers/adminControllers/getLe
 import addApkUrl from '../controllers/adminControllers/Addlink.js';
 import getInvestor from '../controllers/adminControllers/GetInvestor.js';
 import accptOrRejectInvestor from '../controllers/adminControllers/accptOrRejectInvestor.js';
+import fetchPendingReports from '../controllers/adminControllers/getReportedPost.js';
+import { deleteReportedPost } from '../controllers/adminControllers/deleteReportedPostController.js';
 
 const router = express.Router();
 
-router.post('/registerAdmin', registerAdmin);
-router.post('/login',  loginAdmin);
-router.post('/createNewsletter', verifyUser, isAdmin, upload.single('newsletterImage'), createNewsletter);
-router.get('/getNewsletter/:id', verifyUser, getNewsletter);
-router.get('/getAllNewletters', verifyUser, getAllNewsletters);
-router.get("/leaderboard/:category", verifyUser, getLeaderboardNewsletters);
-router.post("/addApkLink", verifyUser, isAdmin, addApkUrl);
-router.get("/getInvestor", getInvestor);
-router.post("/accptOrRejectInvestor/:id/:status", accptOrRejectInvestor);
+router
+.post('/registerAdmin', registerAdmin)
+.post('/login',  loginAdmin)
+.post('/createNewsletter', verifyUser, isAdmin, upload.single('newsletterImage'), createNewsletter)
+.get('/getNewsletter/:id', verifyUser, getNewsletter)
+.get('/getAllNewletters', verifyUser, getAllNewsletters)
+.get("/leaderboard/:category", verifyUser, getLeaderboardNewsletters)
+.post("/addApkLink", verifyUser, isAdmin, addApkUrl)
+.get("/getInvestor", getInvestor)
+.post("/accptOrRejectInvestor/:id/:status", accptOrRejectInvestor)
+.get("/reportedPost" , fetchPendingReports)
+.post("/deletePost/:id", deleteReportedPost);
+
 
 export default router;

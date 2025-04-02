@@ -48,10 +48,10 @@ const createPost = async (req, res) => {
             user_id,
             type,
             caption,
-            isPrivate,
             aspectRatio : type === "photo" || "video" ? aspectRatio : null,
             mediaUrl,
             mediaType,
+            isPrivate,
             content: type === "textBlog" || "Question" ? content : undefined,
         };
         console.log(newPostData);

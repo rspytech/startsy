@@ -10,19 +10,25 @@ import APKcontroller from "../controllers/TestController/Apkcontroller.js";
 import addField from "../controllers/TestController/addFieldcontroller.js";
 import { getAllUsersWithStatus } from "../controllers/TestController/getAllUserWithStatus.js";
 import { getPortfolioAndCertifications } from "../controllers/TestController/getCerticateAndPortfolio.js";
+import getInvestorStatus from "../controllers/TestController/getInvestorController.js";
+import convertInvestorToCommunity from "../controllers/TestController/ConvertInvestorToCommunity.js";
+import { reportContent } from "../controllers/TestController/ReportPostController.js";
 
 
 const TestRoute = express.Router();
 
 TestRoute
-.get("/getUserFollowers/:id",verifyUser, getUserFollowers)
-.get("/getOnePost/:id",verifyUser,getOnePosts) 
-.post("/savePost/:saveId/:saveStatus",verifyUser,savePost)
-.get("/getSavedPost",verifyUser,getSavedPost)
-.post("/markAsRead",verifyUser , markAsRead)
-.post("/addField" , addField)
-.post("/getAllUsersWithStatus", verifyUser, getAllUsersWithStatus)
-.get("/getPortfolioAndCertifications",verifyUser,getPortfolioAndCertifications)
+    .get("/getUserFollowers/:id", verifyUser, getUserFollowers)
+    .get("/getOnePost/:id", verifyUser, getOnePosts)
+    .post("/savePost/:saveId/:saveStatus", verifyUser, savePost)
+    .get("/getSavedPost", verifyUser, getSavedPost)
+    .get("/getInvestorStatus", verifyUser, getInvestorStatus)
+    .post("/markAsRead", verifyUser, markAsRead)
+    .post("/addField", addField)
+    .post("/getAllUsersWithStatus", verifyUser, getAllUsersWithStatus)
+    .get("/getPortfolioAndCertifications", verifyUser, getPortfolioAndCertifications)
+    .get("/convertInvestorToCommunity", verifyUser, convertInvestorToCommunity)
+    .post("/reportContent/:postId", verifyUser, reportContent);
 // .post("/downloadAPK",verifyUser , APKcontroller)
 
 export default TestRoute;

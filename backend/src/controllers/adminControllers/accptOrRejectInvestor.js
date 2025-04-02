@@ -14,6 +14,12 @@ const accptOrRejectInvestor = async (req, res) => {
             { _id: id },
             { $set: { isInvestorVerified: booleanStatus } },
         )
+        if(booleanStatus == false){
+            var rec1 = await User.findOneAndUpdate(
+                { _id: id },
+                { $set: { investorRejected: true } },
+            ) 
+        }
         return res.status(200).json({ message: `Investor ${status1} succesfully` });
     }
     catch (e) {

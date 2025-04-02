@@ -10,6 +10,7 @@ const updateToJobSeeker = async (req, res) => {
             { $set: { role: "Job seeker" } },
             { new: true } // Returns the updated document
         );
+        
 
         if (!updatedUser) {
             return res.status(404).json({ message: "User not found" });

@@ -63,6 +63,10 @@ const userSchema = new mongoose.Schema({
     isInvestorVerified : {
         type : Boolean,
         default : false,
+    },
+    investorRejected : {
+        type : Boolean,
+        default : false,
     }
 },{timestamps : true});
 
@@ -81,10 +85,10 @@ userSchema.methods.generateAccessToken = function(){
         {
             _id : this._id,
             userName : this.userName,
-            // email : this.email,
             role : this.role,
             status: this.isProfileComplete,
-            isInvestorVerified : this.isInvestorVerified 
+            isInvestorVerified : this.isInvestorVerified,
+            investorRejected : this.investorRejected
         },
             process.env.ACCESS_TOKEN_SECRET,
         {
