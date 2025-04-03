@@ -67,6 +67,10 @@ const userSchema = new mongoose.Schema({
     investorRejected : {
         type : Boolean,
         default : false,
+    },
+    notificationToken : {
+        type : String,
+        default : ""
     }
 },{timestamps : true});
 

@@ -2,7 +2,9 @@ import { User } from "../models/user.model.js";
 
 export const loginUser = async (req, res) => {
     try {
-        const { identifier, password } = req.body;
+        const { identifier, password , notificationToken } = req.body;
+        console.log(notificationToken , "yeh body mese hai");
+        
 
         if (!identifier || !password) {
             return res.status(400).json({ message: 'Please fill in all the fields' });
@@ -32,6 +34,10 @@ export const loginUser = async (req, res) => {
         const accessToken = user.generateAccessToken();
 
         // Save the refresh token to the database
+
+        if(notificationToken){
+            user.notificationToken = notificationToken;
+        }
         user.refreshToken = refreshToken;
         await user.save();
 

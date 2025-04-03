@@ -30,6 +30,7 @@ import getjobs from '../controllers/getjobs.js';
 import { getProfiledetailForSwitch } from '../controllers/getProfileDetailsForswitch.js';
 import updateToJobSeeker from '../controllers/CustomController/ChangeToJobSeeker.js';
 import getApklink from '../controllers/adminControllers/GetApklink.js';
+import updateNotificationToken from '../controllers/notificationController/notificationController.js';
 const router = express.Router();
 
 router.post('/register', registerUser);
@@ -58,6 +59,7 @@ router.post('/deleteUnauthenticatedUser', verifyUser, deleteUnAuthenticatedUser)
 router.post('/deleteMemberFromCommunity', verifyUser, deleteMemberFromCommunity );
 router.get('/updateToJobSeeker', verifyUser, updateToJobSeeker );
 router.post('/deleteUserAccount/:id', deleteUserAccount);
+router.post('/updateNotificationToken', verifyUser ,  updateNotificationToken); //
 
 router.post('/sendOtp', sendOtp);
 router.post('/verifyOtp', verifyOtp);
