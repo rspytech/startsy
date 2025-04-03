@@ -86,6 +86,8 @@ export const followUser = async (req, res) => {
         await messagingUserRole.roleId.save();
 
         console.log(messagingUserRole.roleId);
+
+        
         return res.status(200).json({
             message: "User followed successfully, waiting for follow back.",
         });

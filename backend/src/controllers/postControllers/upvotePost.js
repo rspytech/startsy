@@ -82,7 +82,7 @@ export const upvotePost = async (req, res) => {
             console.log(userNameForNotification);
 
             
-            var response = await sendNotification(receiverIdToken.notificationToken, `${userNameForNotification} upvoted your post`, "")
+            var response = await sendNotification(receiverIdToken.notificationToken, `${userNameForNotification}`, "upvoted your post")
             console.log(response, "response from notification");
             
         }

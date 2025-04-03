@@ -14,6 +14,11 @@ const profileWeights = {
         fullName: 2, email: 2, country: 5, age: 3, gender: 3, contactInfo: 6,
         communityMemberRole: 12, areaOfInterest: 10, contentPrefrence: 8,
         tagline: 5, skills: 10, education: 10, certification: 6, portfolio: 18
+    },
+    "Job seeker": {
+        fullName: 2, email: 2, country: 5, age: 3, gender: 3, contactInfo: 6,
+        communityMemberRole: 12, areaOfInterest: 10, contentPrefrence: 8,
+        tagline: 5, skills: 10, education: 10, certification: 6, portfolio: 18
     }
 };
 

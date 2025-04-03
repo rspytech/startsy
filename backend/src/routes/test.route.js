@@ -13,6 +13,7 @@ import { getPortfolioAndCertifications } from "../controllers/TestController/get
 import getInvestorStatus from "../controllers/TestController/getInvestorController.js";
 import convertInvestorToCommunity from "../controllers/TestController/ConvertInvestorToCommunity.js";
 import { reportContent } from "../controllers/TestController/ReportPostController.js";
+import { ratingsController } from "../controllers/TestController/ratingController.js";
 
 
 const TestRoute = express.Router();
@@ -28,7 +29,8 @@ TestRoute
     .post("/getAllUsersWithStatus", verifyUser, getAllUsersWithStatus)
     .get("/getPortfolioAndCertifications", verifyUser, getPortfolioAndCertifications)
     .get("/convertInvestorToCommunity", verifyUser, convertInvestorToCommunity)
-    .post("/reportContent/:postId", verifyUser, reportContent);
+    .post("/reportContent/:postId", verifyUser, reportContent)
+    .post("/ratingsController", verifyUser, ratingsController)
 // .post("/downloadAPK",verifyUser , APKcontroller)
 
 export default TestRoute;

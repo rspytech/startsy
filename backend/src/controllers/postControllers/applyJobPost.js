@@ -1,5 +1,7 @@
 import { Post } from "../../models/post.model.js";
 import { Notification } from "../../models/notification.model.js";
+import sendNotification from "../../utils/sendNotification.js";
+import { User } from "../../models/user.model.js";
 
 export const applyJobPost = async (req, res) => {
     try {
@@ -30,6 +32,16 @@ export const applyJobPost = async (req, res) => {
             notificationType: "jobApplied",
             notificationMessage : "Applied for your job posting.",
         });
+
+
+        var receiverIdToken = await User.findOne({ _id: post.user_id }).select("notificationToken");
+        var rec2 = await User.findOne({ _id: req.user._id }).select("userName");
+        var userNameForNotification = rec2.userName;
+        var response = await sendNotification(receiverIdToken.notificationToken, `${userNameForNotification} applied for your job `, "")
+        
+
+
+
 
         return res.status(200).json({ message: "Job Post Applied Successfully" });
     }

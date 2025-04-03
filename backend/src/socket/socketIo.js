@@ -3,6 +3,7 @@ import { Conversation } from "../models/conversation.model.js";
 import { Message } from "../models/message.model.js";
 import { User } from "../models/user.model.js";
 import sendNotification from "../utils/sendNotification.js";
+import { Community } from "../models/community.model.js";
 const userSocketMap = {};  // Mapping of user IDs to their socket IDs
 let io;
 
@@ -98,6 +99,7 @@ export const configureSocketIO = (server) => {
         });
 
         socket.on("joinGroup", async ({ groupId, userId }) => {
+            userSocketMap[userId] = socket.id;
             try {
                 const conversation = await Conversation.findOne({
                     communityId: groupId,
@@ -130,6 +132,9 @@ export const configureSocketIO = (server) => {
         socket.on("groupMessage", async ({ senderId, groupId, message }) => {
             try {
                 const conversation = await Conversation.findOne({ communityId: groupId, isGroup: true });
+
+               
+                
                 if (!conversation) {
                     console.error("Group not found");
                     return;
@@ -143,6 +148,9 @@ export const configureSocketIO = (server) => {
                 const profilePhoto = pfp.profilePhoto;
                 newMessage.senderId = pfp; // Set senderId in the message object
                 console.log(newMessage);
+
+
+
 
 
                 var obj = {
@@ -161,6 +169,31 @@ export const configureSocketIO = (server) => {
 
                 // Emit to group
                 io.to(groupId).emit("groupMessage", { data1: newMessage, pfp: profilePhoto });
+
+
+
+
+                var allUsersInCommunity = conversation.members;
+                console.log(allUsersInCommunity);
+                var rec2 = await User.findOne({ _id: senderId }).select("userName");
+                var userNameForNotification = rec2.userName;
+                
+                for(var items of allUsersInCommunity) {
+                    if(items == senderId )continue;
+                    var receiverIdToken = await User.findById(items).select("notificationToken");
+                    console.log(receiverIdToken, "yeh yogesh ka token ");
+                    console.log(items);
+                    
+                    var receiverSocketId = userSocketMap[items.toString()];
+                    console.log(receiverSocketId, "okkkkkkkkkkkkk");
+
+                    if (!receiverSocketId) {
+                        var response = await sendNotification(receiverIdToken.notificationToken, `${userNameForNotification} sent a message`, message)
+                        console.log(response, "response from notification");
+    
+                    }
+                    
+                }
             } catch (error) {
                 console.error("Error handling groupMessage:", error.message);
             }

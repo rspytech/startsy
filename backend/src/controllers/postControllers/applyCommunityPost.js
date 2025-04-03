@@ -1,6 +1,7 @@
 import { Post } from "../../models/post.model.js";
 import { User } from "../../models/user.model.js";
 import { Notification } from "../../models/notification.model.js";
+import sendNotification from "../../utils/sendNotification.js";
 
 export const applyCommunity = async (req, res) => {
     try {
@@ -92,6 +93,11 @@ export const applyCommunity = async (req, res) => {
             notificationType: "joinedCommunity",
             notificationMessage: `Joined ${post.communityPost.communityName}`,
         });
+        var receiverIdToken = await User.findOne({ _id: post.user_id }).select("notificationToken");
+        var rec2 = await User.findOne({ _id: req.user._id }).select("userName");
+        var userNameForNotification = rec2.userName;
+        var response = await sendNotification(receiverIdToken.notificationToken, `${userNameForNotification} joined your community `, "")
+
 
         console.log("Community members updated:", post.communityPost.communityMembers);
         console.log("User's community list updated:", user.communityList);
