@@ -2,6 +2,7 @@ import { Server } from "socket.io";
 import { Conversation } from "../models/conversation.model.js";
 import { Message } from "../models/message.model.js";
 import { User } from "../models/user.model.js";
+import sendNotification from "../utils/sendNotification.js";
 const userSocketMap = {};  // Mapping of user IDs to their socket IDs
 let io;
 
@@ -48,11 +49,11 @@ export const configureSocketIO = (server) => {
                 var pfp = userName.profilePhoto;
 
                 console.log(receiverId, "yeh yogesh hona chiaye");
-                
+
 
                 var receiverIdToken = await User.findOne({ _id: receiverId }).select("notificationToken");
-                console.log(receiverIdToken , "yeh yogesh ka token ");
-                
+                console.log(receiverIdToken, "yeh yogesh ka token ");
+
 
                 if (!conversation) {
                     conversation = await Conversation.create({
@@ -72,29 +73,8 @@ export const configureSocketIO = (server) => {
                 else { isRead = false }
 
                 if (!receiverSocketId) {
-                    fetch("https://exp.host/--/api/v2/push/send", {
-                        method: "POST",
-                        headers: {
-                            "Content-Type": "application/json",
-                            Accept: "application/json",
-                        },
-                        body: JSON.stringify({
-                            to: `${receiverIdToken.notificationToken}`,
-                            sound: "default",
-                            title: `${userNameForNotification} sent you a message`,
-                            body: `${message}`,
-                            data: { someData: "goes here" },
-                            android: {
-                                channelId: "preview", // Make sure this matches the channel you've created
-                                priority: "high",      // Ensure it's a high priority notification
-                                icon: `${pfp}`, // You can add an icon here
-                                visibility: "public", // Adjust visibility to show more content
-                            }
-                        }),
-                    })
-                        .then((response) => response.json())
-                        .then((data) => console.log(data))
-                        .catch((error) => console.error("Error:", error));
+                    var response = await sendNotification(receiverIdToken.notificationToken, `${userNameForNotification} sent you a message`, message)
+                    console.log(response, "response from notification");
 
                 }
                 const newMessage = await Message.create({ senderId, message, receiverId, isRead });

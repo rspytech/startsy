@@ -4,6 +4,7 @@ import { Notification } from "../../models/notification.model.js";
 import cron from 'node-cron';
 import moment from 'moment-timezone';
 import { UpvotePost } from "../../models/upvotePost.model.js";
+import sendNotification from "../../utils/sendNotification.js";
 
 cron.schedule('0 0 * * *', async () => {
     try {
@@ -13,7 +14,7 @@ cron.schedule('0 0 * * *', async () => {
         const users = await User.find().populate("roleId");
         for (let user of users) {
             if (user.roleId) {
-                let today = moment().tz('Asia/Kolkata').format('YYYY-MM-DD'); 
+                let today = moment().tz('Asia/Kolkata').format('YYYY-MM-DD');
                 console.log(today);
                 // Update the role details for each user to reset upvotesPerDay
                 await user.roleId.updateOne({
@@ -34,19 +35,19 @@ export const upvotePost = async (req, res) => {
     try {
         const userId = req.user._id;
         console.log(userId);
-        
+
         const { postId, likeStatus } = req.params;
 
         const post = await Post.findById(postId);
         // console.log(post);
-        
+
         if (!post) {
             return res.status(404).json({ message: "Post not found" });
         }
 
         const user = await User.findById(userId);
         console.log(user);
-        
+
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -54,16 +55,16 @@ export const upvotePost = async (req, res) => {
         const postUserId = post.user_id;
         const roleDetails = await User.findById(postUserId).populate("roleId");
 
-        console.log(likeStatus , postUserId , roleDetails);
-        
-        
-        if(likeStatus === "like"){
+        console.log(likeStatus, postUserId, roleDetails);
+
+
+        if (likeStatus === "like") {
             await Notification.create({
-                receivingUserId : post.user_id, 
-                sendingUserId : userId,
-                postId : post._id,
+                receivingUserId: post.user_id,
+                sendingUserId: userId,
+                postId: post._id,
                 notificationType: "upvotePost",
-                notificationMessage : "UpVoted your post.",
+                notificationMessage: "UpVoted your post.",
             });
             await UpvotePost.findOneAndUpdate(
                 { postId, userId },
@@ -72,6 +73,18 @@ export const upvotePost = async (req, res) => {
             );
             post.likedBy.push(userId);
             await post.save();
+
+            var receiverIdToken = await User.findOne({ _id: post.user_id }).select("notificationToken");
+            var rec2 = await User.findOne({ _id: userId }).select("userName");
+            var userNameForNotification = rec2.userName;
+
+            console.log(receiverIdToken.notificationToken);
+            console.log(userNameForNotification);
+
+            
+            var response = await sendNotification(receiverIdToken.notificationToken, `${userNameForNotification} upvoted your post`, "")
+            console.log(response, "response from notification");
+            
         }
 
         if (user.role === "Investor") {
