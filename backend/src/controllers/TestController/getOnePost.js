@@ -1,15 +1,28 @@
 import { Post } from "../../models/post.model.js";
+import { Save } from "../../models/save.model.js";
 
 export const getOnePosts = async (req, res) => {
     try {
         // Retrieve posts with the user_id populated
         var id = req.params.id;
-        let posts = await Post.find({_id:id}).populate("user_id");
+        var user_id = req.user._id;
+        let posts = await Post.find({ _id: id }).populate({
+            path: "user_id",
+            select: "userName role profilePhoto _id",
+        });
 
         if (!posts || posts.length === 0) {
             return res.status(404).json({ message: "No posts found" });
         }
 
+        var savePosts = await Save.findOne({ userId: user_id });
+        console.log(savePosts?.saveId);
+        if (savePosts?.saveId == null) {
+            var save = []
+        }
+        else {
+            var save = savePosts?.saveId;
+        }
         // Populate specific fields based on post type
         const populatedPosts = await Promise.all(
             posts.map(async (post) => {
@@ -25,6 +38,7 @@ export const getOnePosts = async (req, res) => {
         return res.status(200).json({
             message: "Posts retrieved successfully",
             data: populatedPosts,
+            bookmarks : save
         });
     }
     catch (error) {

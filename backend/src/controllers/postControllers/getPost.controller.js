@@ -7,7 +7,10 @@ import { User } from "../../models/user.model.js";
 export const getPosts = async (req, res) => {
     try {
         // Retrieve posts with the user_id populated
-        let posts = await Post.find().populate("user_id");
+        let posts = await Post.find().populate({
+            path: "user_id",
+            select: "userName profilePhoto _id role ",
+        });
         // console.log(posts);
 
         // Fetch the user's followers and following list
