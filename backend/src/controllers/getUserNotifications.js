@@ -7,8 +7,14 @@ export const getUserNotifications = async (req, res) => {
         // Fetch all notifications and populate necessary fields
         let notifications = await Notification.find({ receivingUserId: userId })
             .sort({ createdAt: 1 })
-            .populate("sendingUserId")
-            .populate("postId");
+            .populate({
+                path : "sendingUserId" , 
+                select : "_id userName role profilePhoto"
+            })
+            .populate({
+                path : "postId",
+                select : "_id user_id type mediaUrl mediaType"
+            });
 
         // Filter and transform notifications if needed
         notifications = notifications.map(notification => {

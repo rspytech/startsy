@@ -33,7 +33,7 @@ export const getUserNameSuggestions = async (req, res) => {
         userName = userName.substring(1,);
 
         if (userName == "howAllUser" || userName == "" || userName == undefined ) {
-            var userSuggestions = await User.find();
+            var userSuggestions = await User.find().select("_id userName role profilePhoto followers");
         }
         else {
             var userSuggestions = await User.find({
@@ -81,9 +81,6 @@ export const getUserNameSuggestions = async (req, res) => {
                 }
 
             }
-
-
-
 
 
         })
