@@ -3,7 +3,7 @@ import { Rating } from "../../models/rating.model.js";
 export const ratingsController = async (req, res) => {
     try {
         const userId = req.user._id;
-        const { ratingStars, ratingText } = req.body;
+        const { ratingStars, ratingText  , version} = req.body;
         if (!ratingStars) {
             return res.status(400).json({ message: 'Rating stars are required' });
         }
@@ -11,7 +11,8 @@ export const ratingsController = async (req, res) => {
         const rating = new Rating({
             userId,
             ratingStars,
-            ratingText
+            ratingText,
+            version
         })
         await rating.save();
 

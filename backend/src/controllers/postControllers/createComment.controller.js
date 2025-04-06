@@ -7,6 +7,8 @@ import sendNotification from "../../utils/sendNotification.js";
 export const createComment = async (req, res) => {
     try {
         const { comment, message } = req.body;
+        console.log(message , "");
+        
         
 
         const userId = req.user._id;
@@ -38,7 +40,7 @@ export const createComment = async (req, res) => {
             sendingUserId: req.user._id,
             postId: post._id,
             notificationType: "commentPost",
-            notificationMessage: message != "" ? message : "Commented on your post",
+            notificationMessage: message  ? message : "Commented on your post",
         });
 
 

@@ -39,7 +39,7 @@ export const upvotePost = async (req, res) => {
         const { postId, likeStatus } = req.params;
 
         const post = await Post.findById(postId);
-        // console.log(post);
+        console.log(post);
 
         if (!post) {
             return res.status(404).json({ message: "Post not found" });

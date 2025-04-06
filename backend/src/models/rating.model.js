@@ -15,6 +15,9 @@ const ratingSchema = new mongoose.Schema({
         defaultValue:""
         // required: true,
     },
-})
+    version : {
+        type : String,
+    }
+},{ timestamps: true })
 
 export const Rating = mongoose.model("Rating", ratingSchema);
