@@ -7,6 +7,7 @@ import sendNotification from "../../utils/sendNotification.js";
 export const createComment = async (req, res) => {
     try {
         const { comment, message } = req.body;
+        
 
         const userId = req.user._id;
         const postId = req.params.id;

@@ -13,7 +13,7 @@ export const getUserNotifications = async (req, res) => {
             })
             .populate({
                 path : "postId",
-                select : "_id user_id type mediaUrl mediaType"
+                select : "_id user_id type caption mediaUrl mediaType"
             });
 
         // Filter and transform notifications if needed

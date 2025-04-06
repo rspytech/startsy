@@ -33,7 +33,8 @@ export const getMessage = async (req, res) => {
         console.log(conversation);
 
         if(!conversation){
-            return res.status(404).json({message: "Conversation not found"})
+            return res.status(404).json({message: "Conversation not found" , senderProfilePhoto,
+                recieverProfilePhoto,})
         }
         return res.status(200).json({
             message : "Messages fetched successfully",
