@@ -2,11 +2,14 @@ import { Post } from "../../models/post.model.js";
 import { Notification } from "../../models/notification.model.js";
 import sendNotification from "../../utils/sendNotification.js";
 import { User } from "../../models/user.model.js";
+import { JobApplicantDescription } from "../../models/JobApplicantDescription.js";
+
 
 export const applyJobPost = async (req, res) => {
     try {
         const postId = req.params.id;
         const user_id = req.user._id;
+        const {description, resume}  = req.body;
 
         const post = await Post.findById(postId).populate("jobPosts");
 
@@ -24,6 +27,13 @@ export const applyJobPost = async (req, res) => {
 
         post.jobPosts.jobApplicants.push(user_id);
         await post.jobPosts.save();
+
+        await JobApplicantDescription.create({
+            user_id: user_id,
+            jobId: post.jobPosts._id,
+            userDescription: description,
+            resume,
+        });
 
         await Notification.create({
             receivingUserId : post.user_id, 
