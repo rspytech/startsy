@@ -15,9 +15,7 @@ const jobApplicantDescription = new mongoose.Schema({
         type: String,
     },
     resume: {
-        url: {
-            type: String,
-        },
+        type : String
     },
 
 });
