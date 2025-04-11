@@ -18,6 +18,6 @@ const jobApplicantDescription = new mongoose.Schema({
         type : String
     },
 
-});
+} , {timestamps: true});
 
 export const JobApplicantDescription = mongoose.model("JobApplicantDescription", jobApplicantDescription);

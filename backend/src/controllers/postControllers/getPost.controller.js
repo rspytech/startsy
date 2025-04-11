@@ -86,7 +86,8 @@
 
 
 
-// // check recommendation
+// // check recommendation Sujal
+
 
 import { Post } from "../../models/post.model.js";
 import { Save } from "../../models/save.model.js";
@@ -103,12 +104,14 @@ export const getPosts = async (req, res) => {
             .populate("roleId")
             .select("following followers roleId");
 
-        if (!currentUser) {
+        const generalUser = await General.findOne({ user_id: userId }).select("chatUsers");
+
+        if (!currentUser || !generalUser) {
             return res.status(404).json({ message: "User not found" });
         }
 
-        const followingIds = currentUser.following.map(id => id.toString());
-        const followerIds = currentUser.followers.map(id => id.toString());
+
+        const connectedUserIds = generalUser.chatUsers.map(id => id.toString());
 
         // Fetch saved posts
         const savedPostsData = await Save.findOne({ userId });
@@ -124,26 +127,15 @@ export const getPosts = async (req, res) => {
         const visiblePosts = allPosts.filter((post) => {
             if (!post.isPrivate) return true;
             if (userId.toString() === post.user_id._id.toString()) return true;
-            return followingIds.includes(post.user_id._id.toString()) || followerIds.includes(post.user_id._id.toString());
+            return connectedUserIds.includes(post.user_id._id.toString());
         });
-
-        const populatedPosts = await Promise.all(
-            visiblePosts.map(async (post) => {
-                if (post.type === "jobPost") {
-                    return await post.populate("jobPosts");
-                } else if (post.type === "communityPost") {
-                    return await post.populate("communityPost");
-                }
-                return post; // Return the original post if no type match
-            })
-        );
 
         // Fetch user's own posts
         let ownPosts = visiblePosts.filter((post) => post.user_id._id.toString() === userId.toString());
 
         // Fetch priority posts (followers & following)
         let priorityPosts = visiblePosts.filter((post) =>
-            followingIds.includes(post.user_id._id.toString()) || followerIds.includes(post.user_id._id.toString())
+            connectedUserIds.includes(post.user_id._id.toString())
         );
 
         // Fetch interest-based posts
@@ -160,8 +152,8 @@ export const getPosts = async (req, res) => {
         }
 
         // Fetch remaining posts
-        const excludedUserIds = [...followingIds, ...followerIds, userId, ...interestPosts.map(p => p.user_id._id.toString())];
-        let otherPosts = visiblePosts.filter((post) => !excludedUserIds.includes(post.user_id._id.toString()));
+        const excludedUserIds = [...connectedUserIds, userId.toString(), ...interestPosts.map(p => p.user_id._id.toString())];
+        const otherPosts = visiblePosts.filter((post) => !excludedUserIds.includes(post.user_id._id.toString()));
 
         // Merge all post categories while maintaining priority order
         const postSet = new Set();
@@ -175,12 +167,22 @@ export const getPosts = async (req, res) => {
             });
         });
 
-        // Sort final posts by creation date (newest first)
-        finalPosts.sort((a, b) => b.createdAt - a.createdAt);
+        // Populate specific fields based on post type
+        const fullyPopulatedPosts = await Promise.all(
+            finalPosts.map(async (post) => {
+                if (post.type === "jobPost") {
+                    return await post.populate("jobPosts");
+                } else if (post.type === "communityPost") {
+                    return await post.populate("communityPost");
+                }
+                return post;
+            })
+        );
+
 
         return res.status(200).json({
             message: "Posts retrieved successfully",
-            data: finalPosts,
+            data: fullyPopulatedPosts,
             bookmarks: savedPosts,
         });
     } catch (error) {
