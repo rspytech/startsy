@@ -10,7 +10,7 @@ import { General } from "../models/general.model.js";
 export const editFounderAccountProfileDetails = async (req, res) => {
 
 
-    console.log(req.body);
+    // console.log(req.body);
     
     req.body.teamInfo = JSON.parse(req.body.teamInfo)
     req.body.previousWorkExperience = JSON.parse(req.body.previousWorkExperience)

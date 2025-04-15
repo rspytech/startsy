@@ -13,8 +13,10 @@ export const configureSocketIO = (server) => {
             origin: "*",
         },
     });
+    const chatScreen = io.of("/chatScreen")
 
-    io.on("connection", (socket) => {
+
+    chatScreen.on("connection", (socket) => {
         console.log("User connected:", socket.id);
 
         // Register the user and deliver pending messages
@@ -49,11 +51,10 @@ export const configureSocketIO = (server) => {
                 var userNameForNotification = userName.userName;
                 var pfp = userName.profilePhoto;
 
-                console.log(receiverId, "yeh yogesh hona chiaye");
+                // console.log(receiverId, "yeh yogesh hona chiaye");
 
 
                 var receiverIdToken = await User.findOne({ _id: receiverId }).select("notificationToken");
-                console.log(receiverIdToken, "yeh yogesh ka token ");
 
 
                 if (!conversation) {
@@ -65,7 +66,7 @@ export const configureSocketIO = (server) => {
 
                 // Save message
                 const receiverSocketId = userSocketMap[receiverId];
-                console.log(receiverSocketId, "okkkkkkkkkkkkk");
+
 
                 var isRead
                 if (receiverSocketId) {
@@ -84,12 +85,10 @@ export const configureSocketIO = (server) => {
                 conversation.lastMessage = newMessage._id;
                 await conversation.save();
 
-
-
-
                 // Deliver message
                 if (receiverSocketId) {
-                    io.to(receiverSocketId).emit("privateMessage", newMessage);
+                    io.to(receiverSocketId).emit("ShuffleChatList" , {senderId , message})
+                    chatScreen.to(receiverSocketId).emit("privateMessage", newMessage);
                 } else {
                     console.log(`User ${receiverId} is offline. Message stored in DB.`);
                 }
@@ -130,11 +129,13 @@ export const configureSocketIO = (server) => {
 
         // Handle group messages
         socket.on("groupMessage", async ({ senderId, groupId, message }) => {
+            // console.log("hi");
+            
             try {
                 const conversation = await Conversation.findOne({ communityId: groupId, isGroup: true });
 
-               
-                
+
+
                 if (!conversation) {
                     console.error("Group not found");
                     return;
@@ -148,8 +149,6 @@ export const configureSocketIO = (server) => {
                 const profilePhoto = pfp.profilePhoto;
                 newMessage.senderId = pfp; // Set senderId in the message object
                 console.log(newMessage);
-
-
 
 
 
@@ -168,7 +167,7 @@ export const configureSocketIO = (server) => {
                 await conversation.save();
 
                 // Emit to group
-                io.to(groupId).emit("groupMessage", { data1: newMessage, pfp: profilePhoto });
+                chatScreen.to(groupId).emit("groupMessage", { data1: newMessage, pfp: profilePhoto });
 
 
 
@@ -177,22 +176,21 @@ export const configureSocketIO = (server) => {
                 console.log(allUsersInCommunity);
                 var rec2 = await User.findOne({ _id: senderId }).select("userName");
                 var userNameForNotification = rec2.userName;
-                
-                for(var items of allUsersInCommunity) {
-                    if(items == senderId )continue;
+
+                for (var items of allUsersInCommunity) {
+                    if (items == senderId) continue;
                     var receiverIdToken = await User.findById(items).select("notificationToken");
                     console.log(receiverIdToken, "yeh yogesh ka token ");
                     console.log(items);
-                    
+
                     var receiverSocketId = userSocketMap[items.toString()];
-                    console.log(receiverSocketId, "okkkkkkkkkkkkk");
 
                     if (!receiverSocketId) {
                         var response = await sendNotification(receiverIdToken.notificationToken, `${userNameForNotification} sent a message`, message)
                         console.log(response, "response from notification");
-    
+
                     }
-                    
+
                 }
             } catch (error) {
                 console.error("Error handling groupMessage:", error.message);
@@ -215,6 +213,16 @@ export const configureSocketIO = (server) => {
             console.log("User disconnected:", socket.id);
         });
     });
+
+    io.on("connection", (socket) => {
+        console.log("User connected of global socket:", socket.id);
+        socket.on("registerUser", (id) => {
+            userSocketMap[id] = socket.id;
+            console.log(`User ${id} registered with socket ID ${socket.id}`);
+
+        })
+
+    })
 
     return io;
 };

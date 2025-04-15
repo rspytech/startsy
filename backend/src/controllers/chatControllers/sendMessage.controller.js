@@ -63,31 +63,34 @@ import { Post } from "../../models/post.model.js";
 import { Message } from "../../models/message.model.js";
 import { getReceiverSocketId } from "../../socket/socketIo.js";
 import { Conversation } from "../../models/conversation.model.js";
+import sendNotification from "../../utils/sendNotification.js";
+import { User } from "../../models/user.model.js";
 
 export const sendMessage = async (req, res, io) => {
     try {
         const postId = req.params.id;
         const senderId = req.user._id;
-        const {sharedToUsers} = req.body;
+        const { sharedToUsers } = req.body;
 
         const post = await Post.findById(postId).populate("user_id");
         if (!post) {
             return res.status(404).json({ error: "Post not found" });
         }
 
+
         const sharedPost = await Promise.all(
             sharedToUsers.map(async (userId) => {
                 const newMessage = await Message.create({
                     senderId,
-                    receiverId : userId,
-                    message : {
-                        postShared : post._id,
-                        userName : post.user_id.userName,
-                        profilePhoto : post.user_id.profilePhoto,
-                        postImage : post.mediaUrl,
-                        postContent : post.content,
-                        postCaption : post.caption,
-                        userIdPosted : post.user_id._id,
+                    receiverId: userId,
+                    message: {
+                        postShared: post._id,
+                        userName: post.user_id.userName,
+                        profilePhoto: post.user_id.profilePhoto,
+                        postImage: post.mediaUrl,
+                        postContent: post.content,
+                        postCaption: post.caption,
+                        userIdPosted: post.user_id._id,
                     }
                 });
                 let conversation = await Conversation.findOne({
@@ -101,11 +104,19 @@ export const sendMessage = async (req, res, io) => {
                         isGroup: false,
                     });
                 }
-
                 // Update conversation
                 conversation.messages.push(newMessage._id);
                 conversation.lastMessage = newMessage._id;
                 await conversation.save();
+                console.log("oo");
+
+
+                var receiverIdToken = await User.findById(userId).select("notificationToken userName");
+                var rec2 = await User.findById(senderId).select("userName")
+                console.log(receiverIdToken, "ok");
+
+                var response = await sendNotification(receiverIdToken.notificationToken, `${rec2.userName} sent you a post`)
+                console.log(response, "response from notification");
                 return newMessage;
             })
         );
@@ -119,7 +130,7 @@ export const sendMessage = async (req, res, io) => {
         return res.status(200).json(sharedPost);
     }
     catch (error) {
-        res.status(404).json({ 
+        res.status(404).json({
             error: "Error while sharing post",
             message: error.message,
         });

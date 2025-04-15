@@ -15,7 +15,7 @@ export const editCommunityMemberAccountProfileDetails = async (req, res) => {
         if (req.body.socialProof) {
             req.body.socialProof = JSON.parse(req.body.socialProof);
         }
-        console.log(req.body.socialProof);
+        // console.log(req.body.socialProof);
         
 
         const {

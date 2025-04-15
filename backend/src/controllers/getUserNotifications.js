@@ -1,4 +1,5 @@
 import { Notification } from "../models/notification.model.js";
+import { User } from "../models/user.model.js";
 
 export const getUserNotifications = async (req, res) => {
     try {
@@ -8,13 +9,19 @@ export const getUserNotifications = async (req, res) => {
         let notifications = await Notification.find({ receivingUserId: userId })
             .sort({ createdAt: 1 })
             .populate({
-                path : "sendingUserId" , 
-                select : "_id userName role profilePhoto"
+                path: "sendingUserId",
+                select: "_id userName role profilePhoto"
             })
             .populate({
-                path : "postId",
-                select : "_id user_id type caption mediaUrl mediaType"
+                path: "postId",
+                select: "_id user_id type caption mediaUrl mediaType"
             });
+
+        // pending request length
+        var length = await User.findById(userId).populate("roleId").select("requestNotifications")
+        var finalLength = length.roleId.requestNotifications.length
+        // console.log(length.roleId.requestNotifications.length, "ok");
+
 
         // Filter and transform notifications if needed
         notifications = notifications.map(notification => {
@@ -26,13 +33,14 @@ export const getUserNotifications = async (req, res) => {
 
         // Check if notifications exist
         if (!notifications.length) {
-            return res.status(404).json({ message: "No notifications found" });
+            return res.status(404).json({ message: "No notifications found" ,  pendingRequest : finalLength });
         }
 
         // Respond with notifications
         return res.status(200).json({
             message: "Notifications fetched successfully",
             data: notifications,
+            pendingRequest : finalLength
         });
     } catch (error) {
         // Log error (optional: include a logger here)

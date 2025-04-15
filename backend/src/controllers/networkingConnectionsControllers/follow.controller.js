@@ -1,4 +1,5 @@
 import { User } from "../../models/user.model.js";
+import sendNotification from "../../utils/sendNotification.js";
 
 export const followUser = async (req, res) => {
     try {
@@ -8,7 +9,7 @@ export const followUser = async (req, res) => {
         // console.log(loggedInUserId, followedUserId);
         // console.log(loggedInUserId, followedUserId);
         // console.log(loggedInUserId, followedUserId);
-        
+
 
         // Prevent users from following themselves
         if (loggedInUserId.toString() === followedUserId.toString()) {
@@ -35,13 +36,13 @@ export const followUser = async (req, res) => {
 
         // console.log(loggedInUserRole);
         console.log(messagingUserRole);
-        
+
 
         if (!messagingUserRole || !messagingUserRole.roleId) {
             return res.status(404).json({ message: "RoleId or user not found." });
         }
 
-        if(loggedInUserRole.followers.includes(followedUserId)){
+        if (loggedInUserRole.followers.includes(followedUserId)) {
             return res.status(400).json({
                 message: "You are already following this user."
             });
@@ -87,7 +88,13 @@ export const followUser = async (req, res) => {
 
         console.log(messagingUserRole.roleId);
 
-        
+        var receiverIdToken = await User.findById(followedUserId).select("notificationToken");
+        var rec2 = await User.findOne({ _id: loggedInUserId }).select("userName");
+
+        var response = await sendNotification(receiverIdToken.notificationToken, `${rec2.userName} sent you a connection request`)
+        console.log(response, "response from notification");
+
+
         return res.status(200).json({
             message: "User followed successfully, waiting for follow back.",
         });
