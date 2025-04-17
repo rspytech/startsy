@@ -65,16 +65,30 @@ import { getReceiverSocketId } from "../../socket/socketIo.js";
 import { Conversation } from "../../models/conversation.model.js";
 import sendNotification from "../../utils/sendNotification.js";
 import { User } from "../../models/user.model.js";
+import { Newsletter } from "../../models/newsletter.model.js";
 
 export const sendMessage = async (req, res, io) => {
     try {
         const postId = req.params.id;
         const senderId = req.user._id;
-        const { sharedToUsers } = req.body;
+        const { sharedToUsers  } = req.body;
 
-        const post = await Post.findById(postId).populate("user_id");
+        console.log(sharedToUsers);
+        
+
+        let post;
+        post = await Post.findById(postId).populate("user_id");
+        var isNewsLetter = false
+
+
         if (!post) {
-            return res.status(404).json({ error: "Post not found" });
+            post = await Newsletter.findById(postId).populate("taggedUser")
+            console.log(post,"oooo");
+            
+            if (!post) {
+                return res.status(404).json({ error: "Post not found" });
+            }
+            isNewsLetter = true
         }
 
 
@@ -85,14 +99,18 @@ export const sendMessage = async (req, res, io) => {
                     receiverId: userId,
                     message: {
                         postShared: post._id,
-                        userName: post.user_id.userName,
-                        profilePhoto: post.user_id.profilePhoto,
-                        postImage: post.mediaUrl,
-                        postContent: post.content,
-                        postCaption: post.caption,
-                        userIdPosted: post.user_id._id,
+                        userName: post.user_id?.userName || post.taggedUser.userName,
+                        profilePhoto: post.user_id?.profilePhoto || post.taggedUser.profilePhoto,
+                        postImage: post.mediaUrl || post.newsletterImage,
+                        postContent:  post.content,
+                        postCaption:  isNewsLetter ? post.title : post.content,
+                        userIdPosted: post.user_id?._id || post.taggedUser._id,
+                        isNewsLetter : isNewsLetter,
+                        NewsletterContent : isNewsLetter ? post : null
                     }
                 });
+
+                console.log(newMessage , "treeee")
                 let conversation = await Conversation.findOne({
                     members: { $all: [senderId, userId] },
                     isGroup: false,

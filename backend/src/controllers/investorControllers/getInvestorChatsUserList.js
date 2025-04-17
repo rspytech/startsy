@@ -28,6 +28,7 @@ export const getInvestorChatUserList = async (req, res) => {
                     _id: chatUser._id,
                     userName: chatUser.userName,
                     profilePhoto: chatUser.profilePhoto,
+                    role  : chatUser.role
                 },
                 lastMessage: conversation?.lastMessage || null
             };

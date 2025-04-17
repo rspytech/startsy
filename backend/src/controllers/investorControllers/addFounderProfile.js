@@ -1,19 +1,21 @@
 // Investor feed (Home page) Plus button functionality
- 
+
 import { Investor } from "../../models/investor.model.js";
 import { Founder } from "../../models/founder.model.js";
 import { upvoteProfile } from "../../models/upvoteProfile.model.js";
 import { General } from "../../models/general.model.js";
+import sendNotification from "../../utils/sendNotification.js";
+import { User } from "../../models/user.model.js";
 
-export const addFounderProfile = async(req, res) => {
+export const addFounderProfile = async (req, res) => {
     try {
         const { id } = req.params;
         const investorId = req.user._id;
-        
-        const investor = await General.findOne({user_id : investorId});
-        let founderProfile = await General.findOne({user_id : id});
-        if(founderProfile == null){
-             founderProfile = await Founder.findOne({user_id : id});
+
+        const investor = await General.findOne({ user_id: investorId });
+        let founderProfile = await General.findOne({ user_id: id });
+        if (founderProfile == null) {
+            founderProfile = await Founder.findOne({ user_id: id });
 
         }
 
@@ -26,21 +28,31 @@ export const addFounderProfile = async(req, res) => {
         if (!founderProfile) {
             return res.status(404).json({ message: 'Founder not found' });
         }
-        
-        if(investor.requestedFounders.includes(id)){
+
+        if (investor.requestedFounders.includes(id)) {
             return res.status(400).json({
                 message: 'You have already requested this founder',
             });
         }
         investor.requestedFounders.push({
-            founder : id,
-            requestDate : Date.now(),
-        });
-
-        founderProfile.requestNotifications.push({
-            investor: investorId,
+            founder: id,
             requestDate: Date.now(),
         });
+
+        // if(founderProfile.requestNotifications.includes)
+        const alreadyExists = founderProfile.requestNotifications.some(
+            (notif) => notif.investor.toString() === investorId.toString()
+        );
+        if (!alreadyExists) {
+            founderProfile.requestNotifications.push({
+                investor: investorId,
+                requestDate: Date.now(),
+            });
+        }
+        // founderProfile.requestNotifications.push({
+        //     investor: investorId,
+        //     requestDate: Date.now(),
+        // });
 
         await investor.save();
         await founderProfile.save();
@@ -50,13 +62,20 @@ export const addFounderProfile = async(req, res) => {
             founder: id,
         });
 
+        var receiverIdToken = await User.findOne({ _id: id }).select("notificationToken");
+        var rec2 = await User.findOne({ _id: investorId }).select("userName");
+        var userNameForNotification = rec2.userName;
+
+        var response = await sendNotification(receiverIdToken.notificationToken, `${userNameForNotification}`, "Right swiped you")
+        console.log(response, "response from notification");
+
         return res.status(200).json({
             success: true,
             message: "Request sent to founder successfully.",
             data: investor,
         });
     }
-    
+
     catch (error) {
         res.status(500).json({
             success: false,

@@ -22,7 +22,14 @@ export const getMessage = async (req, res) => {
             conversation = await Conversation.findOne({
                 members: {$all: [senderId, receiverId]},
                 isGroup : false,
-            }).populate("messages");    
+            }).populate({
+                path: "messages",
+                populate: {
+                  path: "message.NewsletterContent.taggedUser",
+                  model: "User",
+                  select: "username profilePhoto",
+                },
+            });    
         }
         else{
             conversation = await Conversation.findOne({
@@ -30,7 +37,7 @@ export const getMessage = async (req, res) => {
                 communityId : receiverId,
             }).populate("messages");
         }
-        console.log(conversation);
+        console.log(conversation.messages[conversation.messages.length -1] , "ppp");
 
         if(!conversation){
             return res.status(404).json({message: "Conversation not found" , senderProfilePhoto,

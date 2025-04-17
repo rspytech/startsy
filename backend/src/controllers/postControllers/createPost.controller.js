@@ -1,6 +1,7 @@
 import { User } from '../../models/user.model.js';
 import { uploadOnCloudinary } from '../../../cloudinary.js';
-import {Post} from '../../models/post.model.js';
+import { Post } from '../../models/post.model.js';
+import sharp from 'sharp';
 
 const createPost = async (req, res) => {
     try {
@@ -9,12 +10,20 @@ const createPost = async (req, res) => {
         console.log(aspectRatio);
         const user_id = req.user._id;
         console.log(req.body);
-        
+
 
         let mediaUrl = null;
         let mediaType = null;
 
         if (type === "photo" || type === "video") {
+
+            const postCount = await Post.countDocuments({ user_id, type: "photo" });
+            if (postCount >= 20) {
+                return res.status(412).json({
+                    success: false,
+                    message: "Post limit exceeded. You can create up to 10 posts only"
+                })
+            }
             // const localFilePath = req.file?.path;
             // console.log(localFilePath);
             // if (localFilePath) {
@@ -26,7 +35,20 @@ const createPost = async (req, res) => {
             // }
             let localFilePath = req.file?.buffer;
             console.log(localFilePath);
-            if(localFilePath){
+
+            var size = req.file.size / 1024 / 1024;
+            console.log(size, "img size");
+            if (localFilePath) {
+
+                if (size > 1) {
+                    var rec1 = sharp(localFilePath)
+                    var rec2 = await rec1.metadata()
+                    console.log(rec2.format);
+                    var format = rec2.format;
+                    var save = await rec1.toFormat(format, { quality: 60 }).toBuffer();
+                    console.log(save);
+                    localFilePath = save
+                }
                 let uploadResponse;
                 try {
                     uploadResponse = await uploadOnCloudinary(localFilePath);
@@ -37,18 +59,18 @@ const createPost = async (req, res) => {
                 if (!uploadResponse || !uploadResponse.secure_url) {
                     return res.status(400).json({ message: "Failed to upload photo to Cloudinary." });
                 }
-                if(uploadResponse){
+                if (uploadResponse) {
                     mediaUrl = uploadResponse.secure_url;
                     mediaType = uploadResponse.resource_type;
                 }
-            }            
+            }
         }
 
         const newPostData = {
             user_id,
             type,
             caption,
-            aspectRatio : type === "photo" || "video" ? aspectRatio : null,
+            aspectRatio: type === "photo" || "video" ? aspectRatio : null,
             mediaUrl,
             mediaType,
             isPrivate,
@@ -65,7 +87,7 @@ const createPost = async (req, res) => {
             user.roleId.posts.push(newPost._id);
             await user.roleId.save(); // Review : Save the roleId document to persist changes
         }
-        
+
         else {
             return res.status(500).json({ success: false, message: 'User roleId or posts array not found' });
         }

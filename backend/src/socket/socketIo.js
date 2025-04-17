@@ -221,7 +221,6 @@ export const configureSocketIO = (server) => {
             console.log(`User ${id} registered with socket ID ${socket.id}`);
 
         })
-
     })
 
     return io;

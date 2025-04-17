@@ -1,6 +1,7 @@
 import { Community } from "../../models/community.model.js";
 import { Post } from "../../models/post.model.js";
 import { uploadOnCloudinary } from "../../../cloudinary.js";
+import sharp from "sharp";
 
 
 export const groupPhoto = async (req, res) => {
@@ -23,6 +24,8 @@ export const groupPhoto = async (req, res) => {
         //Check if a file (group photo) is uploaded**
         if (req.file && req.file.buffer) {
             console.log("Uploading Buffer to Cloudinary...");
+           
+
             try {
                 const uploadResponse = await uploadOnCloudinary(req.file.buffer);
                 if (!uploadResponse || !uploadResponse.secure_url) {

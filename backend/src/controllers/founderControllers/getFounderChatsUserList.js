@@ -41,6 +41,8 @@ export const getFounderChatUserList = async (req, res) => {
             };
         }));
 
+        console.log(chatList);
+        
         return res.status(200).json(chatList);
     } catch (error) {
         console.error(`Error fetching founder chat user list: ${error.message}`);

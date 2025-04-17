@@ -18,8 +18,29 @@ export const getUserNotifications = async (req, res) => {
             });
 
         // pending request length
-        var length = await User.findById(userId).populate("roleId").select("requestNotifications")
-        var finalLength = length.roleId.requestNotifications.length
+        var length = await User.findById(userId).populate("roleId").select("requestNotifications.investor")
+        console.log('====================================');
+        console.log(length.roleId.requestNotifications);
+        console.log('====================================');
+
+        const seen = new Set();
+        const filtered = [];
+
+
+        for (const item of length.roleId.requestNotifications) {
+            const notifId = item.investor._id?.toString();
+            console.log(notifId);
+            if (!notifId) continue;
+            if (!seen.has(notifId)) {
+                seen.add(notifId);
+                filtered.push(item);
+            }
+        }
+
+        var finalLength = filtered.length
+        console.log('====================================');
+        console.log(finalLength , "pp");
+        console.log('====================================');
         // console.log(length.roleId.requestNotifications.length, "ok");
 
 
@@ -33,14 +54,14 @@ export const getUserNotifications = async (req, res) => {
 
         // Check if notifications exist
         if (!notifications.length) {
-            return res.status(404).json({ message: "No notifications found" ,  pendingRequest : finalLength });
+            return res.status(404).json({ message: "No notifications found", pendingRequest: finalLength });
         }
 
         // Respond with notifications
         return res.status(200).json({
             message: "Notifications fetched successfully",
             data: notifications,
-            pendingRequest : finalLength
+            pendingRequest: finalLength
         });
     } catch (error) {
         // Log error (optional: include a logger here)
