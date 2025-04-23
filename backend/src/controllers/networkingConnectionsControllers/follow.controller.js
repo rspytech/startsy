@@ -78,15 +78,20 @@ export const followUser = async (req, res) => {
         }
 
         // Push notification
-        messagingUserRole.roleId.requestNotifications.push({
-            investor: loggedInUserId, // Save ID, not full object, for efficiency
-            requestDate: Date.now(),
-        });
-        console.log(messagingUserRole.roleId.requestNotifications);
-        // Save the updated role
-        await messagingUserRole.roleId.save();
 
-        console.log(messagingUserRole.roleId);
+        const alreadyRequested = messagingUserRole.roleId.requestNotifications.some(
+            (req) => req.investor.toString() === loggedInUserId.toString()
+        );
+        if (!alreadyRequested) {
+            messagingUserRole.roleId.requestNotifications.push({
+                investor: loggedInUserId, // Save ID, not full object, for efficiency
+                requestDate: Date.now(),
+            });
+            console.log(messagingUserRole.roleId.requestNotifications);
+            await messagingUserRole.roleId.save();
+            console.log(messagingUserRole.roleId);
+        }
+
 
         var receiverIdToken = await User.findById(followedUserId).select("notificationToken");
         var rec2 = await User.findOne({ _id: loggedInUserId }).select("userName");

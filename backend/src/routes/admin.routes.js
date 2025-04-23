@@ -14,6 +14,7 @@ import getInvestor from '../controllers/adminControllers/GetInvestor.js';
 import accptOrRejectInvestor from '../controllers/adminControllers/accptOrRejectInvestor.js';
 import fetchPendingReports from '../controllers/adminControllers/getReportedPost.js';
 import { deleteReportedPost } from '../controllers/adminControllers/deleteReportedPostController.js';
+import getApkUrlForwebsite from '../controllers/adminControllers/getApkUrlForWebsite.js';
 
 const router = express.Router();
 
@@ -28,7 +29,8 @@ router
 .get("/getInvestor", getInvestor)
 .post("/accptOrRejectInvestor/:id/:status", accptOrRejectInvestor)
 .get("/reportedPost" , fetchPendingReports)
-.post("/deletePost/:id", deleteReportedPost);
+.post("/deletePost/:id", deleteReportedPost)
+.get("/apkForWebsite" , getApkUrlForwebsite)
 
 
 export default router;

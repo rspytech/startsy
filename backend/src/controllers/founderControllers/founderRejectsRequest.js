@@ -45,11 +45,17 @@ export const rejectRequest = async (req, res) => {
             await General.findOneAndUpdate({_id: founderGeneralId},{
                 $pull: { chatUsers: investorId }
             })
+            await investorUser.roleId.updateOne({
+                $pull: { requestNotifications: { investor: investorId} }
+            });
+
         }
+
+
         
         
         // Remove the investor's request notification from the founder's requestNotifications list
-        await founderUser.roleId.updateOne({
+        await founderUser.roleId.updateMany({
             $pull: { requestNotifications: { investor: investorId} }
         });
         await founderUser.updateOne({

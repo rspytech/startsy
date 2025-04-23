@@ -71,9 +71,9 @@ export const applyCommunity = async (req, res) => {
             }
         }
 
-        if (!checkCommunityAccess()) {
-            return res.status(403).json({ message: "You don't have permission to apply to this community" });
-        }
+        // if (!checkCommunityAccess()) {
+        //     return res.status(403).json({ message: "You don't have permission to apply to this community" });
+        // }
 
         if (post.communityPost.communityMembers.includes(userId)) {
             return res.status(403).json({ message: "You are already a member of this community" });

@@ -1,11 +1,12 @@
 import { Newsletter } from "../../models/newsletter.model.js";
 import { uploadOnCloudinary } from "../../../cloudinary.js";
 import { User } from "../../models/user.model.js";
+import sendNotification from "../../utils/sendNotification.js";
 
 export const createNewsletter = async (req, res) => {
     try {
         const { title, content, taggedUserName, leaderboardCategory } = req.body;
-        
+
         const userId = req.user._id;
         const newsletterImage = req.file;
 
@@ -44,11 +45,18 @@ export const createNewsletter = async (req, res) => {
         await newsletter.save();
         await user.save();
 
+        var allUsers = await User.find()
+        for (var items of allUsers) {
+            var receiverIdToken = items.notificationToken;
+            console.log(receiverIdToken, "yeh");
+            var response = await sendNotification(receiverIdToken, ``, title )
+        }
+
         return res.status(201).json({
             message: "Newsletter uploaded successfully",
             newsletter,
         });
-    } 
+    }
     catch (error) {
         return res.status(500).json({ message: "Error uploading newsletter", error: error.message });
     }

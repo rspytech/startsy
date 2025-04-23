@@ -66,7 +66,7 @@ export const addFounderProfile = async (req, res) => {
         var rec2 = await User.findOne({ _id: investorId }).select("userName");
         var userNameForNotification = rec2.userName;
 
-        var response = await sendNotification(receiverIdToken.notificationToken, `${userNameForNotification}`, "Right swiped you")
+        var response = await sendNotification(receiverIdToken.notificationToken, `${userNameForNotification}`, "wants to connect with you")
         console.log(response, "response from notification");
 
         return res.status(200).json({
