@@ -24,7 +24,7 @@ const fetchPendingReports = async (req, res) => {
     const filteredReports = pendingReports.filter(report => report.postId !== null);
     
     if (filteredReports.length === 0) {
-        return res.json({ message: "No pending reports found" });
+        return res.json({ message: [] });
     }
     
     // Continue with populating communityPost / jobPost as needed

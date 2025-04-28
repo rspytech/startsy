@@ -55,7 +55,7 @@ export const rejectRequest = async (req, res) => {
         
         
         // Remove the investor's request notification from the founder's requestNotifications list
-        await founderUser.roleId.updateMany({
+        await founderUser.roleId.updateOne({
             $pull: { requestNotifications: { investor: investorId} }
         });
         await founderUser.updateOne({

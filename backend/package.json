@@ -28,9 +28,11 @@
     "node-cron": "^3.0.3",
     "nodemailer": "^6.10.0",
     "nodemon": "^3.1.4",
+    "os": "^0.1.2",
     "passport": "^0.7.0",
     "passport-google-oauth20": "^2.0.0",
     "sharp": "^0.34.1",
-    "socket.io": "^4.8.1"
+    "socket.io": "^4.8.1",
+    "xlsx": "^0.18.5"
   }
 }

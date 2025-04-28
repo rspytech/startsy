@@ -15,13 +15,16 @@ import accptOrRejectInvestor from '../controllers/adminControllers/accptOrReject
 import fetchPendingReports from '../controllers/adminControllers/getReportedPost.js';
 import { deleteReportedPost } from '../controllers/adminControllers/deleteReportedPostController.js';
 import getApkUrlForwebsite from '../controllers/adminControllers/getApkUrlForWebsite.js';
+import convertUserDataToExcel from '../controllers/adminControllers/Excel.js';
+import getBetaRating from '../controllers/adminControllers/getBetaRating.js';
+import getUserCounts from '../controllers/adminControllers/getUserCounts.js';
 
 const router = express.Router();
 
 router
 .post('/registerAdmin', registerAdmin)
 .post('/login',  loginAdmin)
-.post('/createNewsletter', verifyUser, isAdmin, upload.single('newsletterImage'), createNewsletter)
+.post('/createNewsletter', verifyUser, upload.single('newsletterImage'), createNewsletter)
 .get('/getNewsletter/:id', verifyUser, getNewsletter)
 .get('/getAllNewletters', verifyUser, getAllNewsletters)
 .get("/leaderboard/:category", verifyUser, getLeaderboardNewsletters)
@@ -31,6 +34,9 @@ router
 .get("/reportedPost" , fetchPendingReports)
 .post("/deletePost/:id", deleteReportedPost)
 .get("/apkForWebsite" , getApkUrlForwebsite)
+.get("/convertUserDataToExcel" , convertUserDataToExcel)
+.get("/getBetaRating" , getBetaRating)
+.get("/getUserCounts" , getUserCounts)
 
 
 export default router;

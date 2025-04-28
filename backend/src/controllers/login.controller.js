@@ -2,13 +2,25 @@ import { User } from "../models/user.model.js";
 
 export const loginUser = async (req, res) => {
     try {
-        const { identifier, password , notificationToken } = req.body;
+        const { identifier, password , notificationToken , isAdmin } = req.body;
         console.log(notificationToken , "yeh body mese hai");
+        console.log(req.body);
+
+
+        var admin = ["anshgala", "rajaschaudhari" , "yogeshvkarma"]
+        if(isAdmin){
+            if (!admin.includes(identifier)) {
+                res.status(403).json({ message: "Unauthorized access" });
+                return
+            }
+        }
+        
         
 
         if (!identifier || !password) {
             return res.status(400).json({ message: 'Please fill in all the fields' });
         }
+
 
         // Check if user exists
         const user = await User.findOne({
@@ -24,10 +36,10 @@ export const loginUser = async (req, res) => {
         }
 
         // Verify the password
-        // const isPasswordCorrect = await user.isPasswordCorrect(password);
-        // if (!isPasswordCorrect) {
-        //     return res.status(401).json({ message: 'Invalid credentials' });
-        // }
+        const isPasswordCorrect = await user.isPasswordCorrect(password);
+        if (!isPasswordCorrect) {
+            return res.status(401).json({ message: 'Invalid credentials' });
+        }
 
         // Generate tokens
         const refreshToken = user.generateRefreshToken();

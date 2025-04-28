@@ -10,6 +10,8 @@ export const createNewsletter = async (req, res) => {
         const userId = req.user._id;
         const newsletterImage = req.file;
 
+        
+
         const user = await User.findById(userId);
         const taggedUser = await User.findOne({ userName: taggedUserName });
 
@@ -24,8 +26,6 @@ export const createNewsletter = async (req, res) => {
             taggedUser: taggedUser ? taggedUser._id : null,
             leaderboardCategory: leaderboardCategory || null,  // If empty, it won’t be on the leaderboard
         });
-        console.log(newsletter.leaderboardCategory);
-        console.log(newsletter);
 
         user.newslettersPosted.push(newsletter._id);
 
@@ -48,7 +48,6 @@ export const createNewsletter = async (req, res) => {
         var allUsers = await User.find()
         for (var items of allUsers) {
             var receiverIdToken = items.notificationToken;
-            console.log(receiverIdToken, "yeh");
             var response = await sendNotification(receiverIdToken, ``, title )
         }
 
