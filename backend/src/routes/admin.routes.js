@@ -18,6 +18,7 @@ import getApkUrlForwebsite from '../controllers/adminControllers/getApkUrlForWeb
 import convertUserDataToExcel from '../controllers/adminControllers/Excel.js';
 import getBetaRating from '../controllers/adminControllers/getBetaRating.js';
 import getUserCounts from '../controllers/adminControllers/getUserCounts.js';
+import ApkFromAssets from '../controllers/adminControllers/ApkFromAssets.js';
 
 const router = express.Router();
 
@@ -37,6 +38,7 @@ router
 .get("/convertUserDataToExcel" , convertUserDataToExcel)
 .get("/getBetaRating" , getBetaRating)
 .get("/getUserCounts" , getUserCounts)
+.get("/ApkFromAssets" , ApkFromAssets)
 
 
 export default router;
