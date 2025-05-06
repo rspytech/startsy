@@ -19,6 +19,8 @@ const ApkFromAssets = (req, res) => {
   req.on('aborted', () => {
     console.warn('Request aborted by the client');
   });
+  res.setHeader('Content-Disposition', 'attachment; filename=Startsy.apk');
+  res.setHeader('Content-Type', 'application/vnd.android.package-archive')
 
   // Send the file
   res.download(filePath, 'Startsy.apk', (err) => {
