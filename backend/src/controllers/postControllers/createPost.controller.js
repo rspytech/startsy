@@ -1,20 +1,57 @@
 import { User } from '../../models/user.model.js';
 import { uploadOnCloudinary } from '../../../cloudinary.js';
-import {Post} from '../../models/post.model.js';
+import { Post } from '../../models/post.model.js';
+import { preprocessText } from '../../utils/textPreprocessing.js';
+import { vectorQueue,userVectorQueue } from '../../vector/vector.queue.js';
+import sharp from 'sharp';
 
 const createPost = async (req, res) => {
     try {
         const type = req.params.postType;
-        const { caption, content, aspectRatio } = req.body;
+        const { caption, content, aspectRatio, isPrivate } = req.body;
         console.log(aspectRatio);
         const user_id = req.user._id;
         console.log(req.body);
-        
+
+
+        const user = await User.findById(user_id).populate("roleId");
+        if (!user || !user.roleId) {
+            return res.status(500).json({ success: false, message: 'User roleId not found' });
+        }
+
+        const {
+            skills,
+            description,
+            preferredSector,
+            areaOfInterest,
+            contentPrefrence,
+            tagline,
+            hiddenInfo
+        } = user.roleId;
+
+        const creatorText = [
+            skills,
+            description,
+            preferredSector,
+            areaOfInterest,
+            contentPrefrence,
+            tagline,
+            hiddenInfo?.sector
+        ].filter(Boolean).join(" ");
 
         let mediaUrl = null;
         let mediaType = null;
+        let preprocessedText = null;
 
         if (type === "photo" || type === "video") {
+
+            const postCount = await Post.countDocuments({ user_id, type: "photo" });
+            if (postCount >= 20) {
+                return res.status(412).json({
+                    success: false,
+                    message: "Post limit exceeded. You can create up to 10 posts only"
+                })
+            }
             // const localFilePath = req.file?.path;
             // console.log(localFilePath);
             // if (localFilePath) {
@@ -26,7 +63,20 @@ const createPost = async (req, res) => {
             // }
             let localFilePath = req.file?.buffer;
             console.log(localFilePath);
-            if(localFilePath){
+
+            var size = req.file.size / 1024 / 1024;
+            console.log(size, "img size");
+            if (localFilePath) {
+
+                if (size > 1) {
+                    var rec1 = sharp(localFilePath)
+                    var rec2 = await rec1.metadata()
+                    console.log(rec2.format);
+                    var format = rec2.format;
+                    var save = await rec1.toFormat(format, { quality: 60 }).toBuffer();
+                    console.log(save);
+                    localFilePath = save
+                }
                 let uploadResponse;
                 try {
                     uploadResponse = await uploadOnCloudinary(localFilePath);
@@ -37,34 +87,55 @@ const createPost = async (req, res) => {
                 if (!uploadResponse || !uploadResponse.secure_url) {
                     return res.status(400).json({ message: "Failed to upload photo to Cloudinary." });
                 }
-                if(uploadResponse){
+                if (uploadResponse) {
                     mediaUrl = uploadResponse.secure_url;
                     mediaType = uploadResponse.resource_type;
                 }
-            }            
+            }
+        }
+
+        let rawText = "";
+        if (type === "photo" && caption) {
+            rawText = `${caption} ${creatorText}`;
+        } else if ((type === "textBlog" || type === "Question") && content) {
+            rawText = `${content} ${creatorText}`;
+        }
+
+        if (rawText) {
+            preprocessedText = preprocessText(rawText);
         }
 
         const newPostData = {
             user_id,
             type,
             caption,
-            aspectRatio : type === "photo" || "video" ? aspectRatio : null,
+            aspectRatio: type === "photo" || "video" ? aspectRatio : null,
             mediaUrl,
             mediaType,
+            isPrivate,
             content: type === "textBlog" || "Question" ? content : undefined,
+            preprocessedText
+
         };
         console.log(newPostData);
         const newPost = new Post(newPostData);
         await newPost.save();
 
-        const user = await User.findById(user_id).populate("roleId");
+        if (preprocessedText) { 
+            await vectorQueue.add("generateVector", {
+                postId: newPost._id.toString(),
+                text: preprocessedText
+            });
+            console.log("Vector job enqueued for", newPost._id);
+        }
+        await userVectorQueue.add("generateUserVector", { userId: user_id.toString()});
 
         // Ensure roleId exists and has a posts array
         if (user.roleId && Array.isArray(user.roleId.posts)) {
             user.roleId.posts.push(newPost._id);
             await user.roleId.save(); // Review : Save the roleId document to persist changes
         }
-        
+
         else {
             return res.status(500).json({ success: false, message: 'User roleId or posts array not found' });
         }

@@ -39,7 +39,6 @@ export const getCommunityGroupChatList = async (req, res) => {
         });
 
 
-        console.log(user);
 
 
         if (!user) {

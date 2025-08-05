@@ -19,6 +19,9 @@ export const deleteUserAccount = async (req, res) => {
     const user = await User.findById(userId).populate("roleId");
     const userChatUserList = user.roleId.chatUsers;
 
+    // console.log(userChatUserList);
+    
+
     const communityPosts = await Post.find(
         {user_id : userId},
         {type : "communityPost"}
@@ -36,6 +39,8 @@ export const deleteUserAccount = async (req, res) => {
         communityPosts.map(async(post) => {
             await Community.deleteMany({_id : post.Community});
         })
+        // console.log("reached here");
+
 
         // 2. Delete all comments made by the user
         await Comment.deleteMany({ userId }, { session });
@@ -47,6 +52,8 @@ export const deleteUserAccount = async (req, res) => {
             { session }
         );
         
+        // console.log("reached here");
+
         // 4. Remove user from other users' followers/following lists
         await User.updateMany(
             { $or: [{ followers: userId }, { following: userId }] },
@@ -58,15 +65,29 @@ export const deleteUserAccount = async (req, res) => {
             },
             { session }
         );
+        // console.log("reached here");
 
-        userChatUserList.map(async (id) => {
+
+        // userChatUserList.map(async (id) => {
+        //     const getUser = await User.findById(id).populate("roleId");
+        //     console.log(getUser);
+        //     if(!getUser)return
+            
+        //     // 5. Remove user from other users' chat user lists
+        //     const indexOfUserToBeRemoved = getUser.roleId.chatUsers.indexOf(id);
+        //     getUser.roleId.chatUsers.splice(indexOfUserToBeRemoved, 1);
+            
+        //     await getUser.roleId.save({ session });
+        // });
+
+        for (const id of userChatUserList) {
             const getUser = await User.findById(id).populate("roleId");
-            // 5. Remove user from other users' chat user lists
             const indexOfUserToBeRemoved = getUser.roleId.chatUsers.indexOf(id);
             getUser.roleId.chatUsers.splice(indexOfUserToBeRemoved, 1);
-            
             await getUser.roleId.save({ session });
-        });
+        }
+
+        
 
         
         

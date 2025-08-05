@@ -25,6 +25,10 @@ const messageSchema = new mongoose.Schema({
     status : {
         type: String,
         enum: ["pending", "delivered"],
+    },
+    isRead : {
+        type: Boolean,
+        default: false,
     }
 }, { timestamps: true });
 

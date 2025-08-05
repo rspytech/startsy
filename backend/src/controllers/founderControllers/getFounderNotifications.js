@@ -10,16 +10,17 @@ export const getFounderNotifications = async (req, res) => {
             path: "roleId",
             populate: {
                 path: "requestNotifications.investor",
+                select : "_id userName role profilePhoto role",
                 populate : {
                     path : "roleId",
-                    populate : {
-                        path : "user_id",
-                    }
+                    select : "hiddenInfo user_id skills tagline hiddenInfo previousExperience investmentRange fullName role",
                 }
             },
-        });
+        }).lean();
 
         const founder = user.roleId;
+        console.log(founder);
+        
         if (!founder) {
             return res.status(404).json({ message: "Founder not found" });
         }

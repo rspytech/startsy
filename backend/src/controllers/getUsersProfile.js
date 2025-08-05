@@ -18,19 +18,15 @@ export const getUsersProfiles = async (req, res) => {
         };
         const loggedInUserId = req.user._id;
         const userId = req.params.id;
-        console.log("User ID:", userId);
 
         var temp = await User.find({ _id: userId })
-        console.log(temp);
 
         var temp2 = await General.find({ _id: temp.roleId });
-        console.log(temp2);
 
 
 
 
         const user = await User.findById(userId).populate("roleId");
-        console.log(user);
 
         const loggedInUser = await User.findById(loggedInUserId).populate("roleId");
         if (!user) {
@@ -38,7 +34,6 @@ export const getUsersProfiles = async (req, res) => {
         }
 
         const userRole = user.role;
-        // console.log("User Role:", userRole);
 
         let status;
         // if(user.following.includes(loggedInUserId) && user.followers.includes(loggedInUserId)){
@@ -72,7 +67,7 @@ export const getUsersProfiles = async (req, res) => {
                 .populate({ path: "posts" }) // Basic population for `posts`
                 .lean();
 
-            console.log("User Profile:", userProfile);
+            // console.log("User Profile:", userProfile);
 
             if (!userProfile) {
                 return res.status(404).json({ message: "Profile not found. Ensure the user_id is correctly linked in the role-specific collection." });

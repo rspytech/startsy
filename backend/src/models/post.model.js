@@ -7,7 +7,7 @@ const postSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ["photo", "video", "textBlog", "jobPost", "communityPost" , "Question"],
+        enum: ["photo", "video", "textBlog", "jobPost", "communityPost", "Question"],
         required: true,
     },
     caption: {
@@ -23,13 +23,13 @@ const postSchema = new mongoose.Schema({
     content: {
         type: String,  // Only for textBlog type
     },
-    jobPosts : {
-        type: mongoose.Schema.Types.ObjectId,   
+    jobPosts: {
+        type: mongoose.Schema.Types.ObjectId,
         ref: "JobPost",
     },
-    communityPost : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "Community",
+    communityPost: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Community",
     },
     postUpvotes: {
         type: Number,
@@ -39,18 +39,26 @@ const postSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Comment",
     }],
-    aspectRatio:{
+    aspectRatio: {
         type: "String",
     },
-    likedBy : [{
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "User",
+    likedBy: [{
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
     }],
-    createdAt: { 
+    isPrivate: {
+        type: Boolean,
+        default: false,
+    },
+    preprocessedText: {
+        type: String,
+        default: ""
+    },
+    createdAt: {
         type: Date,
         default: Date.now
     },
-    
+
 });
 
 export const Post = mongoose.model("Post", postSchema);

@@ -11,7 +11,7 @@ export const getFounderChatUserList = async (req, res) => {
             path: 'roleId',
             populate: {
                 path: 'chatUsers',
-                select: '_id userName profilePhoto',
+                select: '_id userName profilePhoto role',
             },
         });
 
@@ -35,11 +35,14 @@ export const getFounderChatUserList = async (req, res) => {
                     _id: chatUser._id,
                     userName: chatUser.userName,
                     profilePhoto: chatUser.profilePhoto,
+                    role  : chatUser.role
                 },
                 lastMessage: conversation?.lastMessage || null
             };
         }));
 
+        console.log(chatList);
+        
         return res.status(200).json(chatList);
     } catch (error) {
         console.error(`Error fetching founder chat user list: ${error.message}`);

@@ -19,7 +19,7 @@ export const FounderInfo = async (req, res) => {
     req.body.socialProof = JSON.parse(req.body.socialProof)
 
     let {
-        email,
+
         country,
         age,
         gender,
@@ -101,7 +101,6 @@ export const FounderInfo = async (req, res) => {
 
         //commented
         // const newFounder = new Founder({
-        //     email,
         //     country,
         //     age,
         //     gender,
@@ -127,7 +126,7 @@ export const FounderInfo = async (req, res) => {
             { _id: req.body.generalModelId },  // Find document by user_id
             {
                 $set: {
-                    email,
+                   
                     country,
                     age,
                     gender,
@@ -170,9 +169,9 @@ export const FounderInfo = async (req, res) => {
         }
 
         // 4. Update current user details
-        if (email) {
-            currentUser.email = email;
-        }
+        // if (email) {
+        //     currentUser.email = email;
+        // }
 
         if (contactInfo) {
             currentUser.contactInfo = contactInfo;
@@ -221,7 +220,6 @@ export const FounderInfo = async (req, res) => {
             {
                 _id: currentUserId,
                 userName: currentUser.userName,
-                // email : this.email,
                 // role: currentUser.role, //commented
                 role: "Founder",
                 status: true,

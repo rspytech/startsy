@@ -121,14 +121,14 @@ export const acceptRequest = async (req, res) => {
 
             await General.findByIdAndUpdate(investorProfile._id, {
                 $pull: { requestedFounders: { founder: founderId } },
-                $push: { chatUsers: founderId }
+            $addToSet: { chatUsers: founderId }
             });
 
             await General.findByIdAndUpdate(founderUser.roleId._id, {
                 $inc: {
                     investorConnections : 1,
                 },
-                $push: { chatUsers: investorId },
+                $addToSet: { chatUsers: investorId },
                 $pull: { requestNotifications: { investor: investorId } }
             });
         }

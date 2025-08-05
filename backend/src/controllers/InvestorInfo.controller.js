@@ -8,7 +8,6 @@ export const InvestorInfo = async (req, res) => {
     try {
         const {
             fullName,
-            email,
             country,
             age,
             gender,
@@ -27,7 +26,7 @@ export const InvestorInfo = async (req, res) => {
         const pancardPhoto = req.files.panCardPhoto;
 
         if (!contactInfo || !previousExperience || !startupStage || !preferredSector || !investmentRange ||
-            !fullName || !email 
+            !fullName 
         ) {
             return res.status(400).json({ message: "Please fill in all the fields" });
         }
@@ -87,29 +86,31 @@ export const InvestorInfo = async (req, res) => {
 
         // set profile photo link, email, contactInfo of the current user in the User Model
         currentUser.profilePhoto = photoUrl;
-        currentUser.email = email;
+        // currentUser.email = email;
         currentUser.contactInfo = contactInfo;
 
         currentUser.roleId = newInvestor._id;           /* NOTE : Adding the roleId to the base user model */
-           currentUser.role = "Investor"
+        currentUser.role = "Investor"
 
         // const pancardUploadedPhoto = await uploadOnCloudinary(pancardPhoto[0].path);
         // const pancardPhotoUrl = pancardUploadedPhoto.secure_url;
 
         let pancardUploadedPhoto;
-        try {
-            pancardUploadedPhoto = await uploadOnCloudinary(pancardPhoto[0].buffer);
-        } catch (err) {
-            console.error("Cloudinary Upload Error:", err.message);
-            return res.status(400).json({ message: "Error uploading to Cloudinary.", error: err.message });
-        }
+        if (pancardPhoto) {
+            try {
+                pancardUploadedPhoto = await uploadOnCloudinary(pancardPhoto[0].buffer);
+            } catch (err) {
+                console.error("Cloudinary Upload Error:", err.message);
+                return res.status(400).json({ message: "Error uploading to Cloudinary.", error: err.message });
+            }
 
-        if (!pancardUploadedPhoto || !pancardUploadedPhoto.secure_url) {
-            return res.status(400).json({ message: "Failed to upload photo to Cloudinary." });
-        }
-        const pancardPhotoUrl = pancardUploadedPhoto.secure_url;
+            if (!pancardUploadedPhoto || !pancardUploadedPhoto.secure_url) {
+                return res.status(400).json({ message: "Failed to upload photo to Cloudinary." });
+            }
+            const pancardPhotoUrl = pancardUploadedPhoto.secure_url;
 
-        newInvestor.panCardPhoto = pancardPhotoUrl;
+            newInvestor.panCardPhoto = pancardPhotoUrl;
+        }
 
         currentUser.isProfileComplete = true;
 
@@ -117,9 +118,10 @@ export const InvestorInfo = async (req, res) => {
             {
                 _id: currentUserId,
                 userName: currentUser.userName,
-                // email : this.email,
                 role: "Investor",
                 status: true,
+                isInvestorVerified : false,
+                investorRejected : false,
             },
             process.env.ACCESS_TOKEN_SECRET,
             {
@@ -131,7 +133,7 @@ export const InvestorInfo = async (req, res) => {
         await newInvestor.save();
 
         console.log("success");
-        
+
 
         res.status(200).send({
             message: "Investor Details uploaded successfully",

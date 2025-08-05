@@ -2,6 +2,7 @@ import mongoose from "mongoose";
 import bcrypt from "bcrypt";
 import jwt from "jsonwebtoken";
 
+
 const userSchema = new mongoose.Schema({
     googleId : {                /* For google log in */
         type: String,
@@ -59,6 +60,18 @@ const userSchema = new mongoose.Schema({
     },
     refreshToken : {
         type : String,
+    },
+    isInvestorVerified : {
+        type : Boolean,
+        default : false,
+    },
+    investorRejected : {
+        type : Boolean,
+        default : false,
+    },
+    notificationToken : {
+        type : String,
+        default : ""
     }
 },{timestamps : true});
 
@@ -77,9 +90,10 @@ userSchema.methods.generateAccessToken = function(){
         {
             _id : this._id,
             userName : this.userName,
-            // email : this.email,
             role : this.role,
             status: this.isProfileComplete,
+            isInvestorVerified : this.isInvestorVerified,
+            investorRejected : this.investorRejected
         },
             process.env.ACCESS_TOKEN_SECRET,
         {

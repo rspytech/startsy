@@ -7,7 +7,7 @@ export const getProfiledetailForSwitch = async(req, res) => {
             path: "roleId",
             select : "fullName email country contactInfo age gender "
         });
-        console.log(user);
+        // console.log(user);
         
         if (!user) {
             return res.status(404).json({ message: 'User not found' });

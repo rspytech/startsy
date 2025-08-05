@@ -10,13 +10,17 @@ export const getUserNameSuggestions = async (req, res) => {
         const LoggedinuserKeFollowing = user.following
 
 
-        console.log(LoggedinuserKeFollowing);
+        console.log(user.role);
+        
 
 
-        console.log(new Set(user.roleId.chatUsers));
+        // console.log(LoggedinuserKeFollowing);
+
+
+        // console.log(new Set(user.roleId.chatUsers));
         var list = user.roleId.chatUsers;
 
-        console.log(list);
+        // console.log(list);
 
 
 
@@ -29,19 +33,28 @@ export const getUserNameSuggestions = async (req, res) => {
         userName = userName.substring(1,);
 
         if (userName == "howAllUser" || userName == "" || userName == undefined ) {
-            var userSuggestions = await User.find();
+            var userSuggestions = await User.find().select("_id userName role profilePhoto followers isProfileComplete");
         }
         else {
             var userSuggestions = await User.find({
                 userName: { $regex: `^${userName}`, $options: "i" }
             }).limit(3);
-            console.log(userSuggestions);
+            console.log(userSuggestions.length);
         }
 
 
 
 
-        let newarray = userSuggestions.filter((user) => user.role !== "Investor");
+        if(user.role != "Investor"){
+            var newarray = userSuggestions.filter((user) => user.role !== "Investor");
+        }
+        else{
+            var newarray = userSuggestions.filter((user) => user.role == "Investor");
+        }
+
+        console.log(newarray);
+        
+
 
 
 
@@ -56,7 +69,7 @@ export const getUserNameSuggestions = async (req, res) => {
             }
             else if (!list.includes(e._id)) {
 
-                console.log("second");
+                // console.log("second");
 
                 if (e.followers.includes(userId)) {
                     return { ...plainObj, status: "Request Sent" }
@@ -70,12 +83,9 @@ export const getUserNameSuggestions = async (req, res) => {
             }
 
 
-
-
-
         })
 
-        console.log(finalarray, "okkkkkkkkkk");
+        // console.log(finalarray, "okkkkkkkkkk");
 
 
 

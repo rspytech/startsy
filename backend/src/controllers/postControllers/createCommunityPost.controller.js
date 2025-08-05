@@ -3,6 +3,7 @@ import { Post } from "../../models/post.model.js";
 import { User } from "../../models/user.model.js";
 import { Conversation } from "../../models/conversation.model.js";
 import { uploadOnCloudinary } from "../../../cloudinary.js";
+import { preprocessText } from "../../utils/textPreprocessing.js";
 
 export const createCommunityPost = async (req, res) => {
     try {
@@ -11,19 +12,19 @@ export const createCommunityPost = async (req, res) => {
 
         const { communityName, communityDescription, communityRules, groupPhoto } = req.body;
         console.log(req.body);
-        
 
-        console.log(req.file , "file");
-        
+
+        console.log(req.file, "file");
+
 
         const profilePhoto = req.file;
 
-        console.log(profilePhoto , "profilephoto");
-        
+        console.log(profilePhoto, "profilephoto");
+
         let uploadedPhoto;
         if (profilePhoto) {
             console.log("ha");
-            
+
             try {
                 uploadedPhoto = await uploadOnCloudinary(profilePhoto.buffer);
             } catch (err) {
@@ -37,6 +38,32 @@ export const createCommunityPost = async (req, res) => {
         // }
         const photoUrl = uploadedPhoto?.secure_url;
 
+        const user = await User.findById(user_id).populate("roleId");
+
+        if (!user || !user.roleId) {
+            return res.status(500).json({ success: false, message: 'User roleId not found' });
+        }
+        const {
+            skills,
+            description,
+            preferredSector,
+            areaOfInterest,
+            contentPrefrence,
+            tagline,
+            hiddenInfo
+        } = user.roleId;
+        const creatorText = [
+            skills,
+            description,
+            preferredSector,
+            areaOfInterest,
+            contentPrefrence,
+            tagline,
+            hiddenInfo?.sector
+        ].filter(Boolean).join(" ");
+
+
+
 
         const community = await Community.create({
             communityName,
@@ -47,20 +74,22 @@ export const createCommunityPost = async (req, res) => {
         });
 
         console.log(community);
-        
+
 
         if (!community) {
             return res.status(400).json({ message: "Failed to create community post" });
         }
 
-
+        const combinedText = `${communityName} ${communityDescription} ${creatorText}`;
+        const preprocessedText = preprocessText(combinedText);
         const newPost = await Post.create({
             user_id,
             type,
             communityPost: community._id,
+            preprocessedText
         });
 
-        const user = await User.findById(user_id).populate("roleId");
+        
 
         if (user.roleId && Array.isArray(user.roleId.posts)) {
             user.roleId.posts.push(newPost._id);
