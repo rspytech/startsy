@@ -1,25 +1,31 @@
-import React, { useState } from 'react';
-import { View, Text, ScrollView } from 'react-native';
-import DropDownPicker from 'react-native-dropdown-picker';
+import React, { useState } from "react";
+import { View, Text, ScrollView } from "react-native";
+import DropDownPicker from "react-native-dropdown-picker";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
-export default function Drop({ items, onValueChange, open, setOpen, extra, bottomsheet, edit, width, width1, up, gender }) {
+export default function Drop({
+    items,
+    onValueChange,
+    open,
+    setOpen,
+    extra,
+    bottomsheet,
+    edit,
+    width,
+    width1,
+    up,
+    gender,
+}) {
     // const [open, setOpen] = useState(false);
     const [value, setValue] = useState(null);
     var placeholdertext;
     if (extra) {
         if (bottomsheet) {
-            placeholdertext = "Rules"
-        }
-        else if (gender) {
-
-            placeholdertext = "Gender"
-        }
-        else placeholdertext = "Country"
-
-    }
-
-    else placeholdertext = "Select"
+            placeholdertext = "Rules";
+        } else if (gender) {
+            placeholdertext = "Gender";
+        } else placeholdertext = "Country";
+    } else placeholdertext = "Select";
 
     // const [items, setItems] = useState([
     //     { label: 'Option 1', value: 'option1' },
@@ -48,15 +54,10 @@ export default function Drop({ items, onValueChange, open, setOpen, extra, botto
     };
 
     return (
-
-
-
-
         <DropDownPicker
             searchable={true}
-
-            searchPlaceholder='Search'
-            searchPlaceholderTextColor='#AEAFAF'
+            searchPlaceholder="Search"
+            searchPlaceholderTextColor="#AEAFAF"
             searchTextInputStyle={{
                 borderColor: "transparent",
                 color: "#AEAFAF",
@@ -65,10 +66,7 @@ export default function Drop({ items, onValueChange, open, setOpen, extra, botto
                 fontSize: 18,
                 // padding : 20
             }}
-
-
-
-            listMode='SCROLLVIEW'
+            listMode="SCROLLVIEW"
             open={open}
             value={value}
             items={items}
@@ -79,8 +77,8 @@ export default function Drop({ items, onValueChange, open, setOpen, extra, botto
             placeholder={placeholdertext}
             placeholderTextColor="green"
             placeholderStyle={{
-                color: '#AEAFAF',
-                fontFamily: 'Roboto',
+                color: "#AEAFAF",
+                fontFamily: "Roboto",
                 fontSize: 24,
                 // fontWeight : "bold",
                 marginTop: -3,
@@ -88,16 +86,14 @@ export default function Drop({ items, onValueChange, open, setOpen, extra, botto
             ArrowDownIconComponent={({ style }) => (
                 <FontAwesome6 name="chevron-down" size={20} color="#00DE62" />
             )}
-            ArrowUpIconComponent={({ style }) => (
-                <FontAwesome6 name="chevron-up" size={20} color="#00DE62" />
-            )}
+            ArrowUpIconComponent={({ style }) => <FontAwesome6 name="chevron-up" size={20} color="#00DE62" />}
             style={{
                 width: extra ? "91%" : "94%",
                 width: edit ? "89%" : extra ? "91%" : "94%",
                 width: width ? width : "94%",
 
                 alignSelf: "center",
-                backgroundColor: '#24272A',
+                backgroundColor: "#24272A",
                 backgroundColor: bottomsheet ? "transparent" : "#24272A",
                 backgroundColor: edit ? "transparent" : "#24272A",
                 borderRadius: 10,
@@ -107,7 +103,7 @@ export default function Drop({ items, onValueChange, open, setOpen, extra, botto
                 borderRightWidth: extra ? 0 : 3,
                 borderRadius: extra ? 0 : 10,
                 borderBottomWidth: edit ? 1 : 3,
-                borderColor: edit ? "#AEAFAF" : '#16181A',
+                borderColor: edit ? "#AEAFAF" : "#16181A",
                 zIndex: 200,
                 maxHeight: 200,
                 includeFontPadding: false,
@@ -123,48 +119,40 @@ export default function Drop({ items, onValueChange, open, setOpen, extra, botto
                 width: width1 ? width1 : extra ? "90.5%" : "93%",
                 // width: '90.5%',
                 maxHeight: 300,
-                alignSelf: 'center',
-                borderColor: 'transparent',
+                alignSelf: "center",
+                borderColor: "transparent",
                 elevation: 10,
                 display: "flex",
                 zIndex: 1100,
                 overflow: "scroll",
                 includeFontPadding: false,
-
             }}
-            TickIconComponent={() => (
-                <FontAwesome6 name="check" size={20} color="#00DF60" />
-            )}
+            TickIconComponent={() => <FontAwesome6 name="check" size={20} color="#00DF60" />}
             listItemContainerStyle={{
-                justifyContent: 'center',
-                backgroundColor: 'rgba(0, 0, 0, 0.1)',
-                borderBottomColor: '#24272A',
+                justifyContent: "center",
+                backgroundColor: "rgba(0, 0, 0, 0.1)",
+                borderBottomColor: "#24272A",
                 borderBottomWidth: 1,
                 height: 50,
                 includeFontPadding: false,
             }}
             listItemLabelStyle={{
-                color: '#AEAFAF',
-                textAlign: 'left',
+                color: "#AEAFAF",
+                textAlign: "left",
                 fontSize: 20,
                 fontFamily: "Roboto",
                 includeFontPadding: false,
             }}
             labelStyle={{
                 // color : "red",
-                fontFamily: 'Roboto',
+                fontFamily: "Roboto",
                 fontSize: 20,
-                color: '#AEAFAF',
+                color: "#AEAFAF",
                 paddingBottom: 0,
                 marginBottom: -5,
                 includeFontPadding: false,
             }}
             nestedScrollEnabled={true}
         />
-
-
-
-
-
     );
 }

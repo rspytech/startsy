@@ -1,24 +1,32 @@
-
-
 import { useFocusEffect } from "expo-router";
 import React, { useCallback, useEffect, useState } from "react";
-import { url } from "../../config.js"
-import B1 from "../../assets/icons/b1.js"
-import { View, Text, StyleSheet, Image, Dimensions, TouchableOpacity, ActivityIndicator, RefreshControl, FlatList, StatusBar } from "react-native";
+import { url } from "../../config.js";
+import B1 from "../../assets/icons/b1.js";
+import {
+    View,
+    Text,
+    StyleSheet,
+    Image,
+    Dimensions,
+    TouchableOpacity,
+    ActivityIndicator,
+    RefreshControl,
+    FlatList,
+    StatusBar,
+} from "react-native";
 const Communities = ({ token, navigation }) => {
-    const [filtereddata, setfiltereddata] = useState([])
-    const [refreshing, setRefreshing] = useState(false)
-    const [loading, setloading] = useState(false)
+    const [filtereddata, setfiltereddata] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
+    const [loading, setloading] = useState(false);
 
-    const [jisuserkosendkarnahaiuskiid, setjisuserkosendkarnahaiuskiid] = useState("")
+    const [jisuserkosendkarnahaiuskiid, setjisuserkosendkarnahaiuskiid] = useState("");
 
-    var [messages, setmessage] = useState(null)
+    var [messages, setmessage] = useState(null);
     async function getdata() {
-        setloading(true)
+        setloading(true);
         try {
-
             const response = await fetch(`${url}groupChat/getCommunityGroupChatList`, {
-                method: 'GET',
+                method: "GET",
                 headers: {
                     accept: "application/json",
                     "Authorization": `Bearer ${token}`,
@@ -30,12 +38,15 @@ const Communities = ({ token, navigation }) => {
             console.log(data.data.length);
             // console.log(response.status);
 
-            const uniqueData = data.data.filter((item, index, self) =>
-                self.findIndex(innerItem => innerItem.community.communityName === item.community.communityName) === index
-
+            const uniqueData = data.data.filter(
+                (item, index, self) =>
+                    self.findIndex(
+                        (innerItem) => innerItem.community.communityName === item.community.communityName
+                    ) === index
             );
-            uniqueData.sort((a, b) => new Date(a.conversation.updatedAt) - new Date(b.conversation.updatedAt));
-
+            uniqueData.sort(
+                (a, b) => new Date(a.conversation.updatedAt) - new Date(b.conversation.updatedAt)
+            );
 
             const sortedData = uniqueData.sort((a, b) => {
                 if (a.conversation.lastMessage === null && b.conversation.lastMessage === null) return 0;
@@ -47,18 +58,11 @@ const Communities = ({ token, navigation }) => {
                 return dateB - dateA; // Sort in descending order of time
             });
 
-
             console.log(uniqueData.length);
-            setfiltereddata(sortedData)
-
-
-
-        }
-        catch (err) {
+            setfiltereddata(sortedData);
+        } catch (err) {
             console.log(err);
-
-        }
-        finally {
+        } finally {
             setloading(false);
         }
     }
@@ -67,62 +71,50 @@ const Communities = ({ token, navigation }) => {
     //     useCallback(() => {
     //         console.log("group call");
 
-
-
     //         getdata();
 
     //     }, [])
     // )
 
-
-
-
     useEffect(() => {
-
-
         getdata();
-
-
-    }, [])
+    }, []);
 
     async function gotochatscreen(item) {
-
         console.log(item._id);
-
 
         if (token) {
             // console.log(token, "second use focus effect");
             try {
-                const response = await fetch(
-                    `${url}groupChat/getGroupChatMessage/${item.community._id}`,
-                    {
-                        method: "GET",
-                        headers: {
-                            accept: "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
+                const response = await fetch(`${url}groupChat/getGroupChatMessage/${item.community._id}`, {
+                    method: "GET",
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
                 const result = await response.json();
                 console.log(result.data);
-                
+
                 // setmessage(result.data)
-                navigation.navigate("Chat1", { item: item.community, messages: result.data, token, navigation })
+                navigation.navigate("Chat1", {
+                    item: item.community,
+                    messages: result.data,
+                    token,
+                    navigation,
+                });
             } catch (err) {
                 console.log(err);
             } finally {
                 // setloading(false); // Set loading to false when done
             }
         }
-
-
-
     }
 
     function time(time) {
         // console.log('====================================');
         // console.log(time);
-        var data1 = new Date(time)
+        var data1 = new Date(time);
         // console.log('====================================');
         // console.log(data1);
         // console.log('====================================');
@@ -153,73 +145,77 @@ const Communities = ({ token, navigation }) => {
         return Math.floor(seconds) + " seconds ago";
     }
 
-
-
     return (
         <View style={styles.listContainer}>
-            {filtereddata && <FlatList
-                refreshControl={<RefreshControl refreshing={refreshing}
-                    onRefresh={getdata}
+            {filtereddata && (
+                <FlatList
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={getdata} />}
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ paddingBottom: 100 }}
+                    data={filtereddata}
+                    keyExtractor={(item, index) => index.toString()}
+                    // refreshControl={<RefreshControl refreshing={refreshing}
+                    //     onRefresh={getdata}
 
-                />}
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 100 }}
+                    // />}
+                    renderItem={({ item }) => {
+                        // console.log(item);
 
-                data={filtereddata}
-                keyExtractor={(item, index) => index.toString()}
-                // refreshControl={<RefreshControl refreshing={refreshing}
-                //     onRefresh={getdata}
+                        return (
+                            <TouchableOpacity
+                                onPress={() => {
+                                    gotochatscreen(item);
+                                }}
+                            >
+                                <View style={styles.listItem}>
+                                    <View style={styles.avatar}>
+                                        <B1 />
+                                    </View>
+                                    <View style={styles.textContainer}>
+                                        <Text
+                                            numberOfLines={1}
+                                            ellipsizeMode="tail"
+                                            allowFontScaling={false}
+                                            style={styles.username}
+                                        >
+                                            {item.community.communityName}
+                                        </Text>
+                                        <Text
+                                            numberOfLines={1}
+                                            ellipsizeMode="tail"
+                                            allowFontScaling={false}
+                                            style={styles.message}
+                                        >
+                                            {item.conversation.lastMessage
+                                                ? item.conversation.lastMessage.message
+                                                : "No chats yet"}
+                                        </Text>
+                                    </View>
 
-                // />}
-                renderItem={({ item }) => {
-                    // console.log(item);
-
-                    return (
-                        <TouchableOpacity onPress={() => {
-                            gotochatscreen(item)
-                        }}>
-                            <View style={styles.listItem}>
-
-
-                                <View style={styles.avatar}>
-                                    <B1 />
+                                    <Text allowFontScaling={false} style={styles.time}>
+                                        {item.conversation.lastMessage
+                                            ? time(item.conversation.lastMessage.createdAt)
+                                            : "today"}
+                                    </Text>
                                 </View>
-                                <View style={styles.textContainer}>
-                                    <Text
-                                        numberOfLines={1}
-                                        ellipsizeMode="tail"
-                                        allowFontScaling={false} style={styles.username}>{item.community.communityName}</Text>
-                                    <Text
-                                        numberOfLines={1}
-                                        ellipsizeMode="tail"
-
-                                        allowFontScaling={false} style={styles.message}>{item.conversation.lastMessage ? item.conversation.lastMessage.message : "No chats yet"}</Text>
-                                </View>
-
-                                <Text
-                                    allowFontScaling={false} style={styles.time}>{item.conversation.lastMessage ? time(item.conversation.lastMessage.createdAt) : "today"}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    )
-                }}
-            />}
+                            </TouchableOpacity>
+                        );
+                    }}
+                />
+            )}
 
             {loading && <ActivityIndicator size="large" color="#fff" />}
         </View>
-    )
+    );
+};
 
+export default Communities;
 
-}
-
-
-export default Communities
-
-const { height, width } = Dimensions.get("window")
+const { height, width } = Dimensions.get("window");
 
 var a = width / 360;
 var b = height / 800;
-const scalingfactor = Math.sqrt(a * b)
-
+const scalingfactor = Math.sqrt(a * b);
 
 const styles = StyleSheet.create({
     container: {
@@ -244,7 +240,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: "#333",
         alignSelf: "flex-start",
-        width: "100%"
+        width: "100%",
     },
     avatar: {
         width: 50,
@@ -284,53 +280,43 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto",
     },
 
-
-
-
-
     username: {
-        color: '#E9E9E9',
-        fontWeight: '600',
+        color: "#E9E9E9",
+        fontWeight: "600",
         fontSize: 22,
         width: "70%",
         fontFamily: "Alata",
         marginBottom: 3,
         marginTop: -2,
         // backgroundColor: "red"
-
-
     },
 
     title: {
-        color: '#B8B8B8',
+        color: "#B8B8B8",
         // fontWeight: 'bold',
         fontSize: 36,
         marginBottom: 6,
-        fontFamily: "Alata"
+        fontFamily: "Alata",
     },
     description: {
-        color: '#D9D9D9',
+        color: "#D9D9D9",
         fontSize: 13,
         // marginBottom: 12,
-        fontFamily: "Roboto"
+        fontFamily: "Roboto",
     },
     status: {
-        color: '#00DE62',
+        color: "#00DE62",
         fontSize: 15,
-        fontWeight: '600',
+        fontWeight: "600",
         marginBottom: 4,
-        fontFamily: "Roboto"
-
+        fontFamily: "Roboto",
     },
     pending: {
         fontFamily: "Roboto",
 
-        color: '#B8B8B8',
+        color: "#B8B8B8",
         fontSize: 14,
         textAlign: "center",
-        marginVertical: 5
+        marginVertical: 5,
     },
-
-
-
 });

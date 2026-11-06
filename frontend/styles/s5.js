@@ -1,29 +1,25 @@
 import React from "react";
-import { Dimensions, StyleSheet, PixelRatio } from "react-native"
+import { Dimensions, StyleSheet, PixelRatio } from "react-native";
 
-
-const { height, width } = Dimensions.get("window")
+const { height, width } = Dimensions.get("window");
 
 var a = width / 360;
 var b = height / 800;
 
-
-const scalingfactor = Math.sqrt(a * b)
-
-
+const scalingfactor = Math.sqrt(a * b);
 
 const s5 = StyleSheet.create({
     t1: {
-        textAlign: 'center',
+        textAlign: "center",
         color: "#94A3B8",
         fontFamily: "Roboto",
         fontSize: scalingfactor * 16,
         marginTop: 5,
         // zIndex : 100,
         // backgroundColor : "red"
-    }
+    },
 
-    , input: {
+    input: {
         backgroundColor: "transparent",
         // backgroundColor: "red",
         margin: height * 0.016,
@@ -36,9 +32,9 @@ const s5 = StyleSheet.create({
         color: "#B8B8B8",
         // paddingBottom: scalingfactor * 5,
         width: "92%",
-        paddingBottom : 8,
+        paddingBottom: 8,
         fontFamily: "Roboto",
-        fontWeight: '0',
+        fontWeight: "0",
         lineHeight: scalingfactor * 18,
         marginTop: scalingfactor * 20,
         // marginBottom : 0
@@ -53,23 +49,24 @@ const s5 = StyleSheet.create({
         borderTopLeftRadius: 70,
         alignContent: "center",
         padding: scalingfactor * 20,
-        paddingBottom : 0,
-        paddingTop: scalingfactor * 25
-    }, icons: {
+        paddingBottom: 0,
+        paddingTop: scalingfactor * 25,
+    },
+    icons: {
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
         width: "100%",
         margin: "auto",
-        paddingHorizontal : "4%",
+        paddingHorizontal: "4%",
         // position: "absolute",
         // bottom: 0,
-        margin : "auto",
-        backgroundColor : "#24272A",
-        paddingBottom : 50,
-        marginTop : 40
-
-    }, dropdown: {
+        margin: "auto",
+        backgroundColor: "#24272A",
+        paddingBottom: 50,
+        marginTop: 40,
+    },
+    dropdown: {
         position: "absolute",
         right: 20,
         top: 3,
@@ -86,21 +83,19 @@ const s5 = StyleSheet.create({
         height: 200,
         opacity: 0.98,
         elevation: 3,
-        overflow: "hidden"
-
+        overflow: "hidden",
     },
 
     dropdownItem: {
         padding: 10,
         borderBottomColor: "black",
-        borderBottomWidth: 1
+        borderBottomWidth: 1,
     },
     dropdownText: {
-        color: '#B8B8B8',
+        color: "#B8B8B8",
         fontFamily: "abeeze",
-        fontSize: scalingfactor * 20
+        fontSize: scalingfactor * 20,
     },
-})
+});
 
-
-export default s5
+export default s5;

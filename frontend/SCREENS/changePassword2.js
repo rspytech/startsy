@@ -1,28 +1,23 @@
 import React, { useState } from "react";
 import { Pressable, TextInput } from "react-native";
 import { View, Text, StyleSheet, StatusBar, Dimensions, SafeAreaView } from "react-native";
-import{url} from "../config.js"
-const ChangePassword2 = ({navigation , route  }) => {
+import { url } from "../config.js";
+const ChangePassword2 = ({ navigation, route }) => {
+    const { token } = route.params;
 
-    const{token} = route.params;
-   
-
-
-    
-    
-
-    
     const [password, setPassword] = useState("");
     const [success, setsuccess] = useState("");
     const [confirmPassword, setConfirmPassword] = useState("");
     const [passwordError, setPasswordError] = useState("");
     const [confirmPasswordError, setConfirmPasswordError] = useState("");
-    const[error, seterror] = useState(false);
+    const [error, seterror] = useState(false);
 
     const validatePassword = () => {
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
         if (!passwordRegex.test(password)) {
-            setPasswordError("Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, and one number.");
+            setPasswordError(
+                "Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, and one number."
+            );
             return false;
         }
         setPasswordError(""); // Clear error if validation passes
@@ -45,10 +40,10 @@ const ChangePassword2 = ({navigation , route  }) => {
         // Proceed with saving the password
         try {
             console.log(token);
-            
+
             const response = await fetch(`${url}api/changePassword`, {
-                method: 'POST',
-                body: JSON.stringify({ newPassword: password , confirmPassword : confirmPassword }),
+                method: "POST",
+                body: JSON.stringify({ newPassword: password, confirmPassword: confirmPassword }),
                 headers: {
                     "Content-Type": "application/json",
                     accept: "application/json",
@@ -62,20 +57,16 @@ const ChangePassword2 = ({navigation , route  }) => {
             if (response.status === 400) {
                 // setmessage("* entered password does not match with your current password")
                 // seterror(true)
-            }
-            else if (response.status === 200) {
+            } else if (response.status === 200) {
                 console.log("success");
                 seterror(false);
-                setsuccess(true)
+                setsuccess(true);
                 navigation.navigate("Profile");
                 // navigation.navigate("ChangePassword2")
-
             }
-        }
-        catch (err) {
+        } catch (err) {
             // setloading(false)
             console.log(err);
-
         }
     };
 
@@ -152,7 +143,9 @@ const ChangePassword2 = ({navigation , route  }) => {
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor="#16181a" barStyle={"light-content"} />
-            <Text allowFontScaling={false} style={styles.headerText}>Profile</Text>
+            <Text allowFontScaling={false} style={styles.headerText}>
+                Profile
+            </Text>
             <Text style={styles.t1}>Create a password</Text>
             <Text style={styles.t2}>Use a strong password</Text>
             <TextInput

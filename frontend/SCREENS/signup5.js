@@ -12,37 +12,31 @@ import {
     Dimensions,
     StatusBar,
     TouchableWithoutFeedback,
-    KeyboardAvoidingView
-
+    KeyboardAvoidingView,
 } from "react-native";
-import Profile from "../assets/icons/profile.js"
+import Profile from "../assets/icons/profile.js";
 import Drop from "./dropdown.js";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 // import { LinearGradient } from "expo-linear-gradient";
 import signup3styles from "../styles/signup3styles.js";
 import s5 from "../styles/s5.js";
 import { BlurView } from "expo-blur";
-import { LinearGradient } from 'expo-linear-gradient';
+import { LinearGradient } from "expo-linear-gradient";
 import Line from "./line.js";
 // import Line2 from "./line2.js";
 import Line3 from "./line3.js";
 import Line2 from "./line2.js";
 
+import * as DocumentPicker from "expo-document-picker";
 
-import * as DocumentPicker from 'expo-document-picker';
-
-import * as ImagePicker from 'expo-image-picker';
+import * as ImagePicker from "expo-image-picker";
 import { useFocusEffect } from "expo-router";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { GlobalContext } from "@/Global/globalcontext.js";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 const Signup5 = ({ navigation, route }) => {
-
-
-
-    const [token, settoken] = useState("")
+    const [token, settoken] = useState("");
     const { globaldata, updateField } = useContext(GlobalContext);
-
 
     useEffect(() => {
         async function getToken() {
@@ -52,21 +46,19 @@ const Signup5 = ({ navigation, route }) => {
             console.log(temp, "yeh temp hai");
             // console.log(globaldata.token, "yeh globally saved me se aa raah");
             console.log(globaldata.token, "yeh globally saved me se aa raah");
-
         }
         getToken();
     }, []);
 
-
-    const { type, username, password } = route.params
+    const { type, username, password } = route.params;
     console.log(route.params);
 
-    const [fullname, setfullname] = useState("")
-    const [email, setemail] = useState("")
-    const [country, setcountry] = useState("")
-    const [number, setnumber] = useState("")
-    const [age, setage] = useState("")
-    const [gender, setgender] = useState("")
+    const [fullname, setfullname] = useState("");
+    const [email, setemail] = useState("");
+    const [country, setcountry] = useState("");
+    const [number, setnumber] = useState("");
+    const [age, setage] = useState("");
+    const [gender, setgender] = useState("");
     const [image, setImage] = useState("xyz");
 
     const [errors, setErrors] = useState({}); // Error state
@@ -122,7 +114,6 @@ const Signup5 = ({ navigation, route }) => {
         return Object.keys(newErrors).length === 0;
     };
 
-
     const handleSubmit = () => {
         if (validateForm()) {
             // Proceed to the next page if no errors
@@ -130,42 +121,34 @@ const Signup5 = ({ navigation, route }) => {
         }
 
         // nextpage(navigation, type);
-
     };
 
-
-
-
-
     const formData = new FormData();
-    formData.append("fullName", fullname)
-    formData.append("password", password)
-    formData.append("fullname", fullname)
-    formData.append("email", email)
-    formData.append("country", country)
-    formData.append("contactInfo", number)
-    formData.append("age", age)
-    formData.append("gender", gender)
-
+    formData.append("fullName", fullname);
+    formData.append("password", password);
+    formData.append("fullname", fullname);
+    formData.append("email", email);
+    formData.append("country", country);
+    formData.append("contactInfo", number);
+    formData.append("age", age);
+    formData.append("gender", gender);
 
     const rotateValue = useRef(new Animated.Value(0)).current;
     const [rotated, setRotated] = useState(true);
     const [inputLayout, setInputLayout] = useState({ height: 0, y: 0 });
     const [dropdownVisible, setDropdownVisible] = useState(false);
-    const [afterinput, setafterinput] = useState(0)
-    const [message, setmessage] = useState("")
-    const [error, seterror] = useState(false)
-    const [loading, setloading] = useState(false)
-
-
+    const [afterinput, setafterinput] = useState(0);
+    const [message, setmessage] = useState("");
+    const [error, seterror] = useState(false);
+    const [loading, setloading] = useState(false);
 
     const countries = ["United States", "Canada", "Australia", "India", "Japan"];
     const myElementRef = useRef(null);
     const handleRotate = () => {
         myElementRef.current.measure((x, y, width, height, pageX, pageY) => {
             console.log(x, y, width, height, pageX, pageY);
-            const value = pageY
-            setafterinput(value)
+            const value = pageY;
+            setafterinput(value);
             setDropdownVisible(!dropdownVisible);
             console.log(afterinput);
             setRotated(!rotated);
@@ -178,7 +161,7 @@ const Signup5 = ({ navigation, route }) => {
             duration: 200,
             useNativeDriver: true,
         }).start();
-    }, [rotated])
+    }, [rotated]);
 
     const rotation = rotateValue.interpolate({
         inputRange: [0, 1],
@@ -186,15 +169,12 @@ const Signup5 = ({ navigation, route }) => {
     });
 
     const handleCountrySelect = (country) => {
-        setcountry(country)
+        setcountry(country);
         setRotated(!rotated);
         setDropdownVisible(false);
     };
 
-
-
     const fileupload = async () => {
-
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (permissionResult.granted === false) {
             alert("Permission to access camera roll is required!");
@@ -207,29 +187,23 @@ const Signup5 = ({ navigation, route }) => {
             allowsEditing: true, // Allows cropping the image
             aspect: [4, 3], // Aspect ratio of the image
             quality: 1, // Image quality (0 to 1)
-
         });
-
 
         if (!result.canceled) {
             const imageUri = result.assets[0].uri;
             setImage(imageUri);
-
         }
-
-    }
-
+    };
 
     async function sendtobackend() {
         try {
-
-            const response = await fetch('http://192.168.1.7:9000/userimg', {
-                method: 'POST',
+            const response = await fetch("http://192.168.1.7:9000/userimg", {
+                method: "POST",
                 body: formData,
                 headers: {
-                    accept: 'application/json',
-                    'Content-Type': 'multipart/form-data',
-                }
+                    accept: "application/json",
+                    "Content-Type": "multipart/form-data",
+                },
             });
 
             // Check if the response is okay
@@ -240,10 +214,9 @@ const Signup5 = ({ navigation, route }) => {
             const data = await response.json();
             console.log(data); // Log the response from the server
         } catch (error) {
-            console.error('Error uploading image:', error); // Handle the error
+            console.error("Error uploading image:", error); // Handle the error
         }
     }
-
 
     function renderline() {
         if (type === "Investor" || type === "Founder") {
@@ -262,7 +235,6 @@ const Signup5 = ({ navigation, route }) => {
     //         StatusBar.setBarStyle("light-content");
     //     };
 
-
     //     setStatusBar();
     //     setTimeout(() => {
     //         setStatusBar()
@@ -271,8 +243,6 @@ const Signup5 = ({ navigation, route }) => {
 
     async function nextpage(navigation, type) {
         console.log(type);
-
-
 
         // setloading(true)
         // const response = await fetch('http://192.168.1.3:9000/api/checkemail', {
@@ -307,40 +277,27 @@ const Signup5 = ({ navigation, route }) => {
 
         // }
 
-
-
-
         if (type === "CommunityMember") {
             // console.log(formData, "signup 6 pe ja raha hu");
             // sendtobackend()
-            navigation.navigate("Signup6", { form: formData, image: image })
+            navigation.navigate("Signup6", { form: formData, image: image });
             // navigation.navigate("Signup6", { form: formData , image });
+        } else if (type == "Freelancer") {
+            navigation.navigate("Signup7", { form: formData, image: image });
+        } else if (type == "Founder") {
+            navigation.navigate("Signup9", { form: formData, image: image });
+        } else if (type == "Investor") {
+            navigation.navigate("Signup12", { form: formData, image: image });
         }
-        else if (type == "Freelancer") {
-            navigation.navigate("Signup7", { form: formData, image: image })
-        }
-        else if (type == "Founder") {
-            navigation.navigate("Signup9", { form: formData, image: image })
-        }
-        else if (type == "Investor") {
-            navigation.navigate("Signup12", { form: formData, image: image })
-        }
-
-
-
-
-
     }
 
     // const [open, setOpen] = useState(false);
     const [open11, setOpen11] = useState(false);
 
-
     const handleOutsideTouch = () => {
         if (dropdownVisible) {
             setDropdownVisible(false);
         }
-
     };
 
     var country1 = [
@@ -361,45 +318,42 @@ const Signup5 = ({ navigation, route }) => {
         { label: "Brazil", value: "BRAZIL" },
         { label: "Mexico", value: "MEXICO" },
         { label: "Others (Type)", value: "OTHERS" },
-
-    ]
+    ];
 
     const genderlist = [
         { label: "Male", value: "Male" },
         { label: "Female", value: "Female" },
         { label: "Other", value: "Other" },
-    ]
+    ];
     // const [open , setOpen] = useState(true)
     function seteducation() {
         console.log("education");
     }
 
     useFocusEffect(() => {
-        StatusBar.setBackgroundColor("#16181a")
-        StatusBar.setBarStyle("light-content")
-    })
-    const [open, setOpen] = useState(false)
+        StatusBar.setBackgroundColor("#16181a");
+        StatusBar.setBarStyle("light-content");
+    });
+    const [open, setOpen] = useState(false);
     return (
-
-
         <SafeAreaView style={{ flex: 1, backgroundColor: "#16181a" }}>
-            <ScrollView nestedScrollEnabled={true} style={[{ flex: 1, backgroundColor: "#16181a", paddingBottom: 50, paddingBottom: 50 }, signup3styles.container]}>
+            <ScrollView
+                nestedScrollEnabled={true}
+                style={[
+                    { flex: 1, backgroundColor: "#16181a", paddingBottom: 50, paddingBottom: 50 },
+                    signup3styles.container,
+                ]}
+            >
                 {/* <KeyboardAwareScrollView enableOnAndroid={true} extraHeight={0} extraScrollHeight={0} enableAutomaticScroll={true} style={signup3styles.container}> */}
                 {/* <ScrollView style={signup3styles.row}> */}
-
-
 
                 {/* Top Section */}
                 <View style={signup3styles.top}>
                     <View style={signup3styles.left}>
                         <Image style={signup3styles.logo} source={require("../assets/images/logo.png")} />
                     </View>
-                    <View style={signup3styles.right}>
-                        {renderline()}
-                    </View>
+                    <View style={signup3styles.right}>{renderline()}</View>
                 </View>
-
-
 
                 {/* Bottom Section */}
                 <ScrollView nestedScrollEnabled={true} style={s5.bottom}>
@@ -413,7 +367,9 @@ const Signup5 = ({ navigation, route }) => {
                             )}
                         </Pressable>
                         <Text style={s5.t1}>Upload a profile picture</Text>
-                        {errors.image && <Text style={[styles.errorText, { textAlign: "center" }]}>{errors.image}</Text>}
+                        {errors.image && (
+                            <Text style={[styles.errorText, { textAlign: "center" }]}>{errors.image}</Text>
+                        )}
                         <View style={{ marginTop: 30 }}>
                             <TextInput
                                 allowFontScaling={false}
@@ -421,7 +377,9 @@ const Signup5 = ({ navigation, route }) => {
                                 placeholderTextColor="#B8B8B8"
                                 style={s5.input}
                                 value={fullname}
-                                onChangeText={(text) => { setfullname(text) }}
+                                onChangeText={(text) => {
+                                    setfullname(text);
+                                }}
                             />
                             {errors.fullname && <Text style={styles.errorText}>{errors.fullname}</Text>}
                             <TextInput
@@ -430,7 +388,9 @@ const Signup5 = ({ navigation, route }) => {
                                 placeholderTextColor="#B8B8B8"
                                 style={[s5.input, { marginBottom: 12 }]}
                                 value={email}
-                                onChangeText={(text) => { setemail(text) }}
+                                onChangeText={(text) => {
+                                    setemail(text);
+                                }}
                             />
                             {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
                             {/* <View>
@@ -464,20 +424,25 @@ const Signup5 = ({ navigation, route }) => {
                                         </Pressable>
                                     </View> */}
 
-                            <Drop items={country1} open={open} setOpen={setOpen} onValueChange={setcountry} nestedScrollEnabled={true} extra={true} />
+                            <Drop
+                                items={country1}
+                                open={open}
+                                setOpen={setOpen}
+                                onValueChange={setcountry}
+                                nestedScrollEnabled={true}
+                                extra={true}
+                            />
                             {errors.country && <Text style={styles.errorText}>{errors.country}</Text>}
 
-
-
                             <TextInput
-
-
                                 allowFontScaling={false}
                                 placeholder="Phone number"
                                 placeholderTextColor="#B8B8B8"
                                 style={[s5.input, { marginTop: 20 }]}
                                 value={number}
-                                onChangeText={(text) => { setnumber(text) }}
+                                onChangeText={(text) => {
+                                    setnumber(text);
+                                }}
                             />
                             {errors.number && <Text style={styles.errorText}>{errors.number}</Text>}
                             <TextInput
@@ -486,7 +451,9 @@ const Signup5 = ({ navigation, route }) => {
                                 placeholderTextColor="#B8B8B8"
                                 style={s5.input}
                                 value={age}
-                                onChangeText={(text) => { setage(text) }}
+                                onChangeText={(text) => {
+                                    setage(text);
+                                }}
                             />
                             {errors.age && <Text style={styles.errorText}>{errors.age}</Text>}
                             {/* <TextInput
@@ -497,36 +464,45 @@ const Signup5 = ({ navigation, route }) => {
                                 value={gender}
                                 onChangeText={(text) => { setgender(text) }}
                             /> */}
-                            <Drop up={true} items={genderlist} open={open11} setOpen={setOpen11} onValueChange={(e)=>setgender(e)} nestedScrollEnabled={true} extra={true} gender={true} />
+                            <Drop
+                                up={true}
+                                items={genderlist}
+                                open={open11}
+                                setOpen={setOpen11}
+                                onValueChange={(e) => setgender(e)}
+                                nestedScrollEnabled={true}
+                                extra={true}
+                                gender={true}
+                            />
 
                             {errors.gender && <Text style={styles.errorText}>{errors.gender}</Text>}
 
                             <View style={s5.icons}>
-                                <Pressable onPress={() => { navigation.goBack() }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
-                                <Pressable onPress={() => { handleSubmit() }}><FontAwesome6 name="chevron-right" size={40} color="#00DF60" /></Pressable>
+                                <Pressable
+                                    onPress={() => {
+                                        navigation.goBack();
+                                    }}
+                                >
+                                    <FontAwesome6 name="chevron-left" size={40} color="#00DF60" />
+                                </Pressable>
+                                <Pressable
+                                    onPress={() => {
+                                        handleSubmit();
+                                    }}
+                                >
+                                    <FontAwesome6 name="chevron-right" size={40} color="#00DF60" />
+                                </Pressable>
                             </View>
-
                         </View>
-
-
                     </View>
-
                 </ScrollView>
 
                 {/* </ScrollView> */}
                 {/* </KeyboardAwareScrollView> */}
             </ScrollView>
         </SafeAreaView>
-
-
     );
-
-
 };
-
-
-
-
 
 export default Signup5;
 
@@ -549,13 +525,13 @@ const styles = StyleSheet.create({
         margin: "auto",
         width: 113,
         height: 120,
-        borderRadius: 100
+        borderRadius: 100,
     },
     img: {
         margin: "auto",
         width: 113,
         height: 113,
-        borderRadius: 100
+        borderRadius: 100,
     },
     errorText: {
         color: "#E65858",
@@ -563,6 +539,6 @@ const styles = StyleSheet.create({
         fontSize: 12,
         marginTop: -2,
         width: "92%",
-        marginHorizontal: "auto"
+        marginHorizontal: "auto",
     },
 });

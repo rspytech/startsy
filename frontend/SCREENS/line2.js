@@ -10,37 +10,38 @@ import {
     Pressable,
     StyleSheet,
     Dimensions,
-
 } from "react-native";
 import { BlurView } from "expo-blur";
-import { LinearGradient } from 'expo-linear-gradient';
+import { LinearGradient } from "expo-linear-gradient";
 
-const Line2 = ({progresswidth})=>{
+const Line2 = ({ progresswidth }) => {
     return (
-
         <View style={styles.line}>
             <View style={[styles.c, styles.c1]}></View>
             <View style={[styles.c, styles.c2]}></View>
             <View style={[styles.c, styles.c3]}></View>
-          
-            <View style={[styles.n, styles.n1]}><Text style={styles.ntext}>1</Text></View>
-            <View style={[styles.n, styles.n2]}><Text style={styles.ntext}>2</Text></View>
-          
+
+            <View style={[styles.n, styles.n1]}>
+                <Text style={styles.ntext}>1</Text>
+            </View>
+            <View style={[styles.n, styles.n2]}>
+                <Text style={styles.ntext}>2</Text>
+            </View>
+
             <LinearGradient
-                style={[styles.progress, {width : progresswidth}]}
+                style={[styles.progress, { width: progresswidth }]}
                 locations={[0, 0.8]}
-                colors={['#8CBEA2', '#79b896']}
+                colors={["#8CBEA2", "#79b896"]}
                 start={{ x: 0, y: 0 }} // Starting point of the gradient
                 end={{ x: 1, y: 0 }}
             />
         </View>
+    );
+};
 
-    )
-}
+export default Line2;
 
-export default Line2
-
-const { width } = Dimensions.get("window")
+const { width } = Dimensions.get("window");
 
 const styles = StyleSheet.create({
     line: {
@@ -49,8 +50,8 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         height: 5,
         // borderRadius: 10,
-        backgroundColor: "#00DE62"
-        , position: "relative",
+        backgroundColor: "#00DE62",
+        position: "relative",
     },
     c: {
         width: 10,
@@ -59,8 +60,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#00DE62",
         // backgroundColor: "red",
         position: "absolute",
-        top: -3
-
+        top: -3,
     },
     c1: {
         left: 0,
@@ -70,31 +70,30 @@ const styles = StyleSheet.create({
     },
     c3: {
         left: "100%",
-        marginLeft : -3
+        marginLeft: -3,
     },
-   
+
     n1: {
         left: "50%",
     },
     n2: {
         left: "100%",
-        marginLeft: -7
-
+        marginLeft: -7,
     },
     n3: {
         left: "75%",
     },
-    
+
     n: {
         position: "absolute",
         top: 15,
-        marginLeft: -4
+        marginLeft: -4,
     },
     ntext: {
         color: "#00DE62",
         marginLeft: 5,
         // fontFamily : "montserat",
-        fontSize: 15
+        fontSize: 15,
     },
     progress: {
         position: "absolute",
@@ -106,7 +105,7 @@ const styles = StyleSheet.create({
         top: -5,
         opacity: 1,
         borderStyle: "solid",
-        marginLeft : -3,
-        borderRadius: 20
+        marginLeft: -3,
+        borderRadius: 20,
     },
-})
+});

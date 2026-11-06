@@ -1,8 +1,6 @@
-
 // 3.4 second last of freelancer
 import React, { useState, useRef, useEffect, useContext } from "react";
 import {
-
     SafeAreaView,
     View,
     Text,
@@ -18,7 +16,7 @@ import {
     FlatList,
     TouchableWithoutFeedback,
     KeyboardAvoidingView,
-    ActivityIndicator
+    ActivityIndicator,
 } from "react-native";
 // import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -28,85 +26,67 @@ import { LinearGradient } from "expo-linear-gradient";
 import signup3styles from "../styles/signup3styles.js";
 import Drop from "./dropdown.js";
 import Line2 from "./line2.js";
-import Line from "./line.js"
-import Line3 from "./line3.js"
-import Entypo from '@expo/vector-icons/Entypo';
+import Line from "./line.js";
+import Line3 from "./line3.js";
+import Entypo from "@expo/vector-icons/Entypo";
 import { useFocusEffect } from "expo-router";
 import { GlobalContext } from "@/Global/globalcontext.js";
 
-import { url } from "../config.js"
+import { url } from "../config.js";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 // import { FlatList } from "react-native-gesture-handler";
 
-
-
 const Signup7 = ({ navigation, route }) => {
-
-    const [token, settoken] = useState("")
-    const [loading, setloading] = useState(false)
+    const [token, settoken] = useState("");
+    const [loading, setloading] = useState(false);
     const { globaldata, updateField } = useContext(GlobalContext);
 
     useEffect(() => {
         console.log(globaldata, "global data");
-        settoken(globaldata.token)
-    }, [])
+        settoken(globaldata.token);
+    }, []);
 
-    const [tagline, settagline] = useState("")
-    const [skills, setskills] = useState("")
-    const [education1, seteducation] = useState("")
-    const [open, setOpen] = useState(false)
+    const [tagline, settagline] = useState("");
+    const [skills, setskills] = useState("");
+    const [education1, seteducation] = useState("");
+    const [open, setOpen] = useState(false);
 
     const { type } = route.params || "Founder";
     const { form, image } = route.params;
-    console.log('====================================');
+    console.log("====================================");
     console.log(form);
-    console.log('====================================');
-
-
+    console.log("====================================");
 
     useFocusEffect(() => {
-        StatusBar.setBackgroundColor("#16181A")
-        StatusBar.setBarStyle("light-content")
-    })
-
-
-
-
+        StatusBar.setBackgroundColor("#16181A");
+        StatusBar.setBarStyle("light-content");
+    });
 
     function nextpage(navigation, type) {
-
         const final = new FormData();
         for (var items of form["_parts"]) {
-
             if (items[0] == "fullname" || items[0] == "password") continue;
             final.append(items[0], items[1]);
         }
 
-
         var certification = certificate.map(({ id, cname, curl }) => {
-            var obj = { name: cname, url: curl }
-            return obj
-
-        })
+            var obj = { name: cname, url: curl };
+            return obj;
+        });
         var portfolio = portfolio1.map(({ id, url }) => {
-            return url
-
-        })
+            return url;
+        });
         console.log(portfolio);
-        final.append("tagline", tagline)
-        final.append("skills", skills)
+        final.append("tagline", tagline);
+        final.append("skills", skills);
         final.append("education", education1);
         final.append("certification", JSON.stringify(certification));
         final.append("portfolio", JSON.stringify(portfolio));
 
-
         console.log(final, "page 7 wala");
-
 
         navigation.navigate("Signup8", { form: final, image: image });
     }
-
-
 
     function renderline() {
         if (type === "Investor" || type === "Founder") {
@@ -118,157 +98,123 @@ const Signup7 = ({ navigation, route }) => {
         }
     }
 
-
     var education = [
         { label: "10th", value: "10TH" },
         { label: "12th", value: "12th" },
         { label: "Graduate", value: "Graduate" },
         { label: "Post-Graduate", value: "Post-Graduate" },
         { label: "P.H.D", value: "P.H.D" },
-
-
-    ]
+    ];
 
     const handleOutsideTouch = () => {
         if (open) {
             setOpen(false);
         }
     };
-    // multiple certificate 
-    const [certificate, setcertificate] = useState([{ id: Date.now(), cname: '', curl: '' }]);
-    const [portfolio1, setportfolio] = useState([{ id: Date.now(), url: '', name: "" }]);
-
+    // multiple certificate
+    const [certificate, setcertificate] = useState([{ id: Date.now(), cname: "", curl: "" }]);
+    const [portfolio1, setportfolio] = useState([{ id: Date.now(), url: "", name: "" }]);
 
     function addcertificate() {
-        setcertificate(
-            [...certificate, { id: Date.now(), cname: '', curl: '' }]
-        )
+        setcertificate([...certificate, { id: Date.now(), cname: "", curl: "" }]);
     }
     function deletecertificate(index) {
         console.log(index);
-        var new1 = [...certificate]
-        new1.splice(index, 1)
+        var new1 = [...certificate];
+        new1.splice(index, 1);
         setcertificate(new1);
     }
 
     function addportfolio() {
-        setportfolio(
-            [...portfolio1, { id: Date.now(), url: "", name: "" }]
-        )
+        setportfolio([...portfolio1, { id: Date.now(), url: "", name: "" }]);
     }
     function deleteportfolio(index) {
         // setportfolio(
         //     [...portfolio1, { id: Date.now(), url: "", name: "" }]
         // )
 
-        var array = portfolio1.splice(index, 1)
+        var array = portfolio1.splice(index, 1);
         setportfolio(array);
     }
-
 
     function handlecertificatechange(id, field, value) {
         var array = certificate.map((e) => {
             if (e.id === id) {
-                return { ...e, [field]: value, firsterror: false, seconderror: false }
-
-            }
-            else return { ...e, firsterror: false, seconderror: false }
-        })
+                return { ...e, [field]: value, firsterror: false, seconderror: false };
+            } else return { ...e, firsterror: false, seconderror: false };
+        });
         setcertificate(array);
     }
-
 
     function handleurlchange(id, field, value) {
         var array = portfolio1.map((e) => {
             if (e.id === id) {
-                return { ...e, [field]: value, firsterror: false, seconderror: false }
-
-            }
-            else return { ...e, firsterror: false, seconderror: false }
-        })
+                return { ...e, [field]: value, firsterror: false, seconderror: false };
+            } else return { ...e, firsterror: false, seconderror: false };
+        });
         setportfolio(array);
     }
 
-
-
     async function finalsubmit() {
-
         for (var i = 0; i < certificate.length; i++) {
-
             console.log(i);
 
             var items = certificate[i];
             console.log(items);
             if (items.cname == "" && items.curl == "") {
-
-            }
-            else if ((items.cname != "" && items.curl == "")) {
+            } else if (items.cname != "" && items.curl == "") {
                 var array = certificate.map((c, index) => {
                     if (i == index) {
-                        return { ...c, seconderror: true }
-                    }
-                    else return c
-                })
+                        return { ...c, seconderror: true };
+                    } else return c;
+                });
                 console.log(array, "sajkhd");
                 setcertificate(array);
-                return
-            }
-            else if ((items.cname == "" && items.curl != "")) {
+                return;
+            } else if (items.cname == "" && items.curl != "") {
                 var array = certificate.map((c, index) => {
                     if (i == index) {
-                        return { ...c, firsterror: true }
-                    }
-                    else return c
-                })
-                setcertificate(array)
-                return
-
+                        return { ...c, firsterror: true };
+                    } else return c;
+                });
+                setcertificate(array);
+                return;
             }
         }
 
         for (var i = 0; i < portfolio1.length; i++) {
-
             console.log(i);
 
             var items = portfolio1[i];
             console.log(items, "portfolio");
             if (items.url == "" && items.name == "") {
-
-            }
-            else if ((items.name != "" && items.url == "")) {
+            } else if (items.name != "" && items.url == "") {
                 var array = portfolio1.map((c, index) => {
                     if (i == index) {
-                        return { ...c, seconderror: true }
-                    }
-                    else return c
-                })
+                        return { ...c, seconderror: true };
+                    } else return c;
+                });
                 console.log(array, "sajkhd");
 
-                setportfolio(array)
-                return
-            }
-            else if ((items.name == "" && items.url != "")) {
+                setportfolio(array);
+                return;
+            } else if (items.name == "" && items.url != "") {
                 var array = portfolio1.map((c, index) => {
                     if (i == index) {
-                        return { ...c, firsterror: true }
-                    }
-                    else return c
-                })
-                setportfolio(array)
-                return
-
+                        return { ...c, firsterror: true };
+                    } else return c;
+                });
+                setportfolio(array);
+                return;
             }
         }
 
         console.log(certificate, "ok");
 
-
         // console.log(image);
-
 
         const final = new FormData();
         for (var items of form["_parts"]) {
-
             if (items[0] == "fullname" || items[0] == "password") continue;
             final.append(items[0], items[1]);
         }
@@ -278,36 +224,30 @@ const Signup7 = ({ navigation, route }) => {
                 uri: image,
                 type: "image/jpeg",
                 name: `image_${Date.now()}.jpg`,
-
-            })
+            });
         }
 
-
         var certification = certificate.map(({ id, cname, curl }) => {
-            var obj = { name: cname, url: curl }
-            return obj
-
-        })
+            var obj = { name: cname, url: curl };
+            return obj;
+        });
         var portfolio = portfolio1.map(({ id, url, name }) => {
-            return { url, name }
-        })
-        final.append("tagline", tagline)
-        final.append("skills", skills)
+            return { url, name };
+        });
+        final.append("tagline", tagline);
+        final.append("skills", skills);
         final.append("education", education1);
         final.append("certification", JSON.stringify(certification));
         final.append("portfolio", JSON.stringify(portfolio));
         console.log("will make final submit");
 
-
-
         console.log(final);
-
 
         setloading(true);
 
         try {
             const response = await fetch(`${url}api/communityMemberInfo`, {
-                method: 'POST',
+                method: "POST",
                 body: final,
                 headers: {
                     accept: "application/json",
@@ -318,65 +258,67 @@ const Signup7 = ({ navigation, route }) => {
             console.log(data);
             if (response.status === 200) {
                 try {
-                    await AsyncStorage.setItem('accessToken', data.newToken);
-                    console.log('Data saved successfully!');
+                    await AsyncStorage.setItem("accessToken", data.newToken);
+                    console.log("Data saved successfully!");
                 } catch (error) {
-                    console.error('Error saving data:', error);
+                    console.error("Error saving data:", error);
                 }
-                updateField("token" , data.newToken);
-                navigation.navigate("Main2")
-            }
-            else if (response.status === 400) {
+                updateField("token", data.newToken);
+                navigation.navigate("Main2");
+            } else if (response.status === 400) {
                 console.log("internal error");
-                setmessage("some error occurred")
+                setmessage("some error occurred");
             }
-        }
-        catch (err) {
-
-        }
-        finally {
+        } catch (err) {
+        } finally {
             setloading(false);
         }
 
         // console.log(final);
 
-
         // setloading(false)
-
     }
     return (
-
         <SafeAreaView style={signup3styles.container}>
-            <KeyboardAwareScrollView enableAutomaticScroll={true} keyboardOpeningTime={250} enableOnAndroid={true}
-                nestedScrollEnabled={true}>
+            <KeyboardAwareScrollView
+                enableAutomaticScroll={true}
+                keyboardOpeningTime={250}
+                enableOnAndroid={true}
+                nestedScrollEnabled={true}
+            >
                 <TouchableWithoutFeedback onPress={handleOutsideTouch}>
                     <View style={signup3styles.row}>
                         {/* top */}
 
                         <View style={signup3styles.top}>
                             <View style={signup3styles.left}>
-                                <Image style={signup3styles.logo} source={require("../assets/images/logo.png")} />
+                                <Image
+                                    style={signup3styles.logo}
+                                    source={require("../assets/images/logo.png")}
+                                />
                             </View>
                             <View style={signup3styles.right}>
                                 <Line3 progresswidth={"106%"} />
                             </View>
                         </View>
 
-
-
                         {/* bottom */}
 
                         {/* <KeyboardAvoidingView style={{ flex: 1 }} behavior="height" keyboardVerticalOffset={100}> */}
                         <View style={styles.bottom}>
                             <Text style={styles.t1}>Bio</Text>
-                            <Text style={styles.t2}>A brief, catchy description of your services or specialization.</Text>
+                            <Text style={styles.t2}>
+                                A brief, catchy description of your services or specialization.
+                            </Text>
                             <TextInput
                                 allowFontScaling={false}
                                 placeholder=""
                                 placeholderTextColor="#B8B8B8"
                                 style={styles.input}
                                 value={tagline}
-                                onChangeText={(text) => { settagline(text) }}
+                                onChangeText={(text) => {
+                                    settagline(text);
+                                }}
                             />
                             <Text style={[styles.t1, { marginBottom: 5 }]}>Skills</Text>
                             <TextInput
@@ -385,51 +327,82 @@ const Signup7 = ({ navigation, route }) => {
                                 placeholderTextColor="#B8B8B8"
                                 style={styles.input}
                                 value={skills}
-                                onChangeText={(text) => { setskills(text) }}
+                                onChangeText={(text) => {
+                                    setskills(text);
+                                }}
                             />
 
                             <Text style={styles.t1}>Education</Text>
-                            <Text style={[styles.t2, { marginBottom: 20 }]}>List your highest degree achieved, which helps to establish your academic background and qualifications.</Text>
+                            <Text style={[styles.t2, { marginBottom: 20 }]}>
+                                List your highest degree achieved, which helps to establish your academic
+                                background and qualifications.
+                            </Text>
 
                             {/* <ScrollView style={{height : 200} }> */}
-                            <Drop items={education} open={open} setOpen={setOpen} onValueChange={(value) => { seteducation(value) }} nestedScrollEnabled={true} />
+                            <Drop
+                                items={education}
+                                open={open}
+                                setOpen={setOpen}
+                                onValueChange={(value) => {
+                                    seteducation(value);
+                                }}
+                                nestedScrollEnabled={true}
+                            />
                             {/* </ScrollView> */}
 
                             <Text style={[styles.t1, { marginTop: 30 }]}>Certification</Text>
-
 
                             {certificate.map((certificate, index) => (
                                 <View key={certificate.id} style={styles.certificate}>
                                     <Pressable onPress={addcertificate}>
                                         <Entypo style={styles.plus} name="plus" size={24} color="#00DE62" />
                                     </Pressable>
-                                    {index > 0 && <Pressable onPress={() => { deletecertificate(index) }}>
-                                        <FontAwesome6 name="trash" style={styles.minus} size={15} color="#00DE62" />
-                                    </Pressable>}
+                                    {index > 0 && (
+                                        <Pressable
+                                            onPress={() => {
+                                                deletecertificate(index);
+                                            }}
+                                        >
+                                            <FontAwesome6
+                                                name="trash"
+                                                style={styles.minus}
+                                                size={15}
+                                                color="#00DE62"
+                                            />
+                                        </Pressable>
+                                    )}
 
                                     <TextInput
                                         allowFontScaling={false}
                                         placeholder="Certification name"
                                         placeholderTextColor="#B8B8B8"
-                                        style={[styles.input, { marginTop: 20, backgroundColor: "transparent" }]}
+                                        style={[
+                                            styles.input,
+                                            { marginTop: 20, backgroundColor: "transparent" },
+                                        ]}
                                         value={certificate.cname}
-                                        onChangeText={(text) => { handlecertificatechange(certificate.id, "cname", text) }}
+                                        onChangeText={(text) => {
+                                            handlecertificatechange(certificate.id, "cname", text);
+                                        }}
                                     />
-                                    {certificate.firsterror && <Text style={styles.err}>* please enter this field</Text>}
+                                    {certificate.firsterror && (
+                                        <Text style={styles.err}>* please enter this field</Text>
+                                    )}
                                     <TextInput
                                         allowFontScaling={false}
                                         placeholder="URL"
                                         placeholderTextColor="#B8B8B8"
                                         style={styles.input}
                                         value={certificate.curl}
-                                        onChangeText={(text) => { handlecertificatechange(certificate.id, "curl", text) }}
+                                        onChangeText={(text) => {
+                                            handlecertificatechange(certificate.id, "curl", text);
+                                        }}
                                     />
-                                    {certificate.seconderror && <Text style={styles.err}>* please enter this field</Text>}
-
-
+                                    {certificate.seconderror && (
+                                        <Text style={styles.err}>* please enter this field</Text>
+                                    )}
                                 </View>
                             ))}
-
 
                             <Text style={[styles.t1, { marginTop: 30 }]}>Portfolio</Text>
                             {portfolio1.map((items, index) => (
@@ -437,86 +410,115 @@ const Signup7 = ({ navigation, route }) => {
                                     <Pressable onPress={addportfolio}>
                                         <Entypo style={styles.plus} name="plus" size={24} color="#00DE62" />
                                     </Pressable>
-                                    {index > 0 && <Pressable onPress={() => { deleteportfolio(index) }}>
-                                        <FontAwesome6 name="trash" style={styles.minus} size={15} color="#00DE62" />
-                                    </Pressable>}
+                                    {index > 0 && (
+                                        <Pressable
+                                            onPress={() => {
+                                                deleteportfolio(index);
+                                            }}
+                                        >
+                                            <FontAwesome6
+                                                name="trash"
+                                                style={styles.minus}
+                                                size={15}
+                                                color="#00DE62"
+                                            />
+                                        </Pressable>
+                                    )}
                                     <TextInput
                                         allowFontScaling={false}
                                         placeholder="URL"
                                         placeholderTextColor="#B8B8B8"
-                                        style={[styles.input, { marginTop: 20, backgroundColor: "transparent" }]}
-                                        onChangeText={(text) => { handleurlchange(items.id, "url", text) }}
-
+                                        style={[
+                                            styles.input,
+                                            { marginTop: 20, backgroundColor: "transparent" },
+                                        ]}
+                                        onChangeText={(text) => {
+                                            handleurlchange(items.id, "url", text);
+                                        }}
                                     />
-                                    {items.seconderror && <Text style={styles.err}>* please enter this field</Text>}
+                                    {items.seconderror && (
+                                        <Text style={styles.err}>* please enter this field</Text>
+                                    )}
                                     <TextInput
                                         allowFontScaling={false}
                                         placeholder="Portfolio name"
                                         placeholderTextColor="#B8B8B8"
                                         style={styles.input}
-                                        onChangeText={(text) => { handleurlchange(items.id, "name", text) }}
-
+                                        onChangeText={(text) => {
+                                            handleurlchange(items.id, "name", text);
+                                        }}
                                     />
-                                    {items.firsterror && <Text style={styles.err}>* please enter this field</Text>}
-
+                                    {items.firsterror && (
+                                        <Text style={styles.err}>* please enter this field</Text>
+                                    )}
                                 </View>
                             ))}
                             <View style={styles.icons} nestedScrollEnabled={true}>
-                                <Pressable onPress={() => {
-                                    navigation.goBack()
-                                    // console.log(certificate);
-                                }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
+                                <Pressable
+                                    onPress={() => {
+                                        navigation.goBack();
+                                        // console.log(certificate);
+                                    }}
+                                >
+                                    <FontAwesome6 name="chevron-left" size={40} color="#00DF60" />
+                                </Pressable>
 
-                                <Pressable style={styles.btn} onPress={() => { finalsubmit() }}>
+                                <Pressable
+                                    style={styles.btn}
+                                    onPress={() => {
+                                        finalsubmit();
+                                    }}
+                                >
                                     {loading && <ActivityIndicator size={24} color="#16181a" />}
-                                    {!loading && <Text allowFontScaling={false} style={styles.nexttext}>Submit</Text>}
+                                    {!loading && (
+                                        <Text allowFontScaling={false} style={styles.nexttext}>
+                                            Submit
+                                        </Text>
+                                    )}
                                 </Pressable>
 
                                 {/* <Pressable onPress={() => { nextpage(navigation, type) }}><FontAwesome6 name="chevron-right" size={40} color="#00DF60" /></Pressable> */}
                             </View>
-
                         </View>
                         {/* </KeyboardAvoidingView> */}
                     </View>
                 </TouchableWithoutFeedback>
             </KeyboardAwareScrollView>
         </SafeAreaView>
-
-    )
-}
+    );
+};
 
 export default Signup7;
 
-const { height, width } = Dimensions.get("window")
+const { height, width } = Dimensions.get("window");
 
 var a = width / 360;
 var b = height / 800;
 
-
-const scalingfactor = Math.sqrt(a * b)
+const scalingfactor = Math.sqrt(a * b);
 const styles = StyleSheet.create({
     t1: {
-        textAlign: 'Left',
+        textAlign: "Left",
         marginLeft: 10,
         color: "#D9D9D9",
-        fontFamily: 'Alata',
+        fontFamily: "Alata",
         fontSize: scalingfactor * 27,
         marginBottom: scalingfactor * 3,
         zIndex: 100,
         // pointerEvents: "none",
         // backgroundColor: 'red',
-        width: "auto"
+        width: "auto",
     },
     t2: {
-        textAlign: 'Left',
+        textAlign: "Left",
         color: "#94A3B8",
-        fontFamily: 'Roboto',
+        fontFamily: "Roboto",
         fontSize: scalingfactor * 13,
         zIndex: -1,
         marginBottom: scalingfactor * 8,
         width: "85%",
         alignSelf: "center",
-        lineHeight: scalingfactor * 16
+        lineHeight: scalingfactor * 16,
     },
     bottom: {
         width: "100%",
@@ -531,9 +533,7 @@ const styles = StyleSheet.create({
         padding: scalingfactor * 20,
         paddingTop: scalingfactor * 40,
         // overflow : "hidden",
-
     },
-
 
     btn: {
         width: 168,
@@ -545,7 +545,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         // margin: "auto",
         // marginTop: scalingfactor * 20,
-        shadowColor: 'rgba(0,0,0, 0.5)', // Shadow color
+        shadowColor: "rgba(0,0,0, 0.5)", // Shadow color
         shadowOffset: {
             width: 0, // x offset
             height: 5, // y offset
@@ -553,16 +553,15 @@ const styles = StyleSheet.create({
         shadowOpacity: 1, // Full opacity for shadow effect
         shadowRadius: 1, // Blur radius
         elevation: 5,
-        justifyContent: 'center',
-
-    }, nexttext: {
+        justifyContent: "center",
+    },
+    nexttext: {
         color: "#24272A",
         fontFamily: "Alata",
         fontSize: scalingfactor * 22,
         textAlign: "center",
         // lineHeight : 16
-        marginTop: -4
-
+        marginTop: -4,
     },
     input: {
         backgroundColor: "transparent",
@@ -577,7 +576,7 @@ const styles = StyleSheet.create({
         width: "92%",
         fontFamily: "Roboto",
         lineHeight: scalingfactor * 18,
-        marginBottom: scalingfactor * 25
+        marginBottom: scalingfactor * 25,
     },
     v1: {
         borderBottomWidth: 3,
@@ -586,7 +585,7 @@ const styles = StyleSheet.create({
         margin: "auto",
         //    backgroundColor :"red",
         paddingBottom: 0,
-        marginTop: 10
+        marginTop: 10,
     },
     input1: {
         // backgroundColor: "yellow",
@@ -602,15 +601,15 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto",
         lineHeight: scalingfactor * 18,
         // marginBottom: scalingfactor * 25
-    }
-    , icons: {
+    },
+    icons: {
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
         width: "92%",
         margin: "auto",
         marginTop: 30,
-        marginBottom: 30
+        marginBottom: 30,
     },
     certificate: {
         padding: 4,
@@ -622,26 +621,25 @@ const styles = StyleSheet.create({
         borderWidth: 3,
         borderColor: "#16181A",
         borderRadius: 10,
-        position: "relative"
+        position: "relative",
     },
     plus: {
         position: "absolute",
         right: 5,
         top: -5,
-        zIndex: 100
+        zIndex: 100,
     },
     plus1: {
         position: "absolute",
         right: 10,
         top: 2,
-        zIndex: 100
-    }
-    ,
+        zIndex: 100,
+    },
     minus: {
         position: "absolute",
         right: 45,
         top: -3,
-        zIndex: 100
+        zIndex: 100,
     },
     err: {
         marginVertical: 0,
@@ -654,6 +652,5 @@ const styles = StyleSheet.create({
         color: "#E65858",
         fontSize: 12,
         fontFamily: "Roboto",
-    }
-
-})
+    },
+});

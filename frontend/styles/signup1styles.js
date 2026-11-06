@@ -1,22 +1,20 @@
 import React from "react";
-import { Dimensions, StyleSheet, PixelRatio } from "react-native"
+import { Dimensions, StyleSheet, PixelRatio } from "react-native";
 
 const ratio = PixelRatio.get();
-const { height, width } = Dimensions.get("window")
+const { height, width } = Dimensions.get("window");
 console.log(ratio, "ratio");
 var a = width / 360;
 var b = height / 800;
 // console.log(a, b);
 
-const scalingfactor = Math.sqrt(a * b)
+const scalingfactor = Math.sqrt(a * b);
 
 // console.log(width);
 // console.log(height);
 // console.log(scalingfactor);
 
-
 const signupstyles = StyleSheet.create({
-
     container: {
         flex: 1,
         backgroundColor: "#16181a",
@@ -57,17 +55,16 @@ const signupstyles = StyleSheet.create({
         alignContent: "center",
         alignItems: "center",
     },
-    error : {
-        marginVertical :15,
-        marginTop  :0,
-        textAlign : "center",
+    error: {
+        marginVertical: 15,
+        marginTop: 0,
+        textAlign: "center",
         // backgroundColor : "red",
-        width  : "85%",
-        marginHorizontal : "auto",
-        color : "#E65858",
-        fontSize : 15,
-        fontFamily : "Roboto",
-
+        width: "85%",
+        marginHorizontal: "auto",
+        color: "#E65858",
+        fontSize: 15,
+        fontFamily: "Roboto",
     },
     t1: {
         fontFamily: "Alata",
@@ -75,7 +72,6 @@ const signupstyles = StyleSheet.create({
         color: "white",
         textAlign: "center",
         marginBottom: scalingfactor * 8,
-
     },
     t2: {
         fontFamily: "Roboto",
@@ -83,8 +79,6 @@ const signupstyles = StyleSheet.create({
         color: "#94A3B8",
         textAlign: "center",
         marginBottom: scalingfactor * 30,
-
-
     },
     input: {
         // height: height * 0.045, // Responsive height
@@ -101,7 +95,6 @@ const signupstyles = StyleSheet.create({
         width: "92%",
         fontFamily: "Alata",
         lineHeight: scalingfactor * 18,
-        
     },
     input2: {
         height: height * 0.045, // Responsive height
@@ -128,7 +121,7 @@ const signupstyles = StyleSheet.create({
         borderRadius: 20,
         margin: "auto",
         marginTop: scalingfactor * 20,
-        minHeight : 50
+        minHeight: 50,
     },
     nexttext: {
         color: "#24272A",
@@ -136,25 +129,18 @@ const signupstyles = StyleSheet.create({
         fontSize: scalingfactor * 24,
         textAlign: "center",
         // lineHeight : 16
-        marginTop: -4
-
+        marginTop: -4,
     },
     back: {
         position: "absolute",
         top: 20,
         left: 20,
-        zIndex: 20
+        zIndex: 20,
     },
     backicon: {
         transform: [{ scale: 1.1 }],
-        zIndex: 20
-    }
+        zIndex: 20,
+    },
+});
 
-
-
-
-
-})
-
-
-export default signupstyles
+export default signupstyles;

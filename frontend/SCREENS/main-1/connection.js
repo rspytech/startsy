@@ -1,81 +1,79 @@
 import React, { useEffect, useState, useContext, useCallback } from "react";
-import { View, Text, StyleSheet, TextInput, FlatList, Image, RefreshControl, Dimensions, TouchableOpacity, ActivityIndicator } from "react-native";
+import {
+    View,
+    Text,
+    StyleSheet,
+    TextInput,
+    FlatList,
+    Image,
+    RefreshControl,
+    Dimensions,
+    TouchableOpacity,
+    ActivityIndicator,
+} from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationContainer } from "@react-navigation/native";
 import { Pressable } from "react-native";
 import { useFocusEffect } from "expo-router";
 
-import { url } from "../../config.js"
+import { url } from "../../config.js";
 import { GlobalContext } from "@/Global/globalcontext.js";
 
 import { jwtDecode } from "jwt-decode";
-
-
 
 const data1 = Array(5).fill({
     user: {
         userName: "raz.shhh",
         message: "text...",
         time: "Today",
-        profilePhoto: "https://res.cloudinary.com/dldbd8zhs/image/upload/v1734618122/wn6f65kia1xlzsn8ygnd.jpg"
-    }// Replace with your image path
+        profilePhoto:
+            "https://res.cloudinary.com/dldbd8zhs/image/upload/v1734618122/wn6f65kia1xlzsn8ygnd.jpg",
+    }, // Replace with your image path
 });
 
-
-
-
-
-
-
-
 const ConnectionsScreen = ({ navigation, search, token }) => {
-
     // console.log(search);
     // console.log(navigation);
 
-
-    const [filtereddata, setfiltereddata] = useState([])
+    const [filtereddata, setfiltereddata] = useState([]);
     useEffect(() => {
         console.log(search);
         if (data && data.length > 0) {
-            setfiltereddata(data.filter(item =>
-                search === "" || item.user.userName.toLowerCase().startsWith(search.toLowerCase())
-            ))
+            setfiltereddata(
+                data.filter(
+                    (item) =>
+                        search === "" || item.user.userName.toLowerCase().startsWith(search.toLowerCase())
+                )
+            );
         }
-    }, [search, data])
+    }, [search, data]);
     const [refreshing, setRefreshing] = useState(false);
     const { globaldata } = useContext(GlobalContext);
 
-
-
     useFocusEffect(
         useCallback(() => {
-            fetchData()
+            fetchData();
         }, [])
-    )
+    );
 
-    const [data, setData] = useState(null)
-    const [loading, setloading] = useState(false)
+    const [data, setData] = useState(null);
+    const [loading, setloading] = useState(false);
 
     const fetchData = async () => {
-        var route = ""
+        var route = "";
         const decoded = jwtDecode(token);
         // console.log(decoded);
 
         // console.log(decoded.role);
 
-
         if (decoded.role == "Founder") {
-            route = "founder/getFounderChatUserList"
-        }
-        else if (decoded.role == "Investor") {
-            route = "investor/getInvestorChatUserList"
-        }
-        else if (decoded.role == "CommunityMember") {
+            route = "founder/getFounderChatUserList";
+        } else if (decoded.role == "Investor") {
+            route = "investor/getInvestorChatUserList";
+        } else if (decoded.role == "CommunityMember") {
             // console.log("fuck");
 
-            route = "founder/getFounderChatUserList"
-
+            route = "founder/getFounderChatUserList";
         }
         // else if()
 
@@ -83,24 +81,21 @@ const ConnectionsScreen = ({ navigation, search, token }) => {
         if (token) {
             // console.log(token, "second use focus effect");
             try {
-                const response = await fetch(
-                    `${url}${route}`,
-                    {
-                        method: "GET",
-                        headers: {
-                            accept: "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
+                const response = await fetch(`${url}${route}`, {
+                    method: "GET",
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
                 const result = await response.json();
                 console.log(result, "investor");
 
-
-                const uniqueData = result.filter((item, index, self) =>
-                    self.findIndex(innerItem => innerItem.user.userName === item.user.userName) === index
+                const uniqueData = result.filter(
+                    (item, index, self) =>
+                        self.findIndex((innerItem) => innerItem.user.userName === item.user.userName) ===
+                        index
                 );
-
 
                 const sortedData = uniqueData.sort((a, b) => {
                     if (a.lastMessage === null && b.lastMessage === null) return 0;
@@ -118,8 +113,8 @@ const ConnectionsScreen = ({ navigation, search, token }) => {
                 if (response.status === 200) {
                     // You can update the data state here if needed
                     // setData(result); // Example, you can handle the response data
-                    setData(sortedData)
-                    setfiltereddata(sortedData)
+                    setData(sortedData);
+                    setfiltereddata(sortedData);
                     // setdata1(result)
                 }
             } catch (err) {
@@ -130,13 +125,9 @@ const ConnectionsScreen = ({ navigation, search, token }) => {
         }
     };
 
-
     useEffect(() => {
-
         fetchData();
-
-    }, [token])
-
+    }, [token]);
 
     function gotochatscreen(item) {
         console.log(item.user._id);
@@ -149,26 +140,28 @@ const ConnectionsScreen = ({ navigation, search, token }) => {
 
                 console.log(`${url}investor/recommendation/getFounderProfile`);
 
-                const response = await fetch(
-                    `${url}chats/getMessage/individual/${id}`,
-                    {
-                        method: "GET",
-                        headers: {
-                            accept: "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
+                const response = await fetch(`${url}chats/getMessage/individual/${id}`, {
+                    method: "GET",
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
                 const result = await response.json();
-                console.log(result , "chatscreen pe jaane se pehle");
+                console.log(result, "chatscreen pe jaane se pehle");
                 // setData(result.data);
                 // setloading(false);
-                navigation.navigate("Chat", { item, messages: result.data?.messages || [], token, navigation , photo1 : result.senderProfilePhoto , photo2 :result.recieverProfilePhoto });
-
+                navigation.navigate("Chat", {
+                    item,
+                    messages: result.data?.messages || [],
+                    token,
+                    navigation,
+                    photo1: result.senderProfilePhoto,
+                    photo2: result.recieverProfilePhoto,
+                });
             } catch (err) {
                 console.log(err, "eror");
-            }
-            finally {
+            } finally {
             }
         }
         getData();
@@ -177,7 +170,7 @@ const ConnectionsScreen = ({ navigation, search, token }) => {
     function time(time) {
         // console.log('====================================');
         // console.log(time);
-        var data1 = new Date(time)
+        var data1 = new Date(time);
         // console.log('====================================');
         // console.log(data1);
         // console.log('====================================');
@@ -209,54 +202,63 @@ const ConnectionsScreen = ({ navigation, search, token }) => {
     }
     return (
         <View style={styles.listContainer}>
-            {filtereddata && <FlatList
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 100 }}
+            {filtereddata && (
+                <FlatList
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ paddingBottom: 100 }}
+                    data={filtereddata}
+                    keyExtractor={(item, index) => index.toString()}
+                    refreshControl={<RefreshControl refreshing={refreshing} onRefresh={fetchData} />}
+                    renderItem={({ item }) => {
+                        // console.log(item);
 
-                data={filtereddata}
-                keyExtractor={(item, index) => index.toString()}
-                refreshControl={<RefreshControl refreshing={refreshing}
-                    onRefresh={fetchData}
-
-                />}
-                renderItem={({ item }) => {
-                    // console.log(item);
-
-                    return (
-                        <TouchableOpacity onPress={() => {
-                            gotochatscreen(item)
-                        }}>
-                            <View style={styles.listItem}>
-                                <Image
-                                    source={{ uri: item.user.profilePhoto || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8slgZXgqnSIXDS8wF2uDT_SmsYlBe-W1soQ&s" }}
-                                    style={styles.avatar} />
-                                <View style={styles.textContainer}>
-                                    <Text allowFontScaling={false} style={styles.username}>{item.user.userName}</Text>
-                                    <Text
-                                        numberOfLines={1}
-                                        ellipsizeMode="tail"
-
-                                        allowFontScaling={false} style={styles.message}>{item.lastMessage?.message || "No chats yet"}</Text>
+                        return (
+                            <TouchableOpacity
+                                onPress={() => {
+                                    gotochatscreen(item);
+                                }}
+                            >
+                                <View style={styles.listItem}>
+                                    <Image
+                                        source={{
+                                            uri:
+                                                item.user.profilePhoto ||
+                                                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8slgZXgqnSIXDS8wF2uDT_SmsYlBe-W1soQ&s",
+                                        }}
+                                        style={styles.avatar}
+                                    />
+                                    <View style={styles.textContainer}>
+                                        <Text allowFontScaling={false} style={styles.username}>
+                                            {item.user.userName}
+                                        </Text>
+                                        <Text
+                                            numberOfLines={1}
+                                            ellipsizeMode="tail"
+                                            allowFontScaling={false}
+                                            style={styles.message}
+                                        >
+                                            {item.lastMessage?.message || "No chats yet"}
+                                        </Text>
+                                    </View>
+                                    <Text allowFontScaling={false} style={styles.time}>
+                                        {item.lastMessage ? time(item.lastMessage.createdAt) : "today"}
+                                    </Text>
                                 </View>
-                                <Text
-
-
-                                    allowFontScaling={false} style={styles.time}>{item.lastMessage ? time(item.lastMessage.createdAt) : "today"}</Text>
-                            </View>
-                        </TouchableOpacity>
-                    )
-                }}
-            />}
+                            </TouchableOpacity>
+                        );
+                    }}
+                />
+            )}
 
             {loading && <ActivityIndicator size="large" color="#fff" />}
         </View>
-    )
-}
-const { height, width } = Dimensions.get("window")
+    );
+};
+const { height, width } = Dimensions.get("window");
 
 var a = width / 360;
 var b = height / 800;
-const scalingfactor = Math.sqrt(a * b)
+const scalingfactor = Math.sqrt(a * b);
 
 const styles = StyleSheet.create({
     container: {
@@ -302,7 +304,7 @@ const styles = StyleSheet.create({
         borderBottomWidth: 1,
         borderBottomColor: "#333",
         alignSelf: "flex-start",
-        width: "100%"
+        width: "100%",
     },
     avatar: {
         width: 50,
@@ -322,7 +324,7 @@ const styles = StyleSheet.create({
         fontFamily: "Alata",
         alignSelf: "flex-start",
         marginTop: -5,
-        marginBottom: 5
+        marginBottom: 5,
     },
     message: {
         fontSize: 14,
@@ -350,14 +352,14 @@ const styles = StyleSheet.create({
         width: width * 0.92,
         marginHorizontal: "auto",
         padding: 16,
-        backgroundColor: '#1A1C1E',
+        backgroundColor: "#1A1C1E",
         marginTop: 20,
         borderRadius: 12,
-        shadowColor: '#000',
+        shadowColor: "#000",
         shadowOpacity: 0.2,
         shadowRadius: 4,
         shadowOffset: { width: 0, height: 2 },
-        shadowColor: 'rgba(0,0,0, 0.8)', // Shadow color
+        shadowColor: "rgba(0,0,0, 0.8)", // Shadow color
         shadowOffset: {
             width: 0, // x offset
             height: 5, // y offset
@@ -367,8 +369,8 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     header1: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        flexDirection: "row",
+        alignItems: "center",
         marginBottom: 12,
     },
     profileImage: {
@@ -378,54 +380,51 @@ const styles = StyleSheet.create({
         marginRight: 12,
     },
     headerText: {
-        flexDirection: 'row',
+        flexDirection: "row",
         flex: 1,
-        justifyContent: "space-between"
+        justifyContent: "space-between",
     },
     username: {
-        color: '#E9E9E9',
-        fontWeight: '600',
+        color: "#E9E9E9",
+        fontWeight: "600",
         fontSize: 22,
         fontFamily: "Alata",
         marginBottom: 3,
-        marginTop: -2
-
+        marginTop: -2,
     },
     date: {
-        color: '#a1a1a1',
+        color: "#a1a1a1",
         fontSize: 14,
-        alignSelf: "center"
+        alignSelf: "center",
     },
     title: {
-        color: '#B8B8B8',
+        color: "#B8B8B8",
         // fontWeight: 'bold',
         fontSize: 36,
         marginBottom: 6,
-        fontFamily: "Alata"
+        fontFamily: "Alata",
     },
     description: {
-        color: '#D9D9D9',
+        color: "#D9D9D9",
         fontSize: 13,
         // marginBottom: 12,
-        fontFamily: "Roboto"
+        fontFamily: "Roboto",
     },
     status: {
-        color: '#00DE62',
+        color: "#00DE62",
         fontSize: 15,
-        fontWeight: '600',
+        fontWeight: "600",
         marginBottom: 4,
-        fontFamily: "Roboto"
-
+        fontFamily: "Roboto",
     },
     pending: {
         fontFamily: "Roboto",
 
-        color: '#B8B8B8',
+        color: "#B8B8B8",
         fontSize: 14,
         textAlign: "center",
-        marginVertical: 5
+        marginVertical: 5,
     },
-
 
     tabbarpill: {
         borderWidth: 1,
@@ -445,8 +444,7 @@ const styles = StyleSheet.create({
         textTransform: "capitalize",
         borderWidth: 1,
         borderRadius: 30,
-    }
+    },
 });
 
-
-export default ConnectionsScreen
+export default ConnectionsScreen;

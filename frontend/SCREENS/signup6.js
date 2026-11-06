@@ -1,4 +1,3 @@
-
 // 4.4 last of community
 import React, { useState, useRef, useEffect } from "react";
 import {
@@ -13,8 +12,7 @@ import {
     StyleSheet,
     Dimensions,
     StatusBar,
-    TouchableWithoutFeedback
-
+    TouchableWithoutFeedback,
 } from "react-native";
 
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -25,26 +23,23 @@ import Line2 from "./line2.js";
 import Line3 from "./line3.js";
 import Line from "./line.js";
 import { useFocusEffect } from "expo-router";
-import AsyncStorage from '@react-native-async-storage/async-storage';
-
+import AsyncStorage from "@react-native-async-storage/async-storage";
 
 const Signup6 = ({ navigation, route }) => {
     useFocusEffect(() => {
-        StatusBar.setBackgroundColor("#16181A")
-        StatusBar.setBarStyle("light-content")
-    })
+        StatusBar.setBackgroundColor("#16181A");
+        StatusBar.setBarStyle("light-content");
+    });
 
     const { form, image } = route.params;
-    console.log('====================================');
+    console.log("====================================");
     console.log(form);
-    console.log('====================================');
+    console.log("====================================");
 
-
-
-    const type = "Freelancer"
-    const [role1, setrole] = useState("")
-    const [interest, setinterest] = useState("")
-    const [prefference, setprefference] = useState("")
+    const type = "Freelancer";
+    const [role1, setrole] = useState("");
+    const [interest, setinterest] = useState("");
+    const [prefference, setprefference] = useState("");
     // const final = new FormData
 
     var role = [
@@ -52,15 +47,13 @@ const Signup6 = ({ navigation, route }) => {
         { label: "Startup Enthusiast", value: "Startup Enthusiast" },
         { label: "Mentor", value: "Mentor" },
         { label: "Networker", value: "Networker" },
-
-    ]
+    ];
 
     var contentPreferences = [
         { label: "Startup News", value: "Startup News" },
         { label: "Job Postings", value: "Job Postings" },
         { label: "Educational Content", value: "Educational Content" },
-    ]
-
+    ];
 
     var token;
 
@@ -68,7 +61,7 @@ const Signup6 = ({ navigation, route }) => {
         token = await AsyncStorage.getItem("accessToken");
     }
 
-    gettoken()
+    gettoken();
 
     const [open1, setOpen1] = useState(false);
     const [open2, setOpen2] = useState(false);
@@ -78,18 +71,18 @@ const Signup6 = ({ navigation, route }) => {
         setOpen1(!open1);
         if (open2) setOpen2(false);
         if (open3) setOpen3(false);
-    }
+    };
     const t2 = () => {
-        if (open1) setOpen1(false)
+        if (open1) setOpen1(false);
         setOpen2(!open2);
 
         if (open3) setOpen3(false);
-    }
+    };
     const t3 = () => {
         if (open1) setOpen1(false);
         if (open2) setOpen2(false);
         setOpen3(!open3);
-    }
+    };
     const handleOutsideTouch = () => {
         if (open1) setOpen1(false);
         if (open2) setOpen2(false);
@@ -108,43 +101,35 @@ const Signup6 = ({ navigation, route }) => {
         setprefference(value1); // Update state with the selected value
     };
 
-
-    const [message, setmessage] = useState("")
-    const [error, seterror] = useState(false)
-    const [loading, setloading] = useState(false)
+    const [message, setmessage] = useState("");
+    const [error, seterror] = useState(false);
+    const [loading, setloading] = useState(false);
 
     async function finalsubmit() {
-
         const final = new FormData();
         for (var items of form["_parts"]) {
-
             if (items[0] == "fullname" || items[0] == "password") continue;
             final.append(items[0], items[1]);
         }
 
-        final.append("communityMemberRole", role1)
-        final.append("areaOfInterest", interest)
-        final.append("contentPrefrence", prefference)
-        final.append("user_id", "abcd")
-
-
-
+        final.append("communityMemberRole", role1);
+        final.append("areaOfInterest", interest);
+        final.append("contentPrefrence", prefference);
+        final.append("user_id", "abcd");
 
         if (image != "xyz") {
             final.append("profilePhoto", {
                 uri: image,
                 type: "image/jpeg",
                 name: `image_${Date.now()}.jpg`,
-
-            })
+            });
         }
         console.log("will make final submit");
         console.log(final);
 
-
-        setloading(true)
-        const response = await fetch('http://192.168.1.7:5002/api/communityMemberInfo', {
-            method: 'POST',
+        setloading(true);
+        const response = await fetch("http://192.168.1.7:5002/api/communityMemberInfo", {
+            method: "POST",
             body: final,
             headers: {
                 accept: "application/json",
@@ -152,18 +137,16 @@ const Signup6 = ({ navigation, route }) => {
             },
         });
         const data = await response.json();
-        setloading(false)
+        setloading(false);
         console.log(data);
         if (data.status === 200) {
-            navigation.navigate("Main2", { username })
-        }
-        else if (data.status === 400) {
+            navigation.navigate("Main2", { username });
+        } else if (data.status === 400) {
             console.log("internal error");
-            setmessage("some error occurred")
+            setmessage("some error occurred");
         }
     }
 
-    
     // var areaofinterestlist = [
     //     { label: "Technology", value: "Technology" },
     //     { label: "Healthcare", value: "Healthcare" },
@@ -215,26 +198,22 @@ const Signup6 = ({ navigation, route }) => {
         { label: "FoodTech", value: "FoodTech" },
         { label: "Non-profits", value: "Non-profits" },
         { label: "Impact Investing", value: "Impact Investing" },
-        { label: "Philanthropy", value: "Philanthropy" }
+        { label: "Philanthropy", value: "Philanthropy" },
     ];
-    
 
     function nextpage(type) {
-
         const final = new FormData();
         for (var items of form["_parts"]) {
-
             if (items[0] == "fullname" || items[0] == "password") continue;
             final.append(items[0], items[1]);
-
         }
 
-        final.append("communityMemberRole", role1)
-        final.append("areaOfInterest", interest)
-        final.append("contentPrefrence", prefference)
-        final.append("user_id", "abcd")
+        final.append("communityMemberRole", role1);
+        final.append("areaOfInterest", interest);
+        final.append("contentPrefrence", prefference);
+        final.append("user_id", "abcd");
 
-        navigation.navigate("Signup7", { form: final, image: image })
+        navigation.navigate("Signup7", { form: final, image: image });
     }
 
     return (
@@ -245,87 +224,117 @@ const Signup6 = ({ navigation, route }) => {
                         {/* top */}
                         <View style={signup3styles.top}>
                             <View style={signup3styles.left}>
-                                <Image style={signup3styles.logo} source={require("../assets/images/logo.png")} />
+                                <Image
+                                    style={signup3styles.logo}
+                                    source={require("../assets/images/logo.png")}
+                                />
                             </View>
                             <View style={signup3styles.right}>
                                 <Line3 progresswidth={"73%"} />
                             </View>
                         </View>
 
-
-
                         {/* bottom */}
 
                         <View style={styles.bottom}>
-
-                            <Text allowFontScaling={false} style={styles.t1}>Community Participation</Text>
-                            <Text allowFontScaling={false} style={styles.t2}>Specify your role within the community to help tailor your experience.</Text>
+                            <Text allowFontScaling={false} style={styles.t1}>
+                                Community Participation
+                            </Text>
+                            <Text allowFontScaling={false} style={styles.t2}>
+                                Specify your role within the community to help tailor your experience.
+                            </Text>
                             {/* <TouchableWithoutFeedback onPress={handleOutsideTouch}>  */}
                             <Drop items={role} onValueChange={handlerole} open={open1} setOpen={t1} />
                             {/* </TouchableWithoutFeedback> */}
 
+                            <Text
+                                allowFontScaling={false}
+                                style={[styles.t1, { marginTop: scalingfactor * 18 }]}
+                            >
+                                Area of Interest
+                            </Text>
+                            <Text allowFontScaling={false} style={styles.t2}>
+                                Indicate the specific fields or topics you are passionate about within the
+                                startup ecosystem.
+                            </Text>
+                            <Drop
+                                items={areaofinterestlist}
+                                onValueChange={handleinterest}
+                                open={open2}
+                                setOpen={t2}
+                            />
 
-                            <Text allowFontScaling={false} style={[styles.t1, { marginTop: scalingfactor * 18 }]}>Area of Interest</Text>
-                            <Text allowFontScaling={false} style={styles.t2}>Indicate the specific fields or topics you are passionate about within the startup ecosystem.</Text>
-                            <Drop items={areaofinterestlist} onValueChange={handleinterest} open={open2} setOpen={t2} />
-
-
-                            <Text allowFontScaling={false} style={[styles.t1, { marginTop: scalingfactor * 18 }]}>Content Preference</Text>
-                            <Text allowFontScaling={false} style={styles.t2}>Choose the types of content you want to see most in your feed.</Text>
-                            <Drop items={contentPreferences} onValueChange={handleprefference} open={open3} setOpen={t3} up={true} />
-
+                            <Text
+                                allowFontScaling={false}
+                                style={[styles.t1, { marginTop: scalingfactor * 18 }]}
+                            >
+                                Content Preference
+                            </Text>
+                            <Text allowFontScaling={false} style={styles.t2}>
+                                Choose the types of content you want to see most in your feed.
+                            </Text>
+                            <Drop
+                                items={contentPreferences}
+                                onValueChange={handleprefference}
+                                open={open3}
+                                setOpen={t3}
+                                up={true}
+                            />
 
                             <View style={styles.icons}>
-                                <Pressable onPress={() => {
-                                    navigation.goBack();
-                                }}><FontAwesome6 name="chevron-left" size={45} color="#00DF60" /></Pressable>
-                                <Pressable onPress={() => {
-                                    nextpage()
-                                }}><FontAwesome6 name="chevron-right" size={45} color="#00DF60" /></Pressable>
-
+                                <Pressable
+                                    onPress={() => {
+                                        navigation.goBack();
+                                    }}
+                                >
+                                    <FontAwesome6 name="chevron-left" size={45} color="#00DF60" />
+                                </Pressable>
+                                <Pressable
+                                    onPress={() => {
+                                        nextpage();
+                                    }}
+                                >
+                                    <FontAwesome6 name="chevron-right" size={45} color="#00DF60" />
+                                </Pressable>
 
                                 {/* <Pressable style={styles.btn} onPress={() => { finalsubmit() }}>
                                     <Text allowFontScaling={false} style={styles.nexttext}>Submit</Text>
                                 </Pressable> */}
                             </View>
-
-
                         </View>
                     </View>
                 </ScrollView>
             </SafeAreaView>
         </TouchableWithoutFeedback>
-    )
-}
+    );
+};
 
-
-export default Signup6
-const { height, width } = Dimensions.get("window")
+export default Signup6;
+const { height, width } = Dimensions.get("window");
 
 var a = width / 360;
 var b = height / 800;
 
-
-const scalingfactor = Math.sqrt(a * b)
+const scalingfactor = Math.sqrt(a * b);
 const styles = StyleSheet.create({
     t1: {
-        textAlign: 'Left',
+        textAlign: "Left",
         marginLeft: 10,
         color: "#D9D9D9",
-        fontFamily: 'Alata',
+        fontFamily: "Alata",
         fontSize: scalingfactor * 27,
         marginBottom: scalingfactor * 3,
     },
     t2: {
-        textAlign: 'Left',
+        textAlign: "Left",
         color: "#94A3B8",
-        fontFamily: 'Roboto',
+        fontFamily: "Roboto",
         fontSize: scalingfactor * 13,
 
         marginBottom: scalingfactor * 8,
         width: "85%",
         alignSelf: "center",
-        lineHeight: scalingfactor * 16
+        lineHeight: scalingfactor * 16,
     },
     bottom: {
         width: "100%",
@@ -337,7 +346,7 @@ const styles = StyleSheet.create({
         // justifyContent: "center",
         alignContent: "center",
         padding: scalingfactor * 20,
-        paddingTop: scalingfactor * 40
+        paddingTop: scalingfactor * 40,
     },
     icons: {
         display: "flex",
@@ -349,8 +358,7 @@ const styles = StyleSheet.create({
         position: "absolute",
         bottom: 40,
         alignSelf: "center",
-    }
-    ,
+    },
     btn: {
         width: 168,
         height: 48,
@@ -361,7 +369,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         // margin: "auto",
         // marginTop: scalingfactor * 20,
-        shadowColor: 'rgba(0,0,0, 0.5)', // Shadow color
+        shadowColor: "rgba(0,0,0, 0.5)", // Shadow color
         shadowOffset: {
             width: 0, // x offset
             height: 5, // y offset
@@ -369,17 +377,14 @@ const styles = StyleSheet.create({
         shadowOpacity: 1, // Full opacity for shadow effect
         shadowRadius: 1, // Blur radius
         elevation: 5,
-        justifyContent: 'center',
-
-    }, nexttext: {
+        justifyContent: "center",
+    },
+    nexttext: {
         color: "#24272A",
         fontFamily: "Alata",
         fontSize: scalingfactor * 22,
         textAlign: "center",
         // lineHeight : 16
-        marginTop: -4
-
+        marginTop: -4,
     },
-
-
-})
+});

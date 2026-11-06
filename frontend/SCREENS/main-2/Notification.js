@@ -1,46 +1,53 @@
-
 import { useFocusEffect } from "expo-router";
 import React, { useState, useRef, useEffect, useCallback } from "react";
-import { Text, StatusBar, View, Image, TouchableOpacity, SafeAreaView, StyleSheet, RefreshControl, Dimensions, ScrollView, Pressable } from "react-native";
+import {
+    Text,
+    StatusBar,
+    View,
+    Image,
+    TouchableOpacity,
+    SafeAreaView,
+    StyleSheet,
+    RefreshControl,
+    Dimensions,
+    ScrollView,
+    Pressable,
+} from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
-import Upvote from "../../assets/icons/upvote.js"
-import Useradd from "../../assets/icons/useradd.js"
+import Upvote from "../../assets/icons/upvote.js";
+import Useradd from "../../assets/icons/useradd.js";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { LinearGradient } from "expo-linear-gradient";
-import { url } from "../../config.js"
+import { url } from "../../config.js";
 import { FlatList } from "react-native-gesture-handler";
-import InvestorCard from "./InvestorCard.js"
-import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
+import InvestorCard from "./InvestorCard.js";
+import { AutoSizeText, ResizeTextMode } from "react-native-auto-size-text";
 import B2 from "@/assets/icons/b2.js";
 import { jwtDecode } from "jwt-decode";
-import Upvotedata from "./Upvotedata.js"
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import Upvotedata from "./Upvotedata.js";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
-const Notification = ({ token, navigation , mainpagebottomsheet , closeall }) => {
-
-    const [data, setdata] = useState(null)
-    const [subnotification, setsubnotification] = useState([])
-    const [loading, setloading] = useState(true)
+const Notification = ({ token, navigation, mainpagebottomsheet, closeall }) => {
+    const [data, setdata] = useState(null);
+    const [subnotification, setsubnotification] = useState([]);
+    const [loading, setloading] = useState(true);
     const [statistic, setstatistic] = useState({
         totalUpvotes: 0,
         upvotesPerDay: 0,
-        investorUpvotes: 0
-
-    })
+        investorUpvotes: 0,
+    });
 
     useFocusEffect(
-        useCallback(()=>{closeall()} , [])
-    )
+        useCallback(() => {
+            closeall();
+        }, [])
+    );
 
-    
     const Tab = createMaterialTopTabNavigator();
-
 
     // function Upvotedata() {
 
     //     const [refreshing, setRefreshing] = useState(false)
-
-
 
     //     async function getdata() {
     //         try {
@@ -78,13 +85,9 @@ const Notification = ({ token, navigation , mainpagebottomsheet , closeall }) =>
 
     //     // getdata()
 
-
-
-
     //     function rendersub({ item }) {
 
     //         async function sendmessage() {
-
 
     //             var message = item.sendingUserId._id
     //             var jobrole = item.appliedJobRole;
@@ -107,7 +110,6 @@ const Notification = ({ token, navigation , mainpagebottomsheet , closeall }) =>
     //             }
     //             console.log(item.sendingUserId._id);
 
-
     //             console.log(message);
     //             var first = {
     //                 user: {
@@ -126,11 +128,9 @@ const Notification = ({ token, navigation , mainpagebottomsheet , closeall }) =>
 
     //             // console.log(item);
 
-
     //             navigation.navigate("Chat", { item: first, messages: [], token, navigation, extra });
 
     //         }
-
 
     //         function time(time) {
     //             // console.log('====================================');
@@ -169,7 +169,6 @@ const Notification = ({ token, navigation , mainpagebottomsheet , closeall }) =>
     //             // <View style={styles.box1}>
     //             //     <View style={styles.left}>
 
-
     //             //         <Pressable
     //             //             style={{ paddingTop: 10 }}
     //             //             onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.sendingUserId._id, page: "bell" }) }}
@@ -197,7 +196,6 @@ const Notification = ({ token, navigation , mainpagebottomsheet , closeall }) =>
     //             //                     </Text>
     //             //                 </Pressable>
     //             //                 {/* <Text style={styles.time}>{time(item.taggedUser.createdAt)}</Text> */}
-
 
     //             //             </View>
     //             //             {/* <Text style={styles.sub2}>{item.notificationMessage}</Text> */}
@@ -227,9 +225,7 @@ const Notification = ({ token, navigation , mainpagebottomsheet , closeall }) =>
 
     //             <Text>okk</Text>
 
-               
     //         )
-
 
     //         // return ( <Text>hello</Text>)
     //     }
@@ -258,36 +254,27 @@ const Notification = ({ token, navigation , mainpagebottomsheet , closeall }) =>
     //         )
     //     }
 
-
     //     function top1() {
     //         return (
     //             <>
     //                 <View style={styles.divider}></View>
 
-
     //                 <FlatList
-
-
-
 
     //                     ListHeaderComponent={top3data}
     //                     data={subnotification}
     //                     renderItem={rendersub}
     //                     contentContainerStyle={{ paddingBottom: 100, elevation: 10 }}
 
-
     //                 />
     //             </>
     //         )
     //     }
 
-
     //     return (
     //         // <View style={{ flex: 1, backgroundColor: "#16181a" }}>
 
-
     //         // <View style={styles.divider}></View>
-
 
     //         <FlatList
     //             // style={{marginTop : 300}}
@@ -317,10 +304,7 @@ const Notification = ({ token, navigation , mainpagebottomsheet , closeall }) =>
     //             renderItem={rendersub}
     //             contentContainerStyle={{ paddingBottom: 100, elevation: 1, backgroundColor: "red" }}
 
-
     //         />
-
-
 
     //         // </View>
 
@@ -328,22 +312,20 @@ const Notification = ({ token, navigation , mainpagebottomsheet , closeall }) =>
     // }
 
     return (
-
-
-
-        <View style={{
-            flex: 1,
-            // minHeight : 700,
-            backgroundColor: "#16181a"
-        }}>
-            <Text allowFontScaling={false} style={styles.headerText}>Notification</Text>
+        <View
+            style={{
+                flex: 1,
+                // minHeight : 700,
+                backgroundColor: "#16181a",
+            }}
+        >
+            <Text allowFontScaling={false} style={styles.headerText}>
+                Notification
+            </Text>
 
             <Tab.Navigator
                 initialRouteName="Requests"
                 screenOptions={({ route }) => ({
-
-
-
                     tabBarStyle: {
                         backgroundColor: "#16181a",
                         justifyContent: "space-between",
@@ -351,106 +333,99 @@ const Notification = ({ token, navigation , mainpagebottomsheet , closeall }) =>
                         width: width * 0.92,
                         margin: "auto",
                         borderBlockColor: "transparent",
-                        elevation: 0
+                        elevation: 0,
                     },
-
 
                     tabBarIndicatorStyle: {
                         backgroundColor: "#00DE62",
                         height: 0,
                     },
-
                 })}
             >
                 <Tab.Screen
-                    name="Connections" 
+                    name="Connections"
                     children={(props) => <InvestorCard token={token} navigation={navigation} />}
-
                     options={{
                         tabBarLabel: ({ focused }) => (
-
-
-                            <View >
+                            <View>
                                 <View style={{ position: "absolute", left: 20, top: 10 }}>
                                     {focused && <Useradd />}
                                     {!focused && <Useradd color="#B8B8B8" />}
                                 </View>
-                                <Text allowFontScaling={false} style={[
-                                    styles.tabbarpill, {
-                                        color: focused ? "#00DE62" : "#B8B8B8",
-                                        borderColor: focused ? "#00DE62" : "#24272A",
-                                        // backgroundColor: focused ? "#00DE62" : "transparent",
-                                    }
-                                ]}>
+                                <Text
+                                    allowFontScaling={false}
+                                    style={[
+                                        styles.tabbarpill,
+                                        {
+                                            color: focused ? "#00DE62" : "#B8B8B8",
+                                            borderColor: focused ? "#00DE62" : "#24272A",
+                                            // backgroundColor: focused ? "#00DE62" : "transparent",
+                                        },
+                                    ]}
+                                >
                                     Request
-
                                 </Text>
                             </View>
                         ),
-
                     }}
                 />
                 <Tab.Screen
-
                     name="Requests"
                     // component={Upvotedata}
                     children={(props) => <Upvotedata token={token} navigation={navigation} />}
                     options={{
                         tabBarLabel: ({ focused }) => (
-                            <View >
+                            <View>
                                 <View style={{ position: "absolute", left: 20, top: 10 }}>
                                     {focused && <Upvote />}
                                     {!focused && <Upvote color="#B8B8B8" />}
                                 </View>
-                                <Text allowFontScaling={false} style={[
-                                    styles.tabbarpill, {
-                                        color: focused ? "#00DE62" : "#B8B8B8",
-                                        borderColor: focused ? "#00DE62" : "#24272A",
-                                        // backgroundColor: focused ? "#00DE62" : "transparent",
-                                    }
-                                ]}>
+                                <Text
+                                    allowFontScaling={false}
+                                    style={[
+                                        styles.tabbarpill,
+                                        {
+                                            color: focused ? "#00DE62" : "#B8B8B8",
+                                            borderColor: focused ? "#00DE62" : "#24272A",
+                                            // backgroundColor: focused ? "#00DE62" : "transparent",
+                                        },
+                                    ]}
+                                >
                                     upvote
-
                                 </Text>
                             </View>
                         ),
-
                     }}
                 />
             </Tab.Navigator>
         </View>
-    )
-}
+    );
+};
 
-
-
-export default Notification
+export default Notification;
 
 const { height, width } = Dimensions.get("window");
 var a = width / 360;
 var b = height / 800;
 // console.log(a,b);
 
-const scalingfactor = Math.sqrt(a * b)
-
-
+const scalingfactor = Math.sqrt(a * b);
 
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: '#1a1a1a',
+        backgroundColor: "#1a1a1a",
         borderRadius: 20,
         padding: 16,
         margin: 16,
-        shadowColor: '#000',
+        shadowColor: "#000",
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 5,
         elevation: 8,
-
     },
     header: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        flexDirection: "row",
+        alignItems: "center",
         marginBottom: 8,
     },
     image: {
@@ -461,42 +436,42 @@ const styles = StyleSheet.create({
     },
     role: {
         fontSize: 24,
-        color: '#E9E9E9',
+        color: "#E9E9E9",
         flex: 1,
-        fontFamily: "Alata"
+        fontFamily: "Alata",
     },
     date: {
         fontSize: 12,
-        color: '#B8B8B8',
-        fontFamily: "Roboto"
+        color: "#B8B8B8",
+        fontFamily: "Roboto",
     },
     name: {
         fontSize: 32,
-        color: '#B8B8B8',
+        color: "#B8B8B8",
         // fontWeight: 'bold',
         marginBottom: 8,
-        fontFamily: "Alata"
+        fontFamily: "Alata",
     },
     info: {
         fontSize: 16,
-        color: '#D9D9D9',
+        color: "#D9D9D9",
         marginBottom: 4,
-        fontFamily: "Roboto"
+        fontFamily: "Roboto",
     },
     info1: {
         fontSize: 16,
-        color: '#00DE62',
+        color: "#00DE62",
         marginBottom: 4,
-        fontFamily: "Roboto"
+        fontFamily: "Roboto",
     },
     actions: {
-        flexDirection: 'row',
-        justifyContent: 'center',
+        flexDirection: "row",
+        justifyContent: "center",
         gap: 30,
         marginTop: 16,
     },
     buttonAccept: {
-        backgroundColor: 'transparent',
+        backgroundColor: "transparent",
         borderRadius: 30,
         paddingVertical: 0,
         paddingHorizontal: 20,
@@ -506,28 +481,27 @@ const styles = StyleSheet.create({
         borderColor: "#B8B8B8",
         justifyContent: "center",
         alignItems: "center",
-
     },
     buttonReject: {
-        backgroundColor: '#ff0000',
+        backgroundColor: "#ff0000",
         borderRadius: 8,
         paddingVertical: 10,
         paddingHorizontal: 20,
     },
     buttonText: {
         fontSize: 18,
-        color: '#00DE62',
+        color: "#00DE62",
         // fontWeight: 'bold',
         fontFamily: "Alata",
         textAlign: "center",
         textAlignVertical: "center",
-        marginTop: -5
+        marginTop: -5,
     },
     divider: {
         width: width,
         height: 3,
         marginTop: 5,
-        backgroundColor: "#24272A"
+        backgroundColor: "#24272A",
     },
     tabbarpill: {
         borderWidth: 1,
@@ -549,8 +523,7 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         paddingLeft: 20,
 
-        marginTop: -1
-
+        marginTop: -1,
     },
     container1: {
         display: "flex",
@@ -563,12 +536,12 @@ const styles = StyleSheet.create({
     },
     textbox: {
         alignSelf: "center",
-        justifyContent: "center"
+        justifyContent: "center",
     },
     t1: {
         fontFamily: "Roboto",
         color: "#00DE62",
-        fontSize: 40
+        fontSize: 40,
     },
     t2: {
         fontFamily: "Roboto",
@@ -586,8 +559,7 @@ const styles = StyleSheet.create({
         color: "#00DE62",
         fontFamily: "myanmar",
         paddingHorizontal: 20,
-        marginVertical: 12
-
+        marginVertical: 12,
     },
     box1: {
         height: 70,
@@ -602,22 +574,20 @@ const styles = StyleSheet.create({
         display: "flex",
         flexDirection: "row",
         zIndex: 0,
-        elevation: 0
-
-
+        elevation: 0,
     },
     left: {
         width: "90%",
         // justifyContent: "space-between",
         display: "flex",
-        flexDirection: "row"
+        flexDirection: "row",
     },
     text: {
         fontSize: 12,
         fontFamily: "Roboto",
         color: "#B8B8B8",
         lineHeight: 16,
-        width: "90%"
+        width: "90%",
     },
     bottominfo1: {
         display: "flex",
@@ -635,16 +605,13 @@ const styles = StyleSheet.create({
         // flexWrap : "wrap",
         display: "flex",
         flexDirection: "column",
-
-
     },
     des: {
         fontFamily: "Roboto",
         fontSize: scalingfactor * 12,
         fontWeight: "bold",
         color: "#D9D9D9",
-        width: "80%"
-
+        width: "80%",
     },
 
     topimage: {
@@ -661,8 +628,6 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         // marginTop : -2,
         // alignSelf: "center",
-
-
     },
     topu2: {
         fontFamily: "Roboto",
@@ -671,8 +636,7 @@ const styles = StyleSheet.create({
         // alignSelf: "center",
         // justifyContent: "center",
         // textAlignVertical: "center",
-        marginLeft: 5
-
+        marginLeft: 5,
     },
 
     time: {
@@ -691,15 +655,14 @@ const styles = StyleSheet.create({
         borderRadius: 50,
         // alignSelf: "flex-start",
         marginLeft: 5,
-        marginTop: 5
+        marginTop: 5,
     },
     right: {
         width: "10%",
         // backgroundColor : "red",
         justifyContent: "flex-center",
         alignItems: "flex-end",
-        alignContent: "flex-end"
-
+        alignContent: "flex-end",
     },
     image1: {
         borderRadius: 6,
@@ -714,7 +677,6 @@ const styles = StyleSheet.create({
 
         objectFit: "cover",
         maxHeight: "90%",
-
     },
 
     sub2: {
@@ -723,6 +685,5 @@ const styles = StyleSheet.create({
         marginTop: 5,
         color: "#bbbbbb",
         fontFamily: "Roboto",
-    }
-
+    },
 });

@@ -1,17 +1,21 @@
 import React from "react";
-import { View, Image, Text, StyleSheet, Pressable } from "react-native"
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import Upvote from "../assets/icons/upvote.js"
-import Share from "../assets/icons/share.js"
+import { View, Image, Text, StyleSheet, Pressable } from "react-native";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import Upvote from "../assets/icons/upvote.js";
+import Share from "../assets/icons/share.js";
 function Post() {
     return (
         <View style={styles.box}>
-            <View style={styles.top} >
+            <View style={styles.top}>
                 <View style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                     <Image style={styles.userimg} source={require("../assets/images/p1.png")} />
                     <View style={styles.userdetail}>
-                        <Text allowFontScaling={false} style={styles.u1}>raz.shhh</Text>
-                        <Text allowFontScaling={false} style={styles.u2}>Founder</Text>
+                        <Text allowFontScaling={false} style={styles.u1}>
+                            raz.shhh
+                        </Text>
+                        <Text allowFontScaling={false} style={styles.u2}>
+                            Founder
+                        </Text>
                     </View>
                 </View>
             </View>
@@ -23,8 +27,6 @@ function Post() {
                     <FontAwesome name="comment-o" size={30} color="#00DE62" />
                 </View>
                 <Share style={{ marginTop: 5, marginRight: 10, right: 0 }} />
-
-
             </View>
             {/* <View style={styles.lower}>
                 <Text allowFontScaling={false} style={styles.u3}>caption caption caption caption caption.</Text>
@@ -33,13 +35,11 @@ function Post() {
                 </Pressable>
 
             </View> */}
-
         </View>
-    )
+    );
 }
 
-export default Post
-
+export default Post;
 
 const styles = StyleSheet.create({
     box: {
@@ -54,7 +54,6 @@ const styles = StyleSheet.create({
         marginBottom: 25,
         paddingVertical: 20,
         // opacity : 0.5
-
     },
     userimg: {
         borderRadius: 100,
@@ -63,29 +62,29 @@ const styles = StyleSheet.create({
         margin: 10,
         marginLeft: 15,
         alignSelf: "flex-start",
-        justifyContent: "flex-start"
+        justifyContent: "flex-start",
     },
     userdetail: {
         flex: 1,
         alignSelf: "flex-start",
-        paddingLeft: 5
+        paddingLeft: 5,
     },
     u1: {
         fontFamily: "Alata",
         fontSize: 20,
-        color: "#E9E9E9"
+        color: "#E9E9E9",
     },
     u2: {
         fontFamily: "Roboto",
         fontSize: 11,
-        color: "#00DE62"
+        color: "#00DE62",
     },
 
     template: {
         width: "96%",
         borderRadius: 10,
         height: 182,
-        maxHeight: 182
+        maxHeight: 182,
     },
 
     iconcontainer: {
@@ -94,15 +93,15 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         width: "95%",
         marginHorizontal: "auto",
-        marginTop: 10
-    }
-    , icon2: {
+        marginTop: 10,
+    },
+    icon2: {
         display: "flex",
         flexDirection: "row",
         // justifyContent : "space-between",
         // width : "90%",
         // marginHorizontal : "auto"
-        gap: 5
+        gap: 5,
     },
 
     lower: {
@@ -118,12 +117,12 @@ const styles = StyleSheet.create({
     u3: {
         fontFamily: "Roboto",
         fontSize: 14,
-        color: "#B8B8B8"
+        color: "#B8B8B8",
     },
     u4: {
         fontFamily: "Roboto",
         fontSize: 10,
         color: "#00DE62",
-        marginTop: 3
+        marginTop: 3,
     },
-})
+});

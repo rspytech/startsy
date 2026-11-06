@@ -44,7 +44,7 @@ import Login2 from "../../SCREENS/login2.js";
 import Test1 from "../../SCREENS/test1.js";
 import Skeleton1 from "../../SCREENS/main-2/skeleton.js";
 
-import Modal1 from "../../SCREENS/Modal.js"
+import Modal1 from "../../SCREENS/Modal.js";
 import Wait from "../../SCREENS/Wait.js";
 import Editcommunity from "../../SCREENS/edit profile pages/Editcommunity.js";
 // import drop from "../../SCREENS/dropdown.js"
@@ -71,176 +71,171 @@ const Stack = createNativeStackNavigator();
 SystemUI.setBackgroundColorAsync("#16181a");
 
 LogBox.ignoreLogs([
-  // "VirtualizedLists should never be nested", // Example warning
-  'Warning: Each child in a list should have a unique "key" prop.',
-  "VirtualizedList: Encountered an error while measuring a list's offset from its containing VirtualizedList.",
+    // "VirtualizedLists should never be nested", // Example warning
+    'Warning: Each child in a list should have a unique "key" prop.',
+    "VirtualizedList: Encountered an error while measuring a list's offset from its containing VirtualizedList.",
 ]);
 
 const originalConsoleWarn = console.warn;
 console.warn = (message, ...args) => {
-  if (
-    // message.includes("VirtualizedLists should never be nested") || // Suppress specific warning
-    message.includes('Each child in a list should have a unique "key" prop.') ||
-    message.includes('Non-serializable') ||
-    message.includes(
-      "Encountered an error while measuring a list's offset from its containing VirtualizedList."
-    ) // Another specific warning
-  ) {
-    return; // Block these warnings
-  }
-  originalConsoleWarn(message, ...args); // Allow other warnings
+    if (
+        // message.includes("VirtualizedLists should never be nested") || // Suppress specific warning
+        message.includes('Each child in a list should have a unique "key" prop.') ||
+        message.includes("Non-serializable") ||
+        message.includes(
+            "Encountered an error while measuring a list's offset from its containing VirtualizedList."
+        ) // Another specific warning
+    ) {
+        return; // Block these warnings
+    }
+    originalConsoleWarn(message, ...args); // Allow other warnings
 };
 // export const Global = createContext("ok");
 
 export default function App() {
-  // <StatusBar style="dark" />
+    // <StatusBar style="dark" />
 
+    useEffect(() => {
+        StatusBar.setBackgroundColor("#16181a");
+        StatusBar.setBarStyle("light-content");
+    }, []);
 
-  
-  useEffect(() => {
-    StatusBar.setBackgroundColor("#16181a");
-    StatusBar.setBarStyle("light-content");
-  }, []);
+    // SplashScreen.preventAutoHideAsync();
+    // useEffect(() => {
+    //   setTimeout(() => {
+    //   }, 300);
+    // }, []);
 
-  // SplashScreen.preventAutoHideAsync();
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //   }, 300);
-  // }, []);
+    useFocusEffect(() => {
+        StatusBar.setBackgroundColor("#16181a");
+        StatusBar.setBarStyle("light-content");
+    });
 
-  useFocusEffect(() => {
-    StatusBar.setBackgroundColor("#16181a");
-    StatusBar.setBarStyle("light-content");
-  });
+    const fontsLoaded = useLoadFonts();
+    const [appisready, setappisready] = React.useState(false);
 
-  const fontsLoaded = useLoadFonts();
-  const [appisready, setappisready] = React.useState(false);
+    // if (!fontsLoaded) {
+    // }
+    useEffect(() => {
+        if (fontsLoaded) {
+            SplashScreen.hideAsync();
+            setappisready(true);
+        }
+    }, [fontsLoaded]);
 
-  // if (!fontsLoaded) {
-  // }
-  useEffect(() => {
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
-      setappisready(true);
-    }
-  }, [fontsLoaded]);
+    return (
+        // <NavigationContainer theme={DarkTheme} >
+        <GlobalProvider>
+            {/* <View style={styles.container}> */}
+            <StatusBar backgroundColor="#16181a" barStyle={"light-content"} />
+            {appisready && (
+                <Stack.Navigator
+                    initialRouteName="Skeleton1"
+                    screenOptions={{
+                        headerStyle: {
+                            backgroundColor: "#16181a",
+                        },
+                        // cardStyle: {backgroundColor: "red"},
+                        keyboardHandlingEnabled: false,
 
-  return (
-    // <NavigationContainer theme={DarkTheme} >
-    <GlobalProvider>
-      {/* <View style={styles.container}> */}
-      <StatusBar backgroundColor="#16181a" barStyle={"light-content"} />
-      {appisready && (
-        <Stack.Navigator
-          initialRouteName="Skeleton1"
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: "#16181a",
-            },
-            // cardStyle: {backgroundColor: "red"},
-            keyboardHandlingEnabled: false,
+                        headerShown: false,
+                        animation: "slide_from_right",
+                    }}
+                >
+                    <Stack.Screen name="Green" component={Green} />
+                    <Stack.Screen name="LoginTrial" component={Login1} />
+                    {/* <Stack.Screen name="ReadMore1" component={ReadMore1} /> */}
 
-            headerShown: false,
-            animation: "slide_from_right",
-          }}
-        >
-          <Stack.Screen name="Green" component={Green} />
-          <Stack.Screen name="LoginTrial" component={Login1} />
-          {/* <Stack.Screen name="ReadMore1" component={ReadMore1} /> */}
+                    <Stack.Screen name="Signup1" component={Signup1} />
+                    <Stack.Screen name="Signup2" component={Signup2} />
+                    <Stack.Screen name="Signup3" component={Signup3} />
+                    <Stack.Screen name="Signup4" component={Signup4} />
+                    <Stack.Screen name="Signup5" component={Signup5} />
+                    <Stack.Screen name="Signup6" component={Signup6} />
+                    <Stack.Screen name="Signup7" component={Signup7} />
+                    <Stack.Screen name="Signup8" component={Signup8} />
+                    <Stack.Screen name="Signup9" component={Signup9} />
+                    <Stack.Screen name="Signup10" component={Signup10} />
+                    <Stack.Screen name="Signup11" component={Signup11} />
+                    <Stack.Screen name="Signup12" component={Signup12} />
+                    <Stack.Screen name="Signup13" component={Signup13} />
+                    <Stack.Screen name="Wait" component={Wait} />
+                    {/* <Stack.Screen name="Connectionscreen" component={ConnectionsScreen} /> */}
+                    <Stack.Screen name="Chat" component={Chat} />
+                    <Stack.Screen name="Chat1" component={Chat1} />
+                    <Stack.Screen name="Modal1" component={Modal1} />
+                    <Stack.Screen name="Skeleton1" component={Skeleton1} />
 
-          <Stack.Screen name="Signup1" component={Signup1} />
-          <Stack.Screen name="Signup2" component={Signup2} />
-          <Stack.Screen name="Signup3" component={Signup3} />
-          <Stack.Screen name="Signup4" component={Signup4} />
-          <Stack.Screen name="Signup5" component={Signup5} />
-          <Stack.Screen name="Signup6" component={Signup6} />
-          <Stack.Screen name="Signup7" component={Signup7} />
-          <Stack.Screen name="Signup8" component={Signup8} />
-          <Stack.Screen name="Signup9" component={Signup9} />
-          <Stack.Screen name="Signup10" component={Signup10} />
-          <Stack.Screen name="Signup11" component={Signup11} />
-          <Stack.Screen name="Signup12" component={Signup12} />
-          <Stack.Screen name="Signup13" component={Signup13} />
-          <Stack.Screen name="Wait" component={Wait} />
-          {/* <Stack.Screen name="Connectionscreen" component={ConnectionsScreen} /> */}
-          <Stack.Screen name="Chat" component={Chat} />
-          <Stack.Screen name="Chat1" component={Chat1} />
-          <Stack.Screen name="Modal1" component={Modal1} />
-          <Stack.Screen name="Skeleton1" component={Skeleton1} />
+                    {/* <Stack.Screen name="Main1" component={Main1} /> */}
+                    {/* <Stack.Screen name="Main2" component={Main2} /> */}
+                    <Stack.Screen name="Login2" component={Login2} />
+                    <Stack.Screen
+                        name="Card"
+                        options={{
+                            animation: "none",
+                        }}
+                        component={Card}
+                    />
+                    <Stack.Screen
+                        name="Main1"
+                        options={{
+                            animation: "none",
+                        }}
+                        component={Main1}
+                    />
+                    <Stack.Screen
+                        name="Main2"
+                        options={{
+                            animation: "none",
+                        }}
+                        component={Main2}
+                    />
 
-          {/* <Stack.Screen name="Main1" component={Main1} /> */}
-          {/* <Stack.Screen name="Main2" component={Main2} /> */}
-          <Stack.Screen name="Login2" component={Login2} />
-          <Stack.Screen
-            name="Card"
-            options={{
-              animation: "none",
-            }}
-            component={Card}
-          />
-          <Stack.Screen
-            name="Main1"
-            options={{
-              animation: "none",
-            }}
-            component={Main1}
-          />
-          <Stack.Screen
-            name="Main2"
-            options={{
-              animation: "none",
-            }}
-            component={Main2}
-          />
+                    <Stack.Screen name="F1" component={F1} />
+                    <Stack.Screen name="Ct" component={Ct} />
+                    <Stack.Screen name="OK" component={OK} />
+                    <Stack.Screen name="ChangePassword1" component={ChangePassword1} />
+                    <Stack.Screen name="ChangePassword2" component={ChangePassword2} />
+                    <Stack.Screen name="EditInvestorInfo" component={EditInvestorInfo} />
+                    <Stack.Screen name="Founder1" component={Founder1} />
+                    <Stack.Screen name="Founder2" component={Founder2} />
+                    <Stack.Screen name="Logout" component={Logout} />
+                    <Stack.Screen name="Test1" component={Test1} />
+                    <Stack.Screen name="Editcommunity" component={Editcommunity} />
+                    <Stack.Screen
+                        name="KeyboardAvoidingComponent"
+                        component={KeyboardAvoidingComponent}
+                        options={{
+                            headerTitle: "Your Custom Title", // Custom title for the header
+                            headerStyle: {
+                                backgroundColor: "blue", // Custom background color
+                            },
+                            headerTintColor: "white", // Custom color for the title text
+                            headerTitleStyle: {
+                                fontWeight: "bold", // Make the title text bold
+                            },
+                        }}
+                    />
 
-          <Stack.Screen name="F1" component={F1} />
-          <Stack.Screen name="Ct" component={Ct} />
-          <Stack.Screen name="OK" component={OK} />
-          <Stack.Screen name="ChangePassword1" component={ChangePassword1} />
-          <Stack.Screen name="ChangePassword2" component={ChangePassword2} />
-          <Stack.Screen name="EditInvestorInfo" component={EditInvestorInfo} />
-          <Stack.Screen name="Founder1" component={Founder1} />
-          <Stack.Screen name="Founder2" component={Founder2} />
-          <Stack.Screen name="Logout" component={Logout} />
-          <Stack.Screen name="Test1" component={Test1} />
-          <Stack.Screen name="Editcommunity" component={Editcommunity} />
-          <Stack.Screen
-            name="KeyboardAvoidingComponent"
-            component={KeyboardAvoidingComponent}
-            options={{
-              headerTitle: "Your Custom Title", // Custom title for the header
-              headerStyle: {
-                backgroundColor: "blue", // Custom background color
-              },
-              headerTintColor: "white", // Custom color for the title text
-              headerTitleStyle: {
-                fontWeight: "bold", // Make the title text bold
-              },
-            }}
-          />
-
-          <Stack.Screen
-            name="Singleprofilepage"
-            component={Singleprofilepage}
-          />
-        </Stack.Navigator>
-      )}
-      {/* </View> */}
-    </GlobalProvider>
-    // </NavigationContainer>
-  );
+                    <Stack.Screen name="Singleprofilepage" component={Singleprofilepage} />
+                </Stack.Navigator>
+            )}
+            {/* </View> */}
+        </GlobalProvider>
+        // </NavigationContainer>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // zIndex : 1000000,
-    backgroundColor: "#16181a", // Set your desired background color here
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#16181a", // Set your desired background color here
-  },
+    container: {
+        flex: 1,
+        // zIndex : 1000000,
+        backgroundColor: "#16181a", // Set your desired background color here
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#16181a", // Set your desired background color here
+    },
 });
