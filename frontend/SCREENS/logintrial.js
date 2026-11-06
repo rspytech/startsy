@@ -1,3 +1,6 @@
+// Login screen: username/email + password. Saves the returned token on the phone and opens
+// the right home screen for the user's role.
+
 // App.tsx
 
 import * as React from "react";

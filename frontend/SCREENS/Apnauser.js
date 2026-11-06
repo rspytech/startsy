@@ -1,3 +1,6 @@
+// "Apna user" = your own profile: profile details, cover image, your posts, comments and follow lists.
+// Used as the Profile tab on both home screens.
+
 import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { View, Animated, Text, Image, FlatList, StatusBar, RefreshControl, ActivityIndicator, StyleSheet, BackHandler, SafeAreaView, ScrollView, Pressable, Dimensions, TouchableOpacity, Modal, TouchableWithoutFeedback, TextInput } from "react-native";
 import Entypo from '@expo/vector-icons/Entypo';

@@ -1,3 +1,6 @@
+// Main feed for founders/community members/job seekers: posts, job posts and communities,
+// with upvote, apply-to-job, join-community and delete-own-post actions.
+
 import React, { useState, useRef, useEffect, useMemo, useContext, useCallback } from "react";
 import {
     ScrollView,

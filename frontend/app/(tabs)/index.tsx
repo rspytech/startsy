@@ -1,3 +1,7 @@
+// App entry point. Lists every full-screen page of the app in one navigation stack
+// (see docs/SCREENS.md), loads the fonts, sets the dark status bar, and hides a few noisy
+// developer warnings. The two home screens are Main1 (investors) and Main2 (everyone else).
+
 import * as React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SplashScreen from "expo-splash-screen";

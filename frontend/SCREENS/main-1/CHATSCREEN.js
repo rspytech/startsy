@@ -1,3 +1,6 @@
+// One-to-one chat screen. Opens a live Socket.IO connection to the server to send and
+// receive messages instantly.
+
 import * as React from "react";
 import { useState, useEffect, useRef } from "react";
 import {

@@ -1,3 +1,6 @@
+// Loading animation (grey placeholder blocks). Configured as the app's first screen in
+// app/(tabs)/index.tsx; it has no code of its own that moves to another screen.
+
 import React from "react";
 import { Skeleton } from "moti/skeleton";
 import { MotiView } from "moti";

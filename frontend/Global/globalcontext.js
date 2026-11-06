@@ -1,3 +1,6 @@
+// App-wide shared data. On start-up it reads the saved login token from the phone's storage
+// and makes it available to every screen through GlobalContext.
+
 // GlobalContext.js
 import React, { createContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";

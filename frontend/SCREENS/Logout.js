@@ -1,3 +1,6 @@
+// Despite its name, this is a leftover "Successful! Continue Shopping" page from a template;
+// it is registered as the "Logout" screen but does not log anyone out.
+
 //
 
 // Successfule scree code

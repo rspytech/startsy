@@ -1,3 +1,6 @@
+// Checks whether a login token is saved on the phone and sends the user to their home screen
+// (Main1 for investors, Main2 for others) or to the login screen.
+
 import * as React from "react";
 import { useState, useEffect, useRef, useContext } from "react";
 import {

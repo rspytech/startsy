@@ -1,3 +1,6 @@
+// Investor home screen: bottom tab bar with For You, Newsletter, Startsy (founder cards),
+// Messages and Profile. See docs/SCREENS.md section 3.
+
 import React, { useState, useRef, useEffect, useCallback, useContext } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import {

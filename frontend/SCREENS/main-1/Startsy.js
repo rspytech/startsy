@@ -1,3 +1,5 @@
+// Investor "Startsy" tab: swipe through recommended founder cards and send connection requests.
+
 import React, { useState, useEffect, useCallback, useRef, useContext } from 'react';
 import { Animated, Pressable, FlatList, RefreshControl, SafeAreaView, StatusBar, TouchableWithoutFeedback } from 'react-native';
 import { ScrollView, View, Text, StyleSheet, Image } from 'react-native';

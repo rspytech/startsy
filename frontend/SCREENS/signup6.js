@@ -1,3 +1,6 @@
+// Sign-up: community-member interests. Note: it sends to a developer's local address
+// (see docs/NOTICED_NOT_CHANGED.md).
+
 // 4.4 last of community
 import React, { useState, useRef, useEffect } from "react";
 import {
