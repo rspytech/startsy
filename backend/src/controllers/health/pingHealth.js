@@ -1,3 +1,6 @@
+// Health check endpoint plus a timer: every 10 minutes the server calls its own
+// /health/pingHealth URL. Render's free plan sleeps idle servers; this keeps it awake.
+
 // export const pingHealth = async(req, res) => {
 //     res.status(200).json({
 //         message: "Server is up and running",

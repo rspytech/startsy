@@ -1,3 +1,7 @@
+// URLs under /posts: creating and reading posts, job posts and communities, upvotes,
+// comments, job applications and community admin actions.
+// Note: /groupPhoto/:comid is registered twice; Express uses the first one.
+
 import express from "express";
 import { verifyUser } from "../middleware/user.auth.middleware.js";
 import upload from "../middleware/upload.middleware.js";

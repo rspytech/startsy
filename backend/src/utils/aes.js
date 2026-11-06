@@ -1,3 +1,7 @@
+// Encrypt / decrypt helpers (AES-256-CBC) used for sensitive data such as PAN numbers.
+// The key comes from the AES_KEY setting. Note: this file reads AES_KEY when it loads,
+// so the server will not start if AES_KEY is missing.
+
 import crypto from "crypto";
 import dotenv from "dotenv";
 dotenv.config();

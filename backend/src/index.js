@@ -1,3 +1,7 @@
+// Starting point of the back end (this is the file the server runs).
+// It connects to MongoDB using the MONGODB_URI and DB_NAME settings, and only once the
+// database is connected does it start listening for requests on PORT (default 5000).
+
 import mongoose from "mongoose";
 import server from "./app.js"; // Import the server from app.js
 import dotenv from "dotenv";

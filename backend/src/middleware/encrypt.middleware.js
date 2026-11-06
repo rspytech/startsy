@@ -1,3 +1,7 @@
+// Protects investors' PAN card numbers before they are stored.
+// It adds a one-way hash (req.hashedPan, used to look up / compare) and an encrypted copy
+// (req.pan, which can be decrypted with AES_KEY) to the request for the controller to save.
+
 import { aesEncrypt } from "../utils/aes.js";
 import { hashPan } from "../utils/hash.js";
 

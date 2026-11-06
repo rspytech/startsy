@@ -1,3 +1,6 @@
+// Uploads images/videos to Cloudinary (cloud file storage) and returns the stored file's details.
+// Uses the CLOUDINARY_* settings.
+
 import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({

@@ -1,3 +1,5 @@
+// URLs under /connections: following and unfollowing users.
+
 import express from "express";
 import { followUser } from "../controllers/networkingConnectionsControllers/follow.controller.js";
 import { unfollowUser } from "../controllers/networkingConnectionsControllers/unfollow.controller.js";

@@ -1,3 +1,6 @@
+// URLs under /api: sign-up, login, OTP codes, passwords, onboarding forms for each role,
+// profile lookups and account deletion.
+
 import express from "express";
 import { registerUser } from "../controllers/authenticateUser/registration.controller.js";
 import { loginUser } from "../controllers/authenticateUser/login.controller.js";

@@ -1,3 +1,5 @@
+// HTML layout of the OTP verification email ({verificationCode} is replaced with the code).
+
 export const VERIFICATION_EMAIL_TEMPLATE = `
 <!DOCTYPE html>
 <html lang="en">

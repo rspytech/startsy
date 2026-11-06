@@ -1,3 +1,6 @@
+// URLs under /founder: accepting/rejecting investor requests, founder chat list,
+// notifications, profile details and editing the founder profile.
+
 import express from "express";
 import { verifyUser } from "../middleware/user.auth.middleware.js";
 import upload from "../middleware/upload.middleware.js";

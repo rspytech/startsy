@@ -1,3 +1,5 @@
+// URLs under /communityMember: editing a community member's profile.
+
 import express from "express";
 import { verifyUser } from "../middleware/user.auth.middleware.js";
 import upload from "../middleware/upload.middleware.js";

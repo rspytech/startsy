@@ -1,3 +1,7 @@
+// Handles file uploads (photos and videos). Files are kept in memory (not saved to disk),
+// limited to 50 MB, and only JPEG, PNG, MP4 and QuickTime files are accepted.
+// Controllers then send the file to Cloudinary for storage.
+
 import multer from "multer";
 
 const storage = multer

@@ -1,3 +1,5 @@
+// Lookup tables used by the recommendation scoring (stages, sectors, locations, funding ranges).
+
 const mappings = {
     stage: {
         "Ideation Stage": 1,

@@ -1,3 +1,5 @@
+// One-off database maintenance: gives every user without an isInvestorVerified field the value false.
+
 import { User } from "../../models/user.model.js";
 
 const addField = async (req, res) => {

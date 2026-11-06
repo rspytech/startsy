@@ -1,3 +1,6 @@
+// Sends a push notification to a phone through Expo's push service.
+// Needs the device's push token, which the app saves via POST /api/updateNotificationToken.
+
 const sendNotification = async (token, tittle, message) => {
     console.log(token);
     console.log(tittle);

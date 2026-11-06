@@ -1,3 +1,5 @@
+// URLs under /groupChat: community group chat list and messages.
+
 import express from "express";
 import { verifyUser } from "../middleware/user.auth.middleware.js";
 import { getCommunityGroupChatList } from "../controllers/groupChat/getCommunityGroupList.js";

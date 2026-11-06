@@ -1,3 +1,5 @@
+// URLs under /notification: the logged-in user's notifications.
+
 import express from "express";
 import { getUserNotifications } from "../controllers/notificationController/getUserNotifications.js";
 import { getNotificationPost } from "../controllers/notificationController/getNotificationPost.js";

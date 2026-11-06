@@ -1,3 +1,6 @@
+// URLs under /chats: sending and reading one-to-one and group chat messages.
+// Sending also pushes the message live through Socket.IO.
+
 import express from "express";
 import { verifyUser } from "../middleware/user.auth.middleware.js";
 

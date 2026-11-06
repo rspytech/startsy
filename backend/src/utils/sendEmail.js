@@ -1,3 +1,5 @@
+// Sends the OTP verification email through Gmail, using the EMAIL_USER / EMAIL_PASS settings.
+
 import nodemailer from "nodemailer";
 import { VERIFICATION_EMAIL_TEMPLATE } from "./template/emailTemplate.js";
 

@@ -1,3 +1,7 @@
+// URLs under /test. Despite the name, the live app uses these: saved posts, single post,
+// followers, read receipts, ratings, reporting and a few profile helpers.
+// The URL prefix /test is part of the API the app calls, so it is kept as is.
+
 import express from "express";
 // import { verifyUser } from "../middleware/user.auth.middleware";
 import getUserFollowers from "../controllers/networkingConnectionsControllers/getUserFollow.js";

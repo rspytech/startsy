@@ -1,3 +1,8 @@
+// Builds the web server: shared middleware (CORS, JSON/form parsing, cookies, sessions),
+// the real-time chat connection (Socket.IO), and which URL prefix goes to which route file.
+// Example: everything starting with /posts is handled by routes/post.routes.js.
+// The full list of endpoints is in docs/ENDPOINTS.md.
+
 import express from "express";
 import http from "http";
 import { configureSocketIO } from "./socket/socketIo.js";

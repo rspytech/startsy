@@ -1,3 +1,7 @@
+// Real-time chat over Socket.IO. Phones connect, register who they are, and then
+// send/receive private and group messages instantly. Messages are also saved to MongoDB,
+// and a push notification is sent when needed.
+
 import { Server } from "socket.io";
 import { Conversation } from "../models/conversation.model.js";
 import { Message } from "../models/message.model.js";

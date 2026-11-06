@@ -1,3 +1,6 @@
+// Simple founder recommendation scoring for investors: compares a startup's stage, sector,
+// location and funding range with an investor's preferences (see config/startupPrefrencesMapping.js).
+
 class RecommendationBasic {
     stage;
     sector;

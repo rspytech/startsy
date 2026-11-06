@@ -1,3 +1,6 @@
+// URLs under /investor: investor feed, founder recommendations, requests to founders,
+// investor chat list and editing the investor profile.
+
 import express from "express";
 import { verifyUser } from "../middleware/user.auth.middleware.js";
 import upload from "../middleware/upload.middleware.js";

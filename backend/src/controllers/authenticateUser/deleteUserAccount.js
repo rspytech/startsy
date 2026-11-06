@@ -1,3 +1,6 @@
+// Permanently deletes a user and everything they created (posts, communities, comments,
+// messages, notifications) and removes them from other users' lists.
+
 import mongoose from "mongoose";
 import { User } from "../../models/user.model.js";
 import { Post } from "../../models/post.model.js";

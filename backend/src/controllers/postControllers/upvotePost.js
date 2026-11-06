@@ -1,3 +1,6 @@
+// Upvoting posts. Also contains a timer that runs every day at midnight and resets
+// everyone's daily upvote counter.
+
 import { Post } from "../../models/post.model.js";
 import { User } from "../../models/user.model.js";
 import { Notification } from "../../models/notification.model.js";

@@ -1,3 +1,7 @@
+// URLs under /admin: admin login, newsletters, investor verification, reported posts,
+// APK download links, user exports and statistics.
+// Note: several of these do not require a login (see docs/ENDPOINTS.md).
+
 import express from "express";
 import { isAdmin } from "../middleware/adminAuth.middleware.js";
 import { verifyUser } from "../middleware/user.auth.middleware.js";

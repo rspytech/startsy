@@ -1,3 +1,6 @@
+// Google sign-in setup (Passport). Not loaded anywhere at the moment, which is why the
+// /auth/google routes cannot complete a login. Kept for reference.
+
 import passport from "passport";
 import { User } from "../models/user.model.js";
 import { Strategy as GoogleStrategy } from "passport-google-oauth20";

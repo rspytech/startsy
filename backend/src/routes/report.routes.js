@@ -1,3 +1,5 @@
+// URLs under /report: reporting a post.
+
 import express from "express";
 import { verifyUser } from "../middleware/user.auth.middleware.js";
 import { postReport } from "../controllers/reportControllers/postReport.controller.js";

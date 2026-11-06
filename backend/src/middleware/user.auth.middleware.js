@@ -1,3 +1,7 @@
+// Login check used by most endpoints. Reads the access token from the Authorization header,
+// verifies it with ACCESS_TOKEN_SECRET, loads the matching user and puts it on req.user.
+// If the token is missing or invalid the request is refused with 401.
+
 import jwt from "jsonwebtoken";
 import { User } from "../models/user.model.js";
 
