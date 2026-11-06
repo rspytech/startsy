@@ -1,0 +1,1594 @@
+import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
+import { View, Animated, Text, Image, FlatList, StatusBar, RefreshControl, ActivityIndicator, StyleSheet, BackHandler, SafeAreaView, ScrollView, Pressable, Dimensions, TouchableOpacity, Modal, TouchableWithoutFeedback, TextInput } from "react-native";
+import Entypo from '@expo/vector-icons/Entypo';
+import EvilIcons from '@expo/vector-icons/EvilIcons';
+import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import Banner from "../assets/icons/banner.js"
+import Upvote from '@/assets/icons/upvote';
+import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
+import AsyncStorage from "@react-native-async-storage/async-storage";
+import * as ImagePicker from 'expo-image-picker';
+import Post from "../components/Post.js"
+import { useRoute } from '@react-navigation/native';
+import { url } from "../config.js"
+import { Video } from 'expo-av';
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import Share from "@/assets/icons/share.js";
+import styles from "../styles/post.js"
+import { jwtDecode } from 'jwt-decode';
+import { useFocusEffect } from 'expo-router';
+import Logout from "../assets/icons/logout.js"
+import { Alert } from 'react-native';
+import Feather from '@expo/vector-icons/Feather';
+import Delete from "../assets/icons/delete.js"
+import BottomSheet, { BottomSheetView, BottomSheetScrollView, BottomSheetTextInput, BottomSheetDraggableView, BottomSheetFlatList, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import Ionicons from '@expo/vector-icons/Ionicons';
+
+const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) => {
+    // console.log(token);
+    var mypage = true
+    // console.log(mypage);
+    const flatListRef = useRef(null);
+    const [commenttext, setcommenttext] = useState("")
+    const [uploadingcomment, setuploadingcomment] = useState(false)
+
+
+    const comments = ({ item, index }) => {
+
+        function time(time) {
+            // console.log('====================================');
+            // console.log(time);
+            var data1 = new Date(time)
+            // console.log('====================================');
+            // console.log(data1);
+            // console.log('====================================');
+            // console.log('====================================');
+            var seconds = Math.floor((new Date() - data1) / 1000);
+
+            var interval = seconds / 31536000;
+
+            if (interval > 1) {
+                return Math.floor(interval) + " years ago";
+            }
+            interval = seconds / 2592000;
+            if (interval > 1) {
+                return Math.floor(interval) + " months ago";
+            }
+            interval = seconds / 86400;
+            if (interval > 1) {
+                return Math.floor(interval) + " days ago";
+            }
+            interval = seconds / 3600;
+            if (interval > 1) {
+                return Math.floor(interval) + " hours ago";
+            }
+            interval = seconds / 60;
+            if (interval > 1) {
+                return Math.floor(interval) + " minutes ago";
+            }
+            return Math.floor(seconds) + " seconds ago";
+        }
+        return (
+            <View key={index} style={styles.listItem}>
+                <Image
+                    source={{ uri: item.userId.profilePhoto }}
+                    style={styles.avatar} />
+                <View style={styles.textContainer}>
+                    <Text allowFontScaling={false} style={styles.username}>{item.userId.userName}</Text>
+                    <Text allowFontScaling={false} style={styles.message}>{item.comment.trim()}</Text>
+                </View>
+                <Text allowFontScaling={false} style={styles.time}>{time(item.createdAt)}</Text>
+            </View>
+        )
+    }
+
+    const [visible, setVisible] = useState(false);
+    const [isdeleting, setisdeleting] = useState(false);
+
+    useFocusEffect(
+        useCallback(() => {
+            if (closeall) {
+                closeall()
+            }
+        }, [])
+    )
+
+
+
+    var decode = jwtDecode(token)
+    console.log(decode);
+
+    var editprofilepage;
+
+
+    async function docomment() {
+        console.log("doing comment");
+        console.log(postid);
+        console.log(commenttext);
+        setuploadingcomment(true)
+
+
+        try {
+
+            const response = await fetch(`${url}posts/createComment/${postid}`, {
+                method: 'POST',
+                body: JSON.stringify({ comment: commenttext }),
+                headers: {
+                    "Content-Type": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            console.log(data);
+            setemptycomment(false)
+
+            console.log(response.status);
+            setcommenttext("");
+
+            var object = {
+                comment: commenttext,
+                createdAt: new Date(),
+                userId: {
+                    profilePhoto: data.profilePhoto,
+                    userName: data.userName,
+                }
+            }
+            var newarray = [...allcomments]
+            newarray.unshift(object)
+            setallcomments(newarray)
+
+
+            const scrollToTop = () => {
+                flatListRef.current?.scrollToOffset({ offset: 0, animated: false });
+            };
+            scrollToTop();
+            scrollToTop();
+
+        }
+        catch (err) {
+            console.log(err);
+
+        }
+        finally {
+            setuploadingcomment(false)
+            // Keyboard.dismiss();
+        }
+
+    }
+
+
+
+    const [minHeight, setMinHeight] = useState(100);
+    const [tabIndex, setTabIndex] = useState(0);
+    const [isLoading, setIsLoading] = useState(false);
+    const [investor, setinvestorarray] = useState([]);
+    const [noninvestor, setnoninvestor] = useState([]);
+    const [refreshing, setRefreshing] = useState(false);
+
+
+    const AboutTab = () => {
+
+        useFocusEffect(
+            useCallback(() => {
+
+                mainpagebottomsheet.current?.close()
+                handleTabChange(1)
+            })
+        )
+
+        return (
+            <View style={{ flex: 1, width: width, height: 10000, backgroundColor: "#16181a" }}>
+                <View style={styles1.buyPlanSection}>
+                    <Text allowFontScaling={false} style={styles1.buyPlanText}>Buy Plan</Text>
+                </View>
+            </View>
+
+        )
+    }
+
+
+    const PostsTab = ({ posts, isLoading }) => {
+
+        useFocusEffect(
+            useCallback(() => {
+                console.log("post");
+                console.log(posts, "ok");
+
+                // handleTabChange(1)
+            })
+        )
+
+
+        return (
+            <View style={{ flex: 1, backgroundColor: "#16181a" }}>
+
+                <CustomAlert visible={visible} onClose={() => setVisible(false)} />
+
+                {posts?.length == 0 && <Text style={styles1.no}>You have not posted anything yet</Text>}
+
+                <FlatList
+                    scrollEnabled={false}
+                    getItemLayout={(data, index) => ({
+                        length: 400,
+                        offset: 400 * index,
+                        index,
+                    })}
+                    keyExtractor={(item, index) => item._id.toString()}
+                    data={posts}
+                    renderItem={renderItem}
+
+
+                />
+
+            </View>
+        );
+
+
+    };
+
+
+
+    useEffect(() => {
+        console.log(minHeight); // Log after state updates
+    }, [minHeight]);
+
+
+    const handleTabChange = (index) => {
+        setTabIndex(index);
+        // Update minHeight based on the active tab
+        // if (index === 0) {
+        //   setMinHeight(200); // About tab active, set minHeight to 200
+        // } else if (index === 1) {
+        //   setMinHeight(1400); // Posts tab active, set minHeight to 1000
+        // }
+    };
+
+
+
+
+
+    if (decode.role == "Founder") {
+        editprofilepage = "Founder1";
+    }
+    else if (decode.role == "Investor") {
+        editprofilepage = "EditInvestorInfo";
+    }
+    else {
+        editprofilepage = "Editcommunity";
+
+    }
+
+    // console.log(decode);
+    // console.log(decode._id);
+
+    var id = decode._id
+
+
+
+
+
+    const Tab = createMaterialTopTabNavigator();
+
+
+    const [userdata, setuserdata] = useState(null)
+    const [posts, setPosts] = useState([])
+
+
+    async function getdata(params) {
+        try {
+
+            const response = await fetch(`${url}api/getUsersProfiles/${id}`, {
+                method: 'GET',
+                headers: {
+                    "Content-Type": "application/json",
+                    accept: "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+
+            console.log(data.data, "investor ka data");
+
+            // console.log(data.data.chatUsers, "poiuytr");
+
+            setinvestorarray(data.data.chatUsers.filter((e) => e.role == "Investor"))
+            setnoninvestor(data.data.chatUsers.filter((e) => e.role != "Investor"))
+
+            // console.log(data.data.posts);
+
+            setuserdata(data.data)
+
+
+            if (decode.role != "Investor") {
+                var data1 = data.data.posts.map(e => {
+
+                    console.log(e);
+
+                    var object = { ...e, isliked: e.likedBy ? e.likedBy.includes(decode._id) : false, Applied: e.communityPost ? e.communityPost.communityMembers.includes(decode._id) : false, Jobapplied: e.jobPosts ? e.jobPosts.jobApplicants.includes(decode._id) : false }
+                    return object
+                })
+                if (data1) {
+                    setPosts(data1)
+                }
+                else {
+                    setPosts([])
+
+                }
+            }
+            setfollowstatus(data.data.status)
+
+            console.log(data.data.posts.length, "post ka length");
+
+            setMinHeight(data.data.posts.length * 700)
+            console.log(data.data.posts.length * 500);
+
+            setImage(data.data.user_id.bannerImage)
+
+            // console.log(data.data);
+            // console.log(data.data.user_id.bannerImage);
+            // console.log(image);
+
+
+
+
+
+        }
+        catch (err) {
+            console.log(err);
+
+        }
+    }
+
+    // console.log(id);
+
+    useEffect(() => {
+        getdata()
+    }, [])
+
+
+
+    // console.log(route.params);
+
+
+    useEffect(() => {
+        StatusBar.setBackgroundColor("#16181A");
+        StatusBar.setBarStyle("light-content")
+    }, [])
+
+
+
+
+    // useEffect(() => {
+    //     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+    //         // console.log(page);
+
+    //         if (page == "Chat") {
+    //             navigation.navigate(page, { item, messages, token });
+    //         }
+    //         else {
+    //             navigation.navigate(page);
+    //         }
+
+    //         return true; // This prevents the default back action
+    //     });
+
+    //     return () => backHandler.remove();
+    // }, [page]);
+
+    const [image, setImage] = useState("")
+    const [followstatus, setfollowstatus] = useState("Follow")
+
+    const CustomAlert = ({ visible, onClose }) => {
+        const fadeAnim = useRef(new Animated.Value(0)).current; // Persistent animated value
+
+        useEffect(() => {
+            if (visible) {
+                Animated.timing(fadeAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
+            } else {
+                Animated.timing(fadeAnim, { toValue: 0, duration: 300, useNativeDriver: true }).start(() => {
+                    if (typeof onClose === "function") {
+                        onClose(); // Ensure onClose exists before calling
+                    }
+                });
+            }
+        }, [visible]);
+
+        if (!visible) return null; // Prevent rendering when not visible
+
+        async function deletepost1() {
+            console.log("Deleting post...");
+            if (idofposttobedeleetd != null) {
+                setisdeleting(true)
+                try {
+                    const response = await fetch(`${url}posts/deletepost/${idofposttobedeleetd}`, {
+                        method: 'POST',
+                        body: "",
+                        headers: {
+                            accept: "application/json",
+                            "Authorization": `Bearer ${token}`,
+                        },
+                    });
+
+                    const data = await response.json();
+                    console.log(data);
+
+                    // Remove the post from the local state
+                    const updatedPosts = posts.filter((post) => post._id !== idofposttobedeleetd);
+                    setPosts(updatedPosts);
+                    setVisible(false)
+                } catch (err) {
+                    console.log(err);
+                }
+                finally {
+                    setisdeleting(false)
+                }
+            }
+        }
+
+        return (
+            <Modal transparent visible={visible} animationType="none" onRequestClose={() => onClose?.()}>
+                <TouchableWithoutFeedback onPress={() => onClose?.()}>
+                    <Animated.View style={[styles1.overlay, { opacity: fadeAnim }]}>
+                        <TouchableWithoutFeedback>
+                            <View style={styles1.alertBox}>
+                                <Text style={styles1.title}>Delete Post</Text>
+                                <Text style={styles1.message}>Click confirm to delete.</Text>
+                                <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+
+                                    <TouchableOpacity onPress={() => onClose?.()} style={styles1.button}>
+                                        <Text style={styles1.buttonText}>Cancel</Text>
+                                    </TouchableOpacity>
+                                    <TouchableOpacity onPress={() => deletepost1()} style={styles1.button}>
+                                        {isdeleting && <ActivityIndicator size={24} color="#16181a" />}
+                                        {!isdeleting && <Text style={styles1.buttonText}>Confirm</Text>}
+                                    </TouchableOpacity>
+                                </View>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </Animated.View>
+                </TouchableWithoutFeedback>
+            </Modal>
+        );
+    };
+
+    const [idofposttobedeleetd, setidofposttobedeleetd] = useState(null)
+
+    const renderItem = ({ item, index }) => {
+
+
+
+        async function deletepost(postid) {
+
+            setVisible(true)
+            setidofposttobedeleetd(postid)
+
+            console.log("hi");
+            console.log(postid);
+
+
+        }
+
+
+
+
+        const isVideoPlaying = videoStates[item._id] || false;
+
+        function currency(pay) {
+            // console.log(pay);
+            // console.log(typeof pay);
+            pay = Number(pay);
+            return pay.toLocaleString("en-IN")
+        }
+
+
+        if (item.type == "photo" || item.type == "textBlog" || item.type == "video") {
+            return (
+                <View key={index} style={styles.box}>
+                    <View style={[styles.top, { marginBottom: 10 }]} >
+                        <View
+                            // onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.user_id._id, page: "Startsy" }) }}
+                            style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                            <Image style={styles.userimg} source={{ uri: userdata.user_id.profilePhoto }} />
+                            <View style={styles.userdetail}>
+                                <Text allowFontScaling={false} style={styles.u1}>{userdata.user_id.userName == "" ? decode.userName : decode.userName}</Text>
+                                <Text allowFontScaling={false} style={styles.u2}>{userdata.user_id.role == "CommunityMember" ? "Member" : userdata.user_id.role}</Text>
+                            </View>
+                            <Pressable style={styles1.minus} onPress={() => deletepost(item._id)}>
+                                {/* <FontAwesome6 name="trash" style={styles1.minus} size={22} color="#00DE62" /> */}
+                                {/* <Feather name="trash-2" style={styles1.minus} size={22} color="#00DE62" /> */}
+
+                                {/* <Text>click me</Text> */}
+                                {/* <Pressable style={styles1.minus}><Delete /></Pressable> */}
+                                <Delete />
+
+                            </Pressable>
+                        </View>
+                    </View>
+                    {item.type == "photo" && <Image style={[styles.template, { aspectRatio: item.aspectRatio ? item.aspectRatio : 1 / 1 }]} source={{ uri: item.mediaUrl }} />}
+                    {item.type == "video" &&
+                        <Video
+                            ref={ref => videoRefs.current[item._id] = ref}
+                            style={styles.template}
+                            source={{ uri: item.mediaUrl }}
+                            useNativeControls // Enables native playback controls
+                            resizeMode="contain" // Adjusts video to fit within the view
+                            isLooping // Loops the video
+                            shouldPlay={isVideoPlaying}
+                        />
+
+                    }
+                    {item.type == "textBlog" && <Text style={styles.blogtext}>{item.content}</Text>}
+
+                    <View style={styles.iconcontainer}>
+                        <View style={styles.icon2}>
+                            <Pressable onPress={() => { upvotepost(item._id, index) }}>
+                                {!item.isliked && <Upvote width={36} height={36} style={{ marginHorizontal: 5 }} />}
+                                {item.isliked && <Upvote width={36} height={36} style={{ marginHorizontal: 5 }} selected={true} />}
+                            </Pressable>
+
+                            <Text style={{ left: -10, top: 13, color: "#00de62" }}>{item.likedBy.length}</Text>
+                            <Pressable style={{ marginLeft: -5 }} onPress={() => { opencomment(item._id) }}><FontAwesome name="comment-o" size={30} color="#00DE62" /></Pressable>
+                        </View>
+                        <Share style={{ marginTop: 5, marginRight: 10, right: 0 }} />
+
+
+                    </View>
+                    <View style={styles.lower}>
+                        <Text allowFontScaling={false} style={styles.u3}>{item.caption != undefined ? item.caption : "caption"} </Text>
+                        <Pressable onPress={() => { opencomment(item._id) }} allowFontScaling={false} style={styles.u4}>
+                            <Text style={styles.u4}>View {item.postComments.length} comments</Text>
+                        </Pressable>
+
+                    </View>
+
+                </View>
+            )
+        }
+        else if (item.type == "communityPost") {
+            return (
+                <View key={index} style={styles.box}>
+
+                    <View style={styles.top} >
+                        <View
+
+                            // onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.user_id._id, page: "Startsy" }) }}
+                            style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                            <View style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                                <Image style={styles.userimg} source={{ uri: userdata.user_id.profilePhoto }} />
+                                <View style={styles.userdetail}>
+                                    <Text allowFontScaling={false} style={styles.u1}>{decode.userName}</Text>
+                                    <Text allowFontScaling={false} style={styles.u2}>Community Member</Text>
+                                </View>
+                                <Pressable style={styles1.minus} onPress={() => deletepost(item._id)}>
+                                    {/* <FontAwesome6 name="trash" style={styles1.minus} size={22} color="#00DE62" /> */}
+                                    {/* <Feather name="trash-2" style={styles1.minus} size={30} color="#00DE62" /> */}
+                                    {/* <Pressable style={styles1.minus}><Delete /></Pressable> */}
+                                    <Delete />
+                                </Pressable>
+                            </View>
+                        </View>
+                    </View>
+                    <View style={styles.lower}>
+                        <Text style={styles.com1}>{item.communityPost.communityName}</Text>
+                        <Text style={styles.com2}><Text style={styles.desc1}>Community description: </Text>{item.communityPost.communityDescription}</Text>
+                        <Text allowFontScaling={false} style={styles.u6}><Text style={styles.desc1}>Members Count :</Text> {item.communityPost.communityMembers.length}</Text>
+                        <Text allowFontScaling={false} style={styles.u7}>Rules & Guidelines: {item.communityPost.communityRules}</Text>
+
+                        <Pressable style={[styles.next]} >
+                            <Text allowFontScaling={false} style={styles.nexttext}>Join Community</Text>
+                        </Pressable>
+                    </View>
+
+                </View>
+            )
+        }
+        else if (item.type == "jobPost") {
+            return (
+                <View key={index} style={styles.box}>
+                    <View style={styles.top} >
+
+                        <View
+                            // onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.user_id._id, page: "Startsy" }) }}
+                            style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                            <View style={{ display: "flex", flexDirection: "row", width: "100%" }}>
+                                <Image style={styles.userimg} source={{ uri: userdata.user_id.profilePhoto }} />
+                                <View style={styles.userdetail}>
+                                    <Text allowFontScaling={false} style={styles.u1}>{decode.userName}</Text>
+                                    <Text allowFontScaling={false} style={styles.u2}>{userdata.user_id.role == "CommunityMember" ? "Member" : userdata.user_id.role}</Text>
+                                </View>
+
+                                <Pressable style={styles1.minus} onPress={() => deletepost(item._id)}>
+                                    {/* <FontAwesome6 name="trash" style={styles1.minus} size={22} color="#00DE62" /> */}
+                                    {/* <Feather name="trash-2" style={styles1.minus} size={30} color="#00DE62" /> */}
+                                    {/* <Pressable style={styles1.minus}><Delete /></Pressable> */}
+                                    <Delete />
+
+
+                                </Pressable>
+                            </View>
+
+                        </View>
+                    </View>
+                    <View style={styles.lower}>
+                        <Text style={styles.com1}>Role: {item.jobPosts.role}</Text>
+                        <Text style={styles.com2}><Text style={styles.desc1}>Community description: </Text>{item.jobPosts.description}</Text>
+                        <Text allowFontScaling={false} style={styles.u8}>Duration: {item.jobPosts.duration} months</Text>
+                        <Text allowFontScaling={false} style={styles.u8}>Pay: {currency(item.jobPosts.pay)} Rs</Text>
+
+                        <Pressable onPress={() => { applyjob(item._id) }} style={[styles.next]} >
+                            <Text allowFontScaling={false} style={styles.nexttext}>Apply</Text>
+                        </Pressable>
+                    </View>
+
+                </View>
+            )
+        }
+    };
+
+    const fileupload = async () => {
+
+        const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
+        if (permissionResult.granted === false) {
+            alert("Permission to access camera roll is required!");
+            return;
+        }
+
+        // Launch the image picker
+        const result = await ImagePicker.launchImageLibraryAsync({
+            mediaTypes: ImagePicker.MediaTypeOptions.All, // Allow all media types
+            allowsEditing: true, // Allows cropping the image
+            aspect: [16, 9], // Aspect ratio of the image
+            quality: 1, // Image quality (0 to 1)
+
+        });
+
+
+        if (!result.canceled) {
+            var final = new FormData();
+            const imageUri = result.assets[0].uri;
+            setImage(imageUri);
+
+            final.append("coverImage", {
+                uri: imageUri,
+                type: "image/jpeg",
+                name: `image_${Date.now()}.jpg`,
+
+            })
+
+            console.log(final);
+
+
+            const response = await fetch(`${url}api/uploadCoverImage`, {
+                method: 'POST',
+                body: final,
+                headers: {
+                    accept: "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+
+            const data = await response.json();
+
+            console.log(data);
+
+        }
+
+    }
+
+
+    async function sendfollowrequest(id) {
+
+        console.log(id);
+        try {
+
+            const response = await fetch(`${url}connections/followUser/${id}`, {
+                method: 'POST',
+                body: "",
+                headers: {
+                    "Content-Type": "application/json",
+                    accept: "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            // setloading(false)
+            console.log(response.status);
+            setfollowstatus("request sent")
+
+        }
+        catch (err) {
+            console.log(err);
+
+        }
+
+    }
+    async function logout() {
+        try {
+            await AsyncStorage.removeItem('accessToken'); // Replace 'token' with your key
+            console.log('Token removed successfully');
+        } catch (error) {
+            console.error('Error removing token:', error);
+        }
+
+        navigation.navigate("LoginTrial")
+
+    }
+
+
+    function getfund(fund) {
+
+        if (fund == 69) {
+            return 0
+        }
+        fund = fund - 57
+        return (fund * 10000000).toLocaleString("en-IN")
+
+
+        // (+userdata.hiddenInfo.fundingStatus).toLocaleString("en-IN")
+
+    }
+
+    const Header = function () {
+        return (
+            <View key={1}>
+                <Pressable onPress={logout}>
+                    <View style={styles1.header}>
+                        <Text style={styles1.username}>{userdata.user_id.userName}</Text>
+                        <View style={styles1.logout}>
+                            <Logout />
+                        </View>
+                        <Text style={styles1.logoutText}>Logout</Text>
+                        {/* <TouchableOpacity onPress={() => setVisible(true)} style={styles1.showButton}>
+                            <Text style={styles1.showButtonText}>Show Alert</Text>
+                        </TouchableOpacity> */}
+
+
+                    </View>
+                </Pressable>
+                <View>
+                    <Pressable onPress={fileupload} style={styles1.top}>
+                        {/* {userdata.user_id.bannerImage != "" && <Image style={styles1.bimg} source={{ uri: userdata.user_id.bannerImage }} />} */}
+
+                        {(image == "" || image == undefined) &&
+                            <View style={styles1.img1}>
+                                <Banner />
+                            </View>}
+
+
+                        {(image != "" && image != undefined) && <Image style={styles1.bimg} source={{ uri: image }} />}
+                    </Pressable>
+                    <View style={styles1.bottom}>
+
+                        {/* <Delete /> */}
+
+
+                        <View style={styles1.profilephoto}>
+                            <Image style={styles1.img2} source={{ uri: userdata.user_id.profilePhoto }} />
+                        </View>
+                        <View style={styles1.upvote}>
+                            <View style={{ transform: [{ scale: 1.1 }], marginRight: 0 }} >
+                                <Upvote width={decode.role == "Investor" ? 0 : 50} height={44} />
+                            </View>
+                            <Text style={styles1.followers}>
+                                {decode.role != "Investor" && (userdata.totalUpvotes || 0)}
+                            </Text>
+                        </View>
+
+                        <Text style={styles1.u1}>
+                            {userdata.user_id.userName}  <Text style={styles1.role}>{userdata.user_id.role == "CommunityMember" ? "Member" : userdata.user_id.role}</Text>
+
+                        </Text>
+
+                        <Pressable onPress={() => {
+                            navigation.navigate(editprofilepage)
+                        }} style={styles1.f1}><Text style={styles1.ft}>Edit profile</Text></Pressable>
+                        {/* <Text style={styles1.goal}>{userdata.goal}</Text> */}
+
+                        {decode.role == "Founder" &&
+                            <Text style={styles1.goal}>Goal : {userdata.goal}</Text>
+                        }
+
+                        {decode.role == "Founder" &&
+                            <Text style={styles1.fund}>{userdata.hiddenInfo.stageOfStartup ? userdata.hiddenInfo.stageOfStartup : ""} :  ₹ {getfund(userdata.hiddenInfo.fundingStatus)}</Text>
+                        }
+
+
+
+                        {decode.role == "Investor" &&
+                            <Text style={styles1.goal}>Investment experience : {userdata.previousExperience} years</Text>
+                        }
+
+                        {decode.role == "Investor" &&
+                            <Text style={styles1.fund}>Investment capacity : ₹ {userdata.investmentRange.toLocaleString("en-IN")}</Text>
+                        }
+
+
+                        {decode.role == "CommunityMember" &&
+                            <Text style={styles1.goal}>{userdata.tagline}</Text>
+                        }
+
+                        {decode.role == "CommunityMember" &&
+                            <Text style={styles1.fund}>{userdata.skills}</Text>
+                        }
+
+
+
+                        {/* {userdata.goal != undefined && <Text style={styles1.goal}>{userdata.goal}</Text>}
+                        {userdata.hiddenInfo?.stageOfStartup != undefined && <Text style={styles1.fund}>{userdata.hiddenInfo.stageOfStartup}</Text>} */}
+
+                        <View style={styles1.main}>
+                            {decode.role != "Investor" && decode.role != "CommunityMember" && <View style={styles1.connectionContainer}>
+
+
+                                {Array(3).fill(null).map((_, index) => (
+                                    <View key={index} style={styles1.circle}>
+                                        <Image
+                                            key={index}
+                                            style={styles1.profileImage1}
+                                            source={
+                                                investor[index]
+                                                    ? { uri: investor[index].profilePhoto } // Profile photo if available
+                                                    : require("../assets/images/blank1.png")   // Dummy image if not
+                                            }
+                                        />
+                                    </View>
+                                ))}
+
+
+                                <Text style={styles1.t6}>{userdata.investorConnections} investor connections</Text>
+                            </View>}
+                            <View style={styles1.connectionContainer}>
+
+                                {Array(3).fill(null).map((_, index) => (
+                                    <View key={index} style={styles1.circle}>
+                                        <Image
+                                            key={index}
+                                            style={styles1.profileImage1}
+                                            source={
+                                                noninvestor[index]
+                                                    ? { uri: noninvestor[index].profilePhoto } // Profile photo if available
+                                                    : require("../assets/images/blank1.png")   // Dummy image if not
+                                            }
+                                        />
+                                    </View>
+                                ))}
+
+                                <Text style={styles1.t6}>{userdata.chatUsers?.length} connections</Text>
+                            </View>
+                        </View>
+
+                        <View style={styles1.divider}></View>
+
+                    </View>
+                </View>
+            </View>
+        )
+    }
+
+
+    // useFocusEffect(useCallback(()=>{
+    //     getdata()
+    // }))
+
+    async function upvotepost(id, index) {
+        // console.log(id);
+        // console.log(index);
+
+        var toset = !posts[index].isliked
+        console.log(toset);
+
+        var status = toset ? "like" : "unlike"
+
+        setPosts(posts.map((e, i) => {
+            if (i == index) {
+                var object = { ...e, isliked: !e.isliked }
+                return object
+            }
+            else return e
+        }))
+
+        try {
+
+            const response = await fetch(`${url}posts/upvotePost/${id}/${status}`, {
+                method: 'POST',
+                body: "",
+                headers: {
+                    "Content-Type": "application/json",
+                    accept: "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            console.log(data);
+            console.log(response.status);
+
+        }
+        catch (err) {
+            // setloading(false)
+            console.log(err);
+
+        }
+
+
+    }
+
+    const [emptycomment, setemptycomment] = useState(false)
+    const [comment, setcomment] = useState(false)
+    const [co, setiscommentopen] = useState(false)
+    const [allcomments, setallcomments] = useState([])
+    const [postid, setpostid] = useState(null)
+    const bottomSheetRef5 = useRef(null);
+
+
+    async function opencomment(id) {
+        setcomment(true)
+        bottomSheetRef5.current?.expand();
+        setpostid(id);
+        setiscommentopen(true)
+
+        console.log("open comment");
+
+
+        try {
+            console.log(token);
+            const response = await fetch(`${url}posts/getComments/${id}`, {
+                method: 'GET',
+                headers: {
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            // console.log(response.status);
+            console.log(data.data);
+            setallcomments(data.data)
+            if (data.data.length == 0) {
+                setemptycomment(true)
+            }
+            else {
+                setemptycomment(false)
+
+            }
+
+        }
+        catch (err) {
+            console.log(err);
+        }
+
+
+
+    }
+
+
+
+
+
+    const render = ({ item, index }) => (
+
+        < View key={index} style={{ flex: 1, minHeight: minHeight, backgroundColor: "#16181a" }} >
+
+            {!userdata && <ActivityIndicator size={24} color="#ccc" />}
+            {userdata && <Header />}
+
+            {/* Tab Navigation */}
+            < View style={styles1.tabContainer} >
+                {decode.role != "Investor" && <Tab.Navigator
+                    screenOptions={({ route }) => ({
+
+                        tabBarStyle: {
+                            backgroundColor: "#16181a",
+                            // backgroundColor: "red",
+                            justifyContent: "space-between",
+                            display: "flex",
+                            // height  : 200,
+                            elevation: 0,
+
+
+                            width: width * 0.95,
+                            margin: "auto"
+                        },
+
+
+                        tabBarIndicatorStyle: {
+                            backgroundColor: "#00DE62",
+                            height: 0,
+                        },
+
+                    })}
+                >
+                    <Tab.Screen
+                        name="Connections"
+                        component={AboutTab}
+                        options={{
+                            tabBarLabel: ({ focused }) => (
+                                <Text allowFontScaling={false} style={[
+                                    styles1.tabbarpill, {
+
+                                        color: focused ? "#16181A" : "#00de62",
+                                        borderColor: focused ? "#00DE62" : "#808080",
+                                        backgroundColor: focused ? "#00DE62" : "transparent",
+                                    }
+                                ]}> Buy Plan
+                                </Text>
+                            ),
+
+                        }}
+                    />
+                    <Tab.Screen
+
+                        name="Requests"
+                        children={() => <PostsTab isLoading={isLoading} posts={posts} setPosts={setPosts} />}
+                        options={{
+                            tabBarLabel: ({ focused }) => (
+                                <Text allowFontScaling={false} style={[
+                                    styles1.tabbarpill, {
+                                        color: focused ? "#16181A" : "#00de62",
+                                        borderColor: focused ? "#00DE62" : "#808080",
+                                        backgroundColor: focused ? "#00DE62" : "transparent",
+                                    }
+                                ]}> Your Posts
+                                </Text>
+                            ),
+
+                        }}
+                    />
+                </Tab.Navigator>}
+
+                {decode.role == "Investor" && <AboutTab />}
+            </ View>
+        </View >
+
+    )
+
+
+    const [viewableItems, setViewableItems] = useState([]);
+    const [videoStates, setVideoStates] = useState({});
+    const videoRefs = useRef({});
+    const onViewableItemsChanged = useCallback(({ viewableItems }) => {
+        setViewableItems(viewableItems);
+
+        // Update play state for videos based on visibility
+        const updatedVideoStates = {};
+        viewableItems.forEach(viewableItem => {
+            if (viewableItem.isViewable) {
+                updatedVideoStates[viewableItem.item._id] = true; // Video should play when in view
+            } else {
+                updatedVideoStates[viewableItem.item._id] = false; // Video should stop when out of view
+            }
+        });
+
+        setVideoStates(updatedVideoStates);
+        viewableItems.forEach(item => {
+            if (!item.isViewable && videoRefs.current[item.item._id]) {
+                videoRefs.current[item.item._id].pauseAsync(); // Pause the video
+            }
+        });
+    }, []);
+
+
+
+    const viewabilityConfig = {
+        viewAreaCoveragePercentThreshold: 80, // Item is considered viewable if 50% is visible
+    };
+
+
+
+    const loadMorePosts = () => {
+        console.log(tabIndex);
+
+        if (isLoading) return;
+        if (tabIndex == 0) return;
+        console.log('====================================');
+        console.log("new post will come qlwijwei ");
+        console.log('====================================');
+
+        setIsLoading(true);
+        setTimeout(() => {
+            const newPosts = Array.from(
+                { length: 10 },
+                (_, i) => `Post ${posts.length + i + 1}`
+            );
+            setPosts((prevPosts) => [...prevPosts, ...newPosts]);
+            setIsLoading(false);
+            // setMinHeight(minHeight + 300)
+
+            console.log('====================================');
+            console.log(posts);
+            console.log(minHeight);
+
+            console.log('====================================');
+            setMinHeight(minHeight + 300); // Adjust minHeight for new posts
+        }, 2000); // Simulate API delay
+    };
+
+
+    const renderBackdrop = (props) => (
+        <BottomSheetBackdrop
+            {...props}
+            disappearsOnIndex={-1} // Backdrop disappears when BottomSheet is closed
+            appearsOnIndex={0} // Backdrop appears when BottomSheet is open
+            opacity={0.7} // Set opacity for the backdrop
+        />
+    );
+
+    const snapPoints5 = useMemo(() => ["50%", "100%"], []);
+
+
+
+
+    async function deletepost(postid) {
+
+        // console.log(postid);
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+        console.log("hioiiiii");
+
+        console.log("hioiiiii");
+        // try {
+        //     const response = await fetch(`${url}posts/deletepost/${postid}`, {
+        //         method: 'POST',
+        //         body: "",
+        //         headers: {
+        //             accept: "application/json",
+        //             "Authorization": `Bearer ${token}`,
+        //         },
+        //     });
+        //     const data = await response.json();
+        //     console.log(data);
+        //     // var array = posts.map((e)=>{
+        //     //     console.log(e);
+
+        //     //     if(e._id != id){
+        //     //         return e
+        //     //     }
+        //     // })
+        //     // var array = posts.splice(posts.indexOf(postid) , 1)
+        //     // setPosts(array)
+
+        // }
+        // catch (err) {
+        //     console.log(err);
+
+        // }
+
+    }
+
+    const [status1, setstatus] = useState(false)
+
+
+    return (
+
+        <SafeAreaView style={{ flex: 1, backgroundColor: "#16181a" }}>
+
+            {!userdata && <View style={styles1.header}>
+                <Text style={styles1.username}>Profile</Text>
+                <View style={styles1.logout}>
+                    <Logout />
+                </View>
+                <Text style={styles1.logoutText}>Logout</Text>
+            </View>}
+
+            {!userdata && <ActivityIndicator style={{ marginVertical: "auto", top: -50 }} size="large" color="#ccc" />}
+
+
+
+            {userdata && <FlatList
+                scrollEnabled={true}
+
+
+                keyExtractor={(item, index) => index.toString()}
+                onViewableItemsChanged={onViewableItemsChanged}
+                viewabilityConfig={viewabilityConfig}
+                contentContainerStyle={{ paddingBottom: 50 }}
+                refreshControl={
+                    <RefreshControl progressViewOffset={0} refreshing={refreshing}
+                        onRefresh={() => {
+                            setRefreshing(true);
+                            getdata()
+
+
+                            setTimeout(() => {
+                                setRefreshing(false); // Stop refreshing after fetching data
+                            }, 2000); // Adjust the delay as needed
+                        }} />}
+
+                data={[1]}
+                // keyExtractor={[1] => item.id.toString()} 
+                style={{ backgroundColor: "#16181a" }}
+                renderItem={render}
+                onEndReachedThreshold={0.1}
+
+            />}
+
+
+
+            {decode.role != "Investor" && <BottomSheet
+
+
+                overlayColor="rgba(0, 0, 0, 0.9)"
+                backdropComponent={renderBackdrop}
+                enablePanDownToClose
+                backgroundStyle={{ backgroundColor: '#1A1D1F', borderRadius: 30 }} // Changes the background of the sheet itself
+                handleIndicatorStyle={{ backgroundColor: '#00de62' }}
+
+                ref={bottomSheetRef5}
+                snapPoints={snapPoints5}
+                onClose={() => {
+                    setcomment(false)
+                    setstatus(false)
+                    setiscommentopen(false);
+                }}
+                index={-1} // Initially closed
+                contentContainerStyle={{ zIndex: 100, elevation: 20, }}
+
+
+            >
+                <View style={{ flex: 0.92 }}>
+
+                    <Text style={styles.comment}>Comments</Text>
+                    {/* <KeyboardAvoidingView behavior="" keyboardVerticalOffset={-100} style={{ flex: 1 }}> */}
+                    {emptycomment && <Text style={styles.no}>No comments yet</Text>}
+                    <BottomSheetFlatList
+                        ref={flatListRef}
+                        data={allcomments}
+                        renderItem={comments}
+                        scrollEnabled={true}
+                        style={{ flex: 0.7, height: "100", overflow: "hidden" }}
+                    // contentContainerStyle={  }}
+
+                    />
+                    {/* </KeyboardAvoidingView> */}
+                    <View
+                        style={styles.sc1}>
+                        <TextInput
+                            placeholder=""
+
+                            placeholderTextColor="#828282"
+                            style={styles.searchInput}
+                            value={commenttext}
+                            multiline={true}
+                            onChangeText={text => setcommenttext(text)}
+                        />
+                        <Pressable onPress={docomment} style={styles.send} >
+
+                            {uploadingcomment && <ActivityIndicator size={24} color="#00de62" />}
+                            {!uploadingcomment && <Ionicons name="send" size={24} color="#00DE62" />}
+                        </Pressable>
+                    </View>
+
+
+
+
+                </View>
+
+            </BottomSheet>
+            }
+
+
+        </SafeAreaView>
+
+
+
+    )
+
+}
+
+export default Apnauser
+
+const { width, height } = Dimensions.get("window");
+
+const styles1 = StyleSheet.create({
+    header: {
+        display: "flex",
+        flexDirection: "row",
+        height: 55,
+        backgroundColor: "#16181A",
+        paddingHorizontal: 15,
+        paddingVertical: 5,
+        justifyContent: "space-between"
+    },
+    header1: {
+        display: "flex",
+        flexDirection: "row",
+        height: 55,
+        backgroundColor: "#16181A",
+        paddingHorizontal: 15,
+        // paddingVertical: 5,
+        justifyContent: "space-between"
+    },
+    username: {
+        fontFamily: "myanmar",
+        fontSize: 24,
+        color: "#00DE62",
+        fontWeight: "bold",
+        marginLeft: 10,
+        marginTop: 2
+    },
+    logout: {
+        fontFamily: "myanmar",
+        fontSize: 24,
+        color: "#00DE62",
+        fontWeight: "bold",
+        marginLeft: 10,
+        marginTop: 2
+    },
+    top: {
+        width: "100%",
+        height: 120,
+        backgroundColor: "#7A7B7C",
+        justifyContent: "center",
+        alignContent: "center",
+        display: "flex",
+    },
+    img1: {
+        // backgroundColor : "red",
+        width: 50,
+        height: 50,
+        margin: "auto",
+        marginTop: 35,
+        paddingLeft: 10,
+        alignSelf: "center",
+
+    },
+    bottom: {
+        width: "100%",
+        backgroundColor: "#16181a",
+        padding: 10
+    },
+    upvote: {
+        justifyContent: "flex-end",
+        alignSelf: "flex-end",
+        width: 80,
+        // backgroundColor: "red",
+        height: "auto",
+        marginVertical: 20,
+        display: "flex",
+        flexDirection: "row",
+        // height : 100
+    },
+    followers: {
+        color: '#00de62',
+        fontFamily: "Roboto",
+        alignSelf: "flex-end",
+        marginLeft: -10,
+        // paddingTop : 20
+        // top: 12
+
+    },
+    u1: {
+        fontFamily: "Alata",
+        fontSize: 24,
+        color: "#E9E9E9",
+        paddingHorizontal: 5,
+        width: "100%",
+        marginVertical: 10,
+        marginTop: -5
+        // marginTop: 30
+    },
+    role: {
+        fontFamily: "Roboto",
+        fontSize: 14,
+        color: "#00de62",
+        marginLeft: 10,
+        top: -2
+
+    },
+
+    f1: {
+        width: 180,
+        height: 34,
+        backgroundColor: "#00de62",
+        borderRadius: 20,
+        justifyContent: "flex-start",
+        alignItems: "center",
+        marginVertical: 0,
+        paddingHorizontal: 5,
+        marginHorizontal: 5
+
+    },
+    ft: {
+        fontFamily: "Alata",
+        fontSize: 16,
+        color: "#16181A",
+        marginTop: 3
+
+    },
+    goal: {
+        fontFamily: "Roboto",
+        fontSize: 18,
+        color: "#D9D9D9",
+        paddingHorizontal: 5,
+        marginVertical: 12,
+        marginBottom: 5
+
+    },
+    fund: {
+        fontFamily: "Roboto",
+        fontSize: 15,
+        color: "#00DE62",
+        paddingHorizontal: 5,
+        marginVertical: 0
+
+    },
+    connectionContainer: {
+        display: "flex",
+        justifyContent: "center",
+        flexDirection: "row",
+        marginVertical: 20
+    },
+    circle: {
+        width: 20,
+        height: 20,
+        borderRadius: 50,
+        marginRight: -6,
+        overflowY: "hidden",
+    },
+
+    profileImage1: {
+        width: "100%",
+        height: "100%",
+        borderRadius: 100,
+        marginBottom: 0,
+        borderWidth: 2,
+        borderColor: "#16181a"
+    },
+    t6: {
+        fontFamily: "Alata",
+        fontSize: 12,
+        color: "#AEAFAF",
+        marginLeft: 15,
+        marginTop: -2
+    },
+
+    main: {
+        display: "flex",
+        flexDirection: "row",
+        justifyContent: "space-evenly"
+
+    },
+    divider: {
+        width: "110%",
+        marginLeft: -20,
+        height: 3,
+        marginTop: 5,
+        marginBottom: 20,
+        backgroundColor: "#24272A"
+    },
+
+    profilephoto: {
+        width: 130,
+        height: 130,
+        // aspectRatio: 1 / 1,
+        position: "absolute",
+        left: 10,
+        top: -45,
+        // backgroundColor : "red",
+        justifyContent: "center",
+        alignItems: "center",
+        borderWidth: 4,
+        borderColor: "#000",
+        borderRadius: 100,
+        overflow: "hidden",
+
+
+    },
+    img2: {
+        objectFit: "cover",
+        width: "103%",
+        alignSelf: "center",
+        height: "103%",
+        // borderRadius: 100,
+
+    },
+    bimg: {
+        width: "100%",
+        height: "100%",
+
+
+    },
+    buyPlanSection: {
+        borderWidth: 2,
+        borderColor: "#00DE62",
+        borderRadius: 10,
+        // minHeight: 400,
+        width: width * 0.89,
+        height: 400,
+        // height: 200,
+        // justifyContent: "center",
+        // alignItems: "center",
+        alignSelf: "center",
+        // flex: 0.9,
+        backgroundColor: "#16181a",
+        marginTop: 10
+    },
+    buyPlanText: {
+        fontSize: 32,
+        fontFamily: "Alata",
+        color: "#B8B8B8",
+        textAlign: "center"
+    },
+
+    tabContainer: {
+        flex: 1,
+        height: Dimensions.get('window').height - 250,
+    },
+    tabContent: {
+        padding: 20,
+        justifyContent: 'center',
+        alignItems: 'center',
+    },
+
+    tabbarpill: {
+        borderWidth: 2,
+        borderRadius: 30,
+        textAlign: "center",
+        textAlignVertical: "center",
+        height: 46,
+        display: "flex",
+        justifyContent: "center",
+        alignItems: "center",
+        alignSelf: "center",
+        width: width * 0.46,
+        fontFamily: "Alata",
+        fontSize: 18,
+        textAlign: "center",
+        verticalAlign: "top",
+        paddingTop: 7,
+        textAlignVertical: "center",
+        textTransform: "capitalize",
+        borderWidth: 1,
+        borderRadius: 30,
+
+    },
+    no: {
+        textAlign: 'center',
+        fontSize: 20,
+        marginVertical: "auto",
+        alignSelf: "center",
+        // flex: 1,
+        color: "#bbbbbb",
+        fontFamily: "Roboto",
+        marginTop: 30,
+        // backgroundColor :  "red",
+        height: 30
+    },
+    logoutText: {
+        position: "absolute",
+        right: 12,
+        top: 13,
+        color: "#00DE62",
+        fontFamily: "Roboto",
+        fontSize: 14
+    },
+    minus: {
+        // backgroundColor :"red",
+        position: "absolute",
+        right: 20,
+        elevation: 100,
+        zIndex: 1000,
+        top: 12
+    }
+    // logout : {
+    //     position: "absolute",
+    //     right : 0,
+    //     top : 10
+    // }
+    , container: { flex: 1, justifyContent: "center", alignItems: "center" },
+    overlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.5)", justifyContent: "center", alignItems: "center" },
+    alertBox: { width: 300, backgroundColor: "#1A1D1F", padding: 20, borderRadius: 20, alignItems: "center" },
+    title: { fontSize: 20, fontWeight: "bold", color: "#D9D9D9", fontFamily: "Alata" },
+    message: { fontSize: 16, marginVertical: 10, textAlign: "center", color: "#D9D9D9", fontFamily: "Roboto" },
+    button: { marginTop: 10, backgroundColor: "#00de62", padding: 6, paddingHorizontal: 37, borderRadius: 10 },
+    buttonText: { color: "#1A1D1F", fontSize: 16, fontFamily: "Roboto", fontWeight: "bold" },
+    showButton: { backgroundColor: "#28a745", padding: 10, borderRadius: 5 },
+    showButtonText: { color: "#fff", fontSize: 16 },
+
+
+})
