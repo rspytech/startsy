@@ -1,11 +1,11 @@
-import { User } from "../models/user.model.js";
-import { Founder } from "../models/founder.model.js";
-import { Freelancer } from "../models/freelancer.model.js";
-import { CommunityMember } from "../models/communityMember.model.js";
-import { Post } from "../models/post.model.js";
-import { Investor } from "../models/investor.model.js";
-import { General } from "../models/general.model.js";
-import { calculateProfileCompletion } from "./CustomController/ProfileCompletion.js";
+import { User } from "../../models/user.model.js";
+import { Founder } from "../../models/founder.model.js";
+import { Freelancer } from "../../models/freelancer.model.js";
+import { CommunityMember } from "../../models/communityMember.model.js";
+import { Post } from "../../models/post.model.js";
+import { Investor } from "../../models/investor.model.js";
+import { General } from "../../models/general.model.js";
+import { calculateProfileCompletion } from "./ProfileCompletion.js";
 
 export const getUsersProfiles = async (req, res) => {
     try {

@@ -1,7 +1,7 @@
 import express from "express";
 import { verifyUser } from "../middleware/user.auth.middleware.js";
 import upload from "../middleware/upload.middleware.js";
-import { editCommunityMemberAccountProfileDetails } from "../controllers/editCommunityMemberAccountProfileDetails.controller.js";
+import { editCommunityMemberAccountProfileDetails } from "../controllers/profileControllers/editCommunityMemberAccountProfileDetails.controller.js";
 const router = express.Router();
 
 router.post(

@@ -1,5 +1,5 @@
-import { Community } from "../models/community.model.js";
-import { User } from "../models/user.model.js";
+import { Community } from "../../models/community.model.js";
+import { User } from "../../models/user.model.js";
 
 async function deleteMemberFromCommunity(req, res) {
     var { communityId, userId } = req.body;

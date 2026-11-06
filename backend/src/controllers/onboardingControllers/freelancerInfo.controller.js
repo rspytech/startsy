@@ -1,6 +1,6 @@
-import { uploadOnCloudinary } from "../../cloudinary.js";
-import { Freelancer } from "../models/freelancer.model.js";
-import { User } from "../models/user.model.js";
+import { uploadOnCloudinary } from "../../../cloudinary.js";
+import { Freelancer } from "../../models/freelancer.model.js";
+import { User } from "../../models/user.model.js";
 // chnage
 export const FreelancerInfo = async (req, res) => {
     req.body.certification = JSON.parse(req.body.certification);

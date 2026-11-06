@@ -1,10 +1,10 @@
 //changes here
 
-import { User } from "../models/user.model.js";
-import { uploadOnCloudinary } from "../../cloudinary.js";
+import { User } from "../../models/user.model.js";
+import { uploadOnCloudinary } from "../../../cloudinary.js";
 import mongoose from "mongoose";
-import { Notification } from "../models/notification.model.js";
-import { General } from "../models/general.model.js";
+import { Notification } from "../../models/notification.model.js";
+import { General } from "../../models/general.model.js";
 
 export const editFounderAccountProfileDetails = async (req, res) => {
     // console.log(req.body);

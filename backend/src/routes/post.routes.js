@@ -15,8 +15,8 @@ import { getPosts } from "../controllers/postControllers/getPost.controller.js";
 import { deletePost } from "../controllers/postControllers/deletePost.controller.js";
 import { UsersAppliedForJobs } from "../controllers/postControllers/getAppliedJobApplicants.js";
 import { groupPhoto } from "../controllers/postControllers/groupPhoto.js";
-import lockCommunity from "../controllers/TestController/lockController.js";
-import UpdateCommunity from "../controllers/TestController/updateCommunity.js";
+import lockCommunity from "../controllers/postControllers/lockController.js";
+import UpdateCommunity from "../controllers/postControllers/updateCommunity.js";
 const router = express.Router();
 
 router.post("/createPost/:postType", verifyUser, upload.single("media"), createPost); // TESTED

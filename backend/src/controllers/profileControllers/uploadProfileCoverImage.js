@@ -1,5 +1,5 @@
-import { uploadOnCloudinary } from "../../cloudinary.js";
-import { User } from "../models/user.model.js";
+import { uploadOnCloudinary } from "../../../cloudinary.js";
+import { User } from "../../models/user.model.js";
 
 export const uploadProfileCoverImage = async (req, res) => {
     try {

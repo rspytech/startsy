@@ -6,7 +6,7 @@ import { rejectRequest } from "../controllers/founderControllers/founderRejectsR
 import { getFounderChatUserList } from "../controllers/founderControllers/getFounderChatsUserList.js";
 import { getFounderNotifications } from "../controllers/founderControllers/getFounderNotifications.js";
 import { getFounderProfileDetails } from "../controllers/founderControllers/getFounderProfileDetails.js";
-import { editFounderAccountProfileDetails } from "../controllers/editFounderProfileAccoutDetails.js";
+import { editFounderAccountProfileDetails } from "../controllers/profileControllers/editFounderProfileAccoutDetails.js";
 
 const router = express.Router();
 

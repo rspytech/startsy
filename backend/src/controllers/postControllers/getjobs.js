@@ -1,4 +1,4 @@
-import { Post } from "../models/post.model.js";
+import { Post } from "../../models/post.model.js";
 
 async function getjobs(req, res) {
     var userid = req.user._id;

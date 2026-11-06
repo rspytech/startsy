@@ -8,7 +8,7 @@ import { getFounderProfile } from "../controllers/investorControllers/getFounder
 import { getInvestorProfileDetails } from "../controllers/investorControllers/getInvestorProfileDetails.js";
 import { getRequestedFounders } from "../controllers/investorControllers/getRequestedFounders.js";
 import { getInvestorChatUserList } from "../controllers/investorControllers/getInvestorChatsUserList.js";
-import { editInvestorAccountProfileDetails } from "../controllers/editInvestorProfileAccountDetails.js";
+import { editInvestorAccountProfileDetails } from "../controllers/profileControllers/editInvestorProfileAccountDetails.js";
 
 const router = express.Router();
 

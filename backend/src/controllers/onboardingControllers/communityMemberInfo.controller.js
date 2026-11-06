@@ -1,7 +1,7 @@
-import { uploadOnCloudinary } from "../../cloudinary.js";
+import { uploadOnCloudinary } from "../../../cloudinary.js";
 import jwt from "jsonwebtoken";
-import { User } from "../models/user.model.js";
-import { General } from "../models/general.model.js";
+import { User } from "../../models/user.model.js";
+import { General } from "../../models/general.model.js";
 
 export const CommunityMemeberInfo = async (req, res) => {
     req.body.certification = JSON.parse(req.body.certification);

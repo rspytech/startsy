@@ -1,18 +1,18 @@
 import express from "express";
 // import { verifyUser } from "../middleware/user.auth.middleware";
-import getUserFollowers from "../controllers/TestController/getUserFollow.js";
-import { getOnePosts } from "../controllers/TestController/getOnePost.js";
+import getUserFollowers from "../controllers/networkingConnectionsControllers/getUserFollow.js";
+import { getOnePosts } from "../controllers/postControllers/getOnePost.js";
 import { verifyUser } from "../middleware/user.auth.middleware.js";
-import { savePost } from "../controllers/TestController/savePost.js";
-import { getSavedPost } from "../controllers/TestController/getSavedPost.js";
-import markAsRead from "../controllers/TestController/markAsRead.js";
-import addField from "../controllers/TestController/addFieldcontroller.js";
-import { getAllUsersWithStatus } from "../controllers/TestController/getAllUserWithStatus.js";
-import { getPortfolioAndCertifications } from "../controllers/TestController/getCerticateAndPortfolio.js";
-import getInvestorStatus from "../controllers/TestController/getInvestorController.js";
-import convertInvestorToCommunity from "../controllers/TestController/ConvertInvestorToCommunity.js";
-import { reportContent } from "../controllers/TestController/ReportPostController.js";
-import { ratingsController } from "../controllers/TestController/ratingController.js";
+import { savePost } from "../controllers/postControllers/savePost.js";
+import { getSavedPost } from "../controllers/postControllers/getSavedPost.js";
+import markAsRead from "../controllers/chatControllers/markAsRead.js";
+import addField from "../controllers/adminControllers/addFieldcontroller.js";
+import { getAllUsersWithStatus } from "../controllers/networkingConnectionsControllers/getAllUserWithStatus.js";
+import { getPortfolioAndCertifications } from "../controllers/profileControllers/getCerticateAndPortfolio.js";
+import getInvestorStatus from "../controllers/profileControllers/getInvestorController.js";
+import convertInvestorToCommunity from "../controllers/profileControllers/ConvertInvestorToCommunity.js";
+import { reportContent } from "../controllers/reportControllers/ReportPostController.js";
+import { ratingsController } from "../controllers/feedbackControllers/ratingController.js";
 
 const TestRoute = express.Router();
 

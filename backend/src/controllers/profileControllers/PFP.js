@@ -1,4 +1,4 @@
-import { User } from "../models/user.model.js";
+import { User } from "../../models/user.model.js";
 
 async function PFP(req, res) {
     var id = req.user.id;

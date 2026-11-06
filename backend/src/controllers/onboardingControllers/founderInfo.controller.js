@@ -1,12 +1,12 @@
-import { User } from "../models/user.model.js";
-import { uploadOnCloudinary } from "../../cloudinary.js";
-import { Notification } from "../models/notification.model.js";
-import Recommendation from "../models/recommendation.model.js";
-import RecommendationBasic from "../algorithms/recommendation.js";
-import mappings from "../config/startupPrefrencesMapping.js"; // Assuming the mappings are available in this config file
+import { User } from "../../models/user.model.js";
+import { uploadOnCloudinary } from "../../../cloudinary.js";
+import { Notification } from "../../models/notification.model.js";
+import Recommendation from "../../models/recommendation.model.js";
+import RecommendationBasic from "../../algorithms/recommendation.js";
+import mappings from "../../config/startupPrefrencesMapping.js"; // Assuming the mappings are available in this config file
 import mongoose from "mongoose";
 import jwt from "jsonwebtoken";
-import { General } from "../models/general.model.js";
+import { General } from "../../models/general.model.js";
 
 // Initialize RecommendationBasic with mappings
 const recommender = new RecommendationBasic(

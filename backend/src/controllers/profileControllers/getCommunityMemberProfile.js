@@ -1,4 +1,4 @@
-import { User } from "../models/user.model.js";
+import { User } from "../../models/user.model.js";
 // ansh
 export const getCommunityMemberProfile = async (req, res) => {
     try {
