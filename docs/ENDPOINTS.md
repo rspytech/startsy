@@ -30,7 +30,7 @@ Create a new user account (sign-up).
 - **Login required:** **no**
 - **Inputs:** body `userName`, `password`, `role`; URL —; query —
 - **Outputs:** `400 { message }`, `201 { message, accessToken, refreshToken }`, `500 { message }`
-- **Code:** `backend/src/controllers/registration.controller.js`
+- **Code:** `backend/src/controllers/authenticateUser/registration.controller.js`
 
 ### `POST /api/checkusername`
 
@@ -66,7 +66,7 @@ Change the logged-in user's password.
 - **Login required:** yes
 - **Inputs:** body `newPassword`, `confirmPassword`; URL —; query —
 - **Outputs:** `400 { message }`, `200 { message }`, `500 { message }`
-- **Code:** `backend/src/controllers/changePassword.controller.js`
+- **Code:** `backend/src/controllers/authenticateUser/changePassword.controller.js`
 
 ### `POST /api/authenticate`
 
@@ -75,7 +75,7 @@ Log in with email/username and password; returns login tokens.
 - **Login required:** **no**
 - **Inputs:** body `identifier`, `password`, `notificationToken`, `isAdmin`; URL —; query —
 - **Outputs:** `403 { message }`, `400 { message }`, `401 { message }`, `200 { message, accessToken, refreshToken }`, `500 { message }`
-- **Code:** `backend/src/controllers/login.controller.js`
+- **Code:** `backend/src/controllers/authenticateUser/login.controller.js`
 
 ### `POST /api/investorInfo`
 
@@ -84,7 +84,7 @@ Save investor profile details during onboarding (profile photo + PAN card photo;
 - **Login required:** yes
 - **Inputs:** body `fullName`, `country`, `age`, `gender`, `contactInfo`, `previousExperience`, `startupStage`, `preferredSector`, `investmentRange`, `linkedInUrl`, `websiteUrl`, `domainEmail`, `investorType`, `generalModelId`; URL —; query —; file `fields(profilePhoto+panCardPhoto)`
 - **Outputs:** `400 { message }`, `400 { message, error }`, `200 { message, newToken }`
-- **Code:** `backend/src/controllers/InvestorInfo.controller.js`
+- **Code:** `backend/src/controllers/onboardingControllers/InvestorInfo.controller.js`
 
 ### `POST /api/founderInfo`
 
@@ -93,7 +93,7 @@ Save founder/startup profile details during onboarding; also updates recommendat
 - **Login required:** yes
 - **Inputs:** body `teamInfo`, `previousWorkExperience`, `socialProof`, `country`, `age`, `gender`, `contactInfo`, `fullName`, `education`, `skills`, `nameOfStartup`, `goal`, `description`, `sector`, `fundingStatus`, `stageOfStartup`, `generalModelId`; URL —; query —; file `single("profilePhoto")`
 - **Outputs:** `400 { message }`, `555 { message, invalidTeamMates }`, `400 { message, error }`, `200 { message, newToken }`, `500 { message }`
-- **Code:** `backend/src/controllers/founderInfo.controller.js`
+- **Code:** `backend/src/controllers/onboardingControllers/founderInfo.controller.js`
 
 ### `POST /api/freelancerInfo`
 
@@ -102,7 +102,7 @@ Save freelancer profile details during onboarding.
 - **Login required:** yes
 - **Inputs:** body `certification`, `portfolio`, `fullName`, `email`, `country`, `age`, `gender`, `contactInfo`, `tagline`, `skills`, `education`, `services`, `currentAvailability`, `pricing`; URL —; query —; file `single("profilePhoto")`
 - **Outputs:** `200 { message }`, `500 { message }`
-- **Code:** `backend/src/controllers/freelancerInfo.controller.js`
+- **Code:** `backend/src/controllers/onboardingControllers/freelancerInfo.controller.js`
 
 ### `POST /api/communityMemberInfo`
 
@@ -111,7 +111,7 @@ Save community-member profile details during onboarding.
 - **Login required:** yes
 - **Inputs:** body `certification`, `portfolio`, `socialProof`, `fullName`, `email`, `country`, `age`, `gender`, `contactInfo`, `communityMemberRole`, `areaOfInterest`, `contentPrefrence`, `tagline`, `skills`, `education`; URL —; query —; file `single("profilePhoto")`
 - **Outputs:** `400 { message, error }`, `400 { message }`, `200 { message, newToken }`, `400 { error, message }`
-- **Code:** `backend/src/controllers/communityMemberInfo.controller.js`
+- **Code:** `backend/src/controllers/onboardingControllers/communityMemberInfo.controller.js`
 
 ### `GET /api/getUsersProfiles/:id`
 
@@ -120,7 +120,7 @@ Get another user's public profile (with follow status).
 - **Login required:** yes
 - **Inputs:** body —; URL `id`; query —
 - **Outputs:** `404 { message }`, `400 { message }`, `200 { message, data, status, profileCompletion }`, `500 { message, error }`
-- **Code:** `backend/src/controllers/getUsersProfile.js`
+- **Code:** `backend/src/controllers/profileControllers/getUsersProfile.js`
 
 ### `GET /api/getProfileDetailsForEditProfile`
 
@@ -129,7 +129,7 @@ Get the logged-in user's details to pre-fill the Edit Profile screen.
 - **Login required:** yes
 - **Inputs:** body —; URL —; query —
 - **Outputs:** `404 { message }`, `200 { message, data }`, `500 { message }`
-- **Code:** `backend/src/controllers/getProfileDetailsForEditProfile.js`
+- **Code:** `backend/src/controllers/profileControllers/getProfileDetailsForEditProfile.js`
 
 ### `GET /api/getProfiledetailForSwitch`
 
@@ -138,7 +138,7 @@ Get the logged-in user's details for the role-switch screen.
 - **Login required:** yes
 - **Inputs:** body —; URL —; query —
 - **Outputs:** `404 { message }`, `200 { message, data, profilePhoto }`, `500 { message }`
-- **Code:** `backend/src/controllers/getProfileDetailsForswitch.js`
+- **Code:** `backend/src/controllers/profileControllers/getProfileDetailsForswitch.js`
 
 ### `POST /api/doesUserExists`
 
@@ -147,7 +147,7 @@ Check whether a user exists (used during login/sign-up).
 - **Login required:** **no**
 - **Inputs:** body `email`, `contactInfo`; URL —; query —
 - **Outputs:** `409 { message }`, `500 { message }`
-- **Code:** `backend/src/controllers/doesUserExists.controller.js`
+- **Code:** `backend/src/controllers/authenticateUser/doesUserExists.controller.js`
 
 ### `POST /api/uploadCoverImage`
 
@@ -156,7 +156,7 @@ Upload the logged-in user's profile cover image.
 - **Login required:** yes
 - **Inputs:** body —; URL —; query —; file `single("coverImage")`
 - **Outputs:** `400 { message }`, `404 { message }`, `400 { message, error }`, `200 { message, coverImageUrl }`, `500 { message, error }`
-- **Code:** `backend/src/controllers/uploadProfileCoverImage.js`
+- **Code:** `backend/src/controllers/profileControllers/uploadProfileCoverImage.js`
 
 ### `GET /api/getInvestorProfile`
 
@@ -165,7 +165,7 @@ Get the logged-in investor's profile.
 - **Login required:** yes
 - **Inputs:** body —; URL —; query —
 - **Outputs:** `404 { message }`, `200 { message, user }`, `500 { message }`
-- **Code:** `backend/src/controllers/getInvestorProfile.js`
+- **Code:** `backend/src/controllers/profileControllers/getInvestorProfile.js`
 
 ### `GET /api/getUserNameSuggestions/:userName`
 
@@ -174,7 +174,7 @@ Search users by username (search/suggestions).
 - **Login required:** yes
 - **Inputs:** body —; URL `userName`; query —
 - **Outputs:** `400 { message }`, `200 { message, data }`, `404 { message, error }`
-- **Code:** `backend/src/controllers/getUserNameSuggestions.js`
+- **Code:** `backend/src/controllers/profileControllers/getUserNameSuggestions.js`
 
 ### `POST /api/getCommunityMemberProfile`
 
@@ -183,7 +183,7 @@ Get basic profiles (name, email) for a list of users.
 - **Login required:** yes
 - **Inputs:** body `array`; URL —; query —
 - **Outputs:** `200 { message, data }`, `500 { message }`
-- **Code:** `backend/src/controllers/getCommunityMemberProfile.js`
+- **Code:** `backend/src/controllers/profileControllers/getCommunityMemberProfile.js`
 
 ### `POST /api/deleteUnauthenticatedUser`
 
@@ -201,7 +201,7 @@ Remove a member from a community.
 - **Login required:** yes
 - **Inputs:** body `communityId`, `userId`; URL —; query —
 - **Outputs:** `200 { message }`, `404 { error, message }`
-- **Code:** `backend/src/controllers/deleteMemberFromCommunity.js`
+- **Code:** `backend/src/controllers/postControllers/deleteMemberFromCommunity.js`
 
 ### `GET /api/updateToJobSeeker`
 
@@ -210,7 +210,7 @@ Switch the logged-in user to job-seeker mode.
 - **Login required:** yes
 - **Inputs:** body —; URL —; query —
 - **Outputs:** `404 { message }`, `200 { message, user, token }`, `500 { message, error }`
-- **Code:** `backend/src/controllers/CustomController/ChangeToJobSeeker.js`
+- **Code:** `backend/src/controllers/profileControllers/ChangeToJobSeeker.js`
 
 ### `POST /api/deleteUserAccount/:id`
 
@@ -264,7 +264,7 @@ Get the logged-in user's profile photo.
 - **Login required:** yes
 - **Inputs:** body —; URL —; query —
 - **Outputs:** `200 { data }`
-- **Code:** `backend/src/controllers/PFP.js`
+- **Code:** `backend/src/controllers/profileControllers/PFP.js`
 
 ### `GET /api/getJobs`
 
@@ -273,7 +273,7 @@ List the job posts created by the logged-in user.
 - **Login required:** yes
 - **Inputs:** body —; URL —; query —
 - **Outputs:** `200 { data }`, `404 { error, message }`
-- **Code:** `backend/src/controllers/getjobs.js`
+- **Code:** `backend/src/controllers/postControllers/getjobs.js`
 
 ### `GET /api/getApiLink`
 
@@ -347,7 +347,7 @@ Edit the logged-in investor's profile.
 - **Login required:** yes
 - **Inputs:** body `fullName`, `country`, `contactInfo`, `previousExperience`, `startupStage`, `preferredSector`, `investmentRange`; URL —; query —; file `single("profilePhoto")`
 - **Outputs:** `404 { message }`, `400 { message, error }`, `400 { message }`, `200 { message, investor }`, `500 { message }`
-- **Code:** `backend/src/controllers/editInvestorProfileAccountDetails.js`
+- **Code:** `backend/src/controllers/profileControllers/editInvestorProfileAccountDetails.js`
 
 ## Founders (/founder)
 
@@ -403,7 +403,7 @@ Edit the logged-in founder's profile (incl. team members).
 - **Login required:** yes
 - **Inputs:** body `teamInfo`, `previousWorkExperience`, `socialProof`, `country`, `contactInfo`, `fullName`, `education`, `skills`, `email`, `nameOfStartup`, `goal`, `description`, `sector`, `fundingStatus`, `stageOfStartup`; URL —; query —; file `single("profilePhoto")`
 - **Outputs:** `555 { message, invalidTeamMates }`, `404 { message }`, `400 { message, error }`, `400 { message }`, `200 { message, founder }`, `500 { message }`
-- **Code:** `backend/src/controllers/editFounderProfileAccoutDetails.js`
+- **Code:** `backend/src/controllers/profileControllers/editFounderProfileAccoutDetails.js`
 
 ## Community members (/communityMember)
 
@@ -414,7 +414,7 @@ Edit the logged-in community member's profile.
 - **Login required:** yes
 - **Inputs:** body `certification`, `portfolio`, `socialProof`, `fullName`, `country`, `contactInfo`, `communityMemberRole`, `areaOfInterest`, `contentPrefrence`, `tagline`, `skills`, `education`; URL —; query —; file `single("profilePhoto")`
 - **Outputs:** `404 { message }`, `400 { message, error }`, `400 { message }`, `200 { message, communityMember }`, `500 { message }`
-- **Code:** `backend/src/controllers/editCommunityMemberAccountProfileDetails.controller.js`
+- **Code:** `backend/src/controllers/profileControllers/editCommunityMemberAccountProfileDetails.controller.js`
 
 ## Posts, jobs and communities (/posts)
 
@@ -560,7 +560,7 @@ Lock or unlock a community (community admin only).
 - **Login required:** yes
 - **Inputs:** body —; URL `id`, `status`; query —
 - **Outputs:** `200 { message }`, `500 { message }`
-- **Code:** `backend/src/controllers/TestController/lockController.js`
+- **Code:** `backend/src/controllers/postControllers/lockController.js`
 
 ### `POST /posts/updateCommunity/:id`
 
@@ -569,7 +569,7 @@ Edit a community's details (community admin only).
 - **Login required:** yes
 - **Inputs:** body `communityName`, `communityDescription`; URL `id`; query —
 - **Outputs:** `200 { message }`, `500 { message }`
-- **Code:** `backend/src/controllers/TestController/updateCommunity.js`
+- **Code:** `backend/src/controllers/postControllers/updateCommunity.js`
 
 ## Chat (/chats)
 
@@ -791,7 +791,7 @@ Get the logged-in user's notifications. (Path spelling "Notifiation" is part of 
 - **Login required:** yes
 - **Inputs:** body —; URL —; query —
 - **Outputs:** `404 { message, pendingRequest }`, `200 { message, data, pendingRequest }`, `500 { message }`
-- **Code:** `backend/src/controllers/getUserNotifications.js`
+- **Code:** `backend/src/controllers/notificationController/getUserNotifications.js`
 
 ### `GET /notification/getNotificationPost/:id`
 
@@ -800,7 +800,7 @@ Get the post a notification points to.
 - **Login required:** yes
 - **Inputs:** body —; URL `id`; query —
 - **Outputs:** `400 { message }`, `200 { message, data }`, `500 { message }`
-- **Code:** `backend/src/controllers/getNotificationPost.js`
+- **Code:** `backend/src/controllers/notificationController/getNotificationPost.js`
 
 ## Group chat (/groupChat)
 
@@ -853,7 +853,7 @@ Get a user's followers/following lists.
 - **Login required:** yes
 - **Inputs:** body —; URL `id`; query —
 - **Outputs:** `200 { followers, following }`
-- **Code:** `backend/src/controllers/TestController/getUserFollow.js`
+- **Code:** `backend/src/controllers/networkingConnectionsControllers/getUserFollow.js`
 
 ### `GET /test/getOnePost/:id`
 
@@ -862,7 +862,7 @@ Get a single post.
 - **Login required:** yes
 - **Inputs:** body —; URL `id`; query —
 - **Outputs:** `404 { message }`, `200 { message, data, bookmarks }`, `500 { message, error }`
-- **Code:** `backend/src/controllers/TestController/getOnePost.js`
+- **Code:** `backend/src/controllers/postControllers/getOnePost.js`
 
 ### `POST /test/savePost/:saveId/:saveStatus`
 
@@ -871,7 +871,7 @@ Save (bookmark) or unsave a post.
 - **Login required:** yes
 - **Inputs:** body —; URL `saveId`, `saveStatus`; query —
 - **Outputs:** `404 { message }`, `200 { message }`, `400 { message }`, `500 { message }`
-- **Code:** `backend/src/controllers/TestController/savePost.js`
+- **Code:** `backend/src/controllers/postControllers/savePost.js`
 
 ### `GET /test/getSavedPost`
 
@@ -880,7 +880,7 @@ List the logged-in user's saved posts.
 - **Login required:** yes
 - **Inputs:** body —; URL —; query —
 - **Outputs:** `404 { message }`, `200 { success, data, message }`, `500 { success, message }`
-- **Code:** `backend/src/controllers/TestController/getSavedPost.js`
+- **Code:** `backend/src/controllers/postControllers/getSavedPost.js`
 
 ### `GET /test/getInvestorStatus`
 
@@ -889,7 +889,7 @@ Get the logged-in investor's verification status.
 - **Login required:** yes
 - **Inputs:** body —; URL —; query —
 - **Outputs:** `200 { message, token }`, `500 { message }`
-- **Code:** `backend/src/controllers/TestController/getInvestorController.js`
+- **Code:** `backend/src/controllers/profileControllers/getInvestorController.js`
 
 ### `POST /test/markAsRead`
 
@@ -898,7 +898,7 @@ Mark chat messages as read.
 - **Login required:** yes
 - **Inputs:** body `senderId`, `receiverId`; URL —; query —
 - **Outputs:** `200 { success, message }`, `500 { success, error }`
-- **Code:** `backend/src/controllers/TestController/markAsRead.js`
+- **Code:** `backend/src/controllers/chatControllers/markAsRead.js`
 
 ### `POST /test/addField`
 
@@ -907,7 +907,7 @@ One-off database maintenance: adds isInvestorVerified to users missing it. WARNI
 - **Login required:** **no**
 - **Inputs:** body —; URL —; query —
 - **Outputs:** `200 text`, `500 text`
-- **Code:** `backend/src/controllers/TestController/addFieldcontroller.js`
+- **Code:** `backend/src/controllers/adminControllers/addFieldcontroller.js`
 
 ### `POST /test/getAllUsersWithStatus`
 
@@ -916,7 +916,7 @@ List users with their follow/chat status relative to the logged-in user.
 - **Login required:** yes
 - **Inputs:** body `userIdsArray`; URL —; query —
 - **Outputs:** `404 { message }`, `200 { message, data }`, `500 { message, error }`
-- **Code:** `backend/src/controllers/TestController/getAllUserWithStatus.js`
+- **Code:** `backend/src/controllers/networkingConnectionsControllers/getAllUserWithStatus.js`
 
 ### `GET /test/getPortfolioAndCertifications`
 
@@ -925,7 +925,7 @@ Get the logged-in user's portfolio and certifications.
 - **Login required:** yes
 - **Inputs:** body —; URL —; query —
 - **Outputs:** `404 { message }`, `200 { success, portfolio, certification, message }`, `500 { success, message }`
-- **Code:** `backend/src/controllers/TestController/getCerticateAndPortfolio.js`
+- **Code:** `backend/src/controllers/profileControllers/getCerticateAndPortfolio.js`
 
 ### `GET /test/convertInvestorToCommunity`
 
@@ -934,7 +934,7 @@ Convert the logged-in investor into a community member.
 - **Login required:** yes
 - **Inputs:** body —; URL —; query —
 - **Outputs:** `200 { accessToken }`, `500 { message }`
-- **Code:** `backend/src/controllers/TestController/ConvertInvestorToCommunity.js`
+- **Code:** `backend/src/controllers/profileControllers/ConvertInvestorToCommunity.js`
 
 ### `POST /test/reportContent/:postId`
 
@@ -943,7 +943,7 @@ Report a post or profile (once per user).
 - **Login required:** yes
 - **Inputs:** body `reason`, `type`; URL `postId`; query —
 - **Outputs:** `400 { message }`, `401 { message }`, `200 { message }`, `500 { message, error }`
-- **Code:** `backend/src/controllers/TestController/ReportPostController.js`
+- **Code:** `backend/src/controllers/reportControllers/ReportPostController.js`
 
 ### `POST /test/ratingsController`
 
@@ -952,5 +952,5 @@ Submit an app rating (stars, text, version).
 - **Login required:** yes
 - **Inputs:** body `ratingStars`, `ratingText`, `version`; URL —; query —
 - **Outputs:** `400 { message }`, `200 { message }`, `500 { message }`
-- **Code:** `backend/src/controllers/TestController/ratingController.js`
+- **Code:** `backend/src/controllers/feedbackControllers/ratingController.js`
 
