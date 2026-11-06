@@ -1,0 +1,31 @@
+#!/bin/sh
+# Safety net: only the "development" branch may be pushed, and never with force.
+# Blocks pushes of production branches (develop/backend, Ansh-Final, main, ...),
+# tags, branch deletions, and history rewrites (force pushes).
+
+zero=0000000000000000000000000000000000000000
+
+while read -r local_ref local_sha remote_ref remote_sha; do
+  if [ "$remote_ref" != "refs/heads/development" ] || [ "$local_ref" != "refs/heads/development" ]; then
+    echo ""
+    echo "BLOCKED: only the 'development' branch may be pushed (tried: $local_ref -> $remote_ref)."
+    echo ""
+    exit 1
+  fi
+
+  if [ "$local_sha" = "$zero" ]; then
+    echo ""
+    echo "BLOCKED: deleting the remote 'development' branch is not allowed."
+    echo ""
+    exit 1
+  fi
+
+  if [ "$remote_sha" != "$zero" ] && ! git merge-base --is-ancestor "$remote_sha" "$local_sha" 2>/dev/null; then
+    echo ""
+    echo "BLOCKED: this push would rewrite history on 'development' (a force push)."
+    echo ""
+    exit 1
+  fi
+done
+
+exit 0

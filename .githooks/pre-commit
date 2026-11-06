@@ -1,0 +1,16 @@
+#!/bin/sh
+# Safety net: commits are only allowed on the "development" branch.
+# Production branches (develop/backend, Ansh-Final, main, and everything else)
+# must never receive commits from this computer without the founder's say-so.
+
+branch=$(git branch --show-current)
+
+if [ "$branch" != "development" ]; then
+  echo ""
+  echo "BLOCKED: you are on branch '$branch'."
+  echo "Commits are only allowed on 'development'. Run: git checkout development"
+  echo ""
+  exit 1
+fi
+
+exit 0
