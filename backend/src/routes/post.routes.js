@@ -27,7 +27,6 @@ router.post("/applyJobPost/:id", verifyUser, applyJobPost); // TESTED
 router.get("/getPostedJobs", verifyUser, getPostedJobs); // TESTED
 router.post("/applyCommunity/:id", verifyUser, applyCommunity); // TESTED
 router.get("/getCommunityChatList", verifyUser, getCommunityChatList); // TESTED
-// router.get("/GetappliedjobApplicants/:id", verifyUser, getAppliedJobApplicants);    // TESTED
 router.post("/upvotePost/:postId/:likeStatus", verifyUser, upvotePost); // TESTED
 router.post("/createComment/:id", verifyUser, createComment); // TESTED
 router.get("/getComments/:id", verifyUser, getComments); // TESTED

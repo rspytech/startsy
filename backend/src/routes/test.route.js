@@ -28,6 +28,5 @@ TestRoute.get("/getUserFollowers/:id", verifyUser, getUserFollowers)
     .get("/convertInvestorToCommunity", verifyUser, convertInvestorToCommunity)
     .post("/reportContent/:postId", verifyUser, reportContent)
     .post("/ratingsController", verifyUser, ratingsController);
-// .post("/downloadAPK",verifyUser , APKcontroller)
 
 export default TestRoute;
