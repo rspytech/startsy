@@ -1,4 +1,3 @@
-import os from "os";
 import XLSX from "xlsx";
 import { User } from "../../models/user.model.js";
 

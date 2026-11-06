@@ -1,6 +1,4 @@
 import { JobApplicantDescription } from "../../models/JobApplicantDescription.js";
-import { Post } from "../../models/post.model.js";
-import { User } from "../../models/user.model.js";
 
 export const UsersAppliedForJobs = async (req, res) => {
     try {

@@ -13,7 +13,6 @@ import { createComment } from "../controllers/postControllers/createComment.cont
 import { getComments } from "../controllers/postControllers/getComments.controller.js";
 import { getPosts } from "../controllers/postControllers/getPost.controller.js";
 import { deletePost } from "../controllers/postControllers/deletePost.controller.js";
-import { getAppliedJobApplicants } from "../controllers/CustomController/AppliedJobPeople.js";
 import { UsersAppliedForJobs } from "../controllers/postControllers/getAppliedJobApplicants.js";
 import { groupPhoto } from "../controllers/postControllers/groupPhoto.js";
 import lockCommunity from "../controllers/TestController/lockController.js";

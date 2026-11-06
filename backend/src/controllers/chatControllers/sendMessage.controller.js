@@ -61,7 +61,6 @@
 
 import { Post } from "../../models/post.model.js";
 import { Message } from "../../models/message.model.js";
-import { getReceiverSocketId } from "../../socket/socketIo.js";
 import { Conversation } from "../../models/conversation.model.js";
 import sendNotification from "../../utils/sendNotification.js";
 import { User } from "../../models/user.model.js";

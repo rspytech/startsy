@@ -1,4 +1,3 @@
-import { Investor } from "../models/investor.model.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../../cloudinary.js";
 import { General } from "../models/general.model.js";

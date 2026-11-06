@@ -1,6 +1,5 @@
 import { uploadOnCloudinary } from "../../cloudinary.js";
 import { General } from "../models/general.model.js";
-import { Investor } from "../models/investor.model.js";
 import { User } from "../models/user.model.js";
 import jwt from "jsonwebtoken";
 

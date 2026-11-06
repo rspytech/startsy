@@ -1,5 +1,3 @@
-import { General } from "../../models/general.model.js";
-import { Post } from "../../models/post.model.js";
 import { User } from "../../models/user.model.js";
 
 const addField = async (req, res) => {

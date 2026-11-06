@@ -1,7 +1,6 @@
 import { Community } from "../../models/community.model.js";
 import { Post } from "../../models/post.model.js";
 import { uploadOnCloudinary } from "../../../cloudinary.js";
-import sharp from "sharp";
 
 export const groupPhoto = async (req, res) => {
     try {

@@ -1,4 +1,3 @@
-import { Founder } from "../../models/founder.model.js";
 import { User } from "../../models/user.model.js";
 
 export const getFounderNotifications = async (req, res) => {

@@ -1,6 +1,5 @@
 // Investor feed (Home page) Plus button functionality
 
-import { Investor } from "../../models/investor.model.js";
 import { Founder } from "../../models/founder.model.js";
 import { upvoteProfile } from "../../models/upvoteProfile.model.js";
 import { General } from "../../models/general.model.js";

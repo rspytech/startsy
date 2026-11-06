@@ -6,7 +6,6 @@ import { verifyUser } from "../middleware/user.auth.middleware.js";
 import { savePost } from "../controllers/TestController/savePost.js";
 import { getSavedPost } from "../controllers/TestController/getSavedPost.js";
 import markAsRead from "../controllers/TestController/markAsRead.js";
-import APKcontroller from "../controllers/TestController/Apkcontroller.js";
 import addField from "../controllers/TestController/addFieldcontroller.js";
 import { getAllUsersWithStatus } from "../controllers/TestController/getAllUserWithStatus.js";
 import { getPortfolioAndCertifications } from "../controllers/TestController/getCerticateAndPortfolio.js";

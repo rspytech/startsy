@@ -1,5 +1,4 @@
 // Investor Feed (Chat Page) Recent Chatting User List
-import { Investor } from "../../models/investor.model.js";
 import { Conversation } from "../../models/conversation.model.js";
 import { General } from "../../models/general.model.js";
 

@@ -1,6 +1,5 @@
 //changes here
 
-import { Founder } from "../models/founder.model.js";
 import { User } from "../models/user.model.js";
 import { uploadOnCloudinary } from "../../cloudinary.js";
 import mongoose from "mongoose";

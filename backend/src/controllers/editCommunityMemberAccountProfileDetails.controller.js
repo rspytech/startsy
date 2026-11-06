@@ -1,5 +1,4 @@
 import { User } from "../models/user.model.js";
-import { CommunityMember } from "../models/communityMember.model.js";
 import { uploadOnCloudinary } from "../../cloudinary.js";
 import { General } from "../models/general.model.js";
 

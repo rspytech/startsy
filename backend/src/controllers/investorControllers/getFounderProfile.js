@@ -1,4 +1,3 @@
-import { Investor } from "../../models/investor.model.js";
 import Recommendation from "../../models/recommendation.model.js";
 // Assuming RecommendationBasic is already imported
 import RecommendationBasic from "../../algorithms/recommendation.js";

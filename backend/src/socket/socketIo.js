@@ -3,7 +3,6 @@ import { Conversation } from "../models/conversation.model.js";
 import { Message } from "../models/message.model.js";
 import { User } from "../models/user.model.js";
 import sendNotification from "../utils/sendNotification.js";
-import { Community } from "../models/community.model.js";
 const userSocketMap = {}; // Mapping of user IDs to their socket IDs
 let io;
 

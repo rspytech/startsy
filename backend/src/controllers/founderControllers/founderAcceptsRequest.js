@@ -76,8 +76,6 @@
 // */
 
 import { User } from "../../models/user.model.js";
-import { Founder } from "../../models/founder.model.js";
-import { Investor } from "../../models/investor.model.js";
 import { General } from "../../models/general.model.js";
 
 export const acceptRequest = async (req, res) => {

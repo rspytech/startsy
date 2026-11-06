@@ -1,8 +1,5 @@
 import mongoose from "mongoose";
 import { User } from "../../models/user.model.js";
-import { CommunityMember } from "../../models/communityMember.model.js";
-import { Founder } from "../../models/founder.model.js";
-import { Investor } from "../../models/investor.model.js";
 import { Post } from "../../models/post.model.js";
 import { Comment } from "../../models/comment.model.js";
 import { Message } from "../../models/message.model.js";
