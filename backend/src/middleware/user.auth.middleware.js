@@ -1,5 +1,5 @@
 import jwt from "jsonwebtoken";
-import { User } from '../models/user.model.js';
+import { User } from "../models/user.model.js";
 
 const verifyUser = async (req, res, next) => {
     try {
@@ -7,11 +7,8 @@ const verifyUser = async (req, res, next) => {
 
         // console.log(authHeader);
 
-        authHeader = authHeader.replaceAll(/Bearer/gi , "").trim()
+        authHeader = authHeader.replaceAll(/Bearer/gi, "").trim();
         console.log(authHeader);
-
-        
-        
 
         // if (!authHeader || !authHeader.startsWith("Bearer ")) {
         //     return res.status(401).json({
@@ -19,9 +16,7 @@ const verifyUser = async (req, res, next) => {
         //     });
         // }
         let token;
-        token = authHeader
-
-
+        token = authHeader;
 
         const decodedToken = await jwt.verify(token, process.env.ACCESS_TOKEN_SECRET);
 

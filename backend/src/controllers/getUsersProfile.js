@@ -14,17 +14,14 @@ export const getUsersProfiles = async (req, res) => {
             Founder: Founder,
             Freelancer: Freelancer,
             CommunityMember: CommunityMember,
-            Investor: Investor
+            Investor: Investor,
         };
         const loggedInUserId = req.user._id;
         const userId = req.params.id;
 
-        var temp = await User.find({ _id: userId })
+        var temp = await User.find({ _id: userId });
 
         var temp2 = await General.find({ _id: temp.roleId });
-
-
-
 
         const user = await User.findById(userId).populate("roleId");
 
@@ -40,16 +37,15 @@ export const getUsersProfiles = async (req, res) => {
         //     status = "Followed";
         // }
 
-        if (user.roleId.chatUsers.includes(loggedInUserId) && loggedInUser.roleId.chatUsers.includes(userId)) {
+        if (
+            user.roleId.chatUsers.includes(loggedInUserId) &&
+            loggedInUser.roleId.chatUsers.includes(userId)
+        ) {
             status = "Followed";
-        }
-
-        else if (user.followers.includes(loggedInUserId)) {
+        } else if (user.followers.includes(loggedInUserId)) {
             status = "Pending Request";
-        }
-
-        else {
-            status = "Follow"
+        } else {
+            status = "Follow";
         }
 
         // const role = roleMap[userRole]; commented
@@ -70,20 +66,21 @@ export const getUsersProfiles = async (req, res) => {
             // console.log("User Profile:", userProfile);
 
             if (!userProfile) {
-                return res.status(404).json({ message: "Profile not found. Ensure the user_id is correctly linked in the role-specific collection." });
+                return res
+                    .status(404)
+                    .json({
+                        message:
+                            "Profile not found. Ensure the user_id is correctly linked in the role-specific collection.",
+                    });
             }
 
             // Conditionally populate `jobPosts` or `communityPost` in each post
             const populatedPosts = await Promise.all(
                 userProfile.posts.map(async (post) => {
                     if (post.type === "jobPost") {
-                        return await Post.findById(post._id)
-                            .populate("jobPosts")
-                            .lean();
+                        return await Post.findById(post._id).populate("jobPosts").lean();
                     } else if (post.type === "communityPost") {
-                        return await Post.findById(post._id)
-                            .populate("communityPost")
-                            .lean();
+                        return await Post.findById(post._id).populate("communityPost").lean();
                     }
                     return post; // Return the post as-is if type doesn't match
                 })
@@ -91,9 +88,7 @@ export const getUsersProfiles = async (req, res) => {
 
             // Update `userProfile.posts` with the conditionally populated posts
             userProfile.posts = populatedPosts;
-        }
-
-        else {
+        } else {
             userProfile = await General.findOne({ user_id: userId })
                 .populate({
                     path: "user_id chatUsers",
@@ -103,22 +98,28 @@ export const getUsersProfiles = async (req, res) => {
             // console.log("User Profile:", userProfile);
 
             if (!userProfile) {
-                return res.status(404).json({ message: "Profile not found. Ensure the user_id is correctly linked in the role-specific collection." });
-            } 
-            
+                return res
+                    .status(404)
+                    .json({
+                        message:
+                            "Profile not found. Ensure the user_id is correctly linked in the role-specific collection.",
+                    });
+            }
         }
-        var profileCompletion = calculateProfileCompletion(userProfile, userRole)
+        var profileCompletion = calculateProfileCompletion(userProfile, userRole);
         // console.log(profileCompletion);
 
         return res.status(200).json({
             message: "Profile details fetched successfully.",
             data: userProfile,
             status: status,
-            profileCompletion: profileCompletion
+            profileCompletion: profileCompletion,
             // connectionCount: counts[0] || { followersCount: 0, followingCount: 0 },
         });
     } catch (error) {
         console.error("Error:", error.message);
-        return res.status(500).json({ message: "Error while fetching profile details.", error: error.message });
+        return res
+            .status(500)
+            .json({ message: "Error while fetching profile details.", error: error.message });
     }
 };

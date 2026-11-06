@@ -1,4 +1,3 @@
-
 import { Report } from "../../models/report.model.js";
 import { User } from "../../models/user.model.js";
 import { Post } from "../../models/post.model.js";
@@ -6,14 +5,12 @@ export const reportContent = async (req, res) => {
     try {
         const userId = req.user._id;
         const postId = req.params.postId;
-        const {reason, type } = req.body; // `postId` can be a profile or post ID
+        const { reason, type } = req.body; // `postId` can be a profile or post ID
 
         // console.log(userId);
         // console.log(postId);
         // console.log(reason);
         // console.log(type);
-        
-        
 
         if (!["Post", "User"].includes(type)) {
             return res.status(400).json({ message: "Invalid type. Must be 'Post' or 'Profile'." });
@@ -39,7 +36,6 @@ export const reportContent = async (req, res) => {
         await report.save();
 
         return res.status(200).json({ message: "Report submitted successfully." });
-
     } catch (error) {
         console.error(error);
         res.status(500).json({ message: "Server Error", error: error.message });

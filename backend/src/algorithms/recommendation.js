@@ -15,7 +15,7 @@ class RecommendationBasic {
             stage: this.stage,
             sector: this.sector,
             location: this.location,
-            fundingRange: this.fundingRange
+            fundingRange: this.fundingRange,
         };
     }
 

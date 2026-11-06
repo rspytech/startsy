@@ -1,6 +1,7 @@
-import multer from 'multer';
+import multer from "multer";
 
-const storage = multer.memoryStorage(
+const storage = multer
+    .memoryStorage
     // {
     //     destination: (req, file, cb) => {
     //         cb(null, './public'); // Ensure the 'public' folder exists and is writable
@@ -9,14 +10,14 @@ const storage = multer.memoryStorage(
     //         cb(null, `${Date.now()}-${file.originalname}`); // Creates a unique filename
     //     }
     // }
-);
+    ();
 
 const fileFilter = (req, file, cb) => {
-    const allowedTypes = ['image/jpeg', 'image/jpg', 'image/png', 'video/mp4', 'video/quicktime'];
+    const allowedTypes = ["image/jpeg", "image/jpg", "image/png", "video/mp4", "video/quicktime"];
     if (allowedTypes.includes(file.mimetype)) {
         cb(null, true);
     } else {
-        cb(new Error('Invalid file type. Only JPEG, JPG, PNG, and MP4 are allowed.'));
+        cb(new Error("Invalid file type. Only JPEG, JPG, PNG, and MP4 are allowed."));
     }
 };
 

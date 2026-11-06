@@ -1,4 +1,4 @@
-import { v2 as cloudinary } from 'cloudinary';
+import { v2 as cloudinary } from "cloudinary";
 
 cloudinary.config({
     cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
@@ -8,16 +8,13 @@ cloudinary.config({
 
 export const uploadOnCloudinary = async (buffer) => {
     return new Promise((resolve, reject) => {
-        const stream = cloudinary.uploader.upload_stream(
-            { resource_type: "auto" },
-            (error, result) => {
-                if (error) {
-                    reject(error);
-                } else {
-                    resolve(result);
-                }
+        const stream = cloudinary.uploader.upload_stream({ resource_type: "auto" }, (error, result) => {
+            if (error) {
+                reject(error);
+            } else {
+                resolve(result);
             }
-        );
+        });
         stream.end(buffer); // Pass the buffer to the Cloudinary stream
     });
 };

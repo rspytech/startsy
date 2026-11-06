@@ -4,7 +4,7 @@ export const getCommunityChatList = async (req, res) => {
     try {
         const userId = req.user._id;
         const user = await User.findById(userId).populate("communityList");
-        
+
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -21,6 +21,8 @@ export const getCommunityChatList = async (req, res) => {
         });
     } catch (error) {
         console.error("Error fetching community chat list:", error);
-        return res.status(500).json({ message: "Error while fetching community chat list", error: error.message });
+        return res
+            .status(500)
+            .json({ message: "Error while fetching community chat list", error: error.message });
     }
 };

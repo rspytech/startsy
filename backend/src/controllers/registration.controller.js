@@ -1,4 +1,4 @@
-import { User } from '../models/user.model.js';
+import { User } from "../models/user.model.js";
 
 export const registerUser = async (req, res) => {
     try {
@@ -11,7 +11,7 @@ export const registerUser = async (req, res) => {
         // Check if user already exists
         const existingUser = await User.findOne({ userName });
         if (existingUser) {
-            return res.status(400).json({ message: 'User already exists' });
+            return res.status(400).json({ message: "User already exists" });
         }
 
         // Create a new user
@@ -19,7 +19,7 @@ export const registerUser = async (req, res) => {
             userName,
             password,
             role,
-            refreshToken: ""
+            refreshToken: "",
         });
 
         // Save the user to the database
@@ -38,13 +38,12 @@ export const registerUser = async (req, res) => {
 
         // Respond with Bearer tokens
         res.status(201).json({
-            message: 'User registered successfully',
+            message: "User registered successfully",
             accessToken: `Bearer ${accessToken}`,
-            refreshToken
+            refreshToken,
         });
-
     } catch (error) {
-        console.error('Error registering user:', error);
-        res.status(500).json({ message: 'Server error while registering' });
+        console.error("Error registering user:", error);
+        res.status(500).json({ message: "Server error while registering" });
     }
 };

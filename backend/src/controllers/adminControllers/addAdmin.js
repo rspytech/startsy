@@ -15,14 +15,13 @@ export const registerAdmin = async (req, res) => {
 
         await admin.save();
         res.status(200).send({
-            message: 'Admin account created',
+            message: "Admin account created",
             accessToken,
         });
-    }
-    catch (error) {
-        res.status(500).send({ 
-            message: 'Error creating admin account',
+    } catch (error) {
+        res.status(500).send({
+            message: "Error creating admin account",
             error: error.message,
-         });
+        });
     }
 };

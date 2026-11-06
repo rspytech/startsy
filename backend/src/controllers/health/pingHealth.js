@@ -33,7 +33,6 @@
 // // Schedule the cron job to run every minute (*/1 * * * *)
 // cron.schedule("*/1 * * * *", pingCheck);
 
-
 // const cron = require('node-cron');
 
 // // Set up a cron job to ping every 10 minutes
@@ -52,29 +51,28 @@
 
 // pingController.js (Controller File)
 export const pingHealth = (req, res) => {
-    console.log('Ping received from cron job...');
-    res.status(200).send('Pong');
+    console.log("Ping received from cron job...");
+    res.status(200).send("Pong");
 };
-  
 
-import cron from 'node-cron';
-import axios from 'axios';
+import cron from "node-cron";
+import axios from "axios";
 
 // It's better to use an environment variable for the URL
-const PING_URL = 'https://startsy.onrender.com';
+const PING_URL = "https://startsy.onrender.com";
 
-cron.schedule('*/10 * * * *', async () => {
-  try {
-    console.log('Sending ping to server...', new Date().toISOString());
-    const response = await axios.get(`${PING_URL}/health/pingHealth`);
-    console.log('Ping successful:', response.status);
-  } catch (error) {
-    console.error('Ping failed:', error.message);
-    // Optionally log the full error response for debugging
-    if (error.response) {
-      console.error('Error response:', error.response.data);
+cron.schedule("*/10 * * * *", async () => {
+    try {
+        console.log("Sending ping to server...", new Date().toISOString());
+        const response = await axios.get(`${PING_URL}/health/pingHealth`);
+        console.log("Ping successful:", response.status);
+    } catch (error) {
+        console.error("Ping failed:", error.message);
+        // Optionally log the full error response for debugging
+        if (error.response) {
+            console.error("Error response:", error.response.data);
+        }
     }
-  }
 });
 
-console.log('Cron job scheduled');
+console.log("Cron job scheduled");

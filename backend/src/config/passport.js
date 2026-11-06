@@ -5,24 +5,23 @@ import { Strategy as GoogleStrategy } from "passport-google-oauth20";
 passport.use(
     new GoogleStrategy(
         {
-            clientID : process.env.GOOGLE_CLIENT_ID,            /* Not added yet */
-            clientSecret : process.env.GOOGLE_CLIENT_SECRET,    /* Not added yet */
-            callbackURL : "/auth/google/callback",              /* Not added yet */
+            clientID: process.env.GOOGLE_CLIENT_ID /* Not added yet */,
+            clientSecret: process.env.GOOGLE_CLIENT_SECRET /* Not added yet */,
+            callbackURL: "/auth/google/callback" /* Not added yet */,
         },
         async (accessToken, refreshToken, profile, done) => {
-            try{
-                const user = await User.findOne({googleId : profile.id});
-                if(!user){
+            try {
+                const user = await User.findOne({ googleId: profile.id });
+                if (!user) {
                     user = await User.create({
-                        googleId : profile.id,
-                        email : profile.emails[0].value,
-                        profilePhoto : profile.photos[0].value,
+                        googleId: profile.id,
+                        email: profile.emails[0].value,
+                        profilePhoto: profile.photos[0].value,
                         refreshToken,
-                    })
+                    });
                 }
-                return done(null. user);
-            }
-            catch(error){
+                return done(null.user);
+            } catch (error) {
                 return done(error, false);
             }
         }
@@ -34,11 +33,10 @@ passport.serializeUser((user, done) => {
 });
 
 passport.deserializeUser(async (id, done) => {
-    try{
+    try {
         const user = await User.findById(id);
         done(null, user);
-    }
-    catch (error) {
+    } catch (error) {
         done(error, false);
     }
-})
+});

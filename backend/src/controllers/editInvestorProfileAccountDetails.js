@@ -4,11 +4,9 @@ import { uploadOnCloudinary } from "../../cloudinary.js";
 import { General } from "../models/general.model.js";
 
 export const editInvestorAccountProfileDetails = async (req, res) => {
-
     console.log(req.body);
     console.log(req.file);
-    
-    
+
     const {
         fullName,
         country,
@@ -16,7 +14,7 @@ export const editInvestorAccountProfileDetails = async (req, res) => {
         previousExperience,
         startupStage,
         preferredSector,
-        investmentRange
+        investmentRange,
     } = req.body;
 
     const profilePhoto = req.file;
@@ -33,7 +31,6 @@ export const editInvestorAccountProfileDetails = async (req, res) => {
         // Find the existing investor profile
         let investor = await General.findOne({ user_id: currentUserId });
         console.log(investor);
-        
 
         // Define the fields to be updated
         const fieldsToUpdate = {
@@ -43,7 +40,7 @@ export const editInvestorAccountProfileDetails = async (req, res) => {
             previousExperience,
             startupStage,
             preferredSector,
-            investmentRange
+            investmentRange,
         };
 
         // Use a loop to update the fields dynamically
@@ -60,13 +57,15 @@ export const editInvestorAccountProfileDetails = async (req, res) => {
                 uploadedPhoto = await uploadOnCloudinary(profilePhoto.buffer);
             } catch (err) {
                 console.error("Cloudinary Upload Error:", err.message);
-                return res.status(400).json({ message: "Error uploading to Cloudinary.", error: err.message });
+                return res
+                    .status(400)
+                    .json({ message: "Error uploading to Cloudinary.", error: err.message });
             }
 
             if (!uploadedPhoto || !uploadedPhoto.secure_url) {
                 return res.status(400).json({ message: "Failed to upload photo to Cloudinary." });
             }
-            const photoUrl = uploadedPhoto.secure_url;  
+            const photoUrl = uploadedPhoto.secure_url;
             currentUser.profilePhoto = photoUrl; // Save the photo URL in the user model
         }
 
@@ -78,12 +77,10 @@ export const editInvestorAccountProfileDetails = async (req, res) => {
             message: "Investor Details updated successfully",
             investor,
         });
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error);
         res.status(500).send({
-            message: "Internal Server Error"
+            message: "Internal Server Error",
         });
     }
-
-}
+};

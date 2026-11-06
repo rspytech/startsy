@@ -1,35 +1,35 @@
 import mongoose from "mongoose";
 
 const newsletterSchema = new mongoose.Schema({
-    title : {
-        type : String,
+    title: {
+        type: String,
     },
-    content : {
-        type : String,
+    content: {
+        type: String,
     },
-    newsletterImage : {
-        type : String
+    newsletterImage: {
+        type: String,
     },
-    taggedUserName : {
-        type : String,
-        required : true,
+    taggedUserName: {
+        type: String,
+        required: true,
     },
-    taggedUser : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'User',
+    taggedUser: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
     },
-    likes : {
-        type : Number,
-        default : 0,
+    likes: {
+        type: Number,
+        default: 0,
     },
-    createdAt : {
-        type : Date,
-        default : Date.now
+    createdAt: {
+        type: Date,
+        default: Date.now,
     },
     leaderboardCategory: {
         type: String,
         enum: ["Investor", "Founder", "CommunityMember", "All"],
-        default: null,  // Null means it's not on the leaderboard
+        default: null, // Null means it's not on the leaderboard
     },
 });
 

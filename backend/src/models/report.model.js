@@ -22,7 +22,7 @@ const ReportSchema = new mongoose.Schema({
                 type: Date,
                 default: Date.now,
             },
-        }
+        },
     ],
     type: {
         type: String,
@@ -38,7 +38,7 @@ const ReportSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: "Admin",
         default: null,
-    }
+    },
 });
 
 export const Report = mongoose.model("Report", ReportSchema);

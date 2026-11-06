@@ -1,0 +1,7 @@
+# Only JavaScript source is auto-formatted. Data, lock files and binaries are left exactly as they are.
+node_modules/
+package-lock.json
+package.json
+*.csv
+*.apk
+src/APK/

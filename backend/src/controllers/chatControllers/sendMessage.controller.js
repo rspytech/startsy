@@ -71,26 +71,23 @@ export const sendMessage = async (req, res, io) => {
     try {
         const postId = req.params.id;
         const senderId = req.user._id;
-        const { sharedToUsers  } = req.body;
+        const { sharedToUsers } = req.body;
 
         console.log(sharedToUsers);
-        
 
         let post;
         post = await Post.findById(postId).populate("user_id");
-        var isNewsLetter = false
-
+        var isNewsLetter = false;
 
         if (!post) {
-            post = await Newsletter.findById(postId).populate("taggedUser")
-            console.log(post,"oooo");
-            
+            post = await Newsletter.findById(postId).populate("taggedUser");
+            console.log(post, "oooo");
+
             if (!post) {
                 return res.status(404).json({ error: "Post not found" });
             }
-            isNewsLetter = true
+            isNewsLetter = true;
         }
-
 
         const sharedPost = await Promise.all(
             sharedToUsers.map(async (userId) => {
@@ -102,15 +99,15 @@ export const sendMessage = async (req, res, io) => {
                         userName: post.user_id?.userName || post.taggedUser.userName,
                         profilePhoto: post.user_id?.profilePhoto || post.taggedUser.profilePhoto,
                         postImage: post.mediaUrl || post.newsletterImage,
-                        postContent:  post.content,
-                        postCaption:  isNewsLetter ? post.title : post.content,
+                        postContent: post.content,
+                        postCaption: isNewsLetter ? post.title : post.content,
                         userIdPosted: post.user_id?._id || post.taggedUser._id,
-                        isNewsLetter : isNewsLetter,
-                        NewsletterContent : isNewsLetter ? post : null
-                    }
+                        isNewsLetter: isNewsLetter,
+                        NewsletterContent: isNewsLetter ? post : null,
+                    },
                 });
 
-                console.log(newMessage , "treeee")
+                console.log(newMessage, "treeee");
                 let conversation = await Conversation.findOne({
                     members: { $all: [senderId, userId] },
                     isGroup: false,
@@ -128,12 +125,14 @@ export const sendMessage = async (req, res, io) => {
                 await conversation.save();
                 console.log("oo");
 
-
                 var receiverIdToken = await User.findById(userId).select("notificationToken userName");
-                var rec2 = await User.findById(senderId).select("userName")
+                var rec2 = await User.findById(senderId).select("userName");
                 console.log(receiverIdToken, "ok");
 
-                var response = await sendNotification(receiverIdToken.notificationToken, `${rec2.userName} sent you a post`)
+                var response = await sendNotification(
+                    receiverIdToken.notificationToken,
+                    `${rec2.userName} sent you a post`
+                );
                 console.log(response, "response from notification");
                 return newMessage;
             })
@@ -146,11 +145,10 @@ export const sendMessage = async (req, res, io) => {
         //     }
         // });
         return res.status(200).json(sharedPost);
-    }
-    catch (error) {
+    } catch (error) {
         res.status(404).json({
             error: "Error while sharing post",
             message: error.message,
         });
     }
-}
+};

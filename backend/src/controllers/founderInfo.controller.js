@@ -10,16 +10,19 @@ import jwt from "jsonwebtoken";
 import { General } from "../models/general.model.js";
 
 // Initialize RecommendationBasic with mappings
-const recommender = new RecommendationBasic(mappings.stage, mappings.sector, mappings.location, mappings.fundingRange);
+const recommender = new RecommendationBasic(
+    mappings.stage,
+    mappings.sector,
+    mappings.location,
+    mappings.fundingRange
+);
 
 export const FounderInfo = async (req, res) => {
-
-    req.body.teamInfo = JSON.parse(req.body.teamInfo)
-    req.body.previousWorkExperience = JSON.parse(req.body.previousWorkExperience)
-    req.body.socialProof = JSON.parse(req.body.socialProof)
+    req.body.teamInfo = JSON.parse(req.body.teamInfo);
+    req.body.previousWorkExperience = JSON.parse(req.body.previousWorkExperience);
+    req.body.socialProof = JSON.parse(req.body.socialProof);
 
     let {
-
         country,
         age,
         gender,
@@ -36,21 +39,16 @@ export const FounderInfo = async (req, res) => {
         fundingStatus,
         stageOfStartup,
         socialProof,
-        generalModelId
+        generalModelId,
     } = req.body;
     console.log(req.body);
 
-
     const profilePhoto = req.file;
-
-
-
-    
 
     if (!profilePhoto) {
         return res.status(400).json({ message: "Please upload a profile photo" });
     }
-    teamInfo = teamInfo.filter((team) => team.tag !== "" && team.name !== "" && team.role !== "")
+    teamInfo = teamInfo.filter((team) => team.tag !== "" && team.name !== "" && team.role !== "");
 
     // console.log("affafiajfiajfoajfofaofoadfkfake", teamInfo.length);
 
@@ -66,15 +64,13 @@ export const FounderInfo = async (req, res) => {
                     if (!teamMate) {
                         // Add invalid team member to the list
                         invalidTeamMates.push(i);
-                    }
-                    else {
+                    } else {
                         // Replace the tag with the team member's ID
                         teamInfo[i].tag = teamMate._id;
                     }
                 }
             }
         }
-
 
         // If there are invalid team members, send a response but don't stop execution
         if (invalidTeamMates.length > 0) {
@@ -89,9 +85,9 @@ export const FounderInfo = async (req, res) => {
         const currentUser = await User.findById(currentUserId);
 
         if (Array.isArray(socialProof)) {
-            socialProof = socialProof.map(item => ({
+            socialProof = socialProof.map((item) => ({
                 name: item.name || "",
-                url: item.url || ""
+                url: item.url || "",
             }));
         } else {
             socialProof = []; // Default to an empty array if input is invalid
@@ -123,10 +119,9 @@ export const FounderInfo = async (req, res) => {
         // });
 
         const newFounder = await General.findOneAndUpdate(
-            { _id: req.body.generalModelId },  // Find document by user_id
+            { _id: req.body.generalModelId }, // Find document by user_id
             {
                 $set: {
-                   
                     country,
                     age,
                     gender,
@@ -143,12 +138,10 @@ export const FounderInfo = async (req, res) => {
                     "hiddenInfo.fundingStatus": fundingStatus,
                     "hiddenInfo.stageOfStartup": stageOfStartup,
                     "hiddenInfo.socialProof": socialProof,
-                }
+                },
             },
             { new: true }
         );
-        
-        
 
         for (let i = 0; i < teamInfo.length; i++) {
             let teamMateTag = teamInfo[i].tag;
@@ -165,7 +158,6 @@ export const FounderInfo = async (req, res) => {
                     notificationMessage: "You have been added to a new startup as a team member",
                 });
             }
-
         }
 
         // 4. Update current user details
@@ -184,7 +176,9 @@ export const FounderInfo = async (req, res) => {
                 uploadedPhoto = await uploadOnCloudinary(profilePhoto.buffer);
             } catch (err) {
                 console.error("Cloudinary Upload Error:", err.message);
-                return res.status(400).json({ message: "Error uploading to Cloudinary.", error: err.message });
+                return res
+                    .status(400)
+                    .json({ message: "Error uploading to Cloudinary.", error: err.message });
             }
 
             if (!uploadedPhoto || !uploadedPhoto.secure_url) {
@@ -192,10 +186,8 @@ export const FounderInfo = async (req, res) => {
             }
             const photoUrl = uploadedPhoto.secure_url;
             currentUser.profilePhoto = photoUrl;
-        }
-        else{
+        } else {
             currentUser.profilePhoto = process.env.DEFAULT_PROFILE_PHOTO;
-
         }
         currentUser.roleId = newFounder._id;
 
@@ -204,7 +196,7 @@ export const FounderInfo = async (req, res) => {
             stage: stageOfStartup,
             sector,
             location: country,
-            fundingRange: fundingStatus
+            fundingRange: fundingStatus,
         };
 
         const recommendationIds = recommender.recommendation_id(recommendationPreferences);
@@ -213,7 +205,7 @@ export const FounderInfo = async (req, res) => {
         newFounder.recommendationId = recommendationIds[0];
 
         currentUser.isProfileComplete = true;
-        currentUser.role = "Founder"
+        currentUser.role = "Founder";
         // 8. Save the current user and new founder profile
 
         const newToken = jwt.sign(
@@ -228,7 +220,7 @@ export const FounderInfo = async (req, res) => {
             {
                 expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
             }
-        )
+        );
 
         await currentUser.save();
         await newFounder.save();
@@ -247,12 +239,10 @@ export const FounderInfo = async (req, res) => {
             newToken,
         });
         console.log("founder succesfuly created ");
-
-
     } catch (error) {
         console.log(error);
         res.status(500).send({
-            message: "Internal Server Error"
+            message: "Internal Server Error",
         });
     }
-}
+};

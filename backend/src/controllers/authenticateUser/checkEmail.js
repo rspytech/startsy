@@ -1,11 +1,11 @@
-import {User} from "../../models/user.model.js"
+import { User } from "../../models/user.model.js";
 
 export const checkEmail = async (req, res) => {
     try {
         const { email /*contactInfo*/ } = req.body;
-        if(!email){
-            return res.status(400).json({message : "Email and contact number not recieved",});
-        } 
+        if (!email) {
+            return res.status(400).json({ message: "Email and contact number not recieved" });
+        }
         const user = await User.findOne({ email: email });
         if (user) {
             return res.status(400).json({ message: "Email already taken" });
@@ -18,9 +18,8 @@ export const checkEmail = async (req, res) => {
         // }
 
         return res.status(200).json({ message: "Email is unique" });
-    }
-    catch (error) {
+    } catch (error) {
         console.error(error);
-        return res.status(400).json({message : "Error while checking email and contact number"});
+        return res.status(400).json({ message: "Error while checking email and contact number" });
     }
-}
+};

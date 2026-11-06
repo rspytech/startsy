@@ -1,5 +1,5 @@
 import express from "express";
-import {verifyUser} from "../middleware/user.auth.middleware.js";
+import { verifyUser } from "../middleware/user.auth.middleware.js";
 import upload from "../middleware/upload.middleware.js";
 import { createPost } from "../controllers/postControllers/createPost.controller.js";
 import { createJobPost } from "../controllers/postControllers/createJobPost.controller.js";
@@ -20,24 +20,23 @@ import lockCommunity from "../controllers/TestController/lockController.js";
 import UpdateCommunity from "../controllers/TestController/updateCommunity.js";
 const router = express.Router();
 
-router.post("/createPost/:postType", verifyUser, upload.single("media"), createPost);   // TESTED
-router.post("/groupPhoto/:comid", verifyUser, upload.single("media"),groupPhoto);   // TESTED
-router.post("/createJobPost/:postType", verifyUser, createJobPost);     // TESTED
-router.post("/createCommunityPost/:postType", verifyUser, upload.single("groupPhoto") , createCommunityPost);
-router.post("/applyJobPost/:id", verifyUser, applyJobPost);    // TESTED
-router.get("/getPostedJobs", verifyUser, getPostedJobs);    // TESTED
-router.post("/applyCommunity/:id", verifyUser, applyCommunity);     // TESTED
-router.get("/getCommunityChatList", verifyUser, getCommunityChatList);    // TESTED
+router.post("/createPost/:postType", verifyUser, upload.single("media"), createPost); // TESTED
+router.post("/groupPhoto/:comid", verifyUser, upload.single("media"), groupPhoto); // TESTED
+router.post("/createJobPost/:postType", verifyUser, createJobPost); // TESTED
+router.post("/createCommunityPost/:postType", verifyUser, upload.single("groupPhoto"), createCommunityPost);
+router.post("/applyJobPost/:id", verifyUser, applyJobPost); // TESTED
+router.get("/getPostedJobs", verifyUser, getPostedJobs); // TESTED
+router.post("/applyCommunity/:id", verifyUser, applyCommunity); // TESTED
+router.get("/getCommunityChatList", verifyUser, getCommunityChatList); // TESTED
 // router.get("/GetappliedjobApplicants/:id", verifyUser, getAppliedJobApplicants);    // TESTED
-router.post("/upvotePost/:postId/:likeStatus", verifyUser, upvotePost);   // TESTED
-router.post("/createComment/:id", verifyUser, createComment);   // TESTED
-router.get("/getComments/:id", verifyUser, getComments);    // TESTED
+router.post("/upvotePost/:postId/:likeStatus", verifyUser, upvotePost); // TESTED
+router.post("/createComment/:id", verifyUser, createComment); // TESTED
+router.get("/getComments/:id", verifyUser, getComments); // TESTED
 router.post("/deletePost/:id", verifyUser, deletePost);
 router.get("/getPosts", verifyUser, getPosts);
 router.post("/getAppliedJobApplicants", verifyUser, UsersAppliedForJobs);
-router.post("/groupPhoto/:comid", verifyUser, upload.single("media"),groupPhoto);
-router.post("/lockCommunity/:id/:status", verifyUser,lockCommunity);
-router.post("/updateCommunity/:id", verifyUser,UpdateCommunity);
-
+router.post("/groupPhoto/:comid", verifyUser, upload.single("media"), groupPhoto);
+router.post("/lockCommunity/:id/:status", verifyUser, lockCommunity);
+router.post("/updateCommunity/:id", verifyUser, UpdateCommunity);
 
 export default router;

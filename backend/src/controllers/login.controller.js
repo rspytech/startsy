@@ -2,43 +2,35 @@ import { User } from "../models/user.model.js";
 
 export const loginUser = async (req, res) => {
     try {
-        const { identifier, password , notificationToken , isAdmin } = req.body;
-        console.log(notificationToken , "yeh body mese hai");
+        const { identifier, password, notificationToken, isAdmin } = req.body;
+        console.log(notificationToken, "yeh body mese hai");
         console.log(req.body);
 
-
-        var admin = ["anshgala", "rajaschaudhari" , "yogeshvkarma"]
-        if(isAdmin){
+        var admin = ["anshgala", "rajaschaudhari", "yogeshvkarma"];
+        if (isAdmin) {
             if (!admin.includes(identifier)) {
                 res.status(403).json({ message: "Unauthorized access" });
-                return
+                return;
             }
         }
-        
-        
 
         if (!identifier || !password) {
-            return res.status(400).json({ message: 'Please fill in all the fields' });
+            return res.status(400).json({ message: "Please fill in all the fields" });
         }
-
 
         // Check if user exists
         const user = await User.findOne({
-            $or: [
-                { userName: identifier },
-                { email: identifier },
-                { contactInfo: identifier },
-            ],
+            $or: [{ userName: identifier }, { email: identifier }, { contactInfo: identifier }],
         });
 
         if (!user) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+            return res.status(401).json({ message: "Invalid credentials" });
         }
 
         // Verify the password
         const isPasswordCorrect = await user.isPasswordCorrect(password);
         if (!isPasswordCorrect) {
-            return res.status(401).json({ message: 'Invalid credentials' });
+            return res.status(401).json({ message: "Invalid credentials" });
         }
 
         // Generate tokens
@@ -47,7 +39,7 @@ export const loginUser = async (req, res) => {
 
         // Save the refresh token to the database
 
-        if(notificationToken){
+        if (notificationToken) {
             user.notificationToken = notificationToken;
         }
         user.refreshToken = refreshToken;
@@ -60,7 +52,7 @@ export const loginUser = async (req, res) => {
             refreshToken,
         });
     } catch (error) {
-        console.error('Error logging in:', error);
-        res.status(500).json({ message: 'Server error' });
+        console.error("Error logging in:", error);
+        res.status(500).json({ message: "Server error" });
     }
 };

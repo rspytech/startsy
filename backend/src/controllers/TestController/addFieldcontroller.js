@@ -2,7 +2,7 @@ import { General } from "../../models/general.model.js";
 import { Post } from "../../models/post.model.js";
 import { User } from "../../models/user.model.js";
 
-const addField = async(req,res)=>{
+const addField = async (req, res) => {
     try {
         // Update existing documents to include isInvestorVerified with default value false
         await User.updateMany(
@@ -15,6 +15,6 @@ const addField = async(req,res)=>{
         console.error(error);
         res.status(500).send("Error updating documents.");
     }
-}
+};
 
-export default addField
+export default addField;

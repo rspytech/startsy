@@ -1,11 +1,11 @@
 import { User } from "../models/user.model.js";
 
-export const getInvestorProfile = async(req, res) => {
+export const getInvestorProfile = async (req, res) => {
     try {
         const userId = req.user._id;
 
         const user = await User.findById(userId).populate({
-            path : "roleId"
+            path: "roleId",
         });
 
         if (!user) {
@@ -14,11 +14,9 @@ export const getInvestorProfile = async(req, res) => {
 
         return res.status(200).json({
             message: "User profile retrieved successfully",
-            user: user
-        })
-
-    }
-    catch (error) {
+            user: user,
+        });
+    } catch (error) {
         return res.status(500).json({ message: "Error retrieving user profile" });
     }
-}
+};

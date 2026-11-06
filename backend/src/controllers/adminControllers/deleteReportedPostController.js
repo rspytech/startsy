@@ -7,22 +7,23 @@ export const deleteReportedPost = async (req, res) => {
         const postId = req.params.id;
         const reportId = req.body.reportId;
 
-        
-        if(!postId){
-            return res.status(400).json({message: "Post id is required"});
+        if (!postId) {
+            return res.status(400).json({ message: "Post id is required" });
         }
         const post = await Post.findByIdAndDelete(postId);
-        if(!post){
-            return res.status(400).json({message: "Post not found"});
+        if (!post) {
+            return res.status(400).json({ message: "Post not found" });
         }
-        if(post.type === "communityPost"){
-            await Community.findByIdAndDelete({_id: post.communityPost});
+        if (post.type === "communityPost") {
+            await Community.findByIdAndDelete({ _id: post.communityPost });
         }
 
-        var ReportDeocument = await Report.findOneAndUpdate({_id : reportId} ,  { $set: { status: "Reviewed" } });
-        return res.status(200).json({message: "Post deleted successfully and report status updated"});
+        var ReportDeocument = await Report.findOneAndUpdate(
+            { _id: reportId },
+            { $set: { status: "Reviewed" } }
+        );
+        return res.status(200).json({ message: "Post deleted successfully and report status updated" });
+    } catch (error) {
+        return res.status(404).json({ message: "Internal Server Error" });
     }
-    catch (error) {
-        return res.status(404).json({message: "Internal Server Error"});
-    }
-}
+};

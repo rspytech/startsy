@@ -30,37 +30,47 @@ export const applyCommunity = async (req, res) => {
                     }
                     return false;
                 case "Only for Community Members":
-                    if ((user.role === "CommunityMember")) {
+                    if (user.role === "CommunityMember") {
                         return true;
                     }
                     return false;
                 case "Jobseeker":
-                    if ((user.role === "CommunityMember" && user.roleId.communityMemberRole === "Job seeker")) {
+                    if (user.role === "CommunityMember" && user.roleId.communityMemberRole === "Job seeker") {
                         return true;
                     }
                     return false;
                 case "Mentor":
-                    if ((user.role === "CommunityMember" && user.roleId.communityMemberRole === "Mentor")) {
+                    if (user.role === "CommunityMember" && user.roleId.communityMemberRole === "Mentor") {
                         return true;
                     }
                     return false;
                 case "Startup Enthusiast":
-                    if ((user.role === "CommunityMember" && user.roleId.communityMemberRole === "Startup Enthusiast")) {
+                    if (
+                        user.role === "CommunityMember" &&
+                        user.roleId.communityMemberRole === "Startup Enthusiast"
+                    ) {
                         return true;
                     }
                     return false;
                 case "Networker":
-                    if ((user.role === "CommunityMember" && user.roleId.communityMemberRole === "Networker")) {
+                    if (user.role === "CommunityMember" && user.roleId.communityMemberRole === "Networker") {
                         return true;
                     }
                     return false;
                 case "Founder or Mentor":
-                    if ((user.role === "CommunityMember" && user.roleId.communityRole === "Mentor") || (user.role === "Founder")) {
+                    if (
+                        (user.role === "CommunityMember" && user.roleId.communityRole === "Mentor") ||
+                        user.role === "Founder"
+                    ) {
                         return true;
                     }
                     return false;
                 case "Founder or Startup Enthusiast":
-                    if ((user.role === "CommunityMember" && user.roleId.communityRole === "Startup Enthusiast") || (user.role === "Founder")) {
+                    if (
+                        (user.role === "CommunityMember" &&
+                            user.roleId.communityRole === "Startup Enthusiast") ||
+                        user.role === "Founder"
+                    ) {
                         return true;
                     }
                     return false;
@@ -69,7 +79,7 @@ export const applyCommunity = async (req, res) => {
                 default:
                     return false;
             }
-        }
+        };
 
         // if (!checkCommunityAccess()) {
         //     return res.status(403).json({ message: "You don't have permission to apply to this community" });
@@ -96,8 +106,11 @@ export const applyCommunity = async (req, res) => {
         var receiverIdToken = await User.findOne({ _id: post.user_id }).select("notificationToken");
         var rec2 = await User.findOne({ _id: req.user._id }).select("userName");
         var userNameForNotification = rec2.userName;
-        var response = await sendNotification(receiverIdToken.notificationToken, `${userNameForNotification} joined your community `, "")
-
+        var response = await sendNotification(
+            receiverIdToken.notificationToken,
+            `${userNameForNotification} joined your community `,
+            ""
+        );
 
         console.log("Community members updated:", post.communityPost.communityMembers);
         console.log("User's community list updated:", user.communityList);
@@ -105,8 +118,7 @@ export const applyCommunity = async (req, res) => {
         return res.status(200).json({
             message: "You have successfully applied to the community",
         });
-    }
-    catch (error) {
+    } catch (error) {
         console.error("Error in applyCommunity:", error);
         return res.status(500).json({
             message: "Error applying to community",

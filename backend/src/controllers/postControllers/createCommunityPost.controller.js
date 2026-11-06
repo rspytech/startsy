@@ -1,4 +1,4 @@
-import { Community } from "../../models/community.model.js"
+import { Community } from "../../models/community.model.js";
 import { Post } from "../../models/post.model.js";
 import { User } from "../../models/user.model.js";
 import { Conversation } from "../../models/conversation.model.js";
@@ -11,24 +11,24 @@ export const createCommunityPost = async (req, res) => {
 
         const { communityName, communityDescription, communityRules, groupPhoto } = req.body;
         console.log(req.body);
-        
 
-        console.log(req.file , "file");
-        
+        console.log(req.file, "file");
 
         const profilePhoto = req.file;
 
-        console.log(profilePhoto , "profilephoto");
-        
+        console.log(profilePhoto, "profilephoto");
+
         let uploadedPhoto;
         if (profilePhoto) {
             console.log("ha");
-            
+
             try {
                 uploadedPhoto = await uploadOnCloudinary(profilePhoto.buffer);
             } catch (err) {
                 console.error("Cloudinary Upload Error:", err.message);
-                return res.status(400).json({ message: "Error uploading to Cloudinary.", error: err.message });
+                return res
+                    .status(400)
+                    .json({ message: "Error uploading to Cloudinary.", error: err.message });
             }
         }
 
@@ -37,22 +37,19 @@ export const createCommunityPost = async (req, res) => {
         // }
         const photoUrl = uploadedPhoto?.secure_url;
 
-
         const community = await Community.create({
             communityName,
             communityDescription,
             communityRules,
             communityAdmin: user_id,
-            groupPhoto: photoUrl
+            groupPhoto: photoUrl,
         });
 
         console.log(community);
-        
 
         if (!community) {
             return res.status(400).json({ message: "Failed to create community post" });
         }
-
 
         const newPost = await Post.create({
             user_id,
@@ -69,23 +66,20 @@ export const createCommunityPost = async (req, res) => {
             await Conversation.create({
                 communityId: community._id,
                 isGroup: true,
-                members: [user_id]     // Changes here !!
+                members: [user_id], // Changes here !!
             });
             await user.save();
             await user.roleId.save();
             await community.save();
-        }
-
-        else {
-            return res.status(500).json({ success: false, message: 'User roleId or posts array not found' });
+        } else {
+            return res.status(500).json({ success: false, message: "User roleId or posts array not found" });
         }
 
         return res.status(201).json({ success: true, post: newPost });
-    }
-    catch (error) {
+    } catch (error) {
         return res.status(400).json({
             success: false,
-            message: error.message
+            message: error.message,
         });
     }
-}
+};

@@ -3,7 +3,6 @@ import { Post } from "../../models/post.model.js";
 import { uploadOnCloudinary } from "../../../cloudinary.js";
 import sharp from "sharp";
 
-
 export const groupPhoto = async (req, res) => {
     try {
         const user_id = req.user?._id; // Ensure user ID exists
@@ -24,7 +23,6 @@ export const groupPhoto = async (req, res) => {
         //Check if a file (group photo) is uploaded**
         if (req.file && req.file.buffer) {
             console.log("Uploading Buffer to Cloudinary...");
-           
 
             try {
                 const uploadResponse = await uploadOnCloudinary(req.file.buffer);
@@ -34,7 +32,9 @@ export const groupPhoto = async (req, res) => {
                 updateFields.groupPhoto = uploadResponse.secure_url; // Only update group photo if it's uploaded
             } catch (err) {
                 console.error(" Cloudinary Upload Error:", err.message);
-                return res.status(500).json({ message: "Error uploading to Cloudinary.", error: err.message });
+                return res
+                    .status(500)
+                    .json({ message: "Error uploading to Cloudinary.", error: err.message });
             }
         }
 
@@ -45,9 +45,9 @@ export const groupPhoto = async (req, res) => {
 
         //Find the community where user is an admin**
         const updatedCommunity = await Community.findOneAndUpdate(
-            { _id: communityId },  // Find the community by ID
-            { $set: updateFields },  // Update only the provided fields
-            { new: true }  // Return the updated document
+            { _id: communityId }, // Find the community by ID
+            { $set: updateFields }, // Update only the provided fields
+            { new: true } // Return the updated document
         );
 
         if (!updatedCommunity) {
@@ -55,7 +55,9 @@ export const groupPhoto = async (req, res) => {
         }
 
         // Find related posts where this community is referenced**
-        const communityPosts = await Post.find({ communityPost: updatedCommunity._id }).populate("communityPost");
+        const communityPosts = await Post.find({ communityPost: updatedCommunity._id }).populate(
+            "communityPost"
+        );
 
         console.log("Group photo updated successfully:", updateFields.groupPhoto || "No photo uploaded");
 
@@ -64,10 +66,8 @@ export const groupPhoto = async (req, res) => {
             updatedCommunity,
             communityPosts,
         });
-
     } catch (err) {
         console.error(" Profile Update Error:", err.message);
         return res.status(500).json({ message: "Server Error", error: err.message });
     }
 };
-

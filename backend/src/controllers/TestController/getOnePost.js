@@ -18,9 +18,8 @@ export const getOnePosts = async (req, res) => {
         var savePosts = await Save.findOne({ userId: user_id });
         console.log(savePosts?.saveId);
         if (savePosts?.saveId == null) {
-            var save = []
-        }
-        else {
+            var save = [];
+        } else {
             var save = savePosts?.saveId;
         }
         // Populate specific fields based on post type
@@ -38,10 +37,9 @@ export const getOnePosts = async (req, res) => {
         return res.status(200).json({
             message: "Posts retrieved successfully",
             data: populatedPosts,
-            bookmarks : save
+            bookmarks: save,
         });
-    }
-    catch (error) {
+    } catch (error) {
         return res.status(500).json({
             message: "Error retrieving posts",
             error: error.message,

@@ -10,8 +10,6 @@ export const createNewsletter = async (req, res) => {
         const userId = req.user._id;
         const newsletterImage = req.file;
 
-        
-
         const user = await User.findById(userId);
         const taggedUser = await User.findOne({ userName: taggedUserName });
 
@@ -24,7 +22,7 @@ export const createNewsletter = async (req, res) => {
             content,
             taggedUserName,
             taggedUser: taggedUser ? taggedUser._id : null,
-            leaderboardCategory: leaderboardCategory || null,  // If empty, it won’t be on the leaderboard
+            leaderboardCategory: leaderboardCategory || null, // If empty, it won’t be on the leaderboard
         });
 
         user.newslettersPosted.push(newsletter._id);
@@ -45,18 +43,17 @@ export const createNewsletter = async (req, res) => {
         await newsletter.save();
         await user.save();
 
-        var allUsers = await User.find()
+        var allUsers = await User.find();
         for (var items of allUsers) {
             var receiverIdToken = items.notificationToken;
-            var response = await sendNotification(receiverIdToken, ``, title )
+            var response = await sendNotification(receiverIdToken, ``, title);
         }
 
         return res.status(201).json({
             message: "Newsletter uploaded successfully",
             newsletter,
         });
-    }
-    catch (error) {
+    } catch (error) {
         return res.status(500).json({ message: "Error uploading newsletter", error: error.message });
     }
 };

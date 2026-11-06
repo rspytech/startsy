@@ -15,6 +15,8 @@ export const getLeaderboardNewsletters = async (req, res) => {
             newsletters,
         });
     } catch (error) {
-        return res.status(500).json({ message: "Error fetching leaderboard newsletters", error: error.message });
+        return res
+            .status(500)
+            .json({ message: "Error fetching leaderboard newsletters", error: error.message });
     }
 };

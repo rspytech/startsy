@@ -1,14 +1,16 @@
 import mongoose from "mongoose";
 
 const saveSchema = new mongoose.Schema({
-    userId:{
+    userId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: "User",
     },
-    saveId:[{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Post',
-    }]
+    saveId: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Post",
+        },
+    ],
 });
 
 export const Save = mongoose.model("Save", saveSchema);

@@ -27,12 +27,18 @@ export const postSuggestions = async (req, res) => {
         });
 
         var receiverIdToken = await User.findOne({ _id: founderId }).select("notificationToken");
-        var response = await sendNotification(receiverIdToken.notificationToken, `Investor sent you a suggestion`, suggestion)
+        var response = await sendNotification(
+            receiverIdToken.notificationToken,
+            `Investor sent you a suggestion`,
+            suggestion
+        );
         console.log(response, "response from notification");
 
-        return res.json({ message: "Investor posted a suggestions", profilePhoto: investorUser.profilePhoto });
-    }
-    catch (error) {
+        return res.json({
+            message: "Investor posted a suggestions",
+            profilePhoto: investorUser.profilePhoto,
+        });
+    } catch (error) {
         console.error(`Error updating founder upvote counter: ${error.message}`);
     }
 };

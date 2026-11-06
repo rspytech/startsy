@@ -31,7 +31,8 @@ export const getFounderProfileDetails = async (req, res) => {
         }
 
         // Fetch the user's profile with basic `posts` population
-        const userProfile = await role.findOne({ user_id: userId })
+        const userProfile = await role
+            .findOne({ user_id: userId })
             .populate("user_id") // Populate user details
             .populate({ path: "posts" }) // Basic population for `posts`
             .lean();
@@ -39,20 +40,21 @@ export const getFounderProfileDetails = async (req, res) => {
         console.log("User Profile:", userProfile);
 
         if (!userProfile) {
-            return res.status(404).json({ message: "Profile not found. Ensure the user_id is correctly linked in the role-specific collection." });
+            return res
+                .status(404)
+                .json({
+                    message:
+                        "Profile not found. Ensure the user_id is correctly linked in the role-specific collection.",
+                });
         }
 
         // Conditionally populate `jobPosts` or `communityPost` in each post
         const populatedPosts = await Promise.all(
             userProfile.posts.map(async (post) => {
                 if (post.type === "jobPost") {
-                    return await Post.findById(post._id)
-                        .populate("jobPosts")
-                        .lean();
+                    return await Post.findById(post._id).populate("jobPosts").lean();
                 } else if (post.type === "communityPost") {
-                    return await Post.findById(post._id)
-                        .populate("communityPost")
-                        .lean();
+                    return await Post.findById(post._id).populate("communityPost").lean();
                 }
                 return post; // Return the post as-is if type doesn't match
             })
@@ -79,6 +81,8 @@ export const getFounderProfileDetails = async (req, res) => {
         });
     } catch (error) {
         console.error("Error:", error.message);
-        return res.status(500).json({ message: "Error while fetching profile details.", error: error.message });
+        return res
+            .status(500)
+            .json({ message: "Error while fetching profile details.", error: error.message });
     }
 };

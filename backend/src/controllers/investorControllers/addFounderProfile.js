@@ -16,22 +16,21 @@ export const addFounderProfile = async (req, res) => {
         let founderProfile = await General.findOne({ user_id: id });
         if (founderProfile == null) {
             founderProfile = await Founder.findOne({ user_id: id });
-
         }
 
         console.log(founderProfile.fullName);
 
         if (!investor) {
-            return res.status(404).json({ message: 'Investor not found' });
+            return res.status(404).json({ message: "Investor not found" });
         }
 
         if (!founderProfile) {
-            return res.status(404).json({ message: 'Founder not found' });
+            return res.status(404).json({ message: "Founder not found" });
         }
 
         if (investor.requestedFounders.includes(id)) {
             return res.status(400).json({
-                message: 'You have already requested this founder',
+                message: "You have already requested this founder",
             });
         }
         investor.requestedFounders.push({
@@ -66,7 +65,11 @@ export const addFounderProfile = async (req, res) => {
         var rec2 = await User.findOne({ _id: investorId }).select("userName");
         var userNameForNotification = rec2.userName;
 
-        var response = await sendNotification(receiverIdToken.notificationToken, `${userNameForNotification}`, "wants to connect with you")
+        var response = await sendNotification(
+            receiverIdToken.notificationToken,
+            `${userNameForNotification}`,
+            "wants to connect with you"
+        );
         console.log(response, "response from notification");
 
         return res.status(200).json({
@@ -74,13 +77,11 @@ export const addFounderProfile = async (req, res) => {
             message: "Request sent to founder successfully.",
             data: investor,
         });
-    }
-
-    catch (error) {
+    } catch (error) {
         res.status(500).json({
             success: false,
             message: "Error occurred while sending request to founder.",
             error: error.message,
         });
     }
-}
+};

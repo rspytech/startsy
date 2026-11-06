@@ -1,4 +1,4 @@
-import mongoose from 'mongoose';
+import mongoose from "mongoose";
 
 const postSchema = new mongoose.Schema({
     user_id: {
@@ -7,54 +7,57 @@ const postSchema = new mongoose.Schema({
     },
     type: {
         type: String,
-        enum: ["photo", "video", "textBlog", "jobPost", "communityPost" , "Question"],
+        enum: ["photo", "video", "textBlog", "jobPost", "communityPost", "Question"],
         required: true,
     },
     caption: {
         type: String,
     },
     mediaUrl: {
-        type: String,  // Used for photo and video URLs
+        type: String, // Used for photo and video URLs
     },
     mediaType: {
         type: String,
-        enum: ["image", "video"],  // Only for photo/video types
+        enum: ["image", "video"], // Only for photo/video types
     },
     content: {
-        type: String,  // Only for textBlog type
+        type: String, // Only for textBlog type
     },
-    jobPosts : {
-        type: mongoose.Schema.Types.ObjectId,   
+    jobPosts: {
+        type: mongoose.Schema.Types.ObjectId,
         ref: "JobPost",
     },
-    communityPost : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "Community",
+    communityPost: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Community",
     },
     postUpvotes: {
         type: Number,
         default: 0,
     },
-    postComments: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Comment",
-    }],
-    aspectRatio:{
+    postComments: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Comment",
+        },
+    ],
+    aspectRatio: {
         type: "String",
     },
-    likedBy : [{
-        type : mongoose.Schema.Types.ObjectId,
-        ref : "User",
-    }],
-    isPrivate : {
+    likedBy: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+        },
+    ],
+    isPrivate: {
         type: Boolean,
         default: false,
     },
-    createdAt: { 
+    createdAt: {
         type: Date,
-        default: Date.now
+        default: Date.now,
     },
-    
 });
 
 export const Post = mongoose.model("Post", postSchema);

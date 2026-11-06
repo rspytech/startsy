@@ -8,13 +8,11 @@ import { Notification } from "../models/notification.model.js";
 import { General } from "../models/general.model.js";
 
 export const editFounderAccountProfileDetails = async (req, res) => {
-
-
     // console.log(req.body);
-    
-    req.body.teamInfo = JSON.parse(req.body.teamInfo)
-    req.body.previousWorkExperience = JSON.parse(req.body.previousWorkExperience)
-    req.body.socialProof = JSON.parse(req.body.socialProof)
+
+    req.body.teamInfo = JSON.parse(req.body.teamInfo);
+    req.body.previousWorkExperience = JSON.parse(req.body.previousWorkExperience);
+    req.body.socialProof = JSON.parse(req.body.socialProof);
     let {
         country,
         contactInfo,
@@ -30,7 +28,7 @@ export const editFounderAccountProfileDetails = async (req, res) => {
         sector,
         fundingStatus,
         stageOfStartup,
-        socialProof //changes
+        socialProof, //changes
     } = req.body;
 
     const profilePhoto = req.file;
@@ -39,29 +37,28 @@ export const editFounderAccountProfileDetails = async (req, res) => {
     //     return res.status(400).json({ message: "Please upload a profile photo" });
     // }
 
-    teamInfo = teamInfo.filter((team) => team.tag !== "" && team.name !== "" && team.role !== "")
+    teamInfo = teamInfo.filter((team) => team.tag !== "" && team.name !== "" && team.role !== "");
 
     try {
         // Update the team info with corresponding user IDs
         const invalidTeamMates = [];
-        if(teamInfo && teamInfo.length > 0){
+        if (teamInfo && teamInfo.length > 0) {
             for (let i = 0; i < teamInfo.length; i++) {
                 const team = teamInfo[i];
                 let teamMate;
-                if(team.tag.length > 0){
+                if (team.tag.length > 0) {
                     teamMate = await User.findOne({ userName: team.tag });
                     if (!teamMate) {
                         // Add invalid team member to the list
                         invalidTeamMates.push(i);
-                    }
-                    else {
+                    } else {
                         // Replace the tag with the team member's ID
                         teamInfo[i].tag = teamMate._id;
                     }
                 }
             }
         }
-        
+
         if (invalidTeamMates.length > 0) {
             return res.status(555).json({
                 message: "Team members were not found in the database. Please correct them.",
@@ -93,7 +90,7 @@ export const editFounderAccountProfileDetails = async (req, res) => {
             skills,
             nameOfStartup,
             goal,
-            description
+            description,
         };
 
         // Use a loop to update the fields dynamically
@@ -108,22 +105,21 @@ export const editFounderAccountProfileDetails = async (req, res) => {
             founder.teamInfo = teamInfo;
         }
 
-        for(let i = 0; i < teamInfo.length; i++){
-            let teamMateTag = teamInfo[i].tag; 
+        for (let i = 0; i < teamInfo.length; i++) {
+            let teamMateTag = teamInfo[i].tag;
             // TeamMateTag is now objectId as it converted now from code above as per the model using  teamInfo[i].tag = teamMate._id;
             let teamMate;
-            if(mongoose.Types.ObjectId.isValid(teamMateTag)) {
-                teamMate = await User.findById(teamMateTag);  
-            }   
-            if(teamMate){
+            if (mongoose.Types.ObjectId.isValid(teamMateTag)) {
+                teamMate = await User.findById(teamMateTag);
+            }
+            if (teamMate) {
                 await Notification.create({
-                    receivingUserId : teamInfo[i].tag,
-                    sendingUserId : req.user._id,
-                    notificationType : "teammateAdded",
-                    notificationMessage : "You have been added to a new startup as a team member",
+                    receivingUserId: teamInfo[i].tag,
+                    sendingUserId: req.user._id,
+                    notificationType: "teammateAdded",
+                    notificationMessage: "You have been added to a new startup as a team member",
                 });
             }
-            
         }
 
         // Update hiddenInfo (sector, fundingStatus, stageOfStartup, socialProof)
@@ -150,7 +146,7 @@ export const editFounderAccountProfileDetails = async (req, res) => {
         if (!uploadedPhoto || !uploadedPhoto.secure_url) {
             return res.status(400).json({ message: "Failed to upload photo to Cloudinary." });
         }
-        const photoUrl = uploadedPhoto.secure_url;  
+        const photoUrl = uploadedPhoto.secure_url;
 
         // Save the profile photo URL
         currentUser.profilePhoto = photoUrl;
@@ -163,12 +159,10 @@ export const editFounderAccountProfileDetails = async (req, res) => {
             message: "Founder Details uploaded successfully",
             founder,
         });
-
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error);
         res.status(500).send({
-            message: "Internal Server Error"
+            message: "Internal Server Error",
         });
     }
 };

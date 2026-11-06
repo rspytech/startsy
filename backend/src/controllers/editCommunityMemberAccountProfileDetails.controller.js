@@ -16,7 +16,6 @@ export const editCommunityMemberAccountProfileDetails = async (req, res) => {
             req.body.socialProof = JSON.parse(req.body.socialProof);
         }
         // console.log(req.body.socialProof);
-        
 
         const {
             fullName,
@@ -30,7 +29,7 @@ export const editCommunityMemberAccountProfileDetails = async (req, res) => {
             education,
             certification,
             portfolio,
-            socialProof
+            socialProof,
         } = req.body;
 
         const profilePhoto = req.file;
@@ -66,17 +65,15 @@ export const editCommunityMemberAccountProfileDetails = async (req, res) => {
             skills,
             education,
             socialProof,
-            
         };
 
         // Update the fields dynamically
         for (const [key, value] of Object.entries(fieldsToUpdate)) {
             // console.log(key , value , "okkkkkkkkkkkkk");
-            
-            if(key == "socialProof") {
-                communityMember["hiddenInfo"].socialProof =  value
-            }
-            else {
+
+            if (key == "socialProof") {
+                communityMember["hiddenInfo"].socialProof = value;
+            } else {
                 communityMember[key] = value;
             }
         }
@@ -103,7 +100,7 @@ export const editCommunityMemberAccountProfileDetails = async (req, res) => {
         if (!uploadedPhoto || !uploadedPhoto.secure_url) {
             return res.status(400).json({ message: "Failed to upload photo to Cloudinary." });
         }
-        const photoUrl = uploadedPhoto.secure_url;  
+        const photoUrl = uploadedPhoto.secure_url;
 
         // Save the profile photo URL in the user document
         currentUser.profilePhoto = photoUrl;

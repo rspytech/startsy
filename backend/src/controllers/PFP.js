@@ -1,6 +1,6 @@
 import { User } from "../models/user.model.js";
 
-async function PFP(req,res){
+async function PFP(req, res) {
     var id = req.user.id;
 
     var rec1 = await User.findById(id).select("profilePhoto");
@@ -10,4 +10,4 @@ async function PFP(req,res){
     });
 }
 
-export default PFP
+export default PFP;

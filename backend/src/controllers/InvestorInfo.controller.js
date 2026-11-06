@@ -25,8 +25,13 @@ export const InvestorInfo = async (req, res) => {
         const profilePhoto = req.files.profilePhoto;
         const pancardPhoto = req.files.panCardPhoto;
 
-        if (!contactInfo || !previousExperience || !startupStage || !preferredSector || !investmentRange ||
-            !fullName 
+        if (
+            !contactInfo ||
+            !previousExperience ||
+            !startupStage ||
+            !preferredSector ||
+            !investmentRange ||
+            !fullName
         ) {
             return res.status(400).json({ message: "Please fill in all the fields" });
         }
@@ -53,7 +58,7 @@ export const InvestorInfo = async (req, res) => {
                     previousExperience,
                     panCard: {
                         index: hashedPanCard,
-                        pan: encryptedPanCard
+                        pan: encryptedPanCard,
                     },
                     startupStage,
                     preferredSector,
@@ -62,8 +67,8 @@ export const InvestorInfo = async (req, res) => {
                     websiteUrl,
                     domainEmail,
                     investorType,
-                    user_id: req.user._id
-                }
+                    user_id: req.user._id,
+                },
             },
             { new: true }
         );
@@ -89,8 +94,8 @@ export const InvestorInfo = async (req, res) => {
         // currentUser.email = email;
         currentUser.contactInfo = contactInfo;
 
-        currentUser.roleId = newInvestor._id;           /* NOTE : Adding the roleId to the base user model */
-        currentUser.role = "Investor"
+        currentUser.roleId = newInvestor._id; /* NOTE : Adding the roleId to the base user model */
+        currentUser.role = "Investor";
 
         // const pancardUploadedPhoto = await uploadOnCloudinary(pancardPhoto[0].path);
         // const pancardPhotoUrl = pancardUploadedPhoto.secure_url;
@@ -101,7 +106,9 @@ export const InvestorInfo = async (req, res) => {
                 pancardUploadedPhoto = await uploadOnCloudinary(pancardPhoto[0].buffer);
             } catch (err) {
                 console.error("Cloudinary Upload Error:", err.message);
-                return res.status(400).json({ message: "Error uploading to Cloudinary.", error: err.message });
+                return res
+                    .status(400)
+                    .json({ message: "Error uploading to Cloudinary.", error: err.message });
             }
 
             if (!pancardUploadedPhoto || !pancardUploadedPhoto.secure_url) {
@@ -120,30 +127,28 @@ export const InvestorInfo = async (req, res) => {
                 userName: currentUser.userName,
                 role: "Investor",
                 status: true,
-                isInvestorVerified : false,
-                investorRejected : false,
+                isInvestorVerified: false,
+                investorRejected: false,
             },
             process.env.ACCESS_TOKEN_SECRET,
             {
                 expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
             }
-        )
+        );
 
         await currentUser.save();
         await newInvestor.save();
 
         console.log("success");
 
-
         res.status(200).send({
             message: "Investor Details uploaded successfully",
             newToken,
         });
-    }
-    catch (error) {
+    } catch (error) {
         res.status(400).json({
             message: "Error while creating account of investor",
             error: error,
         });
     }
-}
+};

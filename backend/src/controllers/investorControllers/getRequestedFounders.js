@@ -5,24 +5,23 @@ export const getRequestedFounders = async (req, res) => {
     try {
         const id = req.user._id;
         const investor = await Investor.findOne({ user_id: id })
-        .populate({
-            path: "requestedFounders.founder",
-            populate: {
-                path: "roleId",
-            }
-        })
-        .exec();
+            .populate({
+                path: "requestedFounders.founder",
+                populate: {
+                    path: "roleId",
+                },
+            })
+            .exec();
 
         if (!investor) {
-            return res.status(404).json({ message: 'Investor not found' });
+            return res.status(404).json({ message: "Investor not found" });
         }
 
         return res.json({
-            message : "Requested Founders Retrieved Successfully",
-            requestedFounders : investor
+            message: "Requested Founders Retrieved Successfully",
+            requestedFounders: investor,
         });
-    }
-    catch (error) {
-        res.status(500).json({ message: 'Error retrieving requested founders:', error });
+    } catch (error) {
+        res.status(500).json({ message: "Error retrieving requested founders:", error });
     }
 };

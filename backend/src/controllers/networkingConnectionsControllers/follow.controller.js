@@ -10,7 +10,6 @@ export const followUser = async (req, res) => {
         // console.log(loggedInUserId, followedUserId);
         // console.log(loggedInUserId, followedUserId);
 
-
         // Prevent users from following themselves
         if (loggedInUserId.toString() === followedUserId.toString()) {
             return res.status(400).json({ message: "You cannot follow yourself." });
@@ -31,12 +30,11 @@ export const followUser = async (req, res) => {
         ]);
 
         // Fetch the users after updates
-        const loggedInUserRole = await User.findById(loggedInUserId).populate("roleId");    // F
-        const messagingUserRole = await User.findById(followedUserId).populate("roleId");   // C
+        const loggedInUserRole = await User.findById(loggedInUserId).populate("roleId"); // F
+        const messagingUserRole = await User.findById(followedUserId).populate("roleId"); // C
 
         // console.log(loggedInUserRole);
         console.log(messagingUserRole);
-
 
         if (!messagingUserRole || !messagingUserRole.roleId) {
             return res.status(404).json({ message: "RoleId or user not found." });
@@ -44,7 +42,7 @@ export const followUser = async (req, res) => {
 
         if (loggedInUserRole.followers.includes(followedUserId)) {
             return res.status(400).json({
-                message: "You are already following this user."
+                message: "You are already following this user.",
             });
         }
         // Check if both are following each other
@@ -52,13 +50,11 @@ export const followUser = async (req, res) => {
             loggedInUserRole.followers.includes(followedUserId) &&
             messagingUserRole.followers.includes(loggedInUserId)
         ) {
-
             const messagingUser = messagingUserRole.roleId;
             const loggedInUser = loggedInUserRole.roleId;
 
             await messagingUser.updateOne({ $addToSet: { chatUsers: loggedInUserId } });
             await loggedInUser.updateOne({ $addToSet: { chatUsers: followedUserId } });
-
 
             loggedInUser.requestNotifications = loggedInUser.requestNotifications.filter(
                 (notification) => notification.investor.toString() !== followedUserId
@@ -67,9 +63,7 @@ export const followUser = async (req, res) => {
             await messagingUser.save();
             await loggedInUser.save();
 
-            return res
-                .status(200)
-                .json({ message: "Message Authentication Successful and followed back." });
+            return res.status(200).json({ message: "Message Authentication Successful and followed back." });
         }
 
         // Ensure `requestNotifications` exists
@@ -92,13 +86,14 @@ export const followUser = async (req, res) => {
             console.log(messagingUserRole.roleId);
         }
 
-
         var receiverIdToken = await User.findById(followedUserId).select("notificationToken");
         var rec2 = await User.findOne({ _id: loggedInUserId }).select("userName");
 
-        var response = await sendNotification(receiverIdToken.notificationToken, `${rec2.userName} sent you a connection request`)
+        var response = await sendNotification(
+            receiverIdToken.notificationToken,
+            `${rec2.userName} sent you a connection request`
+        );
         console.log(response, "response from notification");
-
 
         return res.status(200).json({
             message: "User followed successfully, waiting for follow back.",

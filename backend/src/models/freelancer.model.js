@@ -1,92 +1,102 @@
 import mongoose from "mongoose";
 
 const freelancerSchema = new mongoose.Schema({
-    fullName : {                 
-        type : String,
+    fullName: {
+        type: String,
         required: true,
     },
-    email : {
+    email: {
         type: String,
     },
-    country : {
+    country: {
         type: String,
     },
-    age : {
+    age: {
         type: Date,
     },
-    gender : {
+    gender: {
         type: String,
     },
-    contactInfo : {
+    contactInfo: {
         type: String,
         required: true,
     },
-    tagline : {
+    tagline: {
         type: String,
     },
-    skills : {
+    skills: {
         type: String,
     },
-    education : {
+    education: {
         type: String,
     },
-    certification : [{
-        name : {
+    certification: [
+        {
+            name: {
+                type: String,
+            },
+            url: {
+                type: String,
+            },
+        },
+    ],
+    portfolio: [
+        {
             type: String,
         },
-        url : {
-            type: String,
-        },
-    }], 
-    portfolio : [{
-        type : String,
-    }],
-    services : {
+    ],
+    services: {
         type: String,
     },
-    currentAvailability : {
+    currentAvailability: {
         type: String,
     },
-    pricing : {
+    pricing: {
         type: String,
     },
 
     totalUpvotes: {
         type: Number,
-        default : 0,
+        default: 0,
     },
 
-    upvotesPerDay : {
+    upvotesPerDay: {
         type: Number,
-        default : 0,
+        default: 0,
     },
 
-    requestNotifications: [{
-        investor: {
-            type: mongoose.Schema.Types.ObjectId,
-            ref: 'User',
+    requestNotifications: [
+        {
+            investor: {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User",
+            },
+            requestDate: {
+                type: Date,
+                default: Date.now,
+            },
         },
-        requestDate: {
-            type: Date,
-            default: Date.now,
-        }
-    }],
+    ],
 
     // !! Revisit chatUsers either make here or may be a separate model for it !!
 
-    chatUsers: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-    }],
+    chatUsers: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+        },
+    ],
 
-    posts : [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'Post'
-    }],
+    posts: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Post",
+        },
+    ],
 
-    user_id : {
-        type : mongoose.Schema.Types.ObjectId,
-        ref : 'User',
+    user_id: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "User",
     },
 });
 

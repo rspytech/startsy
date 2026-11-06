@@ -1,29 +1,25 @@
 import { User } from "../models/user.model.js";
 
 export const DoesUserExists = async (req, res) => {
-
     const { email, contactInfo } = req.body;
 
     try {
-        
-        if (await User.findOne({email})) {
+        if (await User.findOne({ email })) {
             return res.status(409).send({
-                message: "Email Already Associated with a different User, try Logging In"
+                message: "Email Already Associated with a different User, try Logging In",
             });
         }
 
-        if (await User.findOne({contactInfo})) {
+        if (await User.findOne({ contactInfo })) {
             return res.status(409).send({
-                message: "Phone Number Already Associated with a different User, try Loggin In"
+                message: "Phone Number Already Associated with a different User, try Loggin In",
             });
         }
 
         return res.status(200);
-
     } catch (error) {
         return res.status(500).send({
-            message: "Internal Server Error"
-        })
+            message: "Internal Server Error",
+        });
     }
-
-}
+};

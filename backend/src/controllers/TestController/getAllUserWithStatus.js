@@ -3,11 +3,10 @@ import { User } from "../../models/user.model.js";
 export const getAllUsersWithStatus = async (req, res) => {
     try {
         const userId = req.user._id;
-        const {userIdsArray} = req.body;
+        const { userIdsArray } = req.body;
         console.log(req.body);
 
         console.log(userIdsArray);
-        
 
         // Fetch logged-in user's role and connections
         const user = await User.findById(userId).populate("roleId");
@@ -16,22 +15,19 @@ export const getAllUsersWithStatus = async (req, res) => {
         }
 
         const chatUsers = user.roleId?.chatUsers || []; // Ensure chatUsers exists
-        const allUsers = await User.find(
-            { _id: { $in: userIdsArray } }
-        ).select("userName role profilePhoto");
+        const allUsers = await User.find({ _id: { $in: userIdsArray } }).select("userName role profilePhoto");
 
         console.log(allUsers);
-        
 
-        const usersWithStatus = allUsers.map(u => {
+        const usersWithStatus = allUsers.map((u) => {
             const plainUser = u.toObject();
 
             // If the user is in chatUsers -> "Connected"
-            if (chatUsers.some(cu => cu.equals(u._id))) {
+            if (chatUsers.some((cu) => cu.equals(u._id))) {
                 return { ...plainUser, status: "Connected" };
             }
             // If the logged-in user has sent a request (is in followers) -> "Request Sent"
-            else if (u.followers?.some(f => f.equals(userId))) {
+            else if (u.followers?.some((f) => f.equals(userId))) {
                 return { ...plainUser, status: "Request Sent" };
             }
             // If not in any category -> "Connect"

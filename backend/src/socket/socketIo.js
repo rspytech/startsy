@@ -4,7 +4,7 @@ import { Message } from "../models/message.model.js";
 import { User } from "../models/user.model.js";
 import sendNotification from "../utils/sendNotification.js";
 import { Community } from "../models/community.model.js";
-const userSocketMap = {};  // Mapping of user IDs to their socket IDs
+const userSocketMap = {}; // Mapping of user IDs to their socket IDs
 let io;
 
 export const configureSocketIO = (server) => {
@@ -13,8 +13,7 @@ export const configureSocketIO = (server) => {
             origin: "*",
         },
     });
-    const chatScreen = io.of("/chatScreen")
-
+    const chatScreen = io.of("/chatScreen");
 
     chatScreen.on("connection", (socket) => {
         console.log("User connected:", socket.id);
@@ -53,9 +52,7 @@ export const configureSocketIO = (server) => {
 
                 // console.log(receiverId, "yeh yogesh hona chiaye");
 
-
                 var receiverIdToken = await User.findOne({ _id: receiverId }).select("notificationToken");
-
 
                 if (!conversation) {
                     conversation = await Conversation.create({
@@ -67,17 +64,20 @@ export const configureSocketIO = (server) => {
                 // Save message
                 const receiverSocketId = userSocketMap[receiverId];
 
-
-                var isRead
+                var isRead;
                 if (receiverSocketId) {
-                    isRead = true
+                    isRead = true;
+                } else {
+                    isRead = false;
                 }
-                else { isRead = false }
 
                 if (!receiverSocketId) {
-                    var response = await sendNotification(receiverIdToken.notificationToken, `${userNameForNotification} sent you a message`, message)
+                    var response = await sendNotification(
+                        receiverIdToken.notificationToken,
+                        `${userNameForNotification} sent you a message`,
+                        message
+                    );
                     console.log(response, "response from notification");
-
                 }
                 const newMessage = await Message.create({ senderId, message, receiverId, isRead });
 
@@ -87,7 +87,7 @@ export const configureSocketIO = (server) => {
 
                 // Deliver message
                 if (receiverSocketId) {
-                    io.to(receiverSocketId).emit("ShuffleChatList" , {senderId , message})
+                    io.to(receiverSocketId).emit("ShuffleChatList", { senderId, message });
                     chatScreen.to(receiverSocketId).emit("privateMessage", newMessage);
                 } else {
                     console.log(`User ${receiverId} is offline. Message stored in DB.`);
@@ -130,11 +130,9 @@ export const configureSocketIO = (server) => {
         // Handle group messages
         socket.on("groupMessage", async ({ senderId, groupId, message }) => {
             // console.log("hi");
-            
+
             try {
                 const conversation = await Conversation.findOne({ communityId: groupId, isGroup: true });
-
-
 
                 if (!conversation) {
                     console.error("Group not found");
@@ -150,15 +148,11 @@ export const configureSocketIO = (server) => {
                 newMessage.senderId = pfp; // Set senderId in the message object
                 console.log(newMessage);
 
-
-
                 var obj = {
-                    ...newMessage
-                }
+                    ...newMessage,
+                };
 
                 console.log(obj);
-
-
 
                 // console.log({newMessage , profilePhoto});
 
@@ -168,9 +162,6 @@ export const configureSocketIO = (server) => {
 
                 // Emit to group
                 chatScreen.to(groupId).emit("groupMessage", { data1: newMessage, pfp: profilePhoto });
-
-
-
 
                 var allUsersInCommunity = conversation.members;
                 console.log(allUsersInCommunity);
@@ -186,11 +177,13 @@ export const configureSocketIO = (server) => {
                     var receiverSocketId = userSocketMap[items.toString()];
 
                     if (!receiverSocketId) {
-                        var response = await sendNotification(receiverIdToken.notificationToken, `${userNameForNotification} sent a message`, message)
+                        var response = await sendNotification(
+                            receiverIdToken.notificationToken,
+                            `${userNameForNotification} sent a message`,
+                            message
+                        );
                         console.log(response, "response from notification");
-
                     }
-
                 }
             } catch (error) {
                 console.error("Error handling groupMessage:", error.message);
@@ -219,9 +212,8 @@ export const configureSocketIO = (server) => {
         socket.on("registerUser", (id) => {
             userSocketMap[id] = socket.id;
             console.log(`User ${id} registered with socket ID ${socket.id}`);
-
-        })
-    })
+        });
+    });
 
     return io;
 };
@@ -230,7 +222,6 @@ export const configureSocketIO = (server) => {
 export const getReceiverSocketId = (userId) => {
     return userSocketMap[userId];
 };
-
 
 export const getSocketInstance = () => {
     if (!io) {

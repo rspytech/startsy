@@ -1,12 +1,12 @@
 import { Post } from "../../models/post.model.js";
 import { User } from "../../models/user.model.js";
 import { Notification } from "../../models/notification.model.js";
-import cron from 'node-cron';
-import moment from 'moment-timezone';
+import cron from "node-cron";
+import moment from "moment-timezone";
 import { UpvotePost } from "../../models/upvotePost.model.js";
 import sendNotification from "../../utils/sendNotification.js";
 
-cron.schedule('0 0 * * *', async () => {
+cron.schedule("0 0 * * *", async () => {
     try {
         console.log("Cron job started: Resetting upvotes for the day");
 
@@ -14,7 +14,7 @@ cron.schedule('0 0 * * *', async () => {
         const users = await User.find().populate("roleId");
         for (let user of users) {
             if (user.roleId) {
-                let today = moment().tz('Asia/Kolkata').format('YYYY-MM-DD');
+                let today = moment().tz("Asia/Kolkata").format("YYYY-MM-DD");
                 console.log(today);
                 // Update the role details for each user to reset upvotesPerDay
                 await user.roleId.updateOne({
@@ -57,7 +57,6 @@ export const upvotePost = async (req, res) => {
 
         console.log(likeStatus, postUserId, roleDetails);
 
-
         if (likeStatus === "like") {
             await Notification.create({
                 receivingUserId: post.user_id,
@@ -81,21 +80,23 @@ export const upvotePost = async (req, res) => {
             console.log(receiverIdToken.notificationToken);
             console.log(userNameForNotification);
 
-            
-            var response = await sendNotification(receiverIdToken.notificationToken, `${userNameForNotification}`, "upvoted your post")
+            var response = await sendNotification(
+                receiverIdToken.notificationToken,
+                `${userNameForNotification}`,
+                "upvoted your post"
+            );
             console.log(response, "response from notification");
-            
         }
 
         if (user.role === "Investor") {
             if (roleDetails.roleId && roleDetails.roleId.investorUpvotes !== undefined) {
                 if (likeStatus === "like") {
                     await roleDetails.roleId.updateOne({
-                        $inc: { investorUpvotes: 1 }
+                        $inc: { investorUpvotes: 1 },
                     });
                 } else if (likeStatus === "unlike") {
                     await roleDetails.roleId.updateOne({
-                        $inc: { investorUpvotes: -1 }
+                        $inc: { investorUpvotes: -1 },
                     });
                 }
                 await roleDetails.roleId.save();

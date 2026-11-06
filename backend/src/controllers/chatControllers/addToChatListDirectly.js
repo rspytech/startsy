@@ -30,8 +30,9 @@ export const addToChatDirectly = async (req, res) => {
         await Promise.all([jobApplicantProfile.save(), loggedInUserProfile.save()]);
 
         return res.status(200).json({ message: "Users added to each other's chat list successfully." });
-    }
-    catch (error) {
-        return res.status(404).json({ message: "Error while adding users directly to chats", error: error.message });
+    } catch (error) {
+        return res
+            .status(404)
+            .json({ message: "Error while adding users directly to chats", error: error.message });
     }
 };

@@ -1,4 +1,3 @@
-
 // asli code
 import { Post } from "../../models/post.model.js";
 import { Save } from "../../models/save.model.js";
@@ -20,9 +19,8 @@ export const getPosts = async (req, res) => {
         var savePosts = await Save.findOne({ userId: user_id });
         console.log(savePosts?.saveId);
         if (savePosts?.saveId == null) {
-            var save = []
-        }
-        else {
+            var save = [];
+        } else {
             var save = savePosts?.saveId;
         }
 
@@ -45,16 +43,10 @@ export const getPosts = async (req, res) => {
                 return true; // User is the owner of the post, always visible
             }
 
-
             // Private posts are visible only if the user is a follower or following the post's owner
             const postOwnerId = post.user_id;
-            return (
-                currentUser.followers.includes(postOwnerId) ||
-                currentUser.following.includes(postOwnerId)
-            );
+            return currentUser.followers.includes(postOwnerId) || currentUser.following.includes(postOwnerId);
         });
-
-
 
         // Populate specific fields based on post type
         const populatedPosts = await Promise.all(
@@ -68,23 +60,18 @@ export const getPosts = async (req, res) => {
             })
         );
 
-
         return res.status(200).json({
             message: "Posts retrieved successfully",
             data: populatedPosts.reverse(),
-            bookmarks: save
+            bookmarks: save,
         });
-    }
-    catch (error) {
+    } catch (error) {
         return res.status(500).json({
             message: "Error retrieving posts",
             error: error.message,
         });
     }
 };
-
-
-
 
 // // check recommendation Sujal
 
@@ -108,7 +95,6 @@ export const getPosts = async (req, res) => {
 //         if (!currentUser || !generalUser) {
 //             return res.status(404).json({ message: "User not found" });
 //         }
-
 
 //         const connectedUserIds = generalUser.chatUsers.map(id => id.toString());
 
@@ -177,7 +163,6 @@ export const getPosts = async (req, res) => {
 //                 return post;
 //             })
 //         );
-
 
 //         return res.status(200).json({
 //             message: "Posts retrieved successfully",

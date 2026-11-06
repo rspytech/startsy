@@ -24,7 +24,6 @@
 //     }
 // }
 
-
 import { User } from "../../models/user.model.js";
 import { Conversation } from "../../models/conversation.model.js";
 
@@ -38,9 +37,6 @@ export const getCommunityGroupChatList = async (req, res) => {
             // select: "_id communityName communityDescription "
         });
 
-
-
-
         if (!user) {
             return res.status(404).json({ message: "User not found" });
         }
@@ -50,28 +46,29 @@ export const getCommunityGroupChatList = async (req, res) => {
         }
 
         // Fetch conversations with last messages for each community
-        const communityGroupChatList = await Promise.all(user.communityList.map(async (community) => {
-            const conversation = await Conversation.findOne({
-                communityId: community._id,
-                isGroup: true
+        const communityGroupChatList = await Promise.all(
+            user.communityList.map(async (community) => {
+                const conversation = await Conversation.findOne({
+                    communityId: community._id,
+                    isGroup: true,
+                })
+                    .sort({ updatedAt: -1 })
+                    .populate("lastMessage");
+
+                return {
+                    community: {
+                        _id: community._id,
+                        community,
+                    },
+                    conversation: {
+                        _id: conversation?._id,
+                        lastMessage: conversation?.lastMessage || null,
+                        memberCount: conversation?.members?.length || 0,
+                        updatedAt: conversation?.updatedAt,
+                    },
+                };
             })
-                .sort({ updatedAt: -1 })
-                .populate("lastMessage")
-
-            return {
-                community: {
-                    _id: community._id,
-                    community
-
-                },
-                conversation: {
-                    _id: conversation?._id,
-                    lastMessage: conversation?.lastMessage || null,
-                    memberCount: conversation?.members?.length || 0,
-                    updatedAt: conversation?.updatedAt
-                }
-            };
-        }));
+        );
 
         // Sort by last message timestamp if exists, otherwise by community creation date
         const sortedChatList = communityGroupChatList.sort((a, b) => {
@@ -82,14 +79,13 @@ export const getCommunityGroupChatList = async (req, res) => {
 
         return res.status(200).json({
             message: "Community group chat list retrieved successfully",
-            data: sortedChatList
+            data: sortedChatList,
         });
-    }
-    catch (error) {
+    } catch (error) {
         console.error("Error in getCommunityGroupChatList:", error);
         return res.status(500).json({
             message: "Error while fetching group chats",
-            error: error.message
+            error: error.message,
         });
     }
 };

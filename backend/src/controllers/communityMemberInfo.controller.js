@@ -5,9 +5,9 @@ import { User } from "../models/user.model.js";
 import { General } from "../models/general.model.js";
 
 export const CommunityMemeberInfo = async (req, res) => {
-    req.body.certification = JSON.parse(req.body.certification)
-    req.body.portfolio = JSON.parse(req.body.portfolio)
-    req.body.socialProof = JSON.parse(req.body.socialProof)
+    req.body.certification = JSON.parse(req.body.certification);
+    req.body.portfolio = JSON.parse(req.body.portfolio);
+    req.body.socialProof = JSON.parse(req.body.socialProof);
 
     try {
         let {
@@ -26,7 +26,6 @@ export const CommunityMemeberInfo = async (req, res) => {
             certification,
             portfolio,
             socialProof,
-
         } = req.body;
 
         const profilePhoto = req.file;
@@ -34,12 +33,10 @@ export const CommunityMemeberInfo = async (req, res) => {
         const currentUserId = req.user._id;
         const currentUser = await User.findById(currentUserId);
 
-
-
         if (Array.isArray(socialProof)) {
-            socialProof = socialProof.map(item => ({
+            socialProof = socialProof.map((item) => ({
                 name: item.name || "",
-                url: item.url || ""
+                url: item.url || "",
             }));
         } else {
             socialProof = []; // Default to an empty array if input is invalid
@@ -63,7 +60,7 @@ export const CommunityMemeberInfo = async (req, res) => {
             hiddenInfo: {
                 socialProof,
             },
-            user_id: req.user._id
+            user_id: req.user._id,
         });
 
         let uploadedPhoto;
@@ -72,7 +69,9 @@ export const CommunityMemeberInfo = async (req, res) => {
                 uploadedPhoto = await uploadOnCloudinary(profilePhoto.buffer);
             } catch (err) {
                 console.error("Cloudinary Upload Error:", err.message);
-                return res.status(400).json({ message: "Error uploading to Cloudinary.", error: err.message });
+                return res
+                    .status(400)
+                    .json({ message: "Error uploading to Cloudinary.", error: err.message });
             }
 
             if (!uploadedPhoto || !uploadedPhoto.secure_url) {
@@ -81,10 +80,8 @@ export const CommunityMemeberInfo = async (req, res) => {
             const photoUrl = uploadedPhoto.secure_url;
 
             currentUser.profilePhoto = photoUrl;
-        }
-        else {
+        } else {
             currentUser.profilePhoto = process.env.DEFAULT_PROFILE_PHOTO;
-
         }
         currentUser.email = email;
         currentUser.contactInfo = contactInfo;
@@ -104,7 +101,7 @@ export const CommunityMemeberInfo = async (req, res) => {
             {
                 expiresIn: process.env.ACCESS_TOKEN_EXPIRY,
             }
-        )
+        );
 
         await currentUser.save();
         await newCommunityMember.save();
@@ -113,12 +110,11 @@ export const CommunityMemeberInfo = async (req, res) => {
             message: "Community Member created successfully",
             newToken,
         });
-    }
-    catch (error) {
+    } catch (error) {
         console.log(error);
         res.status(400).json({
             error: error,
-            message: "Internal Server Error"
+            message: "Internal Server Error",
         });
     }
-}
+};

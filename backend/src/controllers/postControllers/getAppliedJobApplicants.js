@@ -5,20 +5,18 @@ import { User } from "../../models/user.model.js";
 export const UsersAppliedForJobs = async (req, res) => {
     try {
         const user_id = req.user._id;
-        const { jobPostIds, jobId } = req.body
-        console.log(jobPostIds , jobId);
-        
+        const { jobPostIds, jobId } = req.body;
+        console.log(jobPostIds, jobId);
 
         // const jobPosts = await User.find({ _id: { $in: jobPostIds } })
         //     .select("userName profilePhoto email contactInfo roleId role ")
 
-
-        const extraData = await JobApplicantDescription.find(
-            { jobId: jobId, user_id: { $in: jobPostIds } },
-        ).populate("user_id", "userName profilePhoto email contactInfo roleId role")
+        const extraData = await JobApplicantDescription.find({
+            jobId: jobId,
+            user_id: { $in: jobPostIds },
+        }).populate("user_id", "userName profilePhoto email contactInfo roleId role");
         console.log(extraData);
 
-        
         return res.status(200).json({
             message: "Fetched applied job applicants successfully",
             data: extraData,

@@ -3,24 +3,32 @@ import mongoose from "mongoose";
 const notificationSchema = new mongoose.Schema({
     receivingUserId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: "User",
     },
     sendingUserId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: "User",
     },
-    postId : {
+    postId: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'Post',
+        ref: "Post",
     },
-    notificationType : {
+    notificationType: {
         type: String,
-        enum: ['upvotePost', 'upvoteProfile', 'jobApplied', "joinedCommunity", "commentPost", "teammateAdded", "suggestion"],
+        enum: [
+            "upvotePost",
+            "upvoteProfile",
+            "jobApplied",
+            "joinedCommunity",
+            "commentPost",
+            "teammateAdded",
+            "suggestion",
+        ],
     },
     notificationMessage: {
         type: String,
     },
-    appliedJobRole : {
+    appliedJobRole: {
         type: String,
     },
     timestamp: {
@@ -29,4 +37,4 @@ const notificationSchema = new mongoose.Schema({
     },
 });
 
-export const Notification = new mongoose.model("Notification", notificationSchema);  
+export const Notification = new mongoose.model("Notification", notificationSchema);

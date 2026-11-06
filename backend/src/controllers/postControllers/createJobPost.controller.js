@@ -5,10 +5,10 @@ import { User } from "../../models/user.model.js";
 export const createJobPost = async (req, res) => {
     try {
         const type = req.params.postType;
-        const {role, description, duration, pay , amount} = req.body;
+        const { role, description, duration, pay, amount } = req.body;
         const user_id = req.user._id;
 
-        const jobPost = await JobPost.create({role, description, duration, pay , amount});
+        const jobPost = await JobPost.create({ role, description, duration, pay, amount });
 
         if (!jobPost) {
             return res.status(400).json({ message: "Error while creating a job post" });
@@ -32,9 +32,7 @@ export const createJobPost = async (req, res) => {
         }
 
         return res.status(201).json({ message: "Job post created successfully", post });
-
+    } catch (error) {
+        return res.status(500).json({ message: "Error while creating a job post", error });
     }
-    catch (error) {
-        return res.status(500).json({message: "Error while creating a job post", error});
-    }
-}
+};

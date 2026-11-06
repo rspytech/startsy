@@ -1,31 +1,32 @@
 import mongoose from "mongoose";
 
 const communitySchema = new mongoose.Schema({
-    communityName : {
+    communityName: {
         type: String,
     },
-    communityDescription : {
+    communityDescription: {
         type: String,
     },
-    communityRules : {
+    communityRules: {
         type: String,
     },
-    communityMembers : [{
+    communityMembers: [
+        {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "User",
+        },
+    ],
+    communityAdmin: {
         type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
-    }],
-    communityAdmin : {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: 'User',
+        ref: "User",
     },
-    groupPhoto : {
-        type : String,
+    groupPhoto: {
+        type: String,
     },
-    isLock : {
+    isLock: {
         type: Boolean,
         default: false,
-    }
-
+    },
 });
 
-export const Community = mongoose.model('Community', communitySchema);
+export const Community = mongoose.model("Community", communitySchema);

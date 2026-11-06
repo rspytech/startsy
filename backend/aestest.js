@@ -1,33 +1,33 @@
-import crypto from 'crypto';
-import dotenv from 'dotenv';
+import crypto from "crypto";
+import dotenv from "dotenv";
 dotenv.config();
 
 // Load AES key from environment variable
-const aesKey = Buffer.from(process.env.AES_KEY, 'hex');
+const aesKey = Buffer.from(process.env.AES_KEY, "hex");
 
 // Hashing function
 const hashPan = (pan) => {
-    return crypto.createHash('sha256').update(pan).digest('hex');
+    return crypto.createHash("sha256").update(pan).digest("hex");
 };
 
 // AES encryption function
 const aesEncrypt = (data, key) => {
     const iv = crypto.randomBytes(16); // Initialization vector
-    const cipher = crypto.createCipheriv('aes-256-cbc', key, iv);
-    let encrypted = cipher.update(data, 'utf8', 'hex');
-    encrypted += cipher.final('hex');
+    const cipher = crypto.createCipheriv("aes-256-cbc", key, iv);
+    let encrypted = cipher.update(data, "utf8", "hex");
+    encrypted += cipher.final("hex");
     return {
-        iv: iv.toString('hex'),
-        data: encrypted
+        iv: iv.toString("hex"),
+        data: encrypted,
     };
 };
 
 // AES decryption function
 const aesDecrypt = (encryptedData, key) => {
     const { iv, data } = encryptedData;
-    const decipher = crypto.createDecipheriv('aes-256-cbc', key, Buffer.from(iv, 'hex'));
-    let decrypted = decipher.update(data, 'hex', 'utf8');
-    decrypted += decipher.final('utf8');
+    const decipher = crypto.createDecipheriv("aes-256-cbc", key, Buffer.from(iv, "hex"));
+    let decrypted = decipher.update(data, "hex", "utf8");
+    decrypted += decipher.final("utf8");
     return decrypted;
 };
 
@@ -49,11 +49,11 @@ const aesDecrypt = (encryptedData, key) => {
 // const retrievedEncryptedData = encryptedPanCardInfo; // Simulate retrieval
 
 const decryptedPanCardInfo = aesDecrypt(enc, aesKey);
-console.log(decryptedPanCardInfo)
+console.log(decryptedPanCardInfo);
 
 // Hash the decrypted PAN card information and compare with the stored hash
 const recalculatedHash = hashPan(decryptedPanCardInfo);
-console.log(recalculatedHash)
+console.log(recalculatedHash);
 
 // if (recalculatedHash === hashedPanCardInfo) {
 //     console.log('The decrypted data is valid.');

@@ -6,8 +6,7 @@ export const getSavedPost = async (req, res) => {
         // const saves = await Save.find({ userId });
         const saves = await Save.find({ userId }).populate({
             path: "saveId",
-            select: "mediaUrl type content "
-
+            select: "mediaUrl type content ",
         });
         if (!saves) {
             return res.status(404).json({ message: "Saves not found" });
@@ -15,14 +14,12 @@ export const getSavedPost = async (req, res) => {
         res.status(200).json({
             success: true,
             data: saves,
-            message: "Saves fetched successfully"
+            message: "Saves fetched successfully",
         });
-
     } catch (error) {
         res.status(500).json({
             success: false,
-            message: error.message
+            message: error.message,
         });
     }
-
-}
+};

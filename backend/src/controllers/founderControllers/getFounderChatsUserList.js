@@ -8,10 +8,10 @@ export const getFounderChatUserList = async (req, res) => {
 
         // Find the founder profile and populate chatUsers
         const user = await User.findById(founderId).populate({
-            path: 'roleId',
+            path: "roleId",
             populate: {
-                path: 'chatUsers',
-                select: '_id userName profilePhoto role',
+                path: "chatUsers",
+                select: "_id userName profilePhoto role",
             },
         });
 
@@ -21,28 +21,30 @@ export const getFounderChatUserList = async (req, res) => {
         }
 
         // Fetch the last message for each user in chatUsers
-        const chatList = await Promise.all(founderProfile.chatUsers.map(async (chatUser) => {
-            const conversation = await Conversation.findOne({
-                members: { $all: [founderId, chatUser._id] },
-                $expr: { $eq: [{ $size: "$members" }, 2] },
-                isGroup: false,
-            })
-            .sort({ updatedAt: -1 })
-            .populate("lastMessage");
+        const chatList = await Promise.all(
+            founderProfile.chatUsers.map(async (chatUser) => {
+                const conversation = await Conversation.findOne({
+                    members: { $all: [founderId, chatUser._id] },
+                    $expr: { $eq: [{ $size: "$members" }, 2] },
+                    isGroup: false,
+                })
+                    .sort({ updatedAt: -1 })
+                    .populate("lastMessage");
 
-            return {
-                user: {
-                    _id: chatUser._id,
-                    userName: chatUser.userName,
-                    profilePhoto: chatUser.profilePhoto,
-                    role  : chatUser.role
-                },
-                lastMessage: conversation?.lastMessage || null
-            };
-        }));
+                return {
+                    user: {
+                        _id: chatUser._id,
+                        userName: chatUser.userName,
+                        profilePhoto: chatUser.profilePhoto,
+                        role: chatUser.role,
+                    },
+                    lastMessage: conversation?.lastMessage || null,
+                };
+            })
+        );
 
         console.log(chatList);
-        
+
         return res.status(200).json(chatList);
     } catch (error) {
         console.error(`Error fetching founder chat user list: ${error.message}`);

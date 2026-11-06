@@ -15,11 +15,9 @@ import convertInvestorToCommunity from "../controllers/TestController/ConvertInv
 import { reportContent } from "../controllers/TestController/ReportPostController.js";
 import { ratingsController } from "../controllers/TestController/ratingController.js";
 
-
 const TestRoute = express.Router();
 
-TestRoute
-    .get("/getUserFollowers/:id", verifyUser, getUserFollowers)
+TestRoute.get("/getUserFollowers/:id", verifyUser, getUserFollowers)
     .get("/getOnePost/:id", verifyUser, getOnePosts)
     .post("/savePost/:saveId/:saveStatus", verifyUser, savePost)
     .get("/getSavedPost", verifyUser, getSavedPost)
@@ -30,7 +28,7 @@ TestRoute
     .get("/getPortfolioAndCertifications", verifyUser, getPortfolioAndCertifications)
     .get("/convertInvestorToCommunity", verifyUser, convertInvestorToCommunity)
     .post("/reportContent/:postId", verifyUser, reportContent)
-    .post("/ratingsController", verifyUser, ratingsController)
+    .post("/ratingsController", verifyUser, ratingsController);
 // .post("/downloadAPK",verifyUser , APKcontroller)
 
 export default TestRoute;

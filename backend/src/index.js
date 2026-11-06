@@ -11,7 +11,8 @@ const startServer = async () => {
 };
 
 // Connect to MongoDB and start the server
-mongoose.connect(`${process.env.MONGODB_URI}/${process.env.DB_NAME}`)
+mongoose
+    .connect(`${process.env.MONGODB_URI}/${process.env.DB_NAME}`)
     .then(() => {
         console.log("Database connection successful");
         startServer();

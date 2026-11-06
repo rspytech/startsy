@@ -1,27 +1,34 @@
 import mongoose from "mongoose";
 
-const conversationSchema = new mongoose.Schema({
-    members: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "User",
-    }],
-    isGroup: {
-        type: Boolean,
-        default: false,
+const conversationSchema = new mongoose.Schema(
+    {
+        members: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "User",
+            },
+        ],
+        isGroup: {
+            type: Boolean,
+            default: false,
+        },
+        communityId: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Community",
+        },
+        messages: [
+            {
+                type: mongoose.Schema.Types.ObjectId,
+                ref: "Message",
+                default: [],
+            },
+        ],
+        lastMessage: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Message",
+        },
     },
-    communityId : {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Community",
-    },
-    messages: [{
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Message",
-        default: [],
-    }],
-    lastMessage: {
-        type: mongoose.Schema.Types.ObjectId,
-        ref: "Message",
-    },
-}, { timestamps: true });
+    { timestamps: true }
+);
 
 export const Conversation = mongoose.model("Conversation", conversationSchema);
