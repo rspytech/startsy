@@ -104,6 +104,7 @@ Both chat screens open a live Socket.IO connection to the server address.
 ## 7. Leftover / test screens still registered
 
 Registered in `app/index.tsx`, but nothing obvious leads to them. Kept unchanged.
+(`SCREENS/main-2/skeleton.js` is only used by the older entry file `app/(tabs)/index.tsx`.)
 
 | Screen | File |
 |---|---|
@@ -111,7 +112,6 @@ Registered in `app/index.tsx`, but nothing obvious leads to them. Kept unchanged
 | Test1 | `SCREENS/test1.js` (sample "John Doe" profile) |
 | Modal1 | `SCREENS/Modal.js` (sample delete dialog) |
 | Date | `SCREENS/Date.js` |
-| Skeleton1 | `SCREENS/main-2/skeleton.js` |
 | F1 | `SCREENS/FP1.js` (same as FP1) |
 
 ## Shared pieces (not screens)

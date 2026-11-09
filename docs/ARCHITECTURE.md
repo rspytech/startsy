@@ -43,9 +43,10 @@ Secrets such as database passwords and keys are **not** in the code. They are se
 
 ## The front end (the app)
 
-- Starts at `frontend/app/(tabs)/index.tsx`, which lists every screen.
-- Two home screens: **Main1** for investors and **Main2** for founders, community members and job
-  seekers. Each has a bottom tab bar.
+- Starts at `frontend/app/index.tsx`, which lists every screen and sets up push notifications.
+  The first screen (Green) shows the welcome / login screen, or sends logged-in users straight on.
+- One home screen with a bottom tab bar, **Main2**, used by everyone (an older investor home, Main1,
+  is still in the code but nothing opens it).
 - The server address is in `frontend/config.js`. Every screen builds its requests from it.
 - After login, the server gives the app an **access token** (a signed pass). The app saves it on the
   phone and sends it with every request (`Authorization: Bearer …`).

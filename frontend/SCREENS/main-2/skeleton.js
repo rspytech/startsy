@@ -1,4 +1,5 @@
-// Leftover sample screen ("I'm in the Drawer!"); registered as Skeleton1 but not the start screen.
+// Leftover sample screen ("I'm in the Drawer!"). Not registered in the live entry file (app/index.tsx);
+// only the older app/(tabs)/index.tsx still uses it.
 
 import React, { useRef, useState } from "react";
 import { Button, DrawerLayoutAndroid, Text, StyleSheet, View } from "react-native";
