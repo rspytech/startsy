@@ -1,0 +1,17 @@
+# Only the app's own source code is auto-formatted.
+# Build and release configuration is deliberately never touched.
+node_modules/
+package.json
+package-lock.json
+app.json
+eas.json
+tsconfig.json
+babel.config.js
+react-native.config.js
+withAndroidSoftInputMode.js
+google-services.json
+config.js
+scripts/
+assets/fonts/
+assets/images/
+*.snap

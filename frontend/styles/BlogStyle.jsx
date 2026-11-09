@@ -1,12 +1,11 @@
 import { StyleSheet } from "react-native";
 
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#16181a",
         padding: 20,
-        alignItems: 'stretch',
+        alignItems: "stretch",
     },
     image: {
         width: 100,
@@ -17,9 +16,9 @@ const styles = StyleSheet.create({
     label: {
         color: "gray",
         fontSize: 18,
-        marginLeft : 10,
+        marginLeft: 10,
         marginBottom: 5,
-        fontFamily:'Roboto'
+        fontFamily: "Roboto",
     },
     textArea: {
         height: 250,
@@ -28,10 +27,10 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         color: "#ccc",
         padding: 10,
-        paddingBottom:25,
+        paddingBottom: 25,
         textAlignVertical: "top",
-        fontFamily:'Roboto',
-        fontSize:18
+        fontFamily: "Roboto",
+        fontSize: 18,
     },
     button: {
         backgroundColor: "#00DE62",
@@ -43,32 +42,29 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         marginVertical: 25,
         textAlign: "center",
-        fontFamily:'Roboto',
+        fontFamily: "Roboto",
     },
     buttonText: {
         textAlign: "center",
         color: "#16181A",
         fontFamily: "Alata",
         fontSize: 20,
-        marginTop: -5
+        marginTop: -5,
     },
     descriptionLength: {
         color: "#666",
-        textAlign: 'right',
-        position: 'relative',
+        textAlign: "right",
+        position: "relative",
         bottom: 25,
-        right: 10
+        right: 10,
     },
 
     errorStyle: {
         color: "#E65858",
         fontSize: 12,
-        marginTop : -10,
-        marginLeft : 10
-    }
+        marginTop: -10,
+        marginLeft: 10,
+    },
 });
 
-
-
-
-export default styles
+export default styles;

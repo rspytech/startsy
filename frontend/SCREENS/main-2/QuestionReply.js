@@ -1,21 +1,31 @@
-import { View, Text, Image, StyleSheet, ActivityIndicator, TouchableOpacity, Modal, Button, FlatList, Pressable, TextInput } from 'react-native'
-import React, { useEffect, useState } from 'react'
-import { LinearGradient } from 'expo-linear-gradient';
-import AntDesign from '@expo/vector-icons/AntDesign';
-import Svg, { Path } from 'react-native-svg';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { url } from '@/config.js';
-
+import {
+    View,
+    Text,
+    Image,
+    StyleSheet,
+    ActivityIndicator,
+    TouchableOpacity,
+    Modal,
+    Button,
+    FlatList,
+    Pressable,
+    TextInput,
+} from "react-native";
+import React, { useEffect, useState } from "react";
+import { LinearGradient } from "expo-linear-gradient";
+import AntDesign from "@expo/vector-icons/AntDesign";
+import Svg, { Path } from "react-native-svg";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { url } from "@/config.js";
 
 const QuestionReply = ({ route }) => {
-    const [name, setName] = useState("")
+    const [name, setName] = useState("");
     const [question, setQuestion] = useState("");
-    const [inputValue, setInputValue] = useState('');
-    const [commenttext, setreply] = useState('');
+    const [inputValue, setInputValue] = useState("");
+    const [commenttext, setreply] = useState("");
     const [uploadingcomment, setUploadingComment] = useState(false);
     const [allComments, setAllComments] = useState([]);
     const [loading, setLoading] = useState(false);
-
 
     const { data, token } = route.params;
 
@@ -26,18 +36,16 @@ const QuestionReply = ({ route }) => {
     //     setQuestion(params.description);
     // }, []);
 
-
     useEffect(() => {
-        var id = data._id
+        var id = data._id;
         console.log(id);
-
 
         setLoading(true);
 
         async function getComment() {
             try {
                 const response = await fetch(`${url}posts/getComments/${id}`, {
-                    method: 'GET',
+                    method: "GET",
                     headers: {
                         "Authorization": `Bearer ${token}`,
                     },
@@ -53,36 +61,36 @@ const QuestionReply = ({ route }) => {
                 }
             } catch (err) {
                 console.log(err);
-            }
-            finally {
+            } finally {
                 setLoading(false);
             }
         }
-        getComment()
-
-    }, [])
-
+        getComment();
+    }, []);
 
     const CurvedLine = () => (
-        <Svg height="80" width="30" style={{ position: 'absolute', top: '20%', left: '2%', zIndex: -1, height: 100 }}>
+        <Svg
+            height="80"
+            width="30"
+            style={{ position: "absolute", top: "20%", left: "2%", zIndex: -1, height: 100 }}
+        >
             <Path d="M10 0 V30 Q10 40, 20 40" stroke="#ccc" strokeWidth="2" fill="none" />
         </Svg>
     );
 
     async function doComment() {
-
-        let postid = data._id
+        let postid = data._id;
         setUploadingComment(true);
         if (commenttext.trim() == "") {
             setUploadingComment(false);
-            return
+            return;
         }
         console.log(commenttext);
         // return
         try {
             const response = await fetch(`${url}posts/createComment/${postid}`, {
-                method: 'POST',
-                body: JSON.stringify({ comment: commenttext , message : 'Answered Your Question' }),
+                method: "POST",
+                body: JSON.stringify({ comment: commenttext, message: "Answered Your Question" }),
                 headers: {
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`,
@@ -93,18 +101,15 @@ const QuestionReply = ({ route }) => {
             data.newComment = {
                 ...data.newComment,
                 userId: {
-                    profilePhoto: data.profilePhoto, userName: data.userName
-                }
-            }
+                    profilePhoto: data.profilePhoto,
+                    userName: data.userName,
+                },
+            };
             console.log(data.newComment);
 
-            setreply("")
+            setreply("");
 
-
-
-
-
-            setAllComments([data.newComment, ...allComments])
+            setAllComments([data.newComment, ...allComments]);
 
             // var object = {
             //     comment: commenttext,
@@ -132,27 +137,28 @@ const QuestionReply = ({ route }) => {
         }
     }
 
-
-
     return (
-        <View style={{ flex: 1, backgroundColor: '#16181a' }} >
+        <View style={{ flex: 1, backgroundColor: "#16181a" }}>
             <FlatList
                 ListHeaderComponent={
-
-
-                    <LinearGradient style={styles.item} colors={["rgba(33, 34, 35, 0.4)", "rgba(25, 26, 27, 0.6)"]}>
-                        <View style={{ flexDirection: 'row', gap: 10, padding: 10 }}>
-                            <Image source={require('../../assets/images/incologo.png')} style={{ width: 40, height: 40, borderRadius: 30, padding: 5, }} />
+                    <LinearGradient
+                        style={styles.item}
+                        colors={["rgba(33, 34, 35, 0.4)", "rgba(25, 26, 27, 0.6)"]}
+                    >
+                        <View style={{ flexDirection: "row", gap: 10, padding: 10 }}>
+                            <Image
+                                source={require("../../assets/images/incologo.png")}
+                                style={{ width: 40, height: 40, borderRadius: 30, padding: 5 }}
+                            />
                             <Text style={styles.userNameStyle}>Anonymous</Text>
                         </View>
 
                         {/* question section */}
                         <View style={{ paddingHorizontal: 10, gap: 0 }}>
-                            <Text style={styles.QuestionContent} ellipsizeMode='tail' >
+                            <Text style={styles.QuestionContent} ellipsizeMode="tail">
                                 {data.content}
                             </Text>
                         </View>
-
 
                         {/* <View style={styles.replyContainer}>
                             <View style={{ display: 'flex', flexDirection: 'row', gap: 10 }}>
@@ -164,16 +170,12 @@ const QuestionReply = ({ route }) => {
 
                             </TouchableOpacity>
                         </View> */}
-
-
                     </LinearGradient>
-
                 }
                 data={allComments}
                 renderItem={({ item }) => {
                     function time(time) {
-
-                        var data1 = new Date(time)
+                        var data1 = new Date(time);
 
                         var seconds = Math.floor((new Date() - data1) / 1000);
 
@@ -202,48 +204,38 @@ const QuestionReply = ({ route }) => {
                     }
 
                     return (
-                        <View style={[styles.listItem, styles.commentContainer]} >
-
-                            <View style={{ flexDirection: 'row', gap: 10, padding: 10 }}>
-                                <Image source={{ uri: item.userId.profilePhoto }} style={{ width: 30, height: 30, borderRadius: 30 }} />
+                        <View style={[styles.listItem, styles.commentContainer]}>
+                            <View style={{ flexDirection: "row", gap: 10, padding: 10 }}>
+                                <Image
+                                    source={{ uri: item.userId.profilePhoto }}
+                                    style={{ width: 30, height: 30, borderRadius: 30 }}
+                                />
                                 <Text style={styles.userNameStyle1}>{item.userId.userName}</Text>
                                 <Text style={styles.time}>{time(item.createdAt)}</Text>
                             </View>
                             <View style={styles.replyLine} />
                             {/* reply section */}
                             <View style={{ paddingHorizontal: 50, paddingBottom: 10 }}>
-                                <Text style={styles.replyText} ellipsizeMode='tail' >
+                                <Text style={styles.replyText} ellipsizeMode="tail">
                                     {item.comment}
                                 </Text>
                             </View>
                         </View>
-
-                    )
-                }
-
-                }
-
-          
+                    );
+                }}
             />
 
-            {
-                loading ? (
-                    <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
-                        <ActivityIndicator color="#00de62" size={24} />
-                    </View>
-                )
-                    :
-                    allComments.length == 0 ?
-                        <View style={{ flex: 1, justifyContent: 'flex-start', alignItems: 'center' }}>
-                          <Text style={[{ color: 'gray' }, styles.emptyListText]}>No replies yet</Text>
-                        </View>
-                        : null
+            {loading ? (
+                <View style={{ flex: 1, justifyContent: "flex-start", alignItems: "center" }}>
+                    <ActivityIndicator color="#00de62" size={24} />
+                </View>
+            ) : allComments.length == 0 ? (
+                <View style={{ flex: 1, justifyContent: "flex-start", alignItems: "center" }}>
+                    <Text style={[{ color: "gray" }, styles.emptyListText]}>No replies yet</Text>
+                </View>
+            ) : null}
 
-            }
-
-
-
-            <View style={{ zIndex: 100000 }} >
+            <View style={{ zIndex: 100000 }}>
                 <View style={styles.searchContainer}>
                     <TextInput
                         allowFontScaling={false}
@@ -254,10 +246,7 @@ const QuestionReply = ({ route }) => {
                         // onBlur={() => setkeyboardstatus(false)}
                         onChangeText={(val) => setreply(val)}
                         value={commenttext}
-
-
                     />
-
                 </View>
 
                 <TouchableOpacity
@@ -269,19 +258,9 @@ const QuestionReply = ({ route }) => {
                     {!uploadingcomment && <Ionicons name="send" size={24} color="#ccc" />}
                 </TouchableOpacity>
             </View>
-
         </View>
-    )
-
-
-
-
-}
-
-
-
-
-
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -299,14 +278,13 @@ const styles = StyleSheet.create({
         bottom: 0,
 
         fontSize: 16,
-        
     },
     header: {
-        flexDirection: 'column',
-        justifyContent: 'space-between',
+        flexDirection: "column",
+        justifyContent: "space-between",
         marginBottom: 10,
         padding: 10,
-        gap: 10
+        gap: 10,
     },
     item: {
         // padding: 15,
@@ -315,20 +293,20 @@ const styles = StyleSheet.create({
         marginVertical: 5,
         borderRadius: 5,
         paddingBottom: 10,
-        borderBottomColor: '#24272A',
+        borderBottomColor: "#24272A",
         borderBottomWidth: 1,
         marginBottom: 10,
         // backgroundColor: "#24272A"
     },
     replyContainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-between',
-        alignItems: 'center',
+        flexDirection: "row",
+        justifyContent: "space-between",
+        alignItems: "center",
         gap: 5,
         paddingTop: 8,
         paddingHorizontal: 10,
-        borderTopColor: 'white',
-        borderTopWidth: 1
+        borderTopColor: "white",
+        borderTopWidth: 1,
     },
     listItem: {
         gap: 10,
@@ -336,37 +314,35 @@ const styles = StyleSheet.create({
         // backgroundColor: '#f9f9f9',
         marginVertical: 5,
         borderRadius: 5,
-
     },
     totalRepliesText: {
-        alignItems: 'center',
+        alignItems: "center",
         fontSize: 12,
         paddingTop: 5,
-        color: 'gray'
-
+        color: "gray",
     },
     userNameStyle: {
         // fontWeight: 'bold',
-        color: '#ccc',
+        color: "#ccc",
         fontSize: 16,
-        verticalAlign: "middle"
-        , fontFamily: "Alata"
+        verticalAlign: "middle",
+        fontFamily: "Alata",
     },
     userNameStyle1: {
         // fontWeight: 'bold',
-        color: '#ccc',
+        color: "#ccc",
         fontSize: 16,
-        verticalAlign: "middle"
-        , fontFamily: "Roboto"
+        verticalAlign: "middle",
+        fontFamily: "Roboto",
     },
     replyLine: {
         width: 1,
-        backgroundColor: '#00de62',
-        position: 'absolute',
+        backgroundColor: "#00de62",
+        position: "absolute",
         left: 24,
         top: 15,
         bottom: 5,
-        zIndex: -1
+        zIndex: -1,
     },
     QuestionContent: {
         textAlign: "left",
@@ -384,7 +360,7 @@ const styles = StyleSheet.create({
         // marginVertical: 10,
         color: "#ccc",
         fontSize: 13,
-        fontFamily:'Alata'
+        fontFamily: "Alata",
         // letterSpacing : 2
     },
     time: {
@@ -392,7 +368,7 @@ const styles = StyleSheet.create({
         right: 20,
         top: 22,
         color: "#666",
-        fontSize: 10
+        fontSize: 10,
     },
     searchContainer: {
         marginHorizontal: "auto",
@@ -409,7 +385,6 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         // bottom: 0,
         justifyContent: "flex-start",
-
     },
     searchInput: {
         height: "auto",
@@ -446,11 +421,8 @@ const styles = StyleSheet.create({
 
 export default QuestionReply;
 
-
-
-
-
-{/* <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10, borderColor: '#ccc' }}>
+{
+    /* <View style={{ flexDirection: 'row', alignItems: 'center', padding: 10, borderColor: '#ccc' }}>
                 <TextInput
                     style={{
                         borderColor: 'white', borderWidth: 1, height: 40, flex: 1, padding: 10, color
@@ -465,4 +437,5 @@ export default QuestionReply;
                 } style={{ marginLeft: 10, padding: 10, backgroundColor: '#ccc', borderRadius: 5 }}>
                     <Text style={{ color: '#000' }}>Send</Text>
                 </Pressable>
-            </View> */}
+            </View> */
+}

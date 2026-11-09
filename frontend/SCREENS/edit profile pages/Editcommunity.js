@@ -1,109 +1,104 @@
-import { useFocusEffect } from "expo-router"
+import { useFocusEffect } from "expo-router";
 import { useState, useEffect, useRef, useContext } from "react";
-import * as React from "react"
-import { SafeAreaView, BackHandler, ScrollView, StatusBar, TouchableOpacity, ActivityIndicator, Animated, Dimensions, Pressable, TextInput, TouchableWithoutFeedback, Image } from "react-native"
-import { View, Text, StyleSheet } from "react-native"
-import Profile from "../../assets/icons/profile.js"
-import Drop from "../dropdown.js"
+import * as React from "react";
+import {
+    SafeAreaView,
+    BackHandler,
+    ScrollView,
+    StatusBar,
+    TouchableOpacity,
+    ActivityIndicator,
+    Animated,
+    Dimensions,
+    Pressable,
+    TextInput,
+    TouchableWithoutFeedback,
+    Image,
+} from "react-native";
+import { View, Text, StyleSheet } from "react-native";
+import Profile from "../../assets/icons/profile.js";
+import Drop from "../dropdown.js";
 import Slider from "@react-native-community/slider";
-import styles from "../commonstyles.js"
+import styles from "../commonstyles.js";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import Entypo from '@expo/vector-icons/Entypo';
-import * as ImagePicker from 'expo-image-picker';
+import Entypo from "@expo/vector-icons/Entypo";
+import * as ImagePicker from "expo-image-picker";
 import { GlobalContext } from "../../Global/globalcontext.js";
-import { url } from "../../config.js"
-import AntDesign from '@expo/vector-icons/AntDesign';
-
-
-
+import { url } from "../../config.js";
+import AntDesign from "@expo/vector-icons/AntDesign";
 
 const Editcommunity = ({ navigation }) => {
-
     useFocusEffect(() => {
         // StatusBar.setBackgroundColor("red")
         // StatusBar.setBarStyle("light-content")
-    })
-    const [sliderrange1, setsliderrange1] = useState(5)
-    const [existingdata, setexistingdata] = useState()
-    const [sliderrange, setsliderrange] = useState(5000000)
-    const [InstagramUrl, setInstagramUrl] = useState("")
-    const [YTURL, setYTURL] = useState("")
-    const [LinkedinURl, setLinkedinURl] = useState("")
+    });
+    const [sliderrange1, setsliderrange1] = useState(5);
+    const [existingdata, setexistingdata] = useState();
+    const [sliderrange, setsliderrange] = useState(5000000);
+    const [InstagramUrl, setInstagramUrl] = useState("");
+    const [YTURL, setYTURL] = useState("");
+    const [LinkedinURl, setLinkedinURl] = useState("");
 
+    const [loading, setloading] = useState(false);
+    const [token, settoken] = useState("");
 
+    const [err1, seterr1] = useState(false);
+    const [err2, seterr2] = useState(false);
+    const [err3, seterr3] = useState(false);
+    const [err4, seterr4] = useState(false);
+    const [err5, seterr5] = useState(false);
+    const [err6, seterr6] = useState(false);
+    const [err7, seterr7] = useState(false);
 
-    const [loading, setloading] = useState(false)
-    const [token, settoken] = useState("")
+    const [fullName, setfullname] = useState("");
+    const [country, setcountry] = React.useState("");
+    const [contactInfo, setcontactInfo] = useState("");
+    const [role1, setrole] = useState("");
+    const [interest, setinterest] = useState("");
+    const [preferences, setprefference] = useState("");
 
+    const [tagline, settagline] = useState("");
+    const [skills, setskills] = useState("");
 
-
-    const [err1, seterr1] = useState(false)
-    const [err2, seterr2] = useState(false)
-    const [err3, seterr3] = useState(false)
-    const [err4, seterr4] = useState(false)
-    const [err5, seterr5] = useState(false)
-    const [err6, seterr6] = useState(false)
-    const [err7, seterr7] = useState(false)
-
-
-    const [fullName, setfullname] = useState("")
-    const [country, setcountry] = React.useState("")
-    const [contactInfo, setcontactInfo] = useState("")
-    const [role1, setrole] = useState("")
-    const [interest, setinterest] = useState("")
-    const [preferences, setprefference] = useState("")
-
-    const [tagline, settagline] = useState("")
-    const [skills, setskills] = useState("")
-
-    const [education1, seteducation] = useState("")
+    const [education1, seteducation] = useState("");
     const [image, setImage] = useState(null);
-    const [certificate, setcertificate] = useState([{ id: Date.now(), cname: '', curl: '' }]);
-    const [portfolio1, setportfolio] = useState([{ id: Date.now(), url: '' }]);
-
-
-
+    const [certificate, setcertificate] = useState([{ id: Date.now(), cname: "", curl: "" }]);
+    const [portfolio1, setportfolio] = useState([{ id: Date.now(), url: "" }]);
 
     function deletecertificate1(index) {
-
         console.log(index);
 
         var new1 = [...certificate];
-        new1.splice(index, 1)
-        setcertificate(new1)
+        new1.splice(index, 1);
+        setcertificate(new1);
     }
     function deletecertificate(index) {
-
         console.log(index);
 
         var new1 = [...portfolio1];
-        new1.splice(index, 1)
-        setportfolio(new1)
+        new1.splice(index, 1);
+        setportfolio(new1);
     }
 
-
-
-    const [open1, setOpen1] = React.useState(false)
-    const [open2, setOpen2] = React.useState(false)
-    const [open3, setOpen3] = React.useState(false)
-    const [open4, setOpen4] = React.useState(false)
-    const [open5, setOpen5] = React.useState(false)
+    const [open1, setOpen1] = React.useState(false);
+    const [open2, setOpen2] = React.useState(false);
+    const [open3, setOpen3] = React.useState(false);
+    const [open4, setOpen4] = React.useState(false);
+    const [open5, setOpen5] = React.useState(false);
 
     const { globaldata, updateField } = useContext(GlobalContext);
 
     useEffect(() => {
         console.log(globaldata, "global data");
-        settoken(globaldata.token)
-    }, [globaldata])
+        settoken(globaldata.token);
+    }, [globaldata]);
     function gotochangepassowrd() {
-
-        navigation.navigate("ChangePassword1")
+        navigation.navigate("ChangePassword1");
     }
 
     useEffect(() => {
-        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
             navigation.goBack();
-
 
             return true; // This prevents the default back action
         });
@@ -112,7 +107,6 @@ const Editcommunity = ({ navigation }) => {
     }, []);
 
     const fileupload = async () => {
-
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (permissionResult.granted === false) {
             alert("Permission to access camera roll is required!");
@@ -125,21 +119,13 @@ const Editcommunity = ({ navigation }) => {
             allowsEditing: true,
             aspect: [1, 1],
             quality: 1,
-
         });
 
-
         if (!result.canceled) {
-
             const imageUri = result.assets[0].uri;
             setImage(imageUri);
-
-
         }
-
-    }
-
-
+    };
 
     var stage = [
         { label: "Ideation Stage", value: "Ideation Stage" },
@@ -148,13 +134,12 @@ const Editcommunity = ({ navigation }) => {
         { label: "Early Stage", value: "Early Stage" },
         { label: "Growth Stage", value: "Growth Stage" },
         { label: "Mature Stage", value: "Mature Stage" },
-
-    ]
+    ];
 
     var sectorlist = [
         { label: "Vertical Sector", value: "Vertical Sector" },
-        { label: "Horizontal Sector", value: "Horizontal Sector" }
-    ]
+        { label: "Horizontal Sector", value: "Horizontal Sector" },
+    ];
     var country1 = [
         { label: "India", value: "INDIA" },
         { label: "United States", value: "UNITED_STATES" },
@@ -173,15 +158,12 @@ const Editcommunity = ({ navigation }) => {
         { label: "Brazil", value: "BRAZIL" },
         { label: "Mexico", value: "MEXICO" },
         { label: "Others (Type)", value: "OTHERS" },
-
-    ]
-
-
+    ];
 
     async function getdata() {
         try {
             const response = await fetch(`${url}api/getProfileDetailsForEditProfile`, {
-                method: 'GET',
+                method: "GET",
                 headers: {
                     accept: "application/json",
                     "Authorization": `Bearer ${token}`,
@@ -190,25 +172,18 @@ const Editcommunity = ({ navigation }) => {
             const data = await response.json();
             console.log(data);
 
-
-            setexistingdata(data.data)
+            setexistingdata(data.data);
 
             console.log(response.status);
-
-        }
-        catch (err) {
+        } catch (err) {
             // setloading(false)
             console.log(err);
-
         }
     }
 
-
     useEffect(() => {
-        getdata()
-    }, [token])
-
-
+        getdata();
+    }, [token]);
 
     const handleOutsideTouch = () => {
         if (open1) setOpen1(false);
@@ -226,33 +201,31 @@ const Editcommunity = ({ navigation }) => {
         if (open2) setOpen2(false);
         if (open3) setOpen3(false);
         if (open4) setOpen4(false);
-    }
+    };
     const t2 = () => {
         if (open1) setOpen1(false);
         setOpen2(!open2);
         if (open3) setOpen3(false);
         if (open4) setOpen4(false);
-    }
+    };
     const t3 = () => {
         if (open1) setOpen1(false);
         if (open2) setOpen2(false);
         setOpen3(!open3);
         if (open4) setOpen4(false);
-    }
+    };
     const t4 = () => {
         if (open2) setOpen2(false);
         if (open3) setOpen3(false);
         if (open1) setOpen1(false);
         setOpen4(!open4);
-    }
+    };
     const [errors, setErrors] = useState({}); // Error state
-
 
     useEffect(() => {
         console.log("hiii");
         if (existingdata) {
-
-            var socialMediaLinks = existingdata.roleId.hiddenInfo.socialProof
+            var socialMediaLinks = existingdata.roleId.hiddenInfo.socialProof;
             // console.log(socialMediaLinks);
 
             // console.log(socialMediaLinks[0]);
@@ -260,65 +233,52 @@ const Editcommunity = ({ navigation }) => {
             // console.log(socialMediaLinks[2]);
             console.log(existingdata.roleId.portfolio);
 
-
             if (socialMediaLinks[0]) {
                 setInstagramUrl(socialMediaLinks[0].url);
-
             }
             if (socialMediaLinks[1]) {
-                setLinkedinURl(socialMediaLinks[1].url)
-
+                setLinkedinURl(socialMediaLinks[1].url);
             }
             if (socialMediaLinks[2]) {
                 setYTURL(socialMediaLinks[2].url);
-
             }
-
-
 
             console.log(existingdata.roleId.country);
 
-            setImage(existingdata.profilePhoto)
+            setImage(existingdata.profilePhoto);
 
-            setfullname(existingdata.roleId.fullName)
-            setcountry(existingdata.roleId.country)
-            setcontactInfo(existingdata.roleId.contactInfo)
-            setinterest(existingdata.roleId.areaOfInterest)
-            setprefference(existingdata.roleId.contentPrefrence)
-            setrole(existingdata.roleId.communityMemberRole)
-            settagline(existingdata.roleId.tagline)
-            setskills(existingdata.roleId.skills)
-            seteducation(existingdata.roleId.education)
+            setfullname(existingdata.roleId.fullName);
+            setcountry(existingdata.roleId.country);
+            setcontactInfo(existingdata.roleId.contactInfo);
+            setinterest(existingdata.roleId.areaOfInterest);
+            setprefference(existingdata.roleId.contentPrefrence);
+            setrole(existingdata.roleId.communityMemberRole);
+            settagline(existingdata.roleId.tagline);
+            setskills(existingdata.roleId.skills);
+            seteducation(existingdata.roleId.education);
             var modified = existingdata.roleId.certification.map((e) => {
                 return {
                     id: e._id,
                     cname: e.name,
-                    curl: e.url
-                }
-            })
-            setcertificate(modified)
-
+                    curl: e.url,
+                };
+            });
+            setcertificate(modified);
 
             var m1 = existingdata.roleId.portfolio.map((e) => {
                 return {
                     id: e._id,
                     url: e.url,
-                    name: e.name
-
-                }
-            })
+                    name: e.name,
+                };
+            });
             console.log(m1);
 
-            setportfolio(m1)
-
-
+            setportfolio(m1);
         }
-    }, [existingdata])
-
-
+    }, [existingdata]);
 
     async function savedata() {
-
         setloading(true);
         console.log("save data function");
 
@@ -326,13 +286,12 @@ const Editcommunity = ({ navigation }) => {
 
         console.log(country, "country");
 
-        let cangoahead = true
-
+        let cangoahead = true;
 
         if (fullName == "") {
             console.log("full name nai hai");
             newErrors.fullName = "* Full name is required.";
-            cangoahead = false
+            cangoahead = false;
         }
         // if (country == "") {
         //     console.log("country nai hai");
@@ -370,62 +329,46 @@ const Editcommunity = ({ navigation }) => {
         if (cangoahead == false) {
             console.log("some error");
 
-            setloading(false)
-            return
-
+            setloading(false);
+            return;
         }
 
-
-
         for (var i = 0; i < certificate.length; i++) {
-
             console.log(i);
 
             var items = certificate[i];
             console.log(items);
             if (items.cname == "" && items.curl == "") {
-
-            }
-            else if ((items.cname != "" && items.curl == "")) {
+            } else if (items.cname != "" && items.curl == "") {
                 var array = certificate.map((c, index) => {
                     if (i == index) {
-                        return { ...c, seconderror: true }
-                    }
-                    else return c
-                })
+                        return { ...c, seconderror: true };
+                    } else return c;
+                });
                 console.log(array, "sajkhd");
                 setcertificate(array);
-                setloading(false)
+                setloading(false);
 
-                return
-            }
-            else if ((items.cname == "" && items.curl != "")) {
+                return;
+            } else if (items.cname == "" && items.curl != "") {
                 var array = certificate.map((c, index) => {
                     if (i == index) {
-                        return { ...c, firsterror: true }
-                    }
-                    else return c
-                })
-                setcertificate(array)
-                setloading(false)
+                        return { ...c, firsterror: true };
+                    } else return c;
+                });
+                setcertificate(array);
+                setloading(false);
 
-                return
-
+                return;
             }
         }
 
-
-
-
-        var formData = new FormData()
-
+        var formData = new FormData();
 
         var certification = certificate.map(({ id, cname, curl }) => {
-            var obj = { name: cname, url: curl }
-            return obj
-
-        })
-
+            var obj = { name: cname, url: curl };
+            return obj;
+        });
 
         // var portfolio = portfolio1.map(({ id, url }) => {
         //     return {
@@ -436,11 +379,8 @@ const Editcommunity = ({ navigation }) => {
         // })
 
         var portfolio = portfolio1.map(({ id, url, name }) => {
-            return { url, name }
-        })
-
-
-
+            return { url, name };
+        });
 
         formData.append("certification", JSON.stringify(certification));
         formData.append("portfolio", JSON.stringify(portfolio));
@@ -454,8 +394,6 @@ const Editcommunity = ({ navigation }) => {
         formData.append("skills", skills);
         formData.append("education", education1);
 
-
-
         if (image && image != "") {
             formData.append("profilePhoto", {
                 uri: image,
@@ -464,28 +402,26 @@ const Editcommunity = ({ navigation }) => {
             });
         }
 
-
-
         var array = [
             {
                 name: "instagram",
-                url: InstagramUrl
+                url: InstagramUrl,
             },
             {
                 name: "linkedin",
-                url: LinkedinURl
+                url: LinkedinURl,
             },
             {
                 name: "youtube",
-                url: YTURL
-            }
-        ]
+                url: YTURL,
+            },
+        ];
 
+        formData.append("socialProof", JSON.stringify(array));
 
-        formData.append("socialProof", JSON.stringify(array))
-
-        console.log("okkkkkkkkkkkkkkkkkkkhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh");
-
+        console.log(
+            "okkkkkkkkkkkkkkkkkkkhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhhh"
+        );
 
         console.log(formData);
         console.log(formData);
@@ -499,7 +435,7 @@ const Editcommunity = ({ navigation }) => {
             console.log("hi");
 
             const response = await fetch(`${url}communityMember/editCommunityMemberAccountProfileDetails`, {
-                method: 'POST',
+                method: "POST",
                 body: formData,
                 headers: {
                     accept: "application/json",
@@ -507,22 +443,17 @@ const Editcommunity = ({ navigation }) => {
                 },
             });
             const data = await response.json();
-            setloading(false)
+            setloading(false);
             console.log(data, "okkkkk");
             if (response.status == 200) {
                 navigation.goBack();
             }
-
-        }
-        catch (err) {
-            setloading(false)
+        } catch (err) {
+            setloading(false);
             console.log(err);
-
+        } finally {
+            setloading(false);
         }
-        finally {
-            setloading(false)
-        }
-
     }
 
     var role = [
@@ -532,8 +463,7 @@ const Editcommunity = ({ navigation }) => {
         { label: "Mentor", value: "Mentor" },
         { label: "Networker", value: "Networker" },
         { label: "Contributor", value: "Contributor" },
-
-    ]
+    ];
 
     var a1 = [
         { label: "AI", value: "AI" },
@@ -574,20 +504,19 @@ const Editcommunity = ({ navigation }) => {
         { label: "FoodTech", value: "FoodTech" },
         { label: "Non-profits", value: "Non-profits" },
         { label: "Impact Investing", value: "Impact Investing" },
-        { label: "Philanthropy", value: "Philanthropy" }
+        { label: "Philanthropy", value: "Philanthropy" },
     ];
-
 
     var contentPreferences = [
         { label: "Startup News", value: "Startup News" },
         { label: "Job Postings", value: "Job Postings" },
         { label: "Educational Content", value: "Educational Content" },
-    ]
+    ];
 
     useFocusEffect(() => {
-        StatusBar.setBackgroundColor("#16181A")
-        StatusBar.setBarStyle("light-content")
-    })
+        StatusBar.setBackgroundColor("#16181A");
+        StatusBar.setBarStyle("light-content");
+    });
 
     const handlerole1 = (value1) => {
         // console.log("Selected Value:", value1); // Optional: Log the selected value
@@ -602,46 +531,31 @@ const Editcommunity = ({ navigation }) => {
         setprefference(value1); // Update state with the selected value
     };
 
-
     function addcertificate() {
-        setcertificate(
-            [...certificate, { id: Date.now(), cname: '', curl: '' }]
-        )
+        setcertificate([...certificate, { id: Date.now(), cname: "", curl: "" }]);
     }
 
     function addportfolio() {
-        setportfolio(
-            [...portfolio1, { id: Date.now(), url: "" }]
-        )
+        setportfolio([...portfolio1, { id: Date.now(), url: "" }]);
     }
-
 
     function handlecertificatechange(id, field, value) {
         var array = certificate.map((e) => {
-
             if (e.id === id) {
-                return { ...e, [field]: value, firsterror: false, seconderror: false }
-
-            }
-            else return e
-        })
+                return { ...e, [field]: value, firsterror: false, seconderror: false };
+            } else return e;
+        });
         setcertificate(array);
     }
-
 
     function handleurlchange(id, field, value) {
         var array = portfolio1.map((e) => {
             if (e.id === id) {
-                return { ...e, [field]: value, firsterror: false, seconderror: false }
-
-            }
-            else return { ...e, firsterror: false, seconderror: false }
-        })
+                return { ...e, [field]: value, firsterror: false, seconderror: false };
+            } else return { ...e, firsterror: false, seconderror: false };
+        });
         setportfolio(array);
     }
-
-
-
 
     var education = [
         { label: "10th", value: "10TH" },
@@ -649,40 +563,39 @@ const Editcommunity = ({ navigation }) => {
         { label: "Graduate", value: "Graduate" },
         { label: "Post-Graduate", value: "Post-Graduate" },
         { label: "P.H.D", value: "P.H.D" },
-
-
-    ]
+    ];
 
     function deleteportfolio(index) {
         // setportfolio(
         //     [...portfolio1, { id: Date.now(), url: "", name: "" }]
         // )
 
-        var array = portfolio1.splice(index, 1)
+        var array = portfolio1.splice(index, 1);
         setportfolio(array);
     }
     return (
-
         <SafeAreaView style={{ flex: 1, backgroundColor: "#16181a" }}>
-             <View style={styles1.header}>
-                    <View style={styles1.headerSide}>
-                        <Pressable onPress={() => navigation.goBack()}>
-                            <FontAwesome6 name="chevron-left" size={25} style={styles1.backIcon} color="#00DF60" />
-                        </Pressable>
-                    </View>
-
-                    <View style={styles1.headerCenter}>
-                        <Text style={styles1.title}>Edit Profile</Text>
-                    </View>
-
-                    <View style={styles1.headerSide} />
+            <View style={styles1.header}>
+                <View style={styles1.headerSide}>
+                    <Pressable onPress={() => navigation.goBack()}>
+                        <FontAwesome6
+                            name="chevron-left"
+                            size={25}
+                            style={styles1.backIcon}
+                            color="#00DF60"
+                        />
+                    </Pressable>
                 </View>
-            <ScrollView style={{ flex: 1 ,paddingTop:20 }}>
-               
 
+                <View style={styles1.headerCenter}>
+                    <Text style={styles1.title}>Edit Profile</Text>
+                </View>
+
+                <View style={styles1.headerSide} />
+            </View>
+            <ScrollView style={{ flex: 1, paddingTop: 20 }}>
                 <TouchableWithoutFeedback onPress={handleOutsideTouch}>
                     <View style={{ width: width * 0.98, margin: "auto" }}>
-
                         {/* <Profile /> */}
                         <Pressable onPress={fileupload}>
                             {image != null ? (
@@ -695,7 +608,9 @@ const Editcommunity = ({ navigation }) => {
                         <Text style={styles1.t2}>Change profile picture</Text>
 
                         <TouchableOpacity onPress={gotochangepassowrd} style={styles1.editButton1}>
-                            <Text allowFontScaling={false} style={styles1.editButtonText}>Change Password</Text>
+                            <Text allowFontScaling={false} style={styles1.editButtonText}>
+                                Change Password
+                            </Text>
                         </TouchableOpacity>
 
                         <TextInput
@@ -705,7 +620,9 @@ const Editcommunity = ({ navigation }) => {
                             placeholderTextColor="#828282"
                             style={styles1.input}
                             value={fullName}
-                            onChangeText={(text) => { setfullname(text) }}
+                            onChangeText={(text) => {
+                                setfullname(text);
+                            }}
                         />
 
                         {errors.fullName && <Text style={styles1.err}>{errors.fullName}</Text>}
@@ -718,8 +635,22 @@ const Editcommunity = ({ navigation }) => {
                     // onChangeText={(text) => { setusername(text) }}
                     /> */}
 
-                        <Drop bl={0} bt={0} borderColor={"#ccc"} borderwidth={0} bb={1} pccolor={"#828282"}
-                            items={country1} placeholder={country} width={"94%"} onValueChange={handlerole} open={open1} setOpen={t1} extra={true} edit />
+                        <Drop
+                            bl={0}
+                            bt={0}
+                            borderColor={"#ccc"}
+                            borderwidth={0}
+                            bb={1}
+                            pccolor={"#828282"}
+                            items={country1}
+                            placeholder={country}
+                            width={"94%"}
+                            onValueChange={handlerole}
+                            open={open1}
+                            setOpen={t1}
+                            extra={true}
+                            edit
+                        />
                         {errors.country && <Text style={styles1.errnew}>{errors.country}</Text>}
 
                         <TextInput
@@ -728,17 +659,14 @@ const Editcommunity = ({ navigation }) => {
                             placeholderTextColor="#828282"
                             style={[styles1.input, { marginTop: 28 }]}
                             value={contactInfo}
-                            onChangeText={(text) => { setcontactInfo(text) }}
+                            onChangeText={(text) => {
+                                setcontactInfo(text);
+                            }}
                         />
                         {/* {err3 && <Text style={styles1.err}>* please enter valid number</Text>} */}
                         {errors.number && <Text style={styles1.err}>{errors.number}</Text>}
 
-
-
-
-
                         <View style={{ width: width * 0.95, margin: "auto" }}>
-
                             {/* <Text allowFontScaling={false} style={styles.t1}>Community Participation</Text> */}
                             {/* <Text allowFontScaling={false} style={styles.t2}>Specify your role within the community to help tailor your experience.</Text> */}
                             {/* <TouchableWithoutFeedback onPress={handleOutsideTouch}>  */}
@@ -747,14 +675,29 @@ const Editcommunity = ({ navigation }) => {
                             {/* </TouchableWithoutFeedback> */}
                             {errors.role1 && <Text style={styles1.errnew}>{errors.role1}</Text>}
 
-
-
-                            <Text allowFontScaling={false} style={[styles.t1, { marginTop: scalingfactor * 18 }]}>Area of Interest</Text>
-                            <Text allowFontScaling={false} style={styles.t2}>Indicate the specific fields or topics you are passionate about within the startup ecosystem.</Text>
-                            <Drop width={"96%"} borderwidth={0} bb={1} borderColor={"#ccc"} pccolor={"#828282"}
-                                items={a1} placeholder={interest} onValueChange={handleinterest} open={open2} setOpen={t2} />
+                            <Text
+                                allowFontScaling={false}
+                                style={[styles.t1, { marginTop: scalingfactor * 18 }]}
+                            >
+                                Area of Interest
+                            </Text>
+                            <Text allowFontScaling={false} style={styles.t2}>
+                                Indicate the specific fields or topics you are passionate about within the
+                                startup ecosystem.
+                            </Text>
+                            <Drop
+                                width={"96%"}
+                                borderwidth={0}
+                                bb={1}
+                                borderColor={"#ccc"}
+                                pccolor={"#828282"}
+                                items={a1}
+                                placeholder={interest}
+                                onValueChange={handleinterest}
+                                open={open2}
+                                setOpen={t2}
+                            />
                             {errors.role2 && <Text style={styles1.errnew}>{errors.role2}</Text>}
-
 
                             {/* <Text allowFontScaling={false} style={[styles.t1, { marginTop: scalingfactor * 18 }]}>Content Preference</Text> */}
                             {/* <Text allowFontScaling={false} style={styles.t2}>Choose the types of content you want to see most in your feed.</Text> */}
@@ -762,20 +705,27 @@ const Editcommunity = ({ navigation }) => {
                              items={contentPreferences} placeholder={preferences} onValueChange={handleprefference} open={open3} setOpen={t3} /> */}
                             {errors.role3 && <Text style={styles1.errnew}>{errors.role3}</Text>}
 
-
-
                             <Text style={[styles.t1, { marginTop: 20 }]}>Bio</Text>
-                            <Text style={styles.t2}>A brief introduction where you can describe yourself, your background, interests, and what you’re looking for on Startsy</Text>
+                            <Text style={styles.t2}>
+                                A brief introduction where you can describe yourself, your background,
+                                interests, and what you’re looking for on Startsy
+                            </Text>
                             <TextInput
                                 allowFontScaling={false}
                                 placeholder="Bio"
                                 placeholderTextColor="#828282"
                                 style={styles1.input}
                                 value={tagline}
-                                onChangeText={(text) => { settagline(text) }}
+                                onChangeText={(text) => {
+                                    settagline(text);
+                                }}
                             />
                             <Text style={[styles.t1, { marginBottom: 5 }]}>Skills</Text>
-                            <Text style={styles.t2}>Showcase key abilities and expertise, helping other users highlight what you bring to the startup ecosystem—whether it's technical skills, business acumen, or industry knowledge.</Text>
+                            <Text style={styles.t2}>
+                                Showcase key abilities and expertise, helping other users highlight what you
+                                bring to the startup ecosystem—whether it's technical skills, business acumen,
+                                or industry knowledge.
+                            </Text>
 
                             <TextInput
                                 allowFontScaling={false}
@@ -783,16 +733,33 @@ const Editcommunity = ({ navigation }) => {
                                 placeholderTextColor="#828282"
                                 style={styles1.input}
                                 value={skills}
-                                onChangeText={(text) => { setskills(text) }}
+                                onChangeText={(text) => {
+                                    setskills(text);
+                                }}
                             />
 
                             <Text style={styles.t1}>Education</Text>
-                            <Text style={[styles.t2, { marginBottom: 20 }]}>List your highest degree achieved, which helps to establish your academic background and qualifications.</Text>
-                            <Drop width={"96%"} borderwidth={0} borderColor={"#ccc"} bb={1} pccolor={"#828282"}
-                                items={education} placeholder={education1} open={open5} setOpen={setOpen5} onValueChange={(value) => { seteducation(value) }} nestedScrollEnabled={true} />
+                            <Text style={[styles.t2, { marginBottom: 20 }]}>
+                                List your highest degree achieved, which helps to establish your academic
+                                background and qualifications.
+                            </Text>
+                            <Drop
+                                width={"96%"}
+                                borderwidth={0}
+                                borderColor={"#ccc"}
+                                bb={1}
+                                pccolor={"#828282"}
+                                items={education}
+                                placeholder={education1}
+                                open={open5}
+                                setOpen={setOpen5}
+                                onValueChange={(value) => {
+                                    seteducation(value);
+                                }}
+                                nestedScrollEnabled={true}
+                            />
                             {/* </ScrollView> */}
                             {errors.role4 && <Text style={styles1.errnew}>{errors.role4}</Text>}
-
 
                             <Text style={[styles.t1, { marginTop: 15 }]}>Certification</Text>
                             {certificate.map((certificate, index) => (
@@ -801,19 +768,37 @@ const Editcommunity = ({ navigation }) => {
                                         <Entypo style={styles1.plus} name="plus" size={24} color="#ccc" />
                                     </Pressable>
 
-                                    {index > 0 && <Pressable onPress={() => { deletecertificate1(index) }}>
-                                        <FontAwesome6 name="trash" style={styles1.minus} size={15} color="#ccc" />
-                                    </Pressable>}
+                                    {index > 0 && (
+                                        <Pressable
+                                            onPress={() => {
+                                                deletecertificate1(index);
+                                            }}
+                                        >
+                                            <FontAwesome6
+                                                name="trash"
+                                                style={styles1.minus}
+                                                size={15}
+                                                color="#ccc"
+                                            />
+                                        </Pressable>
+                                    )}
 
                                     <TextInput
                                         allowFontScaling={false}
                                         placeholder="Certification name"
                                         placeholderTextColor="#828282"
-                                        style={[styles1.input, { marginTop: 20, backgroundColor: "transparent" }]}
+                                        style={[
+                                            styles1.input,
+                                            { marginTop: 20, backgroundColor: "transparent" },
+                                        ]}
                                         value={certificate.cname}
-                                        onChangeText={(text) => { handlecertificatechange(certificate.id, "cname", text) }}
+                                        onChangeText={(text) => {
+                                            handlecertificatechange(certificate.id, "cname", text);
+                                        }}
                                     />
-                                    {certificate.firsterror && <Text style={styles1.cerror}>* please enter this field</Text>}
+                                    {certificate.firsterror && (
+                                        <Text style={styles1.cerror}>* please enter this field</Text>
+                                    )}
 
                                     <TextInput
                                         allowFontScaling={false}
@@ -821,16 +806,15 @@ const Editcommunity = ({ navigation }) => {
                                         placeholderTextColor="#828282"
                                         style={styles1.input}
                                         value={certificate.curl}
-                                        onChangeText={(text) => { handlecertificatechange(certificate.id, "curl", text) }}
+                                        onChangeText={(text) => {
+                                            handlecertificatechange(certificate.id, "curl", text);
+                                        }}
                                     />
-                                    {certificate.seconderror && <Text style={styles1.cerror}>* please enter this field</Text>}
-
-
-
-
+                                    {certificate.seconderror && (
+                                        <Text style={styles1.cerror}>* please enter this field</Text>
+                                    )}
                                 </View>
                             ))}
-
 
                             <Text style={[styles.t1, { marginTop: 30 }]}>Portfolio</Text>
                             {/* {portfolio1.map((items, index) => (
@@ -857,44 +841,63 @@ const Editcommunity = ({ navigation }) => {
                                 </View>
                             ))} */}
 
-
                             {portfolio1.map((items, index) => (
                                 <View style={styles1.certificate} key={items.id}>
                                     <Pressable onPress={addportfolio}>
                                         <Entypo style={styles1.plus} name="plus" size={24} color="#ccc" />
                                     </Pressable>
-                                    {index > 0 && <Pressable onPress={() => { deleteportfolio(index) }}>
-                                        <FontAwesome6 name="trash" style={styles1.minus} size={15} color="#ccc" />
-                                    </Pressable>}
+                                    {index > 0 && (
+                                        <Pressable
+                                            onPress={() => {
+                                                deleteportfolio(index);
+                                            }}
+                                        >
+                                            <FontAwesome6
+                                                name="trash"
+                                                style={styles1.minus}
+                                                size={15}
+                                                color="#ccc"
+                                            />
+                                        </Pressable>
+                                    )}
                                     <TextInput
                                         allowFontScaling={false}
                                         placeholder="URL"
                                         value={items.url}
                                         // value={items.name}
                                         placeholderTextColor="#828282"
-                                        style={[styles1.input, { marginTop: 20, backgroundColor: "transparent" }]}
-                                        onChangeText={(text) => { handleurlchange(items.id, "url", text) }}
-
+                                        style={[
+                                            styles1.input,
+                                            { marginTop: 20, backgroundColor: "transparent" },
+                                        ]}
+                                        onChangeText={(text) => {
+                                            handleurlchange(items.id, "url", text);
+                                        }}
                                     />
-                                    {items.seconderror && <Text style={styles.err}>* please enter this field</Text>}
+                                    {items.seconderror && (
+                                        <Text style={styles.err}>* please enter this field</Text>
+                                    )}
                                     <TextInput
                                         allowFontScaling={false}
                                         placeholder="Portfolio name"
                                         value={items.name}
                                         placeholderTextColor="#828282"
                                         style={styles1.input}
-                                        onChangeText={(text) => { handleurlchange(items.id, "name", text) }}
-
+                                        onChangeText={(text) => {
+                                            handleurlchange(items.id, "name", text);
+                                        }}
                                     />
-                                    {items.firsterror && <Text style={styles.err}>* please enter this field</Text>}
-
+                                    {items.firsterror && (
+                                        <Text style={styles.err}>* please enter this field</Text>
+                                    )}
                                 </View>
                             ))}
 
+                            <Text allowFontScaling={false} style={[styles.t1, { marginTop: 20 }]}>
+                                Instagram
+                            </Text>
 
-                            <Text allowFontScaling={false} style={[styles.t1, { marginTop: 20 }]}>Instagram</Text>
-
-                            <View style={styles1.v1} >
+                            <View style={styles1.v1}>
                                 {/* <Pressable onPress={addurl}> */}
                                 {/* <AntDesign name="instagram" style={styles1.plusss} size={24} color="#828282" /> */}
                                 {/* <Entypo style={styles.plus1} name="plus" size={24} color="#00DE62" /> */}
@@ -907,12 +910,16 @@ const Editcommunity = ({ navigation }) => {
                                     placeholderTextColor="#828282"
                                     style={styles1.inputss}
                                     value={InstagramUrl}
-                                    onChangeText={(text) => { setInstagramUrl(text) }}
+                                    onChangeText={(text) => {
+                                        setInstagramUrl(text);
+                                    }}
                                 />
                             </View>
-                            <Text allowFontScaling={false} style={[styles.t1, { marginTop: 20 }]}>YouTube</Text>
+                            <Text allowFontScaling={false} style={[styles.t1, { marginTop: 20 }]}>
+                                YouTube
+                            </Text>
 
-                            <View style={styles1.v1} >
+                            <View style={styles1.v1}>
                                 {/* <Pressable onPress={addurl}> */}
                                 {/* <Feather name="youtube" style={styles.plus1} size={24} color="#bbbbbb" /> */}
                                 {/* <AntDesign name="youtube" style={styles1.plusss} size={24} color="#828282" /> */}
@@ -920,84 +927,83 @@ const Editcommunity = ({ navigation }) => {
                                 {/* </Pressable> */}
 
                                 <TextInput
-
                                     allowFontScaling={false}
                                     placeholder="URL"
                                     numberOfLines={1}
                                     placeholderTextColor="#828282"
                                     style={styles1.inputss}
                                     value={YTURL}
-                                    onChangeText={(text) => { setYTURL(text) }}
+                                    onChangeText={(text) => {
+                                        setYTURL(text);
+                                    }}
                                 />
                             </View>
-                            <Text allowFontScaling={false} style={[styles.t1, { marginTop: 20 }]}>LinkedIn</Text>
+                            <Text allowFontScaling={false} style={[styles.t1, { marginTop: 20 }]}>
+                                LinkedIn
+                            </Text>
 
-                            <View style={styles1.v1} >
+                            <View style={styles1.v1}>
                                 {/* <Pressable onPress={addurl}> */}
                                 {/* <AntDesign name="linkedin-square" style={styles1.plusss} size={24} color="#828282" /> */}
                                 {/* <Entypo style={styles.plus1} name="plus" size={24} color="#00DE62" /> */}
                                 {/* </Pressable> */}
 
                                 <TextInput
-
                                     allowFontScaling={false}
                                     placeholder="URL"
                                     numberOfLines={1}
                                     placeholderTextColor="#828282"
                                     style={styles1.inputss}
                                     value={LinkedinURl}
-                                    onChangeText={(text) => { setLinkedinURl(text) }}
+                                    onChangeText={(text) => {
+                                        setLinkedinURl(text);
+                                    }}
                                 />
                             </View>
-
-
-
-
                         </View>
-
-
-
-
-
 
                         <View onTouchStart={handleOutsideTouch} s style={styles1.icons}>
-                            <Pressable onPress={() => { navigation.goBack() }} style={{ alignSelf: "center" }}><FontAwesome6 name="chevron-left" size={25} color="#00DF60" /></Pressable>
+                            <Pressable
+                                onPress={() => {
+                                    navigation.goBack();
+                                }}
+                                style={{ alignSelf: "center" }}
+                            >
+                                <FontAwesome6 name="chevron-left" size={25} color="#00DF60" />
+                            </Pressable>
                             <Pressable onPress={savedata} style={styles1.btn}>
                                 {loading && <ActivityIndicator size={24} color="#16181a" />}
-                                {!loading && <Text allowFontScaling={false} style={styles1.nexttext}>Save</Text>}
+                                {!loading && (
+                                    <Text allowFontScaling={false} style={styles1.nexttext}>
+                                        Save
+                                    </Text>
+                                )}
                             </Pressable>
                         </View>
-
                     </View>
                 </TouchableWithoutFeedback>
-
             </ScrollView>
         </SafeAreaView>
+    );
+};
 
-    )
-}
-
-export default Editcommunity
-
+export default Editcommunity;
 
 const { height, width } = Dimensions.get("window");
-
 
 var a = width / 360;
 var b = height / 800;
 // console.log(a,b);
 
-const scalingfactor = Math.sqrt(a * b)
+const scalingfactor = Math.sqrt(a * b);
 const styles1 = StyleSheet.create({
-
-
     title: {
         fontSize: 20,
         color: "#E9E9E9",
         fontFamily: "Alata",
         textAlign: "center",
-      },
-      header: {
+    },
+    header: {
         flexDirection: "row",
         alignItems: "center",
         justifyContent: "space-between",
@@ -1005,27 +1011,25 @@ const styles1 = StyleSheet.create({
         paddingHorizontal: 20,
         borderBottomWidth: 1,
         borderBottomColor: "#24272A",
-      },
-    
-      headerSide: {
+    },
+
+    headerSide: {
         width: 40, // same width as the icon button area
         alignItems: "flex-start",
         justifyContent: "center",
-      },
-    
-      headerCenter: {
+    },
+
+    headerCenter: {
         flex: 1,
         alignItems: "center",
         justifyContent: "center",
-      },
+    },
     edit: {
         color: "#ccc",
         fontFamily: "Alata",
         textAlign: "center",
         fontSize: 24,
-        marginBottom: 20
-
-
+        marginBottom: 20,
     },
     t2: {
         color: "#828282",
@@ -1033,7 +1037,7 @@ const styles1 = StyleSheet.create({
         textAlign: "center",
         fontSize: 12,
         marginBottom: 5,
-        marginTop: 10
+        marginTop: 10,
     },
     input: {
         backgroundColor: "transparent",
@@ -1053,7 +1057,7 @@ const styles1 = StyleSheet.create({
         marginBottom: scalingfactor * 15,
         borderBottomWidth: 1,
         borderBottomColor: "#ccc",
-        fontFamily: "Alata"
+        fontFamily: "Alata",
         // borderRadius : 20
     },
     input1: {
@@ -1076,14 +1080,13 @@ const styles1 = StyleSheet.create({
         // borderRadius : 20
         borderBottomWidth: 1,
         borderBottomColor: "#ccc",
-        fontFamily: "Alata"
+        fontFamily: "Alata",
     },
 
     small: {
         // backgroundColor : "red",
         width: "75%",
-        marginLeft: 10
-
+        marginLeft: 10,
     },
     icons: {
         display: "flex",
@@ -1097,8 +1100,7 @@ const styles1 = StyleSheet.create({
         marginTop: 60,
         marginBottom: 40,
         alignSelf: "center",
-    }
-    ,
+    },
     btn: {
         width: 100,
         height: 40,
@@ -1109,7 +1111,7 @@ const styles1 = StyleSheet.create({
         borderRadius: 20,
         // margin: "auto",
         // marginTop: scalingfactor * 20,
-        shadowColor: 'rgba(0,0,0, 0.5)', // Shadow color
+        shadowColor: "rgba(0,0,0, 0.5)", // Shadow color
         shadowOffset: {
             width: 0, // x offset
             height: 5, // y offset
@@ -1117,22 +1119,21 @@ const styles1 = StyleSheet.create({
         shadowOpacity: 1, // Full opacity for shadow effect
         shadowRadius: 1, // Blur radius
         elevation: 5,
-        justifyContent: 'center',
-
-    }, nexttext: {
+        justifyContent: "center",
+    },
+    nexttext: {
         color: "#24272A",
         fontFamily: "Alata",
         fontSize: 20,
         textAlign: "center",
         // lineHeight : 16
-        marginTop: -4
-
+        marginTop: -4,
     },
     img: {
         margin: "auto",
         width: 113,
         height: 113,
-        borderRadius: 100
+        borderRadius: 100,
     },
     editButton1: {
         backgroundColor: "#00DE62",
@@ -1148,9 +1149,7 @@ const styles1 = StyleSheet.create({
         width: 182,
         height: 40,
         alignSelf: "center",
-        marginVertical: 12
-
-
+        marginVertical: 12,
     },
     editButtonText: {
         color: "#16181A",
@@ -1158,7 +1157,7 @@ const styles1 = StyleSheet.create({
         fontFamily: "Alata",
         textAlign: "center",
         marginLeft: -1,
-        marginTop: -4
+        marginTop: -4,
     },
 
     certificate: {
@@ -1172,25 +1171,25 @@ const styles1 = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#AEAFAF",
         borderRadius: 10,
-        position: "relative"
+        position: "relative",
     },
     plus: {
         position: "absolute",
         right: 5,
         top: -5,
-        zIndex: 100
+        zIndex: 100,
     },
     plus1: {
         position: "absolute",
         right: 10,
         top: 20,
-        zIndex: 100
+        zIndex: 100,
     },
     plusss: {
         position: "absolute",
         left: 10,
         top: 10,
-        zIndex: 100
+        zIndex: 100,
     },
     v1: {
         borderBottomWidth: 1,
@@ -1208,14 +1207,14 @@ const styles1 = StyleSheet.create({
         position: "absolute",
         right: 45,
         top: 6,
-        zIndex: 100
+        zIndex: 100,
     },
 
     minus: {
         position: "absolute",
         right: 45,
         top: 0,
-        zIndex: 100
+        zIndex: 100,
     },
 
     err: {
@@ -1261,7 +1260,6 @@ const styles1 = StyleSheet.create({
         borderBottomColor: "red",
         borderwidth: 10,
         // backgroundColor : "red"
-
     },
     certificate: {
         padding: 4,
@@ -1273,9 +1271,6 @@ const styles1 = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#828282",
         borderRadius: 10,
-        position: "relative"
-    }
-
-
-
-})
+        position: "relative",
+    },
+});

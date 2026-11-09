@@ -1,12 +1,11 @@
 import { StyleSheet } from "react-native";
 
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#16181a",
         padding: 20,
-        alignItems: 'stretch',
+        alignItems: "stretch",
     },
     title: {
         fontSize: 24,
@@ -26,15 +25,14 @@ const styles = StyleSheet.create({
         fontSize: 18,
         paddingVertical: 5,
         marginBottom: 10,
-        fontFamily:'Roboto'
-        
+        fontFamily: "Roboto",
     },
     label: {
         color: "gray",
         fontSize: 18,
         marginBottom: 5,
-        marginLeft : 5,
-        fontFamily:'Roboto'
+        marginLeft: 5,
+        fontFamily: "Roboto",
     },
     textArea: {
         height: 150,
@@ -42,10 +40,10 @@ const styles = StyleSheet.create({
         borderColor: "gray",
         borderRadius: 20,
         color: "#ccc",
-        fontSize : 18,
+        fontSize: 18,
         padding: 10,
         textAlignVertical: "top",
-        fontFamily:'Roboto',
+        fontFamily: "Roboto",
     },
     picker: {
         backgroundColor: "#333",
@@ -68,23 +66,21 @@ const styles = StyleSheet.create({
         color: "#16181A",
         fontFamily: "Alata",
         fontSize: 20,
-        marginTop: -5
+        marginTop: -5,
     },
 
     descriptionLength: {
         color: "#666",
-        textAlign: 'right',
-        position: 'relative',
+        textAlign: "right",
+        position: "relative",
         bottom: 25,
-        right: 10
+        right: 10,
     },
 
     errorStyle: {
         color: "#E65858",
-        fontSize: 12
-    }
+        fontSize: 12,
+    },
 });
-
-
 
 export default styles;

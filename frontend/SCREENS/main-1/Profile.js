@@ -1,24 +1,32 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, StyleSheet, Image, StatusBar, TouchableOpacity, Dimensions, SafeAreaView, ScrollView } from "react-native";
+import {
+    View,
+    Text,
+    StyleSheet,
+    Image,
+    StatusBar,
+    TouchableOpacity,
+    Dimensions,
+    SafeAreaView,
+    ScrollView,
+} from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
 import Upvote from "@/assets/icons/upvote.js";
 import Share from "@/assets/icons/share.js";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { url } from "../../config.js"
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { url } from "../../config.js";
 import { jwtDecode } from "jwt-decode";
 
 const Profile = ({ navigation, token }) => {
-
     console.log(token);
-
 
     const decoded = jwtDecode(token);
     console.log(decoded);
     console.log(decoded);
 
-    const [userdata, setuserdata] = useState(null)
+    const [userdata, setuserdata] = useState(null);
 
     // useEffect(() => {
     //     async function getdata() {
@@ -50,43 +58,40 @@ const Profile = ({ navigation, token }) => {
 
     // }, [])
 
-
-
-
-
-
     const Buyplan = () => {
         console.log("hi");
 
         return (
             <ScrollView style={{ flex: 1, width: width, height: 500, backgroundColor: "#16181a" }}>
                 <View style={styles.buyPlanSection}>
-                    <Text allowFontScaling={false} style={styles.buyPlanText}>Buy Plan</Text>
+                    <Text allowFontScaling={false} style={styles.buyPlanText}>
+                        Buy Plan
+                    </Text>
                 </View>
             </ScrollView>
-        )
-    }
-
-
+        );
+    };
 
     function gotoeditprofile() {
-
-        navigation.navigate("EditInvestorInfo")
+        navigation.navigate("EditInvestorInfo");
     }
     function gotochangepassowrd() {
-
-        navigation.navigate("ChangePassword1")
+        navigation.navigate("ChangePassword1");
     }
     const Yourpost = () => {
         return (
             <ScrollView style={{ flex: 1, backgroundColor: "#16181a" }}>
                 <View style={styles.box}>
-                    <View style={styles.top} >
+                    <View style={styles.top}>
                         <View style={{ display: "flex", flexDirection: "row", width: "100%" }}>
                             <Image style={styles.userimg} source={require("../../assets/images/p1.png")} />
                             <View style={styles.userdetail}>
-                                <Text allowFontScaling={false} style={styles.u1}>raz.shhh</Text>
-                                <Text allowFontScaling={false} style={styles.u2}>Founder</Text>
+                                <Text allowFontScaling={false} style={styles.u1}>
+                                    raz.shhh
+                                </Text>
+                                <Text allowFontScaling={false} style={styles.u2}>
+                                    Founder
+                                </Text>
                             </View>
                         </View>
                     </View>
@@ -97,35 +102,42 @@ const Profile = ({ navigation, token }) => {
                             <FontAwesome name="comment-o" size={30} color="#00DE62" />
                         </View>
                         <Share style={{ marginTop: 5, marginRight: 10, right: 0 }} />
-
-
                     </View>
-
                 </View>
             </ScrollView>
-        )
-    }
+        );
+    };
     return (
         <ScrollView style={styles.container}>
             {/* Header Section */}
             <View style={{ flex: 1, minHeight: 500 }}>
-                <Text allowFontScaling={false} style={styles.headerText}>Profile</Text>
+                <Text allowFontScaling={false} style={styles.headerText}>
+                    Profile
+                </Text>
 
                 {/* Profile Section */}
                 <View style={styles.profileSection}>
                     <Image
                         style={styles.profileImage}
 
-                    // source={{ uri: userdata.user_id.profilePhoto }} // Replace with your image path
+                        // source={{ uri: userdata.user_id.profilePhoto }} // Replace with your image path
                     />
                     <View style={styles.userinfo}>
-                        <Text allowFontScaling={false} style={styles.username}>{decoded.userName}</Text>
-                        <Text allowFontScaling={false} style={styles.userRole}>Investor</Text>
+                        <Text allowFontScaling={false} style={styles.username}>
+                            {decoded.userName}
+                        </Text>
+                        <Text allowFontScaling={false} style={styles.userRole}>
+                            Investor
+                        </Text>
                         <TouchableOpacity onPress={gotoeditprofile} style={styles.editButton}>
-                            <Text allowFontScaling={false} style={styles.editButtonText}>Edit profile</Text>
+                            <Text allowFontScaling={false} style={styles.editButtonText}>
+                                Edit profile
+                            </Text>
                         </TouchableOpacity>
                         <TouchableOpacity onPress={gotochangepassowrd} style={styles.editButton1}>
-                            <Text allowFontScaling={false} style={styles.editButtonText}>Change Password</Text>
+                            <Text allowFontScaling={false} style={styles.editButtonText}>
+                                Change Password
+                            </Text>
                         </TouchableOpacity>
                         <View style={styles.connectionContainer}>
                             <View style={styles.circle}>
@@ -154,14 +166,9 @@ const Profile = ({ navigation, token }) => {
 
                     <Buyplan />
                 </View>
-
-
-
-
             </View>
             {/* Buy Plan Section */}
-
-        </ ScrollView>
+        </ScrollView>
     );
 };
 
@@ -178,7 +185,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#16181a",
         // backgroundColor: "red",
         minHeight: 100,
-        maxHeight: height
+        maxHeight: height,
         // padding: 20,
     },
     headerText: {
@@ -188,8 +195,7 @@ const styles = StyleSheet.create({
         // marginBottom: 20,
         color: "#00DE62",
         fontFamily: "myanmar",
-        paddingHorizontal: 20
-
+        paddingHorizontal: 20,
     },
     profileSection: {
         alignItems: "center",
@@ -217,7 +223,7 @@ const styles = StyleSheet.create({
         color: "#E9E9E9",
         fontFamily: "Alata",
         textAlign: "center",
-        marginVertical: 5
+        marginVertical: 5,
     },
     userRole: {
         fontSize: 16,
@@ -226,9 +232,7 @@ const styles = StyleSheet.create({
         fontFamily: "Roboto",
         // paddingLeft: 2,
         textAlign: "center",
-        marginVertical: -5
-
-
+        marginVertical: -5,
     },
     editButton: {
         backgroundColor: "#00DE62",
@@ -240,8 +244,6 @@ const styles = StyleSheet.create({
         height: 40,
         alignSelf: "center",
         // paddingHorizontal : 10,
-
-
     },
     editButton1: {
         backgroundColor: "#00DE62",
@@ -257,9 +259,7 @@ const styles = StyleSheet.create({
         width: 182,
         height: 40,
         alignSelf: "center",
-        marginVertical: 12
-
-
+        marginVertical: 12,
     },
     editButtonText: {
         color: "#16181A",
@@ -267,7 +267,7 @@ const styles = StyleSheet.create({
         fontFamily: "Alata",
         textAlign: "center",
         marginLeft: -1,
-        marginTop: -3
+        marginTop: -3,
     },
 
     buyPlanSection: {
@@ -283,21 +283,19 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         // flex: 0.9,
         backgroundColor: "#16181a",
-        marginTop: 10
+        marginTop: 10,
     },
     buyPlanText: {
         fontSize: 32,
         fontFamily: "Alata",
         color: "#B8B8B8",
-        textAlign: "center"
+        textAlign: "center",
     },
     userinfo: {
         paddingLeft: 10,
         justifyContent: "center",
         // backgroundColor : "red",
         width: "100%",
-
-
     },
     btncont: {
         // flex :1,
@@ -325,7 +323,6 @@ const styles = StyleSheet.create({
         textTransform: "capitalize",
         borderWidth: 1,
         borderRadius: 30,
-
     },
     box: {
         width: width * 0.96,
@@ -336,8 +333,7 @@ const styles = StyleSheet.create({
         alignItems: "center",
         borderRadius: 15,
         margin: "auto",
-        marginBottom: 25
-
+        marginBottom: 25,
     },
     boxText: {
         fontSize: 18,
@@ -347,7 +343,7 @@ const styles = StyleSheet.create({
         width: "96%",
         borderRadius: 10,
         height: 182,
-        maxHeight: 182
+        maxHeight: 182,
     },
     userimg: {
         borderRadius: 100,
@@ -356,43 +352,43 @@ const styles = StyleSheet.create({
         margin: 10,
         marginLeft: 15,
         alignSelf: "flex-start",
-        justifyContent: "flex-start"
+        justifyContent: "flex-start",
     },
     userdetail: {
         flex: 1,
         alignSelf: "flex-start",
-        paddingLeft: 5
+        paddingLeft: 5,
     },
     u1: {
         fontFamily: "Alata",
         fontSize: 20,
-        color: "#E9E9E9"
+        color: "#E9E9E9",
     },
     t6: {
         fontFamily: "Alata",
         fontSize: 14,
         color: "#AEAFAF",
-        marginLeft: 20
+        marginLeft: 20,
     },
     u2: {
         fontFamily: "Roboto",
         fontSize: 11,
-        color: "#00DE62"
+        color: "#00DE62",
     },
     u3: {
         fontFamily: "Roboto",
         fontSize: 20,
-        color: "#B8B8B8"
+        color: "#B8B8B8",
     },
     upvote: {
-        marginRight: -3
+        marginRight: -3,
     },
     count: {
         alignSelf: "flex-end",
         fontFamily: "Roboto",
         fontSize: 13,
         color: "#00DE62",
-        marginLeft: -2
+        marginLeft: -2,
     },
     lower: {
         display: "flex",
@@ -401,7 +397,7 @@ const styles = StyleSheet.create({
         marginHorizontal: "auto",
         marginTop: 10,
         paddingLeft: 5,
-        justifyContent: "space-between"
+        justifyContent: "space-between",
     },
     connectionContainer: {
         display: "flex",
@@ -419,7 +415,7 @@ const styles = StyleSheet.create({
         width: width,
         height: 3,
         marginTop: 20,
-        backgroundColor: "#24272A"
+        backgroundColor: "#24272A",
     },
     iconcontainer: {
         display: "flex",
@@ -427,15 +423,14 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         width: "95%",
         marginHorizontal: "auto",
-        marginTop: 10
-    }
-    , icon2: {
+        marginTop: 10,
+    },
+    icon2: {
         display: "flex",
         flexDirection: "row",
         // justifyContent : "space-between",
         // width : "90%",
         // marginHorizontal : "auto"
-        gap: 5
+        gap: 5,
     },
-
 });

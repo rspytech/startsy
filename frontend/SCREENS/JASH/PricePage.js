@@ -1,17 +1,13 @@
-import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from 'react-native'
-import React from 'react'
+import { View, Text, ScrollView, TouchableOpacity, StyleSheet } from "react-native";
+import React from "react";
 import Back from "@/components/back.js";
 
 const PricePage = ({ route, navigation }) => {
-    const { type, id, useremail } = route.params
+    const { type, id, useremail } = route.params;
 
     return (
         <View style={styles.container}>
-
-            <ScrollView
-                showsVerticalScrollIndicator={false}
-            >
-
+            <ScrollView showsVerticalScrollIndicator={false}>
                 {/* <PlanCard
                     title="Free Plan"
                     features={[
@@ -51,44 +47,49 @@ const PricePage = ({ route, navigation }) => {
                 /> */}
             </ScrollView>
         </View>
-    )
-}
-
-
-const PlanCard = ({ title, features, isFirst , type , id , useremail  , navigation}) => {
-    return (
-        <View style={styles.card}>
-            {isFirst &&
-                <TouchableOpacity style={styles.okayButton}>
-                    <Text style={styles.okayText}>
-                           <Back />
-                    </Text>
-                </TouchableOpacity>
-            }
-            <Text style={styles.planTitle}>{title}</Text>
-
-            {features.map((feature, index) => (
-                <View style={styles.featuresContainer} >
-                    <Text style={styles.featureStartText}>•</Text>
-                    <Text key={index} style={styles.featureText}>{feature}</Text>
-                </View>
-            ))}
-
-           {isFirst &&  <TouchableOpacity onPress={() => {
-                navigation.navigate("Signup5", { type, id, useremail: useremail });
-            }} style={styles.proceedButton}>
-                <Text style={styles.proceedText}>Proceed</Text>
-            </TouchableOpacity>}
-
-            {!isFirst &&  <TouchableOpacity onPress={() => {
-            }} style={styles.proceedButton}>
-                <Text style={styles.proceedText}>coming soon</Text>
-            </TouchableOpacity>}
-        </View>
     );
 };
 
+const PlanCard = ({ title, features, isFirst, type, id, useremail, navigation }) => {
+    return (
+        <View style={styles.card}>
+            {isFirst && (
+                <TouchableOpacity style={styles.okayButton}>
+                    <Text style={styles.okayText}>
+                        <Back />
+                    </Text>
+                </TouchableOpacity>
+            )}
+            <Text style={styles.planTitle}>{title}</Text>
 
+            {features.map((feature, index) => (
+                <View style={styles.featuresContainer}>
+                    <Text style={styles.featureStartText}>•</Text>
+                    <Text key={index} style={styles.featureText}>
+                        {feature}
+                    </Text>
+                </View>
+            ))}
+
+            {isFirst && (
+                <TouchableOpacity
+                    onPress={() => {
+                        navigation.navigate("Signup5", { type, id, useremail: useremail });
+                    }}
+                    style={styles.proceedButton}
+                >
+                    <Text style={styles.proceedText}>Proceed</Text>
+                </TouchableOpacity>
+            )}
+
+            {!isFirst && (
+                <TouchableOpacity onPress={() => {}} style={styles.proceedButton}>
+                    <Text style={styles.proceedText}>coming soon</Text>
+                </TouchableOpacity>
+            )}
+        </View>
+    );
+};
 
 const styles = StyleSheet.create({
     container: {
@@ -108,10 +109,9 @@ const styles = StyleSheet.create({
     },
     card: {
         backgroundColor: "#1e1e1e",
-        padding: 16, 
-        borderBottomColor: 'gray',
-        borderBottomWidth: 1
-
+        padding: 16,
+        borderBottomColor: "gray",
+        borderBottomWidth: 1,
     },
     planTitle: {
         color: "#00de62",
@@ -120,28 +120,25 @@ const styles = StyleSheet.create({
         marginBottom: 8,
     },
     featuresContainer: {
-        flexDirection: 'row',
-        alignItems: 'flex-start',
+        flexDirection: "row",
+        alignItems: "flex-start",
         marginBottom: 8,
         // backgroundColor:'red',
         gap: 10,
-
     },
     featureStartText: {
         color: "#ccc",
         fontSize: 14,
-        lineHeight: 30
-
+        lineHeight: 30,
     },
     featureText: {
         color: "#ccc",
         fontSize: 14,
         // marginBottom: 6,
-        textAlign: 'justify',
+        textAlign: "justify",
         lineHeight: 30,
         marginRight: 10,
         // letterSpacing: 1
-
     },
     proceedButton: {
         backgroundColor: "#ffffff",
@@ -153,15 +150,10 @@ const styles = StyleSheet.create({
     },
     proceedText: {
         color: "#000",
-        fontSize :14,
+        fontSize: 14,
         // fontWeight: "bold",
-        fontFamily : "Alata"
+        fontFamily: "Alata",
     },
 });
 
-
-
-export default PricePage
-
-
-
+export default PricePage;

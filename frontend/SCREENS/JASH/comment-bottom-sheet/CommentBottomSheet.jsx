@@ -1,23 +1,36 @@
-import { View, Text, Pressable, TextInput, StyleSheet } from 'react-native'
-import React, { useMemo, useRef, useState } from 'react'
+import { View, Text, Pressable, TextInput, StyleSheet } from "react-native";
+import React, { useMemo, useRef, useState } from "react";
 
-import BottomSheet, { BottomSheetView, BottomSheetScrollView, BottomSheetTextInput, BottomSheetFlatList, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
-import Animated from 'react-native-reanimated';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import { ActivityIndicator } from 'react-native-paper';
-import { SafeAreaView } from 'react-native-safe-area-context';
+import BottomSheet, {
+    BottomSheetView,
+    BottomSheetScrollView,
+    BottomSheetTextInput,
+    BottomSheetFlatList,
+    BottomSheetBackdrop,
+} from "@gorhom/bottom-sheet";
+import Animated from "react-native-reanimated";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import { ActivityIndicator } from "react-native-paper";
+import { SafeAreaView } from "react-native-safe-area-context";
 // import {  } from 'react-native-gesture-handler';
 
-const CommentBottomSheet = ({ commentRef, backdropComponent, allcomments, comments, docomment, uploadingcomment, setcommenttext, commenttext, backgroundStyle , setcomment }) => {
-
-    const snapPoints5 = useMemo(() => ["70%",], []);
-
+const CommentBottomSheet = ({
+    commentRef,
+    backdropComponent,
+    allcomments,
+    comments,
+    docomment,
+    uploadingcomment,
+    setcommenttext,
+    commenttext,
+    backgroundStyle,
+    setcomment,
+}) => {
+    const snapPoints5 = useMemo(() => ["70%"], []);
 
     // console.log(allcomments);
 
-    const [inFocus, setInFocus] = useState(false)
-
-
+    const [inFocus, setInFocus] = useState(false);
 
     const inputRef = useRef(null);
     return (
@@ -25,7 +38,7 @@ const CommentBottomSheet = ({ commentRef, backdropComponent, allcomments, commen
             overlayColor="rgba(0, 0, 0, 0.9)"
             enablePanDownToClose
             backgroundStyle={backgroundStyle}
-            handleIndicatorStyle={{ backgroundColor: '#00de62' }}
+            handleIndicatorStyle={{ backgroundColor: "#00de62" }}
             ref={commentRef}
             nestedScrollEnabled={true}
             backdropComponent={backdropComponent}
@@ -33,72 +46,71 @@ const CommentBottomSheet = ({ commentRef, backdropComponent, allcomments, commen
             snapPoints={snapPoints5}
             index={-1}
         >
-
-
-            <Pressable onPress={() => {
-                // console.log("openin");
-                inputRef.current?.focus()
-                // commentRef.current?.snapToIndex(1);
-
-            }}>
-                <Text style={{ textAlign: 'center', color: '#ccc', fontFamily: 'Alata', fontSize: 16 }}>Comments</Text>
-
+            <Pressable
+                onPress={() => {
+                    // console.log("openin");
+                    inputRef.current?.focus();
+                    // commentRef.current?.snapToIndex(1);
+                }}
+            >
+                <Text style={{ textAlign: "center", color: "#ccc", fontFamily: "Alata", fontSize: 16 }}>
+                    Comments
+                </Text>
             </Pressable>
 
-            {allcomments.length == 0 && <View style={{ flexGrow: 0.98, justifyContent: "center", alignItems: "center" }}>
-                <Text style={styles.nocomment}>No comments</Text>
-            </View>}
+            {allcomments.length == 0 && (
+                <View style={{ flexGrow: 0.98, justifyContent: "center", alignItems: "center" }}>
+                    <Text style={styles.nocomment}>No comments</Text>
+                </View>
+            )}
 
-
-            {allcomments.length > 0 && <BottomSheetFlatList
-                style={{ flexGrow: 0.98, }}
-                data={allcomments}
-                renderItem={comments}
-                scrollEnabled={true}
-                contentContainerStyle={{ flexGrow: 1, padding: 10, }}
-
-            />}
+            {allcomments.length > 0 && (
+                <BottomSheetFlatList
+                    style={{ flexGrow: 0.98 }}
+                    data={allcomments}
+                    renderItem={comments}
+                    scrollEnabled={true}
+                    contentContainerStyle={{ flexGrow: 1, padding: 10 }}
+                />
+            )}
 
             <Animated.View style={{ position: "relative" }}>
                 <TextInput
                     ref={inputRef}
                     onPress={() => {
-                        inputRef.current?.focus()
+                        inputRef.current?.focus();
                     }}
                     onPressIn={() => {
                         inputRef.current?.focus();
                     }}
                     onBlur={() => {
-
-                        inputRef.current?.blur()
-                        setInFocus(false)
+                        inputRef.current?.blur();
+                        setInFocus(false);
                     }}
                     style={styles.input}
                     placeholder="Type here..."
                     placeholderTextColor="#828282"
                     value={commenttext}
-                    onChangeText={text => setcommenttext(text)}
+                    onChangeText={(text) => setcommenttext(text)}
                 />
                 <Pressable onPress={docomment} style={[styles.send, {}]}>
                     {uploadingcomment && <ActivityIndicator size={24} color="#828282" />}
                     {!uploadingcomment && <Ionicons name="send" size={24} color="#828282" />}
                 </Pressable>
             </Animated.View>
-
         </BottomSheet>
-    )
-}
-
+    );
+};
 
 const styles = StyleSheet.create({
     title: {
         fontSize: 16,
         marginBottom: 10,
         color: "#bbbbbb",
-        textAlign: 'center',
+        textAlign: "center",
     },
     input: {
-        backgroundColor: 'transparent',
+        backgroundColor: "transparent",
         height: 50,
         width: "96%",
         marginHorizontal: "auto",
@@ -109,8 +121,6 @@ const styles = StyleSheet.create({
         color: "#ccc",
         fontSize: 18,
         marginBottom: 10,
-
-
     },
     send: {
         position: "absolute",
@@ -127,11 +137,10 @@ const styles = StyleSheet.create({
         alignSelf: "center",
         justifyContent: "center",
         elevation: 100,
-        marginTop : -10,
+        marginTop: -10,
         bottom: 0,
         fontSize: 16,
-    }
-})
+    },
+});
 
-
-export default CommentBottomSheet
+export default CommentBottomSheet;

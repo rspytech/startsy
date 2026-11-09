@@ -1,13 +1,12 @@
 import { StyleSheet } from "react-native";
 
-
 const styles = StyleSheet.create({
     container: {
         flex: 1,
         backgroundColor: "#16181a",
         padding: 20,
-        paddingTop:10,
-        flexGrow : 1
+        paddingTop: 10,
+        flexGrow: 1,
     },
     title: {
         fontSize: 24,
@@ -16,10 +15,10 @@ const styles = StyleSheet.create({
     },
 
     t1: {
-        textAlign: 'center',
+        textAlign: "center",
         color: "gray",
         fontFamily: "Roboto",
-        fontSize:   16,
+        fontSize: 16,
         marginTop: 5,
         // zIndex : 100,
         // backgroundColor : "red"
@@ -30,7 +29,7 @@ const styles = StyleSheet.create({
         width: 100,
         height: 80,
         borderRadius: 100,
-        marginBottom : 10
+        marginBottom: 10,
     },
     image: {
         width: 100,
@@ -45,14 +44,14 @@ const styles = StyleSheet.create({
         fontSize: 18,
         paddingVertical: 5,
         marginBottom: 10,
-        fontFamily: "Roboto"
+        fontFamily: "Roboto",
     },
     label: {
         color: "gray",
         fontSize: 18,
         marginBottom: 5,
         fontFamily: "Roboto",
-        marginLeft:5
+        marginLeft: 5,
     },
     textArea: {
         height: 150,
@@ -62,8 +61,8 @@ const styles = StyleSheet.create({
         color: "#ccc",
         padding: 10,
         textAlignVertical: "top",
-        fontSize:18,
-        fontFamily:'Roboto'
+        fontSize: 18,
+        fontFamily: "Roboto",
     },
     picker: {
         backgroundColor: "#333",
@@ -71,14 +70,14 @@ const styles = StyleSheet.create({
         marginBottom: 10,
     },
 
-    tittle : {
+    tittle: {
         fontSize: 25,
         fontWeight: "bold",
         color: "#00DE62",
         marginBottom: 20,
         fontFamily: "myanmar",
         color: "#00DE62",
-    } , 
+    },
     button: {
         backgroundColor: "#00DE62",
         borderRadius: 25,
@@ -95,23 +94,21 @@ const styles = StyleSheet.create({
         color: "#16181A",
         fontFamily: "Alata",
         fontSize: 20,
-        marginTop: -5
+        marginTop: -5,
     },
 
     descriptionLength: {
         color: "#666",
-        textAlign: 'right',
-        position: 'relative',
+        textAlign: "right",
+        position: "relative",
         bottom: 25,
-        right: 10
+        right: 10,
     },
 
     errorStyle: {
         color: "#E65858",
-        fontSize: 12
-    }
+        fontSize: 12,
+    },
 });
-
-
 
 export default styles;

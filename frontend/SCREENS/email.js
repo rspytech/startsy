@@ -1,12 +1,24 @@
 import React, { useEffect, useState, useContext } from "react";
-import { SafeAreaView, ScrollView, View, Text, TextInput, Image, StatusBar, KeyboardAvoidingView, Pressable, ActivityIndicator, BackHandler } from "react-native";
+import {
+    SafeAreaView,
+    ScrollView,
+    View,
+    Text,
+    TextInput,
+    Image,
+    StatusBar,
+    KeyboardAvoidingView,
+    Pressable,
+    ActivityIndicator,
+    BackHandler,
+} from "react-native";
 import { useFocusEffect } from "expo-router";
 import signupstyles from "../styles/signup1styles.js";
 import s5 from "@/styles/s5.js";
 import Back from "@/components/back.js";
 import { url } from "../config.js";
 import { GlobalContext } from "@/Global/globalcontext";
-import { OtpInput } from "react-native-otp-entry";  // ✅ Added OTP input
+import { OtpInput } from "react-native-otp-entry"; // ✅ Added OTP input
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 const Email = ({ navigation, route }) => {
     const { globaldata } = useContext(GlobalContext);
@@ -16,13 +28,12 @@ const Email = ({ navigation, route }) => {
     const [message, setMessage] = useState("");
     const [error, setError] = useState(false);
     const [loading, setLoading] = useState(false);
-    const [step, setStep] = useState(1);  // Step 1: Email, Step 2: OTP
+    const [step, setStep] = useState(1); // Step 1: Email, Step 2: OTP
     const [token, setToken] = useState("");
     const [otploading, setotploading] = useState(false);
     const [otperror, setotperror] = useState(false);
 
-
-    const { type, id, useremail } = route.params
+    const { type, id, useremail } = route.params;
 
     useFocusEffect(() => {
         StatusBar.setBackgroundColor("#16181a");
@@ -32,9 +43,9 @@ const Email = ({ navigation, route }) => {
     useEffect(() => {
         setToken(globaldata.token);
 
-        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
             if (step === 2) {
-                setStep(1);  // Go back to email step if on OTP step
+                setStep(1); // Go back to email step if on OTP step
                 return true;
             }
             navigation.goBack();
@@ -62,7 +73,7 @@ const Email = ({ navigation, route }) => {
         setLoading(true);
         try {
             const response = await fetch(`${url}api/checkemail`, {
-                method: 'POST',
+                method: "POST",
                 body: JSON.stringify({ "email": email }),
                 headers: {
                     "Content-Type": "application/json",
@@ -77,26 +88,20 @@ const Email = ({ navigation, route }) => {
                 // setEmailUniqueError(true);
                 setMessage("* Email id already exists");
                 setError(true);
-                return
-            }
-            else {
+                return;
+            } else {
                 setStep(2);
                 setMessage("");
                 setError(false);
             }
+        } catch (err) {
+        } finally {
+            setLoading(false);
         }
-        catch (err) {
-
-        }
-        finally {
-            setLoading(false)
-        }
-
-
 
         try {
             const response = await fetch(`${url}api/sendOtp`, {
-                method: 'POST',
+                method: "POST",
                 body: JSON.stringify({ email: email }),
                 headers: {
                     "Content-Type": "application/json",
@@ -106,11 +111,7 @@ const Email = ({ navigation, route }) => {
             });
             const data = await response.json();
             console.log(data);
-
-        }
-        catch (e) {
-
-        }
+        } catch (e) {}
 
         // ✅ Switch to OTP step (no backend call as per your request)
         setStep(2);
@@ -119,10 +120,10 @@ const Email = ({ navigation, route }) => {
     };
 
     async function check(params) {
-        setotploading(true)
+        setotploading(true);
         try {
             const response = await fetch(`${url}api/verifyOtp`, {
-                method: 'POST',
+                method: "POST",
                 body: JSON.stringify({ email: email, otp: otp }),
                 headers: {
                     "Content-Type": "application/json",
@@ -139,22 +140,17 @@ const Email = ({ navigation, route }) => {
             if (response.status === 400) {
                 // setmessage("* OTP is incorrect")
                 // seterror(true)
-                setotperror(true)
-            }
-            else if (response.status === 200) {
+                setotperror(true);
+            } else if (response.status === 200) {
                 // console.log("success");
                 // seterror(false);
-                navigation.navigate("Signup5", { type, id, useremail  , email })
-
+                navigation.navigate("Signup5", { type, id, useremail, email });
             }
-        }
-        catch (err) {
+        } catch (err) {
             // setloading(false)
             console.log(err);
-
-        }
-        finally{
-            setotploading(false)
+        } finally {
+            setotploading(false);
         }
     }
 
@@ -171,13 +167,15 @@ const Email = ({ navigation, route }) => {
                     }}>
                         <Back />
                     </Pressable> */}
-                    <Pressable onPress={() =>{ 
-                        if (step === 2) {
-                            setStep(1);
-                        } else {
-                            navigation.goBack();
-                        }
-                        }}>
+                    <Pressable
+                        onPress={() => {
+                            if (step === 2) {
+                                setStep(1);
+                            } else {
+                                navigation.goBack();
+                            }
+                        }}
+                    >
                         {/* <FontAwesome6 name="chevron-left" size={34} style={{ alignSelf: 'flex-start', marginLeft: 16 }} color="#00DF60" /> */}
                     </Pressable>
                     <View style={signupstyles.top}>
@@ -188,8 +186,16 @@ const Email = ({ navigation, route }) => {
                         {step === 1 ? (
                             <>
                                 <Text style={signupstyles.t1}>Enter Your Email</Text>
-                                {!error && <Text style={signupstyles.t2}>You won't be able to change this later.</Text>}
-                                {error && <Text style={[signupstyles.error , {textAlign : "center"}]}>{message}</Text>}
+                                {!error && (
+                                    <Text style={signupstyles.t2}>
+                                        You won't be able to change this later.
+                                    </Text>
+                                )}
+                                {error && (
+                                    <Text style={[signupstyles.error, { textAlign: "center" }]}>
+                                        {message}
+                                    </Text>
+                                )}
 
                                 <TextInput
                                     placeholder="xyz@gmail.com"
@@ -204,7 +210,11 @@ const Email = ({ navigation, route }) => {
 
                                 <Pressable style={signupstyles.next} onPress={handleSendOtp}>
                                     {loading ? (
-                                        <ActivityIndicator style={{marginTop:7}} size={24} color="#16181a" />
+                                        <ActivityIndicator
+                                            style={{ marginTop: 7 }}
+                                            size={24}
+                                            color="#16181a"
+                                        />
                                     ) : (
                                         <Text style={signupstyles.nexttext}>Send OTP</Text>
                                     )}
@@ -214,13 +224,11 @@ const Email = ({ navigation, route }) => {
                             <>
                                 <Text style={signupstyles.t1}>Enter OTP</Text>
                                 <Text style={signupstyles.t2}>
-                                    We sent a code to{'\n'}
-                                    <Text style={{ fontWeight: "bold" }}>{email}</Text> <Text style={{ fontWeight: "bold" }}></Text>
-                                    
+                                    We sent a code to{"\n"}
+                                    <Text style={{ fontWeight: "bold" }}>{email}</Text>{" "}
+                                    <Text style={{ fontWeight: "bold" }}></Text>
                                 </Text>
                                 {/* <Text style={signupstyles.t2}>Check spam *</Text> */}
-
-
 
                                 {/* ✅ OTP Input */}
                                 <OtpInput
@@ -252,12 +260,25 @@ const Email = ({ navigation, route }) => {
                                         disabledPinCodeContainerStyle: s5.disabledPinCodeContainer,
                                     }}
                                 />
-                                {otperror && <Text style={[signupstyles.error , {marginTop : 25 , fontSize : 15}]}>Invalid OTP</Text>}
+                                {otperror && (
+                                    <Text style={[signupstyles.error, { marginTop: 25, fontSize: 15 }]}>
+                                        Invalid OTP
+                                    </Text>
+                                )}
 
                                 {/* ✅ "Verify OTP" Button */}
-                                <Pressable style={[signupstyles.next,{marginTop:25}]} onPress={() => check()}>
+                                <Pressable
+                                    style={[signupstyles.next, { marginTop: 25 }]}
+                                    onPress={() => check()}
+                                >
                                     {!otploading && <Text style={signupstyles.nexttext}>Verify OTP</Text>}
-                                    {otploading &&  <ActivityIndicator style={{marginTop :7}} size={24} color="#16181a" />}
+                                    {otploading && (
+                                        <ActivityIndicator
+                                            style={{ marginTop: 7 }}
+                                            size={24}
+                                            color="#16181a"
+                                        />
+                                    )}
                                 </Pressable>
                             </>
                         )}

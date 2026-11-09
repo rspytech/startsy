@@ -1,6 +1,3 @@
-
-
-
 import React, { useState, useRef, useEffect, useContext, useCallback, memo } from "react";
 import {
     ScrollView,
@@ -8,7 +5,6 @@ import {
     View,
     Text,
     TextInput,
-
     Animated,
     Pressable,
     StyleSheet,
@@ -19,22 +15,16 @@ import {
     RefreshControl,
     TouchableOpacity,
     Keyboard,
-    Vibration
-
+    Vibration,
 } from "react-native";
 import { Image } from "expo-image";
 import { useFocusEffect, useNavigation } from "expo-router";
-import { url } from "../../config.js"
+import { url } from "../../config.js";
 import { GlobalContext } from "@/Global/globalcontext.js";
 import { jwtDecode } from "jwt-decode";
 
-
 const User = memo(({ handleTabChange, navigation, token, suggestionarray, setsuggestionarray }) => {
-
     console.log("user re render");
-
-
-
 
     const scrollPosition = useRef(0);
     const listRef = useRef(null);
@@ -42,24 +32,23 @@ const User = memo(({ handleTabChange, navigation, token, suggestionarray, setsug
     // const handleScroll = (event) => {
     //     scrollPosition.current = event.nativeEvent.contentOffset.y;
     // };
-    const [refreshing1, setRefreshing1] = useState(false)
+    const [refreshing1, setRefreshing1] = useState(false);
 
     useEffect(() => {
-        var decode = jwtDecode(token)
+        var decode = jwtDecode(token);
         if (token.length > 0) {
             console.log(decode);
-            setloggedin(decode._id)
+            setloggedin(decode._id);
         }
-    }, [token])
-
+    }, [token]);
 
     useEffect(() => {
         async function searchUser() {
             // console.log("user search");
-            var final = `showAllUser`
+            var final = `showAllUser`;
             try {
                 const response = await fetch(`${url}api/getUserNameSuggestions/${final}`, {
-                    method: 'GET',
+                    method: "GET",
                     headers: {
                         accept: "application/json",
                         "Authorization": `Bearer ${token}`,
@@ -67,31 +56,26 @@ const User = memo(({ handleTabChange, navigation, token, suggestionarray, setsug
                 });
                 const data = await response.json();
                 // console.log(data);
-                var filterUser = data.data?.filter(e => e._id != loggedinuserid)
+                var filterUser = data.data?.filter((e) => e._id != loggedinuserid);
 
-
-                setsuggestionarray(filterUser)
-
-            }
-            catch (err) {
+                setsuggestionarray(filterUser);
+            } catch (err) {
                 console.log(err);
-
             }
         }
         if (token) {
-            searchUser()
+            searchUser();
         }
-    }, [token])
+    }, [token]);
 
     async function searchUser() {
-
         // console.log("user search");
         // var final = `@${text1}`
-        var final = `showAllUser`
+        var final = `showAllUser`;
         // var final = `@c`
         try {
             const response = await fetch(`${url}api/getUserNameSuggestions/${final}`, {
-                method: 'GET',
+                method: "GET",
                 headers: {
                     accept: "application/json",
                     "Authorization": `Bearer ${token}`,
@@ -99,74 +83,50 @@ const User = memo(({ handleTabChange, navigation, token, suggestionarray, setsug
             });
             const data = await response.json();
             console.log(data);
-            var filterUser = data.data?.filter(e => e._id != loggedinuserid)
+            var filterUser = data.data?.filter((e) => e._id != loggedinuserid);
 
-            setsuggestionarray(filterUser)
-
-        }
-        catch (err) {
+            setsuggestionarray(filterUser);
+        } catch (err) {
             console.log(err);
-
-        }
-        finally {
-            setRefreshing1(false)
+        } finally {
+            setRefreshing1(false);
         }
     }
 
-
-
     async function sendfollowrequest(stat, id) {
-
-
-
         if (stat == "Connected" || stat == "Request Sent") {
-
             // setconnecteddata("Follow")
-
 
             async function makesubmit() {
                 setsuggestionarray((prevArray) =>
-                    prevArray.map((e) =>
-                        e._id === id ? { ...e, status: "Connect" } : e
-                    )
+                    prevArray.map((e) => (e._id === id ? { ...e, status: "Connect" } : e))
                 );
 
                 try {
                     const response = await fetch(`${url}founder/rejectRequest/${id}`, {
-                        method: 'POST',
+                        method: "POST",
                         headers: {
                             Authorization: `Bearer ${token}`,
-                        }
-                    })
+                        },
+                    });
                     const data = await response.json();
                     console.log(data);
-
-
-
-                }
-                catch (err) {
+                } catch (err) {
                     console.log(err);
-
                 }
             }
-            makesubmit()
-            return
+            makesubmit();
+            return;
         }
 
-
         setsuggestionarray((prevArray) =>
-            prevArray.map((e) =>
-                e._id === id ? { ...e, status: "Request Sent" } : e
-            )
+            prevArray.map((e) => (e._id === id ? { ...e, status: "Request Sent" } : e))
         );
-
-
 
         // console.log(id);
         try {
-
             const response = await fetch(`${url}connections/followUser/${id}`, {
-                method: 'POST',
+                method: "POST",
                 body: "",
                 headers: {
                     "Content-Type": "application/json",
@@ -180,80 +140,118 @@ const User = memo(({ handleTabChange, navigation, token, suggestionarray, setsug
 
             // setfollowstatus("request sent")
             // setconnecteddata("Request sent")
-
-        }
-        catch (err) {
+        } catch (err) {
             console.log(err);
-
         }
-
     }
 
-
-
     function renderSuggestion({ item }) {
-
-
-        if (item.role == "Admin") return
-        if (item._id == loggedinuserid) return
-        if(!item.isProfileComplete)return
+        if (item.role == "Admin") return;
+        if (item._id == loggedinuserid) return;
+        if (!item.isProfileComplete) return;
         // console.log(decode.role);
         // console.log(item.isProfileComplete);
-        
 
         // if(decode.role == "Investor" && item.role != "Investor") return
         return (
             // <Text style={{color : "#fff"}}>hello</Text>
-            <TouchableOpacity onPress={() => {
-                navigation.navigate("Singleuserpage", { token: token, id: item._id, page: "NewsLetter" })
-            }}>
+            <TouchableOpacity
+                onPress={() => {
+                    navigation.navigate("Singleuserpage", { token: token, id: item._id, page: "NewsLetter" });
+                }}
+            >
                 <View style={[styles.listItem, {}]}>
-
-                    {!item.profilePhoto && <Image style={styles.avatar} source={require("../../assets/images/blank.png")} />}
-                    {item.profilePhoto && <Image transition={500} cachePolicy="memory-disk" placeholder={require("../../assets/images/blank.png")} style={styles.avatar} source={{ uri: item.profilePhoto }} />}
+                    {!item.profilePhoto && (
+                        <Image style={styles.avatar} source={require("../../assets/images/blank.png")} />
+                    )}
+                    {item.profilePhoto && (
+                        <Image
+                            transition={500}
+                            cachePolicy="memory-disk"
+                            placeholder={require("../../assets/images/blank.png")}
+                            style={styles.avatar}
+                            source={{ uri: item.profilePhoto }}
+                        />
+                    )}
 
                     <View style={styles.textContainer}>
-                        <Text numberOfLines={1}
-                            allowFontScaling={false} style={styles.username}>{item.userName}</Text>
-                        <Text allowFontScaling={false} style={styles.message}>{item.role == "CommunityMember" ? "Member" : item.role}</Text>
+                        <Text numberOfLines={1} allowFontScaling={false} style={styles.username}>
+                            {item.userName}
+                        </Text>
+                        <Text allowFontScaling={false} style={styles.message}>
+                            {item.role == "CommunityMember" ? "Member" : item.role}
+                        </Text>
                     </View>
 
                     <TouchableOpacity
-                        onPress={() => { sendfollowrequest(item.status, item._id) }}
-                        style={item.status != "Connect" ? styles.sendbtn1 : styles.sendbtn}>
+                        onPress={() => {
+                            sendfollowrequest(item.status, item._id);
+                        }}
+                        style={item.status != "Connect" ? styles.sendbtn1 : styles.sendbtn}
+                    >
+                        {item.status == "Connect" && (
+                            <Text
+                                style={{
+                                    color: "#16181a",
+                                    fontFamily: "Alata",
+                                    alignItems: "center",
+                                    textAlign: "center",
+                                    marginTop: -2,
+                                    fontSize: 14,
+                                }}
+                            >
+                                {item.status}
+                            </Text>
+                        )}
 
-                        {item.status == "Connect" && <Text style={{ color: "#16181a", fontFamily: "Alata", alignItems: "center", textAlign: "center", marginTop: -2, fontSize: 14, }}>{item.status}</Text>}
+                        {item.status == "Request Sent" && (
+                            <Text
+                                style={{
+                                    color: "#ccc",
+                                    fontFamily: "Alata",
+                                    alignItems: "center",
+                                    textAlign: "center",
+                                    marginTop: -2,
+                                    fontSize: 14,
+                                }}
+                            >
+                                {item.status}
+                            </Text>
+                        )}
 
-                        {item.status == "Request Sent" && <Text style={{ color: "#ccc", fontFamily: "Alata", alignItems: "center", textAlign: "center", marginTop: -2, fontSize: 14, }}>{item.status}</Text>}
-
-                        {item.status == "Connected" && <Text style={{ color: "#ccc", fontFamily: "Alata", alignItems: "center", textAlign: "center", marginTop: -2, fontSize: 14, }}>{item.status}</Text>}
+                        {item.status == "Connected" && (
+                            <Text
+                                style={{
+                                    color: "#ccc",
+                                    fontFamily: "Alata",
+                                    alignItems: "center",
+                                    textAlign: "center",
+                                    marginTop: -2,
+                                    fontSize: 14,
+                                }}
+                            >
+                                {item.status}
+                            </Text>
+                        )}
                     </TouchableOpacity>
                     {/* <Text allowFontScaling={false} style={styles.time}> "today"}</Text> */}
                 </View>
             </TouchableOpacity>
-        )
+        );
     }
-
 
     useFocusEffect(
         useCallback(() => {
-            handleTabChange("users")
+            handleTabChange("users");
         })
-    )
+    );
 
     useEffect(() => {
-
         // console.log("suggestion array changes");
         // console.log(suggestionarray.length);
-
-
-    }, [suggestionarray])
+    }, [suggestionarray]);
     return (
-
-
         <View style={{ flex: 1, backgroundColor: "#16181a", minHeight: 600 }}>
-
-
             <FlatList
                 onEndReached={() => {
                     console.log("end");
@@ -278,32 +276,26 @@ const User = memo(({ handleTabChange, navigation, token, suggestionarray, setsug
                 refreshControl={
                     <RefreshControl
                         progressBackgroundColor="#16181a"
-                        colors={['#00de62']}
+                        colors={["#00de62"]}
                         onRefresh={() => {
-                            setRefreshing1(true)
+                            setRefreshing1(true);
                             // Vibration.vibrate(200)
-                            searchUser()
+                            searchUser();
                             setTimeout(() => {
-                                setRefreshing1(false)
+                                setRefreshing1(false);
                             }, 2000);
-
-                        }} refreshing={refreshing1} />
+                        }}
+                        refreshing={refreshing1}
+                    />
                 }
-
-
             />
         </View>
+    );
+});
 
-
-    )
-})
-
-
-export default User
-
+export default User;
 
 const styles = StyleSheet.create({
-
     username: {
         fontSize: 18,
         width: "90%",
@@ -313,7 +305,7 @@ const styles = StyleSheet.create({
         fontFamily: "Alata",
         alignSelf: "flex-start",
         marginTop: 0,
-        marginBottom: 0
+        marginBottom: 0,
     },
     message: {
         fontSize: 12,
@@ -330,16 +322,13 @@ const styles = StyleSheet.create({
         paddingVertical: 6,
         borderRadius: 8,
         width: 120,
-
-
     },
 
     sendbtnText1: {
         fontSize: 14,
         color: "#ccc",
         fontFamily: "Alata",
-        textAlign: "center"
-
+        textAlign: "center",
     },
 
     sendbtn: {
@@ -352,7 +341,6 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         width: 120,
         borderColor: "#ccc",
-
     },
 
     sendbtnText: {
@@ -360,8 +348,6 @@ const styles = StyleSheet.create({
         color: "#333",
         fontFamily: "Alata",
         textAlign: "center",
-
-
     },
     listItem: {
         flexDirection: "row",
@@ -377,7 +363,7 @@ const styles = StyleSheet.create({
         paddingBottom: 10,
         paddingTop: 5,
         paddingHorizontal: 20,
-        marginHorizontal: "auto"
+        marginHorizontal: "auto",
     },
 
     avatar: {
@@ -398,10 +384,10 @@ const styles = StyleSheet.create({
         fontFamily: "Alata",
         alignSelf: "flex-start",
         marginTop: 0,
-        marginBottom: 0
+        marginBottom: 0,
     },
     textContainer: {
         flex: 1,
         alignSelf: "flex-start",
     },
-})
+});

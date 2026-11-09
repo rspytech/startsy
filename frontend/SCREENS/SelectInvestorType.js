@@ -1,8 +1,6 @@
-
 // 2.5 second last  of startup founder
 import React, { useState, useRef, useEffect, useContext, useCallback } from "react";
 import {
-
     SafeAreaView,
     View,
     Text,
@@ -17,64 +15,50 @@ import {
     FlatList,
     TouchableOpacity,
     TouchableWithoutFeedback,
-    Keyboard
+    Keyboard,
 } from "react-native";
-import AsyncStorage from '@react-native-async-storage/async-storage';
+import AsyncStorage from "@react-native-async-storage/async-storage";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
 import signup3styles from "../styles/signup3styles.js";
 import Drop from "./dropdown.js";
-import Line3 from "./line3.js"
+import Line3 from "./line3.js";
 import Line from "./line.js";
 import { useFocusEffect } from "expo-router";
-
-
 
 const SelectInvestor = ({ navigation, route }) => {
     const { form, image } = route.params;
 
-
     const nextPage = () => {
-
-        if (selectedOption == "") return
+        if (selectedOption == "") return;
 
         const final = new FormData();
         for (let item of form["_parts"]) {
             if (item[0] === "fullname" || item[0] === "password") continue;
             final.append(item[0], item[1]);
         }
-       
-        //    return
 
+        //    return
 
         navigation.navigate("Signup13", { form: final, image, selectedOption });
     };
 
-
-
     useFocusEffect(() => {
-        StatusBar.setBackgroundColor("#16181a")
-        StatusBar.setBarStyle("light-content")
-    })
-
-
-
+        StatusBar.setBackgroundColor("#16181a");
+        StatusBar.setBarStyle("light-content");
+    });
 
     function nextpage(navigation, type) {
-
         const final = new FormData();
         for (var items of form["_parts"]) {
             if (items[0] == "fullname" || items[0] == "password") continue;
             final.append(items[0], items[1]);
         }
-        final.append("previousExperience", sliderrange1)
-        final.append("areaOfInterest", areaofinterest)
-        final.append("startupStage", startupstage)
-        final.append("preferredSector", sector)
-        final.append("investmentRange", sliderrange)
-
-
-
+        final.append("previousExperience", sliderrange1);
+        final.append("areaOfInterest", areaofinterest);
+        final.append("startupStage", startupstage);
+        final.append("preferredSector", sector);
+        final.append("investmentRange", sliderrange);
 
         // if(image && image != "xyz"){
         //     final.append("profilePhoto", {
@@ -82,21 +66,23 @@ const SelectInvestor = ({ navigation, route }) => {
         //         type : 'image/jpeg',
         //         name: `image_${Date.now()}.jpg`,
 
-
         //     })
         // }
-      
-        navigation.navigate("Signup13", { form: final, image })
+
+        navigation.navigate("Signup13", { form: final, image });
     }
     function finalsubmit() {
         console.log("final submit");
-
     }
 
-
     const [selectedOption, setSelectedOption] = useState(null);
-    const options = ["Angel Investor", "Venture Capitalist", "Institutional Investor", "Family Offices", "New Investor"];
-
+    const options = [
+        "Angel Investor",
+        "Venture Capitalist",
+        "Institutional Investor",
+        "Family Offices",
+        "New Investor",
+    ];
 
     const RadioBox = ({ label, selected, onPress }) => {
         return (
@@ -130,25 +116,25 @@ const SelectInvestor = ({ navigation, route }) => {
                         marginRight: 10,
                     }}
                 >
-                    {selected && <View style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: "#16181a" }} />}
+                    {selected && (
+                        <View
+                            style={{ width: 10, height: 10, borderRadius: 5, backgroundColor: "#16181a" }}
+                        />
+                    )}
                 </View>
 
                 {/* Label */}
-                <Text style={{ color: selected ? "#000" : "#ccc", fontSize: 16, fontFamily: "Alata" }}>{label}</Text>
+                <Text style={{ color: selected ? "#000" : "#ccc", fontSize: 16, fontFamily: "Alata" }}>
+                    {label}
+                </Text>
             </TouchableOpacity>
         );
     };
 
-
-
-
     return (
-
-        < SafeAreaView style={[signup3styles.container, { position: "relative", height: "100%" }]} >
-            <ScrollView nestedScrollEnabled={true}
-            >
-                <View
-                    style={[signup3styles.row, { position: "relative" }]}>
+        <SafeAreaView style={[signup3styles.container, { position: "relative", height: "100%" }]}>
+            <ScrollView nestedScrollEnabled={true}>
+                <View style={[signup3styles.row, { position: "relative" }]}>
                     {/* <View style={[styles.modal]}></View> */}
                     {/* top */}
                     <View style={signup3styles.top}>
@@ -160,63 +146,61 @@ const SelectInvestor = ({ navigation, route }) => {
                         </View>
                     </View>
 
-
-
                     {/* bottom */}
 
                     <View style={[styles.bottom, { flexGrow: 1 }]}>
-                        <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 15 }]}>Select Investor Type
+                        <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 15 }]}>
+                            Select Investor Type
                             {/* <Text style={{ fontSize: 15, color: "#94A3B8" }}>*</Text> */}
                         </Text>
 
-
                         {options.map((option, index) => (
-                            <RadioBox key={index} label={option} selected={selectedOption === option} onPress={() => setSelectedOption(option)} />
+                            <RadioBox
+                                key={index}
+                                label={option}
+                                selected={selectedOption === option}
+                                onPress={() => setSelectedOption(option)}
+                            />
                         ))}
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
                         <View style={styles.icons}>
-                            <Pressable style={{ marginTop: 5 }} onPress={() => { navigation.goBack() }}><FontAwesome6 name="chevron-left" size={25} color="#00DF60" /></Pressable>
-                            <Pressable onPress={() => { nextPage() }}><FontAwesome6 name="chevron-right" size={25} color="#00DF60" /></Pressable>
-
+                            <Pressable
+                                style={{ marginTop: 5 }}
+                                onPress={() => {
+                                    navigation.goBack();
+                                }}
+                            >
+                                <FontAwesome6 name="chevron-left" size={25} color="#00DF60" />
+                            </Pressable>
+                            <Pressable
+                                onPress={() => {
+                                    nextPage();
+                                }}
+                            >
+                                <FontAwesome6 name="chevron-right" size={25} color="#00DF60" />
+                            </Pressable>
                         </View>
-
                     </View>
                 </View>
             </ScrollView>
-        </ SafeAreaView>
-    )
-}
+        </SafeAreaView>
+    );
+};
 
-export default SelectInvestor
+export default SelectInvestor;
 
-
-const { height, width } = Dimensions.get("window")
+const { height, width } = Dimensions.get("window");
 
 var a = width / 360;
 var b = height / 800;
 
-
-const scalingfactor = Math.sqrt(a * b)
+const scalingfactor = Math.sqrt(a * b);
 const styles = StyleSheet.create({
     t1: {
-        textAlign: 'Left',
+        textAlign: "Left",
         marginLeft: 10,
         color: "#ccc",
-        fontFamily: 'Alata',
+        fontFamily: "Alata",
         fontSize: 24,
         // backgroundColor : "red",
         width: "97%",
@@ -224,7 +208,7 @@ const styles = StyleSheet.create({
     },
     thumb: {
         width: 30,
-        height: 30
+        height: 30,
     },
 
     bottom: {
@@ -242,7 +226,6 @@ const styles = StyleSheet.create({
         backgroundColor: "rgba(33, 34, 35, 0.5)",
 
         // overflow : "hidden",
-
     },
 
     input: {
@@ -264,9 +247,8 @@ const styles = StyleSheet.create({
         padding: 10,
         textAlignVertical: "top",
         paddingBottom: 30,
-
-    }
-    , icons: {
+    },
+    icons: {
         display: "flex",
         position: "absolute",
         bottom: 0,
@@ -279,7 +261,7 @@ const styles = StyleSheet.create({
         // backgroundColor : "red",
         marginHorizontal: "auto",
         marginTop: 30,
-        marginBottom: 30
+        marginBottom: 30,
     },
 
     btn: {
@@ -292,8 +274,7 @@ const styles = StyleSheet.create({
         borderColor: "#16181A",
         borderRadius: 10,
         marginBottom: 10,
-        justifyContent: 'center',
-
+        justifyContent: "center",
     },
     btn1: {
         width: 173,
@@ -306,15 +287,14 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         marginBottom: 0,
         marginTop: 10,
-        justifyContent: 'center',
+        justifyContent: "center",
     },
     nexttext: {
         color: "#00DE62",
         fontFamily: "Alata",
         fontSize: scalingfactor * 22,
         textAlign: "center",
-        marginTop: -4
-
+        marginTop: -4,
     },
 
     count: {
@@ -323,7 +303,7 @@ const styles = StyleSheet.create({
         bottom: 25,
         right: 25,
         // backgroundColor: "red",
-        width: "auto"
+        width: "auto",
     },
     modal: {
         width: width,
@@ -333,9 +313,8 @@ const styles = StyleSheet.create({
         top: 0,
         left: 0,
         zIndex: 1,
-
-    }
-    , input1: {
+    },
+    input1: {
         backgroundColor: "transparent",
         margin: height * 0.016,
         marginTop: 0,
@@ -349,7 +328,7 @@ const styles = StyleSheet.create({
         width: "92%",
         fontFamily: "Roboto",
         lineHeight: scalingfactor * 18,
-        marginBottom: scalingfactor * 25
+        marginBottom: scalingfactor * 25,
     },
     des: {
         width: "92%",
@@ -359,7 +338,8 @@ const styles = StyleSheet.create({
         fontSize: scalingfactor * 20,
         color: "#B8B8B8",
         alignSelf: "center",
-    }, box: {
+    },
+    box: {
         // position: "absolute",
         width: 14,
         height: 14,
@@ -367,7 +347,7 @@ const styles = StyleSheet.create({
         backgroundColor: "#00DE62",
         // top: -3,
         top: 22,
-        elevation: 10
+        elevation: 10,
     },
     box1: {
         width: 14,
@@ -380,9 +360,9 @@ const styles = StyleSheet.create({
         backfaceVisibility: "hidden",
 
         left: "98%",
-        marginLeft: -scalingfactor * 20
-    }
-    , sliderbox: {
+        marginLeft: -scalingfactor * 20,
+    },
+    sliderbox: {
         width: "90%",
         marginTop: -1,
         height: 5,
@@ -395,6 +375,5 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         pointerEvents: "auto",
         // elevation : 10
-    }
-
-})
+    },
+});

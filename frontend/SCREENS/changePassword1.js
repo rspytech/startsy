@@ -2,12 +2,21 @@ import CustomButton from "@/components/button";
 import React, { useEffect, useContext, useState } from "react";
 import { ActivityIndicator, Pressable, TextInput } from "react-native";
 import { GlobalContext } from "@/Global/globalcontext";
-import { View, Text, BackHandler, StyleSheet, Image, StatusBar, TouchableOpacity, Dimensions, SafeAreaView, ScrollView } from "react-native";
+import {
+    View,
+    Text,
+    BackHandler,
+    StyleSheet,
+    Image,
+    StatusBar,
+    TouchableOpacity,
+    Dimensions,
+    SafeAreaView,
+    ScrollView,
+} from "react-native";
 
 import { url } from "../config.js";
 const ChangePassword1 = ({ navigation }) => {
-
-
     const [token, setToken] = useState("");
     const [loading, setloading] = useState("");
     const [message, setmessage] = useState("");
@@ -15,14 +24,13 @@ const ChangePassword1 = ({ navigation }) => {
     const [error, seterror] = useState(false);
     const { globaldata } = useContext(GlobalContext);
 
-
     useEffect(() => {
         // console.log(globaldata, "global data");
         setToken(globaldata.token);
-    }, [globaldata])
+    }, [globaldata]);
 
     useEffect(() => {
-        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
             navigation.goBack();
 
             return true; // This prevents the default back action
@@ -31,19 +39,18 @@ const ChangePassword1 = ({ navigation }) => {
         return () => backHandler.remove();
     }, []);
 
-
     async function check() {
         // console.log(`${url}api/checkCurrentPassword`);
         if (password == "") {
-            setmessage("* please enter your password")
-            seterror(true)
-            return
+            setmessage("* please enter your password");
+            seterror(true);
+            return;
         }
-        setloading(true)
+        setloading(true);
 
         try {
             const response = await fetch(`${url}api/checkCurrentPassword`, {
-                method: 'POST',
+                method: "POST",
                 body: JSON.stringify({ password: password }),
                 headers: {
                     "Content-Type": "application/json",
@@ -56,32 +63,28 @@ const ChangePassword1 = ({ navigation }) => {
             // console.log(data);
             // console.log(response.status);
             if (response.status === 400) {
-                setmessage("* entered password does not match with your current password")
-                seterror(true)
-            }
-            else if (response.status === 200) {
+                setmessage("* entered password does not match with your current password");
+                seterror(true);
+            } else if (response.status === 200) {
                 // console.log("success");
                 seterror(false);
-                navigation.navigate("ChangePassword2", { token, password, isforgot: false })
-
+                navigation.navigate("ChangePassword2", { token, password, isforgot: false });
             }
-        }
-        catch (err) {
+        } catch (err) {
             // setloading(false)
             console.log(err);
-
-        }
-        finally {
-            setloading(false)
+        } finally {
+            setloading(false);
         }
     }
 
     return (
-
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor="#16181a" barStyle={"light-content"} />
             {/* Header Section */}
-            <Text allowFontScaling={false} style={styles.headerText}>Profile</Text>
+            <Text allowFontScaling={false} style={styles.headerText}>
+                Profile
+            </Text>
 
             <Text style={styles.t1}>Current password</Text>
             <TextInput
@@ -90,7 +93,9 @@ const ChangePassword1 = ({ navigation }) => {
                 placeholderTextColor="#828282"
                 style={styles.input}
                 value={password}
-                onChangeText={(text) => { setpassword(text) }}
+                onChangeText={(text) => {
+                    setpassword(text);
+                }}
             />
             {error && <Text style={styles.err}>{message}</Text>}
             <Text style={styles.t2}>Forgot password ?</Text>
@@ -98,7 +103,6 @@ const ChangePassword1 = ({ navigation }) => {
                 {loading && <ActivityIndicator style={{ marginTop: -2 }} size={24} color="#16181a" />}
                 {!loading && <Text style={styles.btntext}>Next</Text>}
             </Pressable>
-
         </SafeAreaView>
     );
 };
@@ -108,11 +112,10 @@ export default ChangePassword1;
 // const { width, height } = Dimensions.get("window");
 const { height, width } = Dimensions.get("window");
 
-
 var a = width / 360;
 var b = height / 800;
 
-const scalingfactor = Math.sqrt(a * b)
+const scalingfactor = Math.sqrt(a * b);
 
 const styles = StyleSheet.create({
     container: {
@@ -129,24 +132,23 @@ const styles = StyleSheet.create({
         marginBottom: 20,
         color: "#00DE62",
         fontFamily: "myanmar",
-        paddingHorizontal: 20
-
+        paddingHorizontal: 20,
     },
     t2: {
         // fontFamily: "Roboto",
         color: "#828282",
         fontSize: 15,
         textAlign: "center",
-        marginTop: -5
+        marginTop: -5,
     },
     t1: {
         fontFamily: "Alata",
         color: "#ccc",
         fontSize: 24,
         textAlign: "center",
-        marginTop: 5
-    }
-    , input: {
+        marginTop: 5,
+    },
+    input: {
         backgroundColor: "transparent",
         margin: height * 0.016,
         marginTop: 40,
@@ -172,13 +174,13 @@ const styles = StyleSheet.create({
         width: "50%",
         marginHorizontal: "auto",
         marginVertical: 20,
-        backgroundColor: "#00DF60"
+        backgroundColor: "#00DF60",
     },
     btntext: {
         fontFamily: "Alata",
         color: "#24272A",
         fontSize: 20,
-        marginTop: -5
+        marginTop: -5,
     },
     err: {
         color: "#E65858",
@@ -186,7 +188,6 @@ const styles = StyleSheet.create({
         marginHorizontal: "auto",
         marginTop: -5,
         fontSize: 12,
-        marginBottom: 25
-    }
-
+        marginBottom: 25,
+    },
 });

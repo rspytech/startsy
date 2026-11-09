@@ -1,35 +1,39 @@
-import { View, Text, Vibration, ToastAndroid, Alert } from 'react-native'
-import React, { useContext, useEffect, useState } from 'react'
+import { View, Text, Vibration, ToastAndroid, Alert } from "react-native";
+import React, { useContext, useEffect, useState } from "react";
 // import { Button, Image } from 'react-native-web'
-import { Pressable, Image, TextInput, StyleSheet, Dimensions, ActivityIndicator, BackHandler } from 'react-native'
+import {
+    Pressable,
+    Image,
+    TextInput,
+    StyleSheet,
+    Dimensions,
+    ActivityIndicator,
+    BackHandler,
+} from "react-native";
 // import styles from '../styles/MediaStyle'
 const { height, width } = Dimensions.get("window");
-import B3 from "../assets/icons/b3.js"
+import B3 from "../assets/icons/b3.js";
 import { GlobalContext } from "@/Global/globalcontext.js";
-import { url } from '../config.js'
-import { useNavigation } from 'expo-router';
+import { url } from "../config.js";
+import { useNavigation } from "expo-router";
 import { Checkbox } from "react-native-paper";
 
-
 const MediaPost = ({ route }) => {
-
     const data = useContext(GlobalContext);
     const token = data.globaldata.token;
     const navigation = useNavigation();
 
-
     const [isPrivate, setIsPrivate] = useState(false);
 
     useEffect(() => {
-        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-            navigation.goBack()
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+            navigation.goBack();
 
             return true;
         });
 
         return () => backHandler.remove();
     }, []);
-
 
     const post3 = async () => {
         setp3u(true);
@@ -70,13 +74,13 @@ const MediaPost = ({ route }) => {
                 type = "photo";
             }
             const response = await fetch(`${url}posts/createPost/${type}`, {
-                method: 'POST',
+                method: "POST",
                 body: finaldata,
-                timeout : 120000,
+                timeout: 120000,
                 headers: {
-                    'Accept': 'application/json',
-                    'Authorization': `Bearer ${token}`
-                }
+                    "Accept": "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
             });
 
             // Alert.alert(response)
@@ -85,33 +89,30 @@ const MediaPost = ({ route }) => {
                     `Server Error`,
                     ToastAndroid.LONG,
                     ToastAndroid.TOP,
-                    100, 100
+                    100,
+                    100
                 );
             }
 
-           
             if (response.status === 200) {
-                Vibration.vibrate(100)
-                navigation.goBack()
+                Vibration.vibrate(100);
+                navigation.goBack();
             }
-
 
             const data = await response.json();
             setp3text("Posted");
-        } 
-        catch (err) {
+        } catch (err) {
             console.error("Error:", err);
             // Alert.alert(err)
-
         } finally {
             setp3u(false);
             seterr7(false);
             setc2("");
             setp3text("Post");
         }
-    }
+    };
 
-    var { aspectRatio, type, uri } = route.params
+    var { aspectRatio, type, uri } = route.params;
 
     const [p3u, setp3u] = useState(false);
     const [c2, setc2] = useState("");
@@ -120,15 +121,15 @@ const MediaPost = ({ route }) => {
 
     // console.log(aspectRatio, type, uri);
 
-
     return (
         <View style={{ flex: 1, backgroundColor: "#16181a" }}>
             <View style={{ flex: 1, maxHeight: 100 }}>
                 <B3 />
             </View>
             <View style={{ position: "relative" }}>
-                {type == "photo" && <Image style={[styles.img, { aspectRatio: aspectRatio }]} source={{ uri: uri }} />}
-
+                {type == "photo" && (
+                    <Image style={[styles.img, { aspectRatio: aspectRatio }]} source={{ uri: uri }} />
+                )}
             </View>
             {/* {err6 && <Text style={styles.error}> *please enter this field</Text>} */}
 
@@ -138,46 +139,55 @@ const MediaPost = ({ route }) => {
                 placeholderTextColor="gray"
                 style={styles.input}
                 value={c2}
-                onChangeText={(text) => { setc2(text) }}
+                onChangeText={(text) => {
+                    setc2(text);
+                }}
             />
 
             {err7 && <Text style={styles.error}> *please enter this field</Text>}
 
-
-            <View style={{ color: 'red', display: 'flex', flexDirection: 'row', justifyContent: 'flex-start', alignItems: 'center', paddingLeft: 10, }}>
+            <View
+                style={{
+                    color: "red",
+                    display: "flex",
+                    flexDirection: "row",
+                    justifyContent: "flex-start",
+                    alignItems: "center",
+                    paddingLeft: 10,
+                }}
+            >
                 <Checkbox
                     status={isPrivate ? "checked" : "unchecked"}
                     onPress={() => {
-                        setIsPrivate(!isPrivate)
+                        setIsPrivate(!isPrivate);
                         if (!isPrivate) {
                             ToastAndroid.showWithGravityAndOffset(
                                 `Your post will only be visible to your connections`,
                                 ToastAndroid.LONG,
                                 ToastAndroid.TOP,
-                                100, 100
+                                100,
+                                100
                             );
                         }
                     }}
-                    uncheckedColor='#ccc'
-                    color='#00de62'
+                    uncheckedColor="#ccc"
+                    color="#00de62"
                 />
-                <Text style={{ color: 'gray', fontFamily: 'Roboto' }}>Private</Text>
+                <Text style={{ color: "gray", fontFamily: "Roboto" }}>Private</Text>
             </View>
 
             <Pressable onPress={post3} style={styles.button}>
-                {p3u ?
-
+                {p3u ? (
                     <ActivityIndicator size={24} color="#16181a" />
-
-                    : <Text style={styles.buttonText}>Post</Text>
-                }
+                ) : (
+                    <Text style={styles.buttonText}>Post</Text>
+                )}
             </Pressable>
         </View>
-    )
-}
+    );
+};
 
-export default MediaPost
-
+export default MediaPost;
 
 const styles = StyleSheet.create({
     img: {
@@ -186,10 +196,10 @@ const styles = StyleSheet.create({
         aspectRatio: 1 / 1,
         // borderRadius: 100,
         marginBottom: 50,
-        borderRadius: 16
-    }
+        borderRadius: 16,
+    },
 
-    , input: {
+    input: {
         backgroundColor: "transparent",
         margin: height * 0.016,
         marginTop: 0,
@@ -204,7 +214,6 @@ const styles = StyleSheet.create({
         marginHorizontal: "auto",
         marginBottom: 20,
         fontFamily: "Roboto",
-
     },
 
     post: {
@@ -230,19 +239,18 @@ const styles = StyleSheet.create({
         // marginVertical: 30,
         textAlign: "center",
         marginVertical: 25,
-
     },
     buttonText: {
         textAlign: "center",
         color: "#16181A",
         fontFamily: "Alata",
         fontSize: 20,
-        marginTop: -5
+        marginTop: -5,
     },
     error: {
         color: "#E65858",
         fontSize: 12,
         marginTop: -10,
-        marginLeft: 10
-    }
-})
+        marginLeft: 10,
+    },
+});

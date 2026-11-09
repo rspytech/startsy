@@ -1,4 +1,13 @@
-import React, { useState, useRef, useEffect, useCallback, useContext, useMemo, memo, createContext } from "react";
+import React, {
+    useState,
+    useRef,
+    useEffect,
+    useCallback,
+    useContext,
+    useMemo,
+    memo,
+    createContext,
+} from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import {
     View,
@@ -18,46 +27,45 @@ import {
     ToastAndroid,
 } from "react-native";
 
-import Feather from '@expo/vector-icons/Feather';
+import Feather from "@expo/vector-icons/Feather";
 
 import io from "socket.io-client";
 
-import { BlurView } from 'expo-blur';
+import { BlurView } from "expo-blur";
 
-import { configureReanimatedLogger, ReanimatedLogLevel } from 'react-native-reanimated';
+import { configureReanimatedLogger, ReanimatedLogLevel } from "react-native-reanimated";
 import styles from "../styles/post.js";
 import Apnauser from "./Apnauser.js";
 import B1 from "../assets/icons/b1.js";
 import B2 from "../assets/icons/b2.js";
 import B3 from "../assets/icons/b3.js";
 import B4 from "../assets/icons/b4.js";
-import BottomSheet, { BottomSheetView, BottomSheetFlatList, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import BottomSheet, { BottomSheetView, BottomSheetFlatList, BottomSheetBackdrop } from "@gorhom/bottom-sheet";
 import { GestureHandlerRootView } from "react-native-gesture-handler";
 import main from "../styles/main.js";
 import NewsLetter from "./main-2/Newsletter.js";
 import Notification from "./main-2/Notification.js";
 import Foryou from "./main-2/Foryou.js";
 import ChatScreen from "./main-2/Message.js";
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Fontisto from '@expo/vector-icons/Fontisto';
+import Fontisto from "@expo/vector-icons/Fontisto";
 import NewsletterPage from "./main-2/news1.js";
 import Singleprofilepage from "../SCREENS/singleprofilepage.js";
 import { GlobalContext } from "@/Global/globalcontext.js";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { url } from "../config.js";
-import Followerpage from "../SCREENS/Followerpage.js"
+import Followerpage from "../SCREENS/Followerpage.js";
 import { jwtDecode } from "jwt-decode";
 import JobsPostedScreen from "./JASH/JobsPostedScreen.jsx";
 import ApplicantsList from "./JASH/ApplicantsList.jsx";
 import CommentBottomSheet from "../SCREENS/JASH/comment-bottom-sheet/CommentBottomSheet.jsx";
 import ViewSendedPost from "./JASH/View post/ViewSendedPost.jsx";
-import ReportBottomSheet from '../SCREENS/JASH/bottom-sheet/reportBottomSheet.jsx'
+import ReportBottomSheet from "../SCREENS/JASH/bottom-sheet/reportBottomSheet.jsx";
 import GlobalSocket from "@/Global/globalSocket.js";
 // import GlobalSocket from "../../Global/Global/globalSocket.js"
 // GlobalSocket
-
 
 configureReanimatedLogger({
     level: ReanimatedLogLevel.warn,
@@ -67,13 +75,8 @@ configureReanimatedLogger({
 const Main2 = ({ navigation, route }) => {
     // console.log("main 2 re render");
 
-
-
-
-
-    const query = route?.params
-    const focus = query?.focus
-
+    const query = route?.params;
+    const focus = query?.focus;
 
     const [token, setToken] = useState("");
     const { globaldata } = useContext(GlobalContext);
@@ -81,13 +84,12 @@ const Main2 = ({ navigation, route }) => {
 
     useEffect(() => {
         async function getToken() {
-
             if (globaldata.token) {
                 setToken(globaldata.token);
             }
         }
         getToken();
-    }, [globaldata])
+    }, [globaldata]);
 
     useEffect(() => {
         async function getToken() {
@@ -97,35 +99,32 @@ const Main2 = ({ navigation, route }) => {
         getToken();
     }, []);
 
-
-    var bottomSheetRefTree = useRef()
+    var bottomSheetRefTree = useRef();
 
     useEffect(() => {
-        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
             console.log("thi is back from main 2");
             if (bottomSheetRefTree.current == true) {
                 console.log("hi");
-                commentRef.current.close()
-                bottomSheetRefTree.current = false
+                commentRef.current.close();
+                bottomSheetRefTree.current = false;
                 return true;
-            }
-            else if (openshareRef.current == true) {
-                bottomSheetRef6.current.close()
-                openshareRef.current = false
-                return true
-            }
-            else if (reportRef.current == true) {
-                reportBottomSheetRef.current.close()
-                reportRef.current = false
-                return true
+            } else if (openshareRef.current == true) {
+                bottomSheetRef6.current.close();
+                openshareRef.current = false;
+                return true;
+            } else if (reportRef.current == true) {
+                reportBottomSheetRef.current.close();
+                reportRef.current = false;
+                return true;
             }
         });
 
         return () => backHandler.remove();
     }, [token]);
 
-    const [peopledata, setpeopledata] = useState([])
-    const [people1, setpeople1] = useState([])
+    const [peopledata, setpeopledata] = useState([]);
+    const [people1, setpeople1] = useState([]);
 
     const renderBackdrop = (props) => (
         <BottomSheetBackdrop
@@ -136,69 +135,55 @@ const Main2 = ({ navigation, route }) => {
         />
     );
 
-
-
-
     useEffect(() => {
         const token = globaldata.token;
         async function fetchProfilePhoto() {
             try {
-                const response = await fetch(
-                    `${url}api/PFP`,
-                    {
-                        method: "GET",
-                        headers: {
-                            accept: "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
+                const response = await fetch(`${url}api/PFP`, {
+                    method: "GET",
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
                 const result = await response.json();
-                setProfilePhoto(result.data)
+                setProfilePhoto(result.data);
             } catch (err) {
                 console.log(err);
             }
         }
         if (token != "") {
-            fetchProfilePhoto()
+            fetchProfilePhoto();
         }
-    }, [token])
+    }, [token]);
 
     async function fetchdata() {
         if (token) {
             try {
-                var route = "founder/getFounderChatUserList"
-                const response = await fetch(
-                    `${url}${route}`,
-                    {
-                        method: "GET",
-                        headers: {
-                            accept: "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
+                var route = "founder/getFounderChatUserList";
+                const response = await fetch(`${url}${route}`, {
+                    method: "GET",
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
                 const result = await response.json();
 
-
-
-                const uniqueData = result.filter((item, index, self) =>
-                    self.findIndex(innerItem => innerItem.user.userName === item.user.userName) === index
+                const uniqueData = result.filter(
+                    (item, index, self) =>
+                        self.findIndex((innerItem) => innerItem.user.userName === item.user.userName) ===
+                        index
                 );
                 var final1 = uniqueData.map((item) => {
-                    return { ...item, isSelected: false }
-                })
-
-
-
-
-
+                    return { ...item, isSelected: false };
+                });
 
                 if (response.status === 200) {
                     // You can update the data state here if needed
                     // setData(result); // Example, you can handle the response data
-                    setpeople1(final1)
-                    setpeopledata(final1)
+                    setpeople1(final1);
+                    setpeopledata(final1);
                     // setdata1(result)
                 }
             } catch (err) {
@@ -210,16 +195,14 @@ const Main2 = ({ navigation, route }) => {
     }
 
     useEffect(() => {
-        fetchdata()
-    }, [token])
-
-
+        fetchdata();
+    }, [token]);
 
     const [bg, setbg] = useState("#16181a");
     const [uri, setImage] = useState(null);
     const Tab = createBottomTabNavigator();
 
-    const t1 = new Animated.Value(0)
+    const t1 = new Animated.Value(0);
     const diffclamp = Animated.diffClamp(t1, 0, 55);
     const bottomposition = diffclamp.interpolate({
         inputRange: [0, 55],
@@ -232,35 +215,33 @@ const Main2 = ({ navigation, route }) => {
     const [showBottomSheet, setShowBottomSheet] = useState(false);
     const [showReportBottomSheet, setShowReportBottomSheet] = useState(false);
 
-
     const reportBottomSheetRef = useRef(null);
     const [reportId, setReportId] = useState(0);
     const [reportPost, setReportPost] = useState(false);
 
-
     const commentinput = useRef(null);
 
-    const [snapPoints, setSnapPoints] = useState(['20%']);
+    const [snapPoints, setSnapPoints] = useState(["20%"]);
 
-    useFocusEffect(useCallback(() => {
-        setShowBottomSheet(false);
-        setShowReportBottomSheet(false);
-        setTimeout(() => {
-            setShowBottomSheet(true)
-            setShowReportBottomSheet(true);
-
-        }, 100)
-    }, []))
-
+    useFocusEffect(
+        useCallback(() => {
+            setShowBottomSheet(false);
+            setShowReportBottomSheet(false);
+            setTimeout(() => {
+                setShowBottomSheet(true);
+                setShowReportBottomSheet(true);
+            }, 100);
+        }, [])
+    );
 
     // const snapPoints = useMemo(() => ['20%'], []);
 
-    const snapPoints1 = useMemo(() => ['120%'], []);
-    const snapPoints2 = useMemo(() => ['120%'], []);
-    const snapPoints3 = useMemo(() => ['120%'], []);
-    const snapPoints4 = useMemo(() => ['120%'], []);
+    const snapPoints1 = useMemo(() => ["120%"], []);
+    const snapPoints2 = useMemo(() => ["120%"], []);
+    const snapPoints3 = useMemo(() => ["120%"], []);
+    const snapPoints4 = useMemo(() => ["120%"], []);
     const snapPoints5 = useMemo(() => ["100%"], []);
-    const snapPoints6 = useMemo(() => ['70%'], []);
+    const snapPoints6 = useMemo(() => ["70%"], []);
     const bottomSheetRef1 = useRef(null);
     const bottomSheetRef2 = useRef(null);
     const bottomSheetRef3 = useRef(null);
@@ -330,15 +311,16 @@ const Main2 = ({ navigation, route }) => {
     const [ansh, setansh] = useState(false);
     const [ansh1, setansh1] = useState(false);
 
-
-    useFocusEffect(useCallback(() => {
-        setOpenBottomSheet6(false);
-        setOpenCommentBottomSheet(false);
-        setTimeout(() => {
-            setOpenBottomSheet6(true)
-            setOpenCommentBottomSheet(true);
-        }, 100)
-    }, []))
+    useFocusEffect(
+        useCallback(() => {
+            setOpenBottomSheet6(false);
+            setOpenCommentBottomSheet(false);
+            setTimeout(() => {
+                setOpenBottomSheet6(true);
+                setOpenCommentBottomSheet(true);
+            }, 100);
+        }, [])
+    );
 
     const role = [
         { label: "Only for Founders", value: "Only for Founders" },
@@ -387,42 +369,46 @@ const Main2 = ({ navigation, route }) => {
             <View key={index} style={styles.listItem}>
                 <Image source={{ uri: item.userId.profilePhoto }} style={styles.avatar} />
                 <View style={styles.textContainer}>
-                    <Text allowFontScaling={false} style={styles.username}>{item.userId.userName}</Text>
-                    <Text allowFontScaling={false} style={styles.message}>{item.comment.trim()}</Text>
+                    <Text allowFontScaling={false} style={styles.username}>
+                        {item.userId.userName}
+                    </Text>
+                    <Text allowFontScaling={false} style={styles.message}>
+                        {item.comment.trim()}
+                    </Text>
                 </View>
-                <Text allowFontScaling={false} style={styles.time}>{time(item.createdAt)}</Text>
+                <Text allowFontScaling={false} style={styles.time}>
+                    {time(item.createdAt)}
+                </Text>
             </View>
         );
     };
 
     const [keyboardOffset, setKeyboardOffset] = useState(new Animated.Value(0));
 
-
     const openBottomSheet1 = () => {
         console.log("okkk");
 
-        navigation.navigate("CommunityPage")
+        navigation.navigate("CommunityPage");
     };
 
     const openBottomSheet2 = () => {
-        navigation.navigate("Blogpage")
+        navigation.navigate("Blogpage");
     };
 
     const openBottomSheet3 = () => {
         setfour(true);
 
-
         // bottomSheetRef3.current?.expand();
         setstatus(true);
         // setImage("")
-        setc2("")
+        setc2("");
         seterr7(false);
         seterr6(false);
         setVisible(false);
     };
 
     const openBottomSheet4 = () => {
-        navigation.navigate("Jobpost")
+        navigation.navigate("Jobpost");
     };
 
     const CustomAlert = ({ visible, onClose }) => {
@@ -446,7 +432,7 @@ const Main2 = ({ navigation, route }) => {
             if (idofposttobedeleetd != null) {
                 try {
                     const response = await fetch(`${url}posts/deletepost/${idofposttobedeleetd}`, {
-                        method: 'POST',
+                        method: "POST",
                         body: "",
                         headers: {
                             accept: "application/json",
@@ -470,13 +456,31 @@ const Main2 = ({ navigation, route }) => {
                     <Animated.View style={[styles1.overlay, { opacity: fadeAnim }]}>
                         <View style={styles1.alertBox}>
                             <Text style={styles1.title}>Choose aspect ratio</Text>
-                            <TouchableOpacity onPress={() => { setnewaspect("4/3"); fileupload([4, 3]); }} style={styles1.button}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setnewaspect("4/3");
+                                    fileupload([4, 3]);
+                                }}
+                                style={styles1.button}
+                            >
                                 <Text style={styles1.buttonText}>4:3 (Standard)</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => { setnewaspect("16/9"); fileupload([16, 9]); }} style={styles1.button}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setnewaspect("16/9");
+                                    fileupload([16, 9]);
+                                }}
+                                style={styles1.button}
+                            >
                                 <Text style={styles1.buttonText}>16:9 (Wide)</Text>
                             </TouchableOpacity>
-                            <TouchableOpacity onPress={() => { setnewaspect("1/1"); fileupload([1, 1]); }} style={styles1.button}>
+                            <TouchableOpacity
+                                onPress={() => {
+                                    setnewaspect("1/1");
+                                    fileupload([1, 1]);
+                                }}
+                                style={styles1.button}
+                            >
                                 <Text style={styles1.buttonText}>1:1 (Square)</Text>
                             </TouchableOpacity>
                         </View>
@@ -490,16 +494,15 @@ const Main2 = ({ navigation, route }) => {
         setVisible(true);
     };
 
-
-    const [open, setOpen] = useState(false)
-    const [open4, setOpen4] = useState(false)
-    const [postToShareId, setpostToShareId] = useState("")
+    const [open, setOpen] = useState(false);
+    const [open4, setOpen4] = useState(false);
+    const [postToShareId, setpostToShareId] = useState("");
 
     async function opencomment(id) {
         setansh(true);
         setcomment(true);
-        setOpen(true)
-        bottomSheetRefTree.current = true
+        setOpen(true);
+        bottomSheetRefTree.current = true;
 
         commentRef.current?.expand();
         // bottomSheetRef5.current?.expand();
@@ -507,7 +510,7 @@ const Main2 = ({ navigation, route }) => {
 
         try {
             const response = await fetch(`${url}posts/getComments/${id}`, {
-                method: 'GET',
+                method: "GET",
                 headers: {
                     "Authorization": `Bearer ${token}`,
                 },
@@ -523,48 +526,42 @@ const Main2 = ({ navigation, route }) => {
             console.log(err);
         }
     }
-    var openshareRef = useRef()
-
+    var openshareRef = useRef();
 
     async function openshare(postid) {
-
-        fetchdata()
+        fetchdata();
         setpostToShareId(postid);
-        setcanbeshared(true)
-        setSelectedItems(new Set())
-        openshareRef.current = true
+        setcanbeshared(true);
+        setSelectedItems(new Set());
+        openshareRef.current = true;
 
         var final1 = peopledata.map((item) => {
-            return { ...item, isSelected: false }
-        })
-        setpeopledata(final1)
+            return { ...item, isSelected: false };
+        });
+        setpeopledata(final1);
         bottomSheetRef6.current?.expand();
-
     }
 
-    var reportRef = useRef()
+    var reportRef = useRef();
     async function onReport(id, isPost) {
-
         if (isPost != null) {
             setReportPost(true);
         }
         setReportId(id);
-        reportRef.current = true
+        reportRef.current = true;
         reportBottomSheetRef.current?.expand();
     }
-
-
 
     async function docomment() {
         setuploadingcomment(true);
         if (commentText.trim() == "") {
             setuploadingcomment(false);
-            return
+            return;
         }
 
         try {
             const response = await fetch(`${url}posts/createComment/${postid}`, {
-                method: 'POST',
+                method: "POST",
                 body: JSON.stringify({ comment: commentText }),
                 headers: {
                     "Content-Type": "application/json",
@@ -572,7 +569,6 @@ const Main2 = ({ navigation, route }) => {
                 },
             });
             const data = await response.json();
-
 
             setemptycomment(false);
             setCommentText("");
@@ -583,9 +579,8 @@ const Main2 = ({ navigation, route }) => {
                 userId: {
                     profilePhoto: data.profilePhoto,
                     userName: data.userName,
-                }
+                },
             };
-
 
             var newarray = [...allComments];
             newarray.unshift(object);
@@ -607,24 +602,19 @@ const Main2 = ({ navigation, route }) => {
         settextlength(text.length);
     }
 
-
-    const [SelectedItems, setSelectedItems] = useState(new Set())
+    const [SelectedItems, setSelectedItems] = useState(new Set());
 
     async function handleshareselection(id, index) {
-
-
-
         var temp = peopledata.map((item, i) => {
             if (i == index) {
-                return { ...item, isSelected: !item.isSelected }
-            }
-            else return item
-        })
-        setpeopledata(temp)
+                return { ...item, isSelected: !item.isSelected };
+            } else return item;
+        });
+        setpeopledata(temp);
 
         if (temp[index].isSelected) {
-            setSelectedItems(prev => [...prev, peopledata[index].user._id]);
-            setSelectedItems(prev => new Set(prev).add(peopledata[index].user._id));
+            setSelectedItems((prev) => [...prev, peopledata[index].user._id]);
+            setSelectedItems((prev) => new Set(prev).add(peopledata[index].user._id));
         } else {
             // Remove from selectedItems array
             // setSelectedItems(prev => prev.filter(item => item !== id));
@@ -632,12 +622,7 @@ const Main2 = ({ navigation, route }) => {
             updatedSet.delete(id);
             setSelectedItems(updatedSet);
         }
-
-
     }
-
-
-
 
     const BottomSheetContent = memo(() => {
         return (
@@ -660,20 +645,22 @@ const Main2 = ({ navigation, route }) => {
                     </View>
                     <Text style={styles.bottomsheettext}>Media</Text>
                 </Pressable>
-                {(loggedinrole != "Investor" && loggedinrole != "Job seeker") && <Pressable style={styles.iconButton} onPress={openBottomSheet4}>
-                    <View style={[styles.ic, { flex: 1, width: "100%", alignSelf: "center" }]}>
-                        <B4 />
-                    </View>
-                    <Text style={styles.bottomsheettext}>Job Posting</Text>
-                </Pressable>}
+                {loggedinrole != "Investor" && loggedinrole != "Job seeker" && (
+                    <Pressable style={styles.iconButton} onPress={openBottomSheet4}>
+                        <View style={[styles.ic, { flex: 1, width: "100%", alignSelf: "center" }]}>
+                            <B4 />
+                        </View>
+                        <Text style={styles.bottomsheettext}>Job Posting</Text>
+                    </Pressable>
+                )}
             </BottomSheetView>
-        )
+        );
     });
 
     useEffect(() => {
         if (token != "") {
-            var decode = jwtDecode(token)
-            setloggedinrole(decode.role)
+            var decode = jwtDecode(token);
+            setloggedinrole(decode.role);
         }
     }, [token]);
 
@@ -686,27 +673,19 @@ const Main2 = ({ navigation, route }) => {
         commentRef.current?.close();
     }
 
-
-
-    const [sendingpost, setsendingpost] = useState(false)
-    const [loggedinrole, setloggedinrole] = useState("")
-
+    const [sendingpost, setsendingpost] = useState(false);
+    const [loggedinrole, setloggedinrole] = useState("");
 
     const showToastWithGravity = (message) => {
-        ToastAndroid.showWithGravityAndOffset(
-            `${message}`,
-            ToastAndroid.SHORT,
-            ToastAndroid.TOP,
-            100, 100
-        );
+        ToastAndroid.showWithGravityAndOffset(`${message}`, ToastAndroid.SHORT, ToastAndroid.TOP, 100, 100);
     };
 
     async function finalsubmit() {
-        setsendingpost(true)
-        var array = Array.from(SelectedItems)
+        setsendingpost(true);
+        var array = Array.from(SelectedItems);
         try {
             const response = await fetch(`${url}chats/sendMessage/${postToShareId}`, {
-                method: 'POST',
+                method: "POST",
                 body: JSON.stringify({ sharedToUsers: array }),
                 headers: {
                     "Content-Type": "application/json",
@@ -719,74 +698,76 @@ const Main2 = ({ navigation, route }) => {
             console.log(data);
             console.log(response.status);
 
-
-            bottomSheetRef6.current?.close()
-            showToastWithGravity("Post shared successfully")
-
-
-        }
-        catch (e) {
-
-        }
-        finally {
-            setsendingpost(false)
+            bottomSheetRef6.current?.close();
+            showToastWithGravity("Post shared successfully");
+        } catch (e) {
+        } finally {
+            setsendingpost(false);
             setSelectedItems(new Set());
             var final1 = peopledata.map((item) => {
-                return { ...item, isSelected: false }
-            })
-            setpeopledata(final1)
-            setpeople1(final1)
+                return { ...item, isSelected: false };
+            });
+            setpeopledata(final1);
+            setpeople1(final1);
 
-            bottomSheetRef6.current?.close()
-
-
+            bottomSheetRef6.current?.close();
         }
-
-
     }
-
-
-
-
 
     const [durationopen, setdurationopen] = useState(false);
     const [payopen, setpayopen] = useState(false);
 
-
-
     const renderpeople = ({ item, index }) => {
         return (
-            <TouchableOpacity onPress={() => {
-                // gotochatscreen(item)
-            }}>
+            <TouchableOpacity
+                onPress={() => {
+                    // gotochatscreen(item)
+                }}
+            >
                 <View style={styles.listItem}>
                     <Image
-                        source={{ uri: item.user.profilePhoto || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8slgZXgqnSIXDS8wF2uDT_SmsYlBe-W1soQ&s" }}
-                        style={styles.avatar} />
+                        source={{
+                            uri:
+                                item.user.profilePhoto ||
+                                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8slgZXgqnSIXDS8wF2uDT_SmsYlBe-W1soQ&s",
+                        }}
+                        style={styles.avatar}
+                    />
                     <View style={styles.textContainer}>
-                        <Text numberOfLines={1}
-                            ellipsizeMode="tail" allowFontScaling={false} style={styles.username}>{item.user.userName}</Text>
+                        <Text
+                            numberOfLines={1}
+                            ellipsizeMode="tail"
+                            allowFontScaling={false}
+                            style={styles.username}
+                        >
+                            {item.user.userName}
+                        </Text>
 
                         <Text
                             numberOfLines={1}
                             ellipsizeMode="tail"
-                            allowFontScaling={false} style={styles.message}>{item.user.userName}</Text>
+                            allowFontScaling={false}
+                            style={styles.message}
+                        >
+                            {item.user.userName}
+                        </Text>
                     </View>
-                    <TouchableOpacity onPress={() => { handleshareselection(item.user._id, index) }
-                    } style={item.isSelected ? styles1.sendbtn1 : styles1.sendbtn}>
-                        <Text style={item.isSelected ? styles1.sendbtnText1 : styles1.sendbtnText}>{item.isSelected ? "Selected" : "Send"}</Text>
+                    <TouchableOpacity
+                        onPress={() => {
+                            handleshareselection(item.user._id, index);
+                        }}
+                        style={item.isSelected ? styles1.sendbtn1 : styles1.sendbtn}
+                    >
+                        <Text style={item.isSelected ? styles1.sendbtnText1 : styles1.sendbtnText}>
+                            {item.isSelected ? "Selected" : "Send"}
+                        </Text>
                     </TouchableOpacity>
                 </View>
             </TouchableOpacity>
-        )
-    }
+        );
+    };
 
-    const [k, setk] = useState(false)
-
-
-
-
-
+    const [k, setk] = useState(false);
 
     const isKeyboardVisible = useRef(false);
     // var [socket, setSocket] = useState("")
@@ -802,22 +783,25 @@ const Main2 = ({ navigation, route }) => {
     //     };
     // }, []);
 
-
-
     return (
         // <GlobalSocket.Provider value={socket}>
-        <GestureHandlerRootView
-            waitfor={commentinput}
-            style={{ flex: 1, backgroundColor: "#16181a" }}>
-
-            <KeyboardAvoidingView behavior="" keyboardVerticalOffset={100} style={{ flex: 1, position: "relative" }}>
-
-
-
-
-                <View style={{ flex: 1, backgroundColor: "red", position: "absolute", top: 0, width: "100%", height: height }}>
+        <GestureHandlerRootView waitfor={commentinput} style={{ flex: 1, backgroundColor: "#16181a" }}>
+            <KeyboardAvoidingView
+                behavior=""
+                keyboardVerticalOffset={100}
+                style={{ flex: 1, position: "relative" }}
+            >
+                <View
+                    style={{
+                        flex: 1,
+                        backgroundColor: "red",
+                        position: "absolute",
+                        top: 0,
+                        width: "100%",
+                        height: height,
+                    }}
+                >
                     <Tab.Navigator
-
                         lazy={false}
                         // unmountOnBlur={false}
                         firstRoute="Startsy"
@@ -825,7 +809,6 @@ const Main2 = ({ navigation, route }) => {
                         detachInactiveScreens={true}
                         // keyboardBehavior={true}
                         screenOptions={{
-
                             freezeOnBlur: true,
                             tabBarPosition: "bottom",
                             // position: "absolute",
@@ -837,12 +820,14 @@ const Main2 = ({ navigation, route }) => {
                             // tabBarVisible: false,
                             tabBarHideOnKeyboard: true,
 
-
                             tabBarBackground: () => (
                                 <BlurView
                                     experimentalBlurMethod="dimezisBlurView"
                                     blurAmount={30}
-                                    intensity={90} style={{ flex: 1 }} tint="dark" />
+                                    intensity={90}
+                                    style={{ flex: 1 }}
+                                    tint="dark"
+                                />
                             ),
 
                             tabBarButton: (props) => (
@@ -856,7 +841,7 @@ const Main2 = ({ navigation, route }) => {
                             ),
 
                             tabBarStyle: {
-                                backgroundColor: 'transparent',
+                                backgroundColor: "transparent",
                                 // backgroundColor: 'red',
                                 height: 55,
                                 // zIndex  : -1,
@@ -866,22 +851,42 @@ const Main2 = ({ navigation, route }) => {
                                 position: "absolute",
                                 tabBarHideOnKeyboard: true,
                                 display: isKeyboardVisible.current ? "none" : "block",
-                                transform: [{ translateY: bottomposition }]
+                                transform: [{ translateY: bottomposition }],
                             },
-
                         }}
                     >
                         <Tab.Screen
                             name="NewsLetter"
-                            children={(props) => <NewsLetter openshare={openshare} mainpagebottomsheet={mainpagebottomsheet} token={token} closeall={closeall} k={k} setk={setk} />}
+                            children={(props) => (
+                                <NewsLetter
+                                    openshare={openshare}
+                                    mainpagebottomsheet={mainpagebottomsheet}
+                                    token={token}
+                                    closeall={closeall}
+                                    k={k}
+                                    setk={setk}
+                                />
+                            )}
                             options={{
-
                                 freezeOnBlur: true,
                                 unmountOnBlur: true,
                                 tabBarLabel: "",
                                 tabBarIcon: ({ focused }) => (
-                                    <View style={{ flex: 1, width: 30, marginLeft: 10, marginTop: -3, justifyContent: "center", height: 30 }}>
-                                        <Feather name="search" size={24} color={focused ? "#00DE62" : "#7A7B7C"} />
+                                    <View
+                                        style={{
+                                            flex: 1,
+                                            width: 30,
+                                            marginLeft: 10,
+                                            marginTop: -3,
+                                            justifyContent: "center",
+                                            height: 30,
+                                        }}
+                                    >
+                                        <Feather
+                                            name="search"
+                                            size={24}
+                                            color={focused ? "#00DE62" : "#7A7B7C"}
+                                        />
                                     </View>
                                 ),
                             }}
@@ -896,7 +901,11 @@ const Main2 = ({ navigation, route }) => {
                                 tabBarLabel: "",
                                 tabBarIcon: ({ focused }) => (
                                     <View style={{ marginTop: -4 }}>
-                                        <Fontisto name="bell" size={24} color={focused ? "#00DE62" : "#7A7B7C"} />
+                                        <Fontisto
+                                            name="bell"
+                                            size={24}
+                                            color={focused ? "#00DE62" : "#7A7B7C"}
+                                        />
                                         {/* <Feather name="bell" size={32} color={focused ? "#00DE62" : "#7A7B7C"} /> */}
                                     </View>
                                 ),
@@ -904,27 +913,57 @@ const Main2 = ({ navigation, route }) => {
                         />
                         <Tab.Screen
                             name="Startsy"
-                            children={(props) => <Foryou
-                                type={type}
-                                settype={settype} setImage={setImage} scroll={updatescroll} token={token} mainpagebottomsheet={mainpagebottomsheet} opencomment={opencomment} visible={visible} setVisible={setVisible} newaspect={newaspect} setnewaspect={setnewaspect} openshare={openshare} onReportCallBack={onReport} />}
+                            children={(props) => (
+                                <Foryou
+                                    type={type}
+                                    settype={settype}
+                                    setImage={setImage}
+                                    scroll={updatescroll}
+                                    token={token}
+                                    mainpagebottomsheet={mainpagebottomsheet}
+                                    opencomment={opencomment}
+                                    visible={visible}
+                                    setVisible={setVisible}
+                                    newaspect={newaspect}
+                                    setnewaspect={setnewaspect}
+                                    openshare={openshare}
+                                    onReportCallBack={onReport}
+                                />
+                            )}
                             options={{
                                 keyboardBehavior: true,
                                 freezeOnBlur: true,
 
                                 tabBarLabel: "",
                                 tabBarIcon: ({ focused }) => (
-
                                     <>
-                                        {!focused && <Image style={{ width: 40, height: 40, marginTop: -5 }} source={require("../assets/images/logogray1.png")} />}
-                                        {focused && <Image style={{ width: 40, height: 40, marginTop: -5 }} source={require("../assets/images/logo.png")} />}
+                                        {!focused && (
+                                            <Image
+                                                style={{ width: 40, height: 40, marginTop: -5 }}
+                                                source={require("../assets/images/logogray1.png")}
+                                            />
+                                        )}
+                                        {focused && (
+                                            <Image
+                                                style={{ width: 40, height: 40, marginTop: -5 }}
+                                                source={require("../assets/images/logo.png")}
+                                            />
+                                        )}
                                     </>
                                 ),
                             }}
-
                         />
                         <Tab.Screen
                             name="Message"
-                            children={(props) => <ChatScreen k={k} setk={setk} mainpagebottomsheet={mainpagebottomsheet} closeall={closeall} token={token} />}
+                            children={(props) => (
+                                <ChatScreen
+                                    k={k}
+                                    setk={setk}
+                                    mainpagebottomsheet={mainpagebottomsheet}
+                                    closeall={closeall}
+                                    token={token}
+                                />
+                            )}
                             options={{
                                 freezeOnBlur: true,
                                 unmountOnBlur: true,
@@ -933,13 +972,28 @@ const Main2 = ({ navigation, route }) => {
 
                                 tabBarLabel: "",
                                 tabBarIcon: ({ focused }) => (
-                                    <View style={{ marginTop: -3 }}><MaterialCommunityIcons name="message-text-outline" size={24} color={focused ? "#00DE62" : "#7A7B7C"} /></View>
+                                    <View style={{ marginTop: -3 }}>
+                                        <MaterialCommunityIcons
+                                            name="message-text-outline"
+                                            size={24}
+                                            color={focused ? "#00DE62" : "#7A7B7C"}
+                                        />
+                                    </View>
                                 ),
                             }}
                         />
                         <Tab.Screen
                             name="Profile"
-                            children={() => <Apnauser closeall={closeall} openshare={openshare} mainpagebottomsheet={mainpagebottomsheet} navigation={navigation} opencomment={opencomment} token={token} />}
+                            children={() => (
+                                <Apnauser
+                                    closeall={closeall}
+                                    openshare={openshare}
+                                    mainpagebottomsheet={mainpagebottomsheet}
+                                    navigation={navigation}
+                                    opencomment={opencomment}
+                                    token={token}
+                                />
+                            )}
                             options={{
                                 freezeOnBlur: true,
                                 unmountOnBlur: true,
@@ -947,15 +1001,26 @@ const Main2 = ({ navigation, route }) => {
                                 tabBarLabel: "",
                                 tabBarIcon: ({ focused }) => (
                                     <View style={{ marginTop: -4, marginLeft: -2 }}>
-                                        {
-                                            userProfilePhoto == null ?
-                                                <FontAwesome6 name="circle-user" size={30} color={focused ? "#00DE62" : "#7A7B7C"} />
-                                                :
-                                                <Image source={{ uri: (userProfilePhoto) }} width={26} height={26} style={{ borderRadius: 50, borderColor: "#00de62", borderWidth: focused ? 1 : 0 }} />
-                                        }
+                                        {userProfilePhoto == null ? (
+                                            <FontAwesome6
+                                                name="circle-user"
+                                                size={30}
+                                                color={focused ? "#00DE62" : "#7A7B7C"}
+                                            />
+                                        ) : (
+                                            <Image
+                                                source={{ uri: userProfilePhoto }}
+                                                width={26}
+                                                height={26}
+                                                style={{
+                                                    borderRadius: 50,
+                                                    borderColor: "#00de62",
+                                                    borderWidth: focused ? 1 : 0,
+                                                }}
+                                            />
+                                        )}
                                     </View>
                                 ),
-
                             }}
                         />
                         <Tab.Screen
@@ -965,16 +1030,23 @@ const Main2 = ({ navigation, route }) => {
                             options={{
                                 tabBarLabel: "okkk",
                                 unmountOnBlur: true,
-                                tabBarItemStyle: { display: 'none' },
+                                tabBarItemStyle: { display: "none" },
                                 tabBarButton: () => null,
                                 tabBarVisible: true,
                             }}
                         />
                         <Tab.Screen
                             name="Singleuserpage"
-                            children={() => <Singleprofilepage navigation={navigation} openshare={openshare} opencomment={opencomment} onReportCallBack={onReport} />}
+                            children={() => (
+                                <Singleprofilepage
+                                    navigation={navigation}
+                                    openshare={openshare}
+                                    opencomment={opencomment}
+                                    onReportCallBack={onReport}
+                                />
+                            )}
                             options={{
-                                tabBarItemStyle: { display: 'none' },
+                                tabBarItemStyle: { display: "none" },
                                 tabBarButton: () => null,
                                 tabBarVisible: false,
                             }}
@@ -984,7 +1056,7 @@ const Main2 = ({ navigation, route }) => {
                             component={Followerpage}
                             // children={() => <Followerpage navigation={navigation}  />}
                             options={{
-                                tabBarItemStyle: { display: 'none' },
+                                tabBarItemStyle: { display: "none" },
                                 tabBarButton: () => null,
                                 tabBarVisible: false,
                             }}
@@ -994,19 +1066,18 @@ const Main2 = ({ navigation, route }) => {
                             component={JobsPostedScreen}
                             // children={() => <Followerpage navigation={navigation}  />}
                             options={{
-                                tabBarItemStyle: { display: 'none' },
+                                tabBarItemStyle: { display: "none" },
                                 tabBarButton: () => null,
                                 tabBarVisible: false,
                             }}
                         />
-
 
                         <Tab.Screen
                             name="Applicant"
                             component={ApplicantsList}
                             // children={() => <Followerpage navigation={navigation}  />}
                             options={{
-                                tabBarItemStyle: { display: 'none' },
+                                tabBarItemStyle: { display: "none" },
                                 tabBarButton: () => null,
                                 tabBarVisible: false,
                             }}
@@ -1015,58 +1086,50 @@ const Main2 = ({ navigation, route }) => {
                         <Tab.Screen
                             name="ViewSendedPost"
                             // component={ViewSendedPost}
-                            children={(props) => <ViewSendedPost openshare={openshare} opencomment={opencomment} />}
+                            children={(props) => (
+                                <ViewSendedPost openshare={openshare} opencomment={opencomment} />
+                            )}
                             options={{
-                                tabBarItemStyle: { display: 'none' },
+                                tabBarItemStyle: { display: "none" },
                                 tabBarButton: () => null,
                                 tabBarVisible: false,
                             }}
                         />
-
                     </Tab.Navigator>
-                    {showBottomSheet && (<BottomSheet
-                        enablePanDownToClose
-                        backgroundStyle={{ backgroundColor: '#16181a', borderRadius: 30 }}
-                        handleIndicatorStyle={{ backgroundColor: '#00de62' }}
-                        style={{ zIndex: 1000000, elevation: 1000 }}
-                        enableDynamicSizing={false}
-                        ref={mainpagebottomsheet}
-                        snapPoints={snapPoints}
-                        // backdropComponent={renderBackdrop}
-                        index={-1}
-                    >
-                        <BottomSheetContent />
-                    </BottomSheet>)
-                    }
+                    {showBottomSheet && (
+                        <BottomSheet
+                            enablePanDownToClose
+                            backgroundStyle={{ backgroundColor: "#16181a", borderRadius: 30 }}
+                            handleIndicatorStyle={{ backgroundColor: "#00de62" }}
+                            style={{ zIndex: 1000000, elevation: 1000 }}
+                            enableDynamicSizing={false}
+                            ref={mainpagebottomsheet}
+                            snapPoints={snapPoints}
+                            // backdropComponent={renderBackdrop}
+                            index={-1}
+                        >
+                            <BottomSheetContent />
+                        </BottomSheet>
+                    )}
 
-
-                    {
-                        showReportBottomSheet && (
-                            <ReportBottomSheet
-                                token={token}
-
-                                reportPost={reportPost}
-                                reportId={reportId}
-                                reportBottomSheetRef={reportBottomSheetRef}
-                                renderBackdrop={renderBackdrop}
-                            />
-                        )
-                    }
-
+                    {showReportBottomSheet && (
+                        <ReportBottomSheet
+                            token={token}
+                            reportPost={reportPost}
+                            reportId={reportId}
+                            reportBottomSheetRef={reportBottomSheetRef}
+                            renderBackdrop={renderBackdrop}
+                        />
+                    )}
                 </View>
-
-
-
 
                 {/* <BottomSheet1 mainpagebottomsheet={mainpagebottomsheet}/> */}
                 {openBottomSheet6 && (
-
-
                     <BottomSheet
                         overlayColor="rgba(0, 0, 0, 0.9)"
                         enablePanDownToClose
-                        backgroundStyle={{ backgroundColor: '#1A1D1F', borderRadius: 30 }}
-                        handleIndicatorStyle={{ backgroundColor: '#00de62' }}
+                        backgroundStyle={{ backgroundColor: "#1A1D1F", borderRadius: 30 }}
+                        handleIndicatorStyle={{ backgroundColor: "#00de62" }}
                         ref={bottomSheetRef6}
                         nestedScrollEnabled={true}
                         // backdropComponent={renderBackdrop}
@@ -1077,29 +1140,25 @@ const Main2 = ({ navigation, route }) => {
                         contentContainerStyle={{ zIndex: 1000000, elevation: 20000000, height: 100 }}
                     >
                         <View style={{ flex: 1 }}>
-                            <Pressable onPress={() => {
-
-
-                            }
-                            }>
-                                <Text style={{ textAlign: 'center', color: '#ccc', fontFamily: 'Alata', fontSize: 16 }}>Share</Text>
+                            <Pressable onPress={() => {}}>
+                                <Text
+                                    style={{
+                                        textAlign: "center",
+                                        color: "#ccc",
+                                        fontFamily: "Alata",
+                                        fontSize: 16,
+                                    }}
+                                >
+                                    Share
+                                </Text>
                             </Pressable>
 
-
-                            {peopledata.length == 0 ?
-
-
-                                <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-
-
-                                    <Text style={{ color: 'gray' }}>You are not connected to anyone</Text>
-
+                            {peopledata.length == 0 ? (
+                                <View style={{ flex: 1, justifyContent: "center", alignItems: "center" }}>
+                                    <Text style={{ color: "gray" }}>You are not connected to anyone</Text>
                                 </View>
-
-                                :
+                            ) : (
                                 <>
-
-
                                     <BottomSheetFlatList
                                         ref={flatListRef}
                                         data={peopledata}
@@ -1107,29 +1166,29 @@ const Main2 = ({ navigation, route }) => {
                                         renderItem={renderpeople}
                                         contentContainerStyle={{ paddingBottom: 80 }}
                                         scrollEnabled={true}
-
                                     />
 
-
                                     <>
-                                        {SelectedItems.size > 0 && (<TouchableOpacity onPress={finalsubmit} style={styles1.confirm}>
-                                            {!sendingpost && <Text style={styles1.confirmText}>Confirm</Text>}
-                                            {sendingpost && <ActivityIndicator style={{ marginTop: 9 }} size={24} color="#16181a" />}
-                                        </TouchableOpacity>)}
+                                        {SelectedItems.size > 0 && (
+                                            <TouchableOpacity onPress={finalsubmit} style={styles1.confirm}>
+                                                {!sendingpost && (
+                                                    <Text style={styles1.confirmText}>Confirm</Text>
+                                                )}
+                                                {sendingpost && (
+                                                    <ActivityIndicator
+                                                        style={{ marginTop: 9 }}
+                                                        size={24}
+                                                        color="#16181a"
+                                                    />
+                                                )}
+                                            </TouchableOpacity>
+                                        )}
                                     </>
-
                                 </>
-
-                            }
-
-
-
+                            )}
                         </View>
-                    </BottomSheet>)
-                }
-
-
-
+                    </BottomSheet>
+                )}
 
                 {/* 
                 <RB
@@ -1146,38 +1205,27 @@ const Main2 = ({ navigation, route }) => {
                     backgroundStyle={{ backgroundColor: '#1A1D1F', borderRadius: 30 }}
                     commenttext={commenttext} /> */}
 
-                {
-                    openCommentBottomSheet && (
-                        <CommentBottomSheet
-                            nestedScrollEnabled={true}
-                            // backdropComponent={renderBackdrop}
-                            enableDynamicSizing={false}
-                            index={-1}
-                            setcomment={setcomment}
-
-                            comments={comments}
-                            docomment={docomment}
-                            uploadingcomment={uploadingcomment}
-                            setAllComments={setAllComments}
-                            setcommenttext={setCommentText}
-                            commenttext={commentText}
-                            allcomments={allComments}
-
-                            contentContainerStyle={{ zIndex: 1000000, elevation: 20000000, height: 100 }}
-                            enablePanDownToClose
-                            backgroundStyle={{ backgroundColor: '#1A1D1F', borderRadius: 30 }}
-                            handleIndicatorStyle={{ backgroundColor: '#00de62' }}
-                            commentRef={commentRef}
-
-
-                        />
-                    )
-                }
-
-
-
-
-
+                {openCommentBottomSheet && (
+                    <CommentBottomSheet
+                        nestedScrollEnabled={true}
+                        // backdropComponent={renderBackdrop}
+                        enableDynamicSizing={false}
+                        index={-1}
+                        setcomment={setcomment}
+                        comments={comments}
+                        docomment={docomment}
+                        uploadingcomment={uploadingcomment}
+                        setAllComments={setAllComments}
+                        setcommenttext={setCommentText}
+                        commenttext={commentText}
+                        allcomments={allComments}
+                        contentContainerStyle={{ zIndex: 1000000, elevation: 20000000, height: 100 }}
+                        enablePanDownToClose
+                        backgroundStyle={{ backgroundColor: "#1A1D1F", borderRadius: 30 }}
+                        handleIndicatorStyle={{ backgroundColor: "#00de62" }}
+                        commentRef={commentRef}
+                    />
+                )}
             </KeyboardAvoidingView>
         </GestureHandlerRootView>
         // </GlobalSocket.Provider>
@@ -1225,14 +1273,45 @@ const styles1 = StyleSheet.create({
     },
     container: { flex: 1, justifyContent: "center", alignItems: "center" },
     overlay: { flex: 1, backgroundColor: "rgba(0,0,0,0.7)", justifyContent: "center", alignItems: "center" },
-    alertBox: { width: 300, height: 250, zIndex: 100000000000, elevation: 10000000000, marginLeft: 350, marginTop: 750, backgroundColor: "#1A1D1F", padding: 20, borderRadius: 20, alignItems: "center", alignSelf: "center" },
+    alertBox: {
+        width: 300,
+        height: 250,
+        zIndex: 100000000000,
+        elevation: 10000000000,
+        marginLeft: 350,
+        marginTop: 750,
+        backgroundColor: "#1A1D1F",
+        padding: 20,
+        borderRadius: 20,
+        alignItems: "center",
+        alignSelf: "center",
+    },
     title: { fontSize: 20, fontWeight: "bold", color: "#D9D9D9", fontFamily: "Alata" },
-    message: { fontSize: 16, marginVertical: 10, textAlign: "center", color: "#D9D9D9", fontFamily: "Roboto" },
-    button: { marginTop: 15, backgroundColor: "#00de62", padding: 10, paddingHorizontal: 37, borderRadius: 10, minWidth: 200, textAlign: "center" },
-    buttonText: { color: "#1A1D1F", fontSize: 16, fontFamily: "Roboto", fontWeight: "700", textAlign: "center" },
+    message: {
+        fontSize: 16,
+        marginVertical: 10,
+        textAlign: "center",
+        color: "#D9D9D9",
+        fontFamily: "Roboto",
+    },
+    button: {
+        marginTop: 15,
+        backgroundColor: "#00de62",
+        padding: 10,
+        paddingHorizontal: 37,
+        borderRadius: 10,
+        minWidth: 200,
+        textAlign: "center",
+    },
+    buttonText: {
+        color: "#1A1D1F",
+        fontSize: 16,
+        fontFamily: "Roboto",
+        fontWeight: "700",
+        textAlign: "center",
+    },
     showButton: { backgroundColor: "#28a745", padding: 10, borderRadius: 5 },
     showButtonText: { color: "#fff", fontSize: 16 },
-
 
     sendbtn: {
         backgroundColor: "#ccc",
@@ -1242,16 +1321,13 @@ const styles1 = StyleSheet.create({
         borderWidth: 2,
         borderColor: "#ccc",
         width: 80,
-
     },
 
     sendbtnText: {
         fontSize: 14,
         color: "#333",
         textAlign: "center",
-        fontFamily: "Alata"
-
-
+        fontFamily: "Alata",
     },
 
     sendbtn1: {
@@ -1262,15 +1338,13 @@ const styles1 = StyleSheet.create({
         width: 80,
         paddingVertical: 6,
         borderRadius: 8,
-
     },
 
     sendbtnText1: {
         fontSize: 14,
         color: "#ccc",
         textAlign: "center",
-        fontFamily: "Alata"
-
+        fontFamily: "Alata",
     },
     confirm: {
         position: "absolute",
@@ -1280,7 +1354,7 @@ const styles1 = StyleSheet.create({
         backgroundColor: "#999",
         alignSelf: "center",
         borderRadius: 12,
-        width: "60%"
+        width: "60%",
     },
     confirmText: {
         fontSize: 20,
@@ -1288,6 +1362,12 @@ const styles1 = StyleSheet.create({
         fontFamily: "Alata",
         textAlign: "center",
     },
-    inputContainer: { flexDirection: "row", backgroundColor: "#1A1D1F", width: "100%", padding: 10, bottom: 70, position: "relative" },
-
+    inputContainer: {
+        flexDirection: "row",
+        backgroundColor: "#1A1D1F",
+        width: "100%",
+        padding: 10,
+        bottom: 70,
+        position: "relative",
+    },
 });

@@ -1,7 +1,7 @@
-import React from 'react';
-import ContentLoader from 'react-content-loader/native';
-import { View } from 'react-native';
-import {Rect} from 'react-native-svg';
+import React from "react";
+import ContentLoader from "react-content-loader/native";
+import { View } from "react-native";
+import { Rect } from "react-native-svg";
 
 const Skeleton2 = (props) => {
     return (
@@ -19,7 +19,7 @@ const Skeleton2 = (props) => {
             <Rect x="15" y="50" rx="4" ry="4" width="200" height="10" />
             <Rect x="15" y="70" rx="4" ry="4" width="150" height="10" />
         </ContentLoader>
-    )
-}
+    );
+};
 
 export default Skeleton2;

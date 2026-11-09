@@ -1,125 +1,109 @@
 import React, { useEffect, useState, useContext, useCallback } from "react";
-import { View, Text, StyleSheet, TextInput, Keyboard, FlatList, Image, RefreshControl, Dimensions, TouchableOpacity, Vibration } from "react-native";
+import {
+    View,
+    Text,
+    StyleSheet,
+    TextInput,
+    Keyboard,
+    FlatList,
+    Image,
+    RefreshControl,
+    Dimensions,
+    TouchableOpacity,
+    Vibration,
+} from "react-native";
 import { useFocusEffect, useNavigation } from "expo-router";
 
-import { url } from "../../config.js"
-
+import { url } from "../../config.js";
 
 import { jwtDecode } from "jwt-decode";
-import { Skeleton } from 'moti/skeleton';
-import { MotiView } from 'moti';
-
+import { Skeleton } from "moti/skeleton";
+import { MotiView } from "moti";
 
 const data1 = Array(5).fill({
     user: {
         userName: "raz.shhh",
         message: "text...",
         time: "Today",
-        profilePhoto: "https://res.cloudinary.com/dldbd8zhs/image/upload/v1734618122/wn6f65kia1xlzsn8ygnd.jpg"
-    }// Replace with your image path
+        profilePhoto:
+            "https://res.cloudinary.com/dldbd8zhs/image/upload/v1734618122/wn6f65kia1xlzsn8ygnd.jpg",
+    }, // Replace with your image path
 });
 
-
-
-
-
-
-
-
 const SeperateInvestor = ({ search, token, setk, inputref }) => {
+    const navigation = useNavigation();
+    const [skeleton, setskeletonloading] = useState(false);
 
-
-
-    const navigation = useNavigation()
-    const [skeleton, setskeletonloading] = useState(false)
-
-    const [filtereddata, setfiltereddata] = useState([])
-    const [loggedinuserid, setLoggedInUserId] = useState([])
+    const [filtereddata, setfiltereddata] = useState([]);
+    const [loggedinuserid, setLoggedInUserId] = useState([]);
 
     useEffect(() => {
         console.log(search);
         if (data && data.length > 0) {
-            setfiltereddata(data.filter(item =>
-                search === "" || item.user.userName.toLowerCase().startsWith(search.toLowerCase())
-            ))
+            setfiltereddata(
+                data.filter(
+                    (item) =>
+                        search === "" || item.user.userName.toLowerCase().startsWith(search.toLowerCase())
+                )
+            );
         }
-    }, [search, data])
+    }, [search, data]);
     const [refreshing, setRefreshing] = useState(false);
-
 
     useEffect(() => {
         if (token) {
-            var decode = jwtDecode(token)
+            var decode = jwtDecode(token);
             console.log(decode._id);
 
-            setLoggedInUserId(decode._id)
+            setLoggedInUserId(decode._id);
         }
-    }, [token])
+    }, [token]);
 
-
-
-
-
-
-
-
-
-    const [data, setData] = useState(null)
-    const [loading, setloading] = useState(false)
+    const [data, setData] = useState(null);
+    const [loading, setloading] = useState(false);
 
     useFocusEffect(
         useCallback(() => {
-            fetchData()
+            fetchData();
         }, [])
-    )
+    );
 
     const fetchData = async () => {
-        var route = ""
+        var route = "";
         const decoded = jwtDecode(token);
 
-
-
         if (decoded.role == "Founder") {
-            route = "founder/getFounderChatUserList"
-        }
-        else if (decoded.role == "Investor") {
-            route = "investor/getInvestorChatUserList"
-        }
-        else if (decoded.role == "CommunityMember") {
+            route = "founder/getFounderChatUserList";
+        } else if (decoded.role == "Investor") {
+            route = "investor/getInvestorChatUserList";
+        } else if (decoded.role == "CommunityMember") {
             // console.log("fuck");
 
-            route = "founder/getFounderChatUserList"
-
+            route = "founder/getFounderChatUserList";
         }
         // else if()
 
         setloading(true); // Start loading before fetching data
         if (token) {
             try {
-                setskeletonloading(true)
-                const response = await fetch(
-                    `${url}${route}`,
-                    {
-                        method: "GET",
-                        headers: {
-                            accept: "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
+                setskeletonloading(true);
+                const response = await fetch(`${url}${route}`, {
+                    method: "GET",
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
                 const result = await response.json();
 
-                var rec1 = result.filter((e) => e.user.role == "Investor")
+                var rec1 = result.filter((e) => e.user.role == "Investor");
                 //    console.log(rec1 , "plj");
 
-
-
-
-
-                const uniqueData = rec1.filter((item, index, self) =>
-                    self.findIndex(innerItem => innerItem.user.userName === item.user.userName) === index
+                const uniqueData = rec1.filter(
+                    (item, index, self) =>
+                        self.findIndex((innerItem) => innerItem.user.userName === item.user.userName) ===
+                        index
                 );
-
 
                 const sortedData = uniqueData.sort((a, b) => {
                     if (a.lastMessage === null && b.lastMessage === null) return 0;
@@ -133,37 +117,22 @@ const SeperateInvestor = ({ search, token, setk, inputref }) => {
 
                 // console.log(sortedData);
 
-
-
                 if (response.status === 200) {
-
-                    setData(sortedData)
-                    setfiltereddata(sortedData)
-
-
-
-
+                    setData(sortedData);
+                    setfiltereddata(sortedData);
                 }
             } catch (err) {
                 console.log(err);
             } finally {
-                setskeletonloading(false)
+                setskeletonloading(false);
                 setloading(false); // Set loading to false when done
             }
         }
     };
 
-
     useEffect(() => {
-
         fetchData();
-
-
-    }, [])
-
-
-
-
+    }, []);
 
     function gotochatscreen(item) {
         console.log(item.user._id);
@@ -176,36 +145,34 @@ const SeperateInvestor = ({ search, token, setk, inputref }) => {
 
                 console.log(`${url}investor/recommendation/getFounderProfile`);
 
-                const response = await fetch(
-                    `${url}chats/getMessage/individual/${id}`,
-                    {
-                        method: "GET",
-                        headers: {
-                            accept: "application/json",
-                            Authorization: `Bearer ${token}`,
-                        },
-                    }
-                );
+                const response = await fetch(`${url}chats/getMessage/individual/${id}`, {
+                    method: "GET",
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                });
                 const result = await response.json();
                 console.log(result, "chatscreen pe jaane se pehle");
 
                 // setData(result.data);
                 // setloading(false);
 
-
-
-
-                navigation.push("Chat", { item, messages: result.data?.messages || [], token, navigation, photo1: result.senderProfilePhoto, photo2: result.recieverProfilePhoto, tabnavigation: navigation });
+                navigation.push("Chat", {
+                    item,
+                    messages: result.data?.messages || [],
+                    token,
+                    navigation,
+                    photo1: result.senderProfilePhoto,
+                    photo2: result.recieverProfilePhoto,
+                    tabnavigation: navigation,
+                });
                 // navigation.push("Ansh", { item, messages: result.data?.messages || [], token, navigation, photo1: result.senderProfilePhoto, photo2: result.recieverProfilePhoto });
 
                 // navigation.push("Ansh");
-
-
-
             } catch (err) {
                 console.log(err, "eror");
-            }
-            finally {
+            } finally {
             }
         }
         getData();
@@ -214,7 +181,7 @@ const SeperateInvestor = ({ search, token, setk, inputref }) => {
     function time(time) {
         // console.log('====================================');
         // console.log(time);
-        var data1 = new Date(time)
+        var data1 = new Date(time);
         // console.log('====================================');
         // console.log(data1);
         // console.log('====================================');
@@ -248,100 +215,138 @@ const SeperateInvestor = ({ search, token, setk, inputref }) => {
 
     return (
         <View style={styles.listContainer}>
-
-            {filtereddata  && <FlatList
-                showsVerticalScrollIndicator={false}
-                contentContainerStyle={{ paddingBottom: 100 }}
-
-                ListHeaderComponent={
-                    <>
-
-                        {
-                            filtereddata.length == 0 ?
+            {filtereddata && (
+                <FlatList
+                    showsVerticalScrollIndicator={false}
+                    contentContainerStyle={{ paddingBottom: 100 }}
+                    ListHeaderComponent={
+                        <>
+                            {filtereddata.length == 0 ? (
                                 <View style={styles.emptyListContainer}>
-                                    <Text style={[{ color: 'gray' }, styles.emptyListText]}>No conversations yet</Text>
+                                    <Text style={[{ color: "gray" }, styles.emptyListText]}>
+                                        No conversations yet
+                                    </Text>
                                 </View>
-                                : null
-                        }
-
-
-                    </>
-                }
-                data={filtereddata}
-                keyExtractor={(item, index) => item.user?.username?.toString()}
-                refreshControl={<RefreshControl refreshing={refreshing}
-                    progressBackgroundColor="#16181a"
-                    colors={['#00de62']}
-                    onRefresh={() => {
-                        Vibration.vibrate(200)
-                        fetchData()
-                    }}
-
-                />}
-                renderItem={({ item }) => {
-
-                    return (
-                        <TouchableOpacity onPress={() => {
-                            gotochatscreen(item)
-                        }}>
-                            <View style={styles.listItem}>
-                                <Image
-                                    source={{ uri: item.user.profilePhoto || "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8slgZXgqnSIXDS8wF2uDT_SmsYlBe-W1soQ&s" }}
-                                    style={styles.avatar} />
-                                <View style={styles.textContainer}>
-                                    <Text numberOfLines={1}
-                                        ellipsizeMode="tail" allowFontScaling={false} style={styles.username}>{item.user.userName}</Text>
-
-
-                                    {item.lastMessage && typeof item.lastMessage.message == "string" &&
+                            ) : null}
+                        </>
+                    }
+                    data={filtereddata}
+                    keyExtractor={(item, index) => item.user?.username?.toString()}
+                    refreshControl={
+                        <RefreshControl
+                            refreshing={refreshing}
+                            progressBackgroundColor="#16181a"
+                            colors={["#00de62"]}
+                            onRefresh={() => {
+                                Vibration.vibrate(200);
+                                fetchData();
+                            }}
+                        />
+                    }
+                    renderItem={({ item }) => {
+                        return (
+                            <TouchableOpacity
+                                onPress={() => {
+                                    gotochatscreen(item);
+                                }}
+                            >
+                                <View style={styles.listItem}>
+                                    <Image
+                                        source={{
+                                            uri:
+                                                item.user.profilePhoto ||
+                                                "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8slgZXgqnSIXDS8wF2uDT_SmsYlBe-W1soQ&s",
+                                        }}
+                                        style={styles.avatar}
+                                    />
+                                    <View style={styles.textContainer}>
                                         <Text
                                             numberOfLines={1}
                                             ellipsizeMode="tail"
                                             allowFontScaling={false}
-                                            style={!item.lastMessage.isRead && item.lastMessage.senderId != loggedinuserid ? styles.bold : styles.message}>
-                                            {item.lastMessage?.message || "No chats yet"}
+                                            style={styles.username}
+                                        >
+                                            {item.user.userName}
                                         </Text>
-                                    }
-                                    {item.lastMessage == null && <Text
-                                        numberOfLines={1}
-                                        ellipsizeMode="tail"
+
+                                        {item.lastMessage && typeof item.lastMessage.message == "string" && (
+                                            <Text
+                                                numberOfLines={1}
+                                                ellipsizeMode="tail"
+                                                allowFontScaling={false}
+                                                style={
+                                                    !item.lastMessage.isRead &&
+                                                    item.lastMessage.senderId != loggedinuserid
+                                                        ? styles.bold
+                                                        : styles.message
+                                                }
+                                            >
+                                                {item.lastMessage?.message || "No chats yet"}
+                                            </Text>
+                                        )}
+                                        {item.lastMessage == null && (
+                                            <Text
+                                                numberOfLines={1}
+                                                ellipsizeMode="tail"
+                                                allowFontScaling={false}
+                                                style={styles.message}
+                                            >
+                                                No chats yet
+                                            </Text>
+                                        )}
+
+                                        {item.lastMessage && typeof item.lastMessage.message == "object" && (
+                                            <Text
+                                                numberOfLines={1}
+                                                ellipsizeMode="tail"
+                                                allowFontScaling={false}
+                                                style={styles.message}
+                                            >
+                                                Shared a post
+                                            </Text>
+                                        )}
+                                    </View>
+                                    <Text
                                         allowFontScaling={false}
-                                        style={styles.message}>
-                                        No chats yet
-                                    </Text>}
+                                        style={
+                                            item.lastMessage &&
+                                            !item.lastMessage.isRead &&
+                                            item.lastMessage.senderId != loggedinuserid
+                                                ? styles.boldtime
+                                                : styles.time
+                                        }
+                                    >
+                                        {item.lastMessage ? time(item.lastMessage.createdAt) : "today"}
+                                    </Text>
 
-
-                                    {item.lastMessage && typeof item.lastMessage.message == "object" &&
-                                        <Text
-                                            numberOfLines={1}
-                                            ellipsizeMode="tail"
-                                            allowFontScaling={false} style={styles.message}>Shared a post</Text>
-                                    }
+                                    {item.lastMessage &&
+                                        item.lastMessage.isRead == false &&
+                                        item.lastMessage.senderId != loggedinuserid && (
+                                            <Text
+                                                style={{
+                                                    marginTop: 25,
+                                                    marginRight: 10,
+                                                    width: 8,
+                                                    height: 8,
+                                                    backgroundColor: "#00de62",
+                                                    borderRadius: 30,
+                                                }}
+                                            ></Text>
+                                        )}
                                 </View>
-                                <Text
-                                    allowFontScaling={false}
-                                    style={item.lastMessage && !item.lastMessage.isRead && item.lastMessage.senderId != loggedinuserid ? styles.boldtime : styles.time}>
-                                    {item.lastMessage ? time(item.lastMessage.createdAt) : "today"}</Text>
-
-                                {item.lastMessage && item.lastMessage.isRead == false && item.lastMessage.senderId != loggedinuserid && <Text style={{ marginTop: 25, marginRight: 10, width: 8, height: 8, backgroundColor: "#00de62", borderRadius: 30 }}></Text>}
-                            </View>
-                        </TouchableOpacity>
-                    )
-                }}
-            />}
-
-            
-
-
-
+                            </TouchableOpacity>
+                        );
+                    }}
+                />
+            )}
         </View>
-    )
-}
-const { height, width } = Dimensions.get("window")
+    );
+};
+const { height, width } = Dimensions.get("window");
 
 var a = width / 360;
 var b = height / 800;
-const scalingfactor = Math.sqrt(a * b)
+const scalingfactor = Math.sqrt(a * b);
 
 const styles = StyleSheet.create({
     container: {
@@ -388,7 +393,7 @@ const styles = StyleSheet.create({
         marginBottom: 2,
         borderBottomColor: "#333",
         alignSelf: "flex-start",
-        width: "100%"
+        width: "100%",
     },
     listItem1: {
         // flexDirection: "row",
@@ -398,7 +403,7 @@ const styles = StyleSheet.create({
         marginBottom: 2,
         borderBottomColor: "#333",
         alignSelf: "flex-start",
-        width: "100%"
+        width: "100%",
     },
     avatar: {
         width: 45,
@@ -419,8 +424,8 @@ const styles = StyleSheet.create({
         fontSize: 14,
         color: "gray",
         marginTop: -3,
-        fontFamily: 'Roboto',
-        paddingRight: 60
+        fontFamily: "Roboto",
+        paddingRight: 60,
     },
     bold: {
         fontSize: 14,
@@ -461,14 +466,14 @@ const styles = StyleSheet.create({
         width: width * 0.92,
         marginHorizontal: "auto",
         padding: 16,
-        backgroundColor: '#1A1C1E',
+        backgroundColor: "#1A1C1E",
         marginTop: 20,
         borderRadius: 12,
-        shadowColor: '#000',
+        shadowColor: "#000",
         shadowOpacity: 0.2,
         shadowRadius: 4,
         shadowOffset: { width: 0, height: 2 },
-        shadowColor: 'rgba(0,0,0, 0.8)', // Shadow color
+        shadowColor: "rgba(0,0,0, 0.8)", // Shadow color
         shadowOffset: {
             width: 0, // x offset
             height: 5, // y offset
@@ -478,8 +483,8 @@ const styles = StyleSheet.create({
         elevation: 5,
     },
     header1: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        flexDirection: "row",
+        alignItems: "center",
         marginBottom: 12,
     },
     profileImage: {
@@ -489,55 +494,53 @@ const styles = StyleSheet.create({
         marginRight: 12,
     },
     headerText: {
-        flexDirection: 'row',
+        flexDirection: "row",
         flex: 1,
-        justifyContent: "space-between"
+        justifyContent: "space-between",
     },
     username: {
-        color: '#E9E9E9',
-        fontWeight: '600',
+        color: "#E9E9E9",
+        fontWeight: "600",
         fontSize: 18,
         fontFamily: "Alata",
         marginBottom: 3,
         marginTop: -2,
         width: "75%",
         // backgroundColor : "red"
-
     },
     date: {
-        color: '#a1a1a1',
+        color: "#a1a1a1",
         fontSize: 14,
 
-        alignSelf: "center"
+        alignSelf: "center",
     },
     title: {
-        color: '#B8B8B8',
+        color: "#B8B8B8",
         // fontWeight: 'bold',
         fontSize: 36,
         marginBottom: 6,
-        fontFamily: "Alata"
+        fontFamily: "Alata",
     },
     description: {
-        color: '#D9D9D9',
+        color: "#D9D9D9",
         fontSize: 13,
         // marginBottom: 12,
-        fontFamily: "Roboto"
+        fontFamily: "Roboto",
     },
     status: {
-        color: '#00DE62',
+        color: "#00DE62",
         fontSize: 15,
-        fontWeight: '600',
+        fontWeight: "600",
         marginBottom: 4,
-        fontFamily: "Roboto"
-
+        fontFamily: "Roboto",
     },
     pending: {
         fontFamily: "Roboto",
 
-        color: '#B8B8B8',
+        color: "#B8B8B8",
         fontSize: 14,
         textAlign: "center",
-        marginVertical: 5
+        marginVertical: 5,
     },
 
     emptyListText: {
@@ -554,13 +557,9 @@ const styles = StyleSheet.create({
     },
 
     emptyListContainer: {
-
         flex: 1,
         // height:height,
-
-
     },
-
 
     tabbarpill: {
         borderWidth: 1,
@@ -580,8 +579,7 @@ const styles = StyleSheet.create({
         textTransform: "capitalize",
         borderWidth: 1,
         borderRadius: 30,
-    }
+    },
 });
 
-
-export default SeperateInvestor
+export default SeperateInvestor;

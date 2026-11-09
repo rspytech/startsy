@@ -1,43 +1,52 @@
-import React, { useState, useEffect, useCallback, useRef, useContext } from 'react';
-import { Animated, Pressable, Modal, TouchableOpacity, FlatList, RefreshControl, SafeAreaView, StatusBar, TouchableWithoutFeedback, TextInput, KeyboardAvoidingView, Vibration } from 'react-native';
-import { ScrollView, View, Text, StyleSheet, Image } from 'react-native';
-import { Dimensions, PixelRatio } from "react-native"
-import Swiper from 'react-native-deck-swiper';
-import main from "../../styles/main.js"
-import Cards from './Card.js';
+import React, { useState, useEffect, useCallback, useRef, useContext } from "react";
+import {
+    Animated,
+    Pressable,
+    Modal,
+    TouchableOpacity,
+    FlatList,
+    RefreshControl,
+    SafeAreaView,
+    StatusBar,
+    TouchableWithoutFeedback,
+    TextInput,
+    KeyboardAvoidingView,
+    Vibration,
+} from "react-native";
+import { ScrollView, View, Text, StyleSheet, Image } from "react-native";
+import { Dimensions, PixelRatio } from "react-native";
+import Swiper from "react-native-deck-swiper";
+import main from "../../styles/main.js";
+import Cards from "./Card.js";
 // import Upvote from '@/assets/icons/upvote.js';
-import { useFocusEffect } from 'expo-router';
-import { GlobalContext } from '@/Global/globalcontext.js';
-import { ActivityIndicator } from 'react-native';
-import Addicon from "../../assets/icons/Addicon.js"
-import Trash from "../../assets/icons/Trash.js"
-import Upvote from "../../assets/icons/upvote.js"
-import Up1 from "../../assets/icons/Up1.js"
-import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
-import { url } from "../../config.js"
-import FontAwesome from '@expo/vector-icons/FontAwesome';
-import { LinearGradient } from 'expo-linear-gradient';
-import Idea from "../../assets/icons/idea1.js"
-import styles1 from '@/styles/Alert.js';
-import Ionicons from '@expo/vector-icons/Ionicons';
-import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import { useFocusEffect } from "expo-router";
+import { GlobalContext } from "@/Global/globalcontext.js";
+import { ActivityIndicator } from "react-native";
+import Addicon from "../../assets/icons/Addicon.js";
+import Trash from "../../assets/icons/Trash.js";
+import Upvote from "../../assets/icons/upvote.js";
+import Up1 from "../../assets/icons/Up1.js";
+import { AutoSizeText, ResizeTextMode } from "react-native-auto-size-text";
+import { url } from "../../config.js";
+import FontAwesome from "@expo/vector-icons/FontAwesome";
+import { LinearGradient } from "expo-linear-gradient";
+import Idea from "../../assets/icons/idea1.js";
+import styles1 from "@/styles/Alert.js";
+import Ionicons from "@expo/vector-icons/Ionicons";
+import MaterialCommunityIcons from "@expo/vector-icons/MaterialCommunityIcons";
 
-import { BlurView } from 'expo-blur';
+import { BlurView } from "expo-blur";
 
-
-
-const { height, width } = Dimensions.get("window")
+const { height, width } = Dimensions.get("window");
 
 var a = width / 360;
 var b = height / 800;
 
-
-const scalingfactor = Math.sqrt(a * b)
-
+const scalingfactor = Math.sqrt(a * b);
 
 export default function Startsy({ navigation, route, token }) {
     const [cardIndex, setCardIndex] = React.useState(0);
-    const [data, setData] = useState([])
+    const [data, setData] = useState([]);
     const [swipeInProgress, setSwipeInProgress] = useState(false);
     const [swipeDistance, setSwipeDistance] = useState(0);
     const [refreshing, setRefreshing] = useState(false);
@@ -45,50 +54,39 @@ export default function Startsy({ navigation, route, token }) {
     const [loading, setloading] = useState(true);
     const [selected, setselected] = useState(false);
 
-
     // console.log(token, "iniitla");
     // const {token} = route.params
 
     // const token = "abs"
 
-
-
-
     async function getData() {
         try {
             console.log(`${url}investor/recommendation/getFounderProfile`);
 
-            const response = await fetch(
-                `${url}investor/recommendation/getFounderProfile`,
-                {
-                    method: "GET",
-                    headers: {
-                        accept: "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
+            const response = await fetch(`${url}investor/recommendation/getFounderProfile`, {
+                method: "GET",
+                headers: {
+                    accept: "application/json",
+                    Authorization: `Bearer ${token}`,
+                },
+            });
             const result = await response.json();
             // console.log("reached here");
             console.log(result.data);
 
-
-
             if (result.data && result.data?.length > 0) {
                 var data1 = result.data.map((e) => {
-
-                    var isThereTeam
+                    var isThereTeam;
 
                     if (e.teamInfo?.length == 0) {
-                        isThereTeam = false
-                    }
-                    else {
-                        isThereTeam = true
+                        isThereTeam = false;
+                    } else {
+                        isThereTeam = true;
                     }
 
-                    var obj = { ...e, isliked: false, isThereTeam: isThereTeam }
-                    return obj
-                })
+                    var obj = { ...e, isliked: false, isThereTeam: isThereTeam };
+                    return obj;
+                });
                 console.log(data1.length, "suoer");
                 setData(data1);
             }
@@ -104,25 +102,19 @@ export default function Startsy({ navigation, route, token }) {
             setloading(false);
         } catch (err) {
             console.log(err, "eror");
-        }
-        finally {
+        } finally {
         }
     }
 
-
-
-
-
     useFocusEffect(() => {
-        StatusBar.setBackgroundColor("#16181a")
-    })
+        StatusBar.setBackgroundColor("#16181a");
+    });
 
     const [dataFetched, setDataFetched] = useState(false);
 
     // useEffect(() => {
     //     console.log("Current Active Card Index:", cardIndex);
     // }, [cardIndex]);
-
 
     // async function getData() {
     //     try {
@@ -142,8 +134,6 @@ export default function Startsy({ navigation, route, token }) {
     //         console.log(result.length);
 
     //         console.log("reached here");
-
-
 
     //         if (result.data && result.data.length > 0) {
     //             var data1 = result.data.map((e) => {
@@ -169,7 +159,6 @@ export default function Startsy({ navigation, route, token }) {
     //         setloading(false);
     //         setDataFetched(true);
 
-
     //     } catch (err) {
     //         console.log(err, "eror");
     //     }
@@ -179,36 +168,32 @@ export default function Startsy({ navigation, route, token }) {
 
     useEffect(() => {
         if (token != null && token !== undefined && token != "") {
-            setloading(true)
+            setloading(true);
             getData();
         }
-    }, [token, dataFetched])
-
+    }, [token, dataFetched]);
 
     function showbigcard(item) {
         console.log(item, "yeh show bigg card wala function ka hai ");
 
-        navigation.navigate("Card", { item: item, navigation })
+        navigation.navigate("Card", { item: item, navigation });
         console.log("hi");
-
     }
 
     function getfund(fund) {
         if (fund == 69) {
-            return 0
+            return 0;
         }
-        fund = fund - 57
-        return (fund * 1000000).toLocaleString("en-IN")
+        fund = fund - 57;
+        return (fund * 1000000).toLocaleString("en-IN");
     }
 
     function renderCard(item, index) {
-
         // console.log("render hu mai");
         // console.log('====================================');
         // console.log(item);
         // console.log('====================================');
-        if (item == null) return
-
+        if (item == null) return;
 
         // if (item.user_id == null || item.user_id == undefined) {
         //     return
@@ -216,59 +201,62 @@ export default function Startsy({ navigation, route, token }) {
 
         // ......................................................................
         return (
-            <Pressable onPress={() => {
-                console.log("showing big");
-                showbigcard(item)
-            }} style={{ flexShrink: 1, alignSelf: 'stretch' }}>
-
+            <Pressable
+                onPress={() => {
+                    console.log("showing big");
+                    showbigcard(item);
+                }}
+                style={{ flexShrink: 1, alignSelf: "stretch" }}
+            >
                 <LinearGradient
                     colors={["rgba(33, 34, 35, 1)", "rgba(22, 24, 26 , 1)"]}
                     locations={[0, 1]}
-                    style={[styles.container]} contentContainerStyle={styles.contentContainer}
+                    style={[styles.container]}
+                    contentContainerStyle={styles.contentContainer}
                     // style={styles.box}
                     start={{ x: 0, y: 0 }}
-                    end={{ x: 0, y: 1 }} >
-
+                    end={{ x: 0, y: 1 }}
+                >
                     {/* <View nestedScrollEnabled={true} bounces={false} > */}
                     {/* Header Section */}
                     <View style={styles.header}>
-                        <Image
-                            source={{ uri: item?.user_id.profilePhoto }}
-                            style={styles.profileImage}
-                        />
+                        <Image source={{ uri: item?.user_id.profilePhoto }} style={styles.profileImage} />
 
                         <AutoSizeText
                             numberOfLines={1}
                             fontSize={24}
                             mode={ResizeTextMode.max_lines}
-                            ellipsizeMode='tail'
-                            style={styles.username}>{item.user_id.userName}
+                            ellipsizeMode="tail"
+                            style={styles.username}
+                        >
+                            {item.user_id.userName}
                         </AutoSizeText>
-                        <View style={{
-                            position: "absolute",
-                            right: 10,
-                            display: "flex",
-                            flexDirection: "row",
-                            gap: 0
-                        }}>
+                        <View
+                            style={{
+                                position: "absolute",
+                                right: 10,
+                                display: "flex",
+                                flexDirection: "row",
+                                gap: 0,
+                            }}
+                        >
                             {/* <View ><Upvote color='#00de62' width={40} height={40} /></View> */}
                             {/* <Text style={styles.followers}>{item.totalUpvotes}</Text> */}
                         </View>
                     </View>
                     <View style={styles.divider}></View>
 
-
                     {/* Startup Info */}
                     <Text style={styles.title}>{item.nameOfStartup}</Text>
                     <Text style={styles.subtitle}>Revolutionizing startup ecosystem.</Text>
-                    <Text style={styles.status}>{item.hiddenInfo.stageOfStartup} - ₹ {getfund(item.hiddenInfo.fundingStatus)}</Text>
-
+                    <Text style={styles.status}>
+                        {item.hiddenInfo.stageOfStartup} - ₹ {getfund(item.hiddenInfo.fundingStatus)}
+                    </Text>
 
                     {/* Goal Section */}
-                    <Text style={styles.sectionHeader}>Goal: <Text style={styles.text}>
-                        {item.goal}
-                    </Text></Text>
-
+                    <Text style={styles.sectionHeader}>
+                        Goal: <Text style={styles.text}>{item.goal}</Text>
+                    </Text>
 
                     {/* Description Section */}
                     {/* <Text style={styles.sectionHeader}>Description:</Text>
@@ -280,8 +268,6 @@ export default function Startsy({ navigation, route, token }) {
                     </Text> */}
 
                     <Text style={styles.ReadMore}> Read more</Text>
-
-
 
                     {/* 
                     <BlurView
@@ -298,7 +284,6 @@ export default function Startsy({ navigation, route, token }) {
                             <Text style={{color:'#00de62',fontFamily:'Alata',fontSize:18,elevation:4.0}}>Read more</Text>
                         </View>
                     </BlurView> */}
-
 
                     {/* <Text style={styles.sectionHeader1}>About Founder</Text>
                     <Text style={styles.text}><Text style={styles.keys}>Name :</Text> {item.fullName}</Text>
@@ -346,28 +331,23 @@ export default function Startsy({ navigation, route, token }) {
 
             
                     <Text style={styles.footer}>startsy.com</Text> */}
-
-
-
                 </LinearGradient>
-
             </Pressable>
-        )
+        );
     }
     // ...................................................................
     function check() {
         if (swipeDistance < 50) {
             console.log("hi");
-            return true
+            return true;
         }
-        return false
+        return false;
     }
     const handleSwiping = (distance) => {
         setSwipeDistance(distance);
         console.log(swipeDistance);
-        var stat = check()
-        return stat
-
+        var stat = check();
+        return stat;
     };
     const swiperRef = useRef(null);
 
@@ -388,71 +368,50 @@ export default function Startsy({ navigation, route, token }) {
 
         try {
             const response = await fetch(`${url}investor/addFounderProfile/${id}`, {
-                method: 'POST',
+                method: "POST",
                 headers: {
                     Authorization: `Bearer ${token}`,
-                }
-            })
+                },
+            });
             const data = await response.json();
             console.log(data);
-
-        }
-        catch (err) {
+        } catch (err) {
             console.log(err);
-
         }
         // console.log(index, "right swiped function index wala");
     }
 
-
     async function incrementupvote() {
-
         console.log("clikded");
 
         const currentIndex = swiperRef.current.state.firstCardIndex;
-        const id = data[currentIndex].user_id._id
-
-
-
-
-
+        const id = data[currentIndex].user_id._id;
     }
-
 
     const [visible, setVisible] = useState(false);
 
-
     const CustomAlert = ({ visible, onClose }) => {
-
         const [textlength, settextlength] = useState(0);
 
         const [suggestion, setsuggestion] = useState("");
         const [ups, setpostingsuggestion] = useState(false);
 
-
         function counttext(text) {
-
-
-            settextlength(text.length)
-
+            settextlength(text.length);
         }
-
-
 
         async function docomment() {
             // console.log(suggestion, "inn");
             const currentIndex = swiperRef.current.state.firstCardIndex;
-            const id = data[currentIndex].user_id._id
+            const id = data[currentIndex].user_id._id;
             // console.log(id, "id");
-
 
             // setuploadingcomment(true);
 
             try {
-
-                setpostingsuggestion(true)
+                setpostingsuggestion(true);
                 const response = await fetch(`${url}investor/postSuggestions/${id}`, {
-                    method: 'POST',
+                    method: "POST",
                     body: JSON.stringify({ suggestion: suggestion }),
                     headers: {
                         "Content-Type": "application/json",
@@ -464,7 +423,7 @@ export default function Startsy({ navigation, route, token }) {
                 console.log(response);
 
                 if (response.status === 200) {
-                    setVisible(false)
+                    setVisible(false);
                 }
 
                 // setemptycomment(false);
@@ -483,13 +442,11 @@ export default function Startsy({ navigation, route, token }) {
                 // var newarray = [...allcomments];
                 // newarray.unshift(object);
                 // setallcomments(newarray);
-
-
             } catch (err) {
                 console.log(err);
             } finally {
                 setuploadingcomment(false);
-                setpostingsuggestion(false)
+                setpostingsuggestion(false);
             }
         }
 
@@ -516,7 +473,7 @@ export default function Startsy({ navigation, route, token }) {
                 // setisdeleting(true)
                 try {
                     const response = await fetch(`${url}posts/deletepost/${idofposttobedeleetd}`, {
-                        method: 'POST',
+                        method: "POST",
                         body: "",
                         headers: {
                             accept: "application/json",
@@ -530,11 +487,10 @@ export default function Startsy({ navigation, route, token }) {
                     // Remove the post from the local state
                     const updatedPosts = posts.filter((post) => post._id !== idofposttobedeleetd);
                     setPosts(updatedPosts);
-                    setVisible(false)
+                    setVisible(false);
                 } catch (err) {
                     console.log(err);
-                }
-                finally {
+                } finally {
                     // setisdeleting(false)
                 }
             }
@@ -562,25 +518,25 @@ export default function Startsy({ navigation, route, token }) {
                                         // onPress={handleOutsideTouch}
                                         // value={username}
                                         onChangeText={(text) => {
-                                            setsuggestion(text)
-                                            counttext(text)
+                                            setsuggestion(text);
+                                            counttext(text);
                                         }}
                                     />
                                 </View>
 
-                                <TouchableOpacity onPress={docomment} style={styles.next}  >
+                                <TouchableOpacity onPress={docomment} style={styles.next}>
                                     {/* <Text allowFontScaling={false} style={styles.nexttext}>Send</Text> */}
 
                                     {ups && <ActivityIndicator size={24} color="#16181a" />}
-                                    {!ups && <Text allowFontScaling={false} style={styles.nexttext}>Send</Text>}
+                                    {!ups && (
+                                        <Text allowFontScaling={false} style={styles.nexttext}>
+                                            Send
+                                        </Text>
+                                    )}
                                 </TouchableOpacity>
 
-
                                 {/* <Text style={styles1.message}>Click confirm to .</Text> */}
-                                <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
-
-
-                                </View>
+                                <View style={{ display: "flex", flexDirection: "row", gap: 10 }}></View>
                             </View>
                         </TouchableWithoutFeedback>
                     </Animated.View>
@@ -590,33 +546,47 @@ export default function Startsy({ navigation, route, token }) {
     };
 
     return (
-
-
-
-        <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#16181a" }} behavior='padding' keyboardVerticalOffset={-100}>
-
+        <KeyboardAvoidingView
+            style={{ flex: 1, backgroundColor: "#16181a" }}
+            behavior="padding"
+            keyboardVerticalOffset={-100}
+        >
             <CustomAlert visible={visible} onClose={() => setVisible(false)} />
             <ScrollView
-                keyboardShouldPersistTaps='handled'
-                refreshControl={<RefreshControl progressViewOffset={100} refreshing={refreshing}
-                    progressBackgroundColor="#16181a"
-                    colors={['#00de62']}
-                    onRefresh={async () => {
-                        console.log("start");
-                        Vibration.vibrate(200)
-                        setRefreshing(true);
-                        if (token) {
-                            setloading(true)
+                keyboardShouldPersistTaps="handled"
+                refreshControl={
+                    <RefreshControl
+                        progressViewOffset={100}
+                        refreshing={refreshing}
+                        progressBackgroundColor="#16181a"
+                        colors={["#00de62"]}
+                        onRefresh={async () => {
+                            console.log("start");
+                            Vibration.vibrate(200);
+                            setRefreshing(true);
+                            if (token) {
+                                setloading(true);
 
-                            getData();
-                        }
-                        setTimeout(() => {
-                            setRefreshing(false);
-                        }, 2000);
-                    }} />}
-                style={{ flex: 1, width: width, paddingVertical: 0, backgroundColor: "#16181a" }}>
-                <SafeAreaView style={{ flex: 1, width: width, height: height * 0.93, marginTop: 50, paddingVertical: 15, backgroundColor: "#16181a" }}>
-
+                                getData();
+                            }
+                            setTimeout(() => {
+                                setRefreshing(false);
+                            }, 2000);
+                        }}
+                    />
+                }
+                style={{ flex: 1, width: width, paddingVertical: 0, backgroundColor: "#16181a" }}
+            >
+                <SafeAreaView
+                    style={{
+                        flex: 1,
+                        width: width,
+                        height: height * 0.93,
+                        marginTop: 50,
+                        paddingVertical: 15,
+                        backgroundColor: "#16181a",
+                    }}
+                >
                     {/* <Animated.View
                         style={main.header1}>
                         <Text allowFontScaling={false} style={main.headertext}>For you</Text>
@@ -625,16 +595,16 @@ export default function Startsy({ navigation, route, token }) {
                     {data && data.length == 0 && <Text></Text>}
                     <CustomAlert visible={visible} onClose={() => setVisible(false)} />
 
-
                     <Swiper
                         ref={swiperRef}
-                        keyExtractor={(item, index) => { index }}
+                        keyExtractor={(item, index) => {
+                            index;
+                        }}
                         nestedScrollEnabled={true}
-                        backgroundColor='#16181a'
+                        backgroundColor="#16181a"
                         horizontalThreshold={50}
                         // secondCardZoom={1000}
                         infinite={true}
-
                         showSecondCard={true}
                         style={{
                             width: width,
@@ -649,28 +619,25 @@ export default function Startsy({ navigation, route, token }) {
                         cards={data}
                         // stackScale={2}
                         renderCard={renderCard}
-
                         onSwipedLeft={(index) => {
-                            handleleftswipe(index)
+                            handleleftswipe(index);
                         }}
                         onSwipedRight={(index) => {
                             // setCardIndex(index)
-                            handlerightswipe(index)
+                            handlerightswipe(index);
                         }}
                         cardIndex={cardIndex}
                         stackSize={3}
                         verticalSwipe={false}
                         onSwiped={(index) => {
-                            setselected(false)
-                            setCardIndex(index)
+                            setselected(false);
+                            setCardIndex(index);
                         }}
                     />
-
 
                     {/* {loading && <ActivityIndicator color={"#fff"} size={'large'} />} */}
 
                     <View style={styles.iconcontainer}>
-
                         <View style={styles.iconWithText}>
                             <Pressable onPress={swipeLeft}>
                                 <Ionicons name="return-up-back" size={42} color="#ccc" />
@@ -684,9 +651,13 @@ export default function Startsy({ navigation, route, token }) {
                                 setVisible(true);
                                 incrementupvote();
                             }}
-                            style={{ alignItems: 'center' , marginLeft : 5 }}
+                            style={{ alignItems: "center", marginLeft: 5 }}
                         >
-                            <MaterialCommunityIcons name="message-processing-outline" size={41} color="#ccc" />
+                            <MaterialCommunityIcons
+                                name="message-processing-outline"
+                                size={41}
+                                color="#ccc"
+                            />
                             <Text style={styles.iconLabel}>Suggest</Text>
                         </Pressable>
 
@@ -696,14 +667,10 @@ export default function Startsy({ navigation, route, token }) {
                             </Pressable>
                             <Text style={styles.iconLabel}>Connect</Text>
                         </View>
-
                     </View>
-
-
                 </SafeAreaView>
             </ScrollView>
         </KeyboardAvoidingView>
-
     );
 }
 
@@ -725,38 +692,35 @@ const styles = StyleSheet.create({
         borderRadius: 12,
         marginVertical: 8,
         height: height - 195, // <--- ADD THIS
-        overflow: 'scroll',
-
-
-
+        overflow: "scroll",
     },
     iconcontainer: {
-        flexDirection: 'row',
-        justifyContent: 'space-around',
-        alignItems: 'center',
+        flexDirection: "row",
+        justifyContent: "space-around",
+        alignItems: "center",
         paddingHorizontal: 20,
     },
 
     iconWithText: {
-        alignItems: 'center',
+        alignItems: "center",
     },
 
     iconLabel: {
         marginTop: 4,
         fontSize: 14,
-        color: '#828282',
-        fontFamily: 'Alata',
+        color: "#828282",
+        fontFamily: "Alata",
     },
 
     contentContainer: {
         paddingBottom: 80,
         // maxWidth: width,
         // height : height,
-        backgroundColor: "#16181a"
+        backgroundColor: "#16181a",
     },
     header: {
-        flexDirection: 'row',
-        alignItems: 'center',
+        flexDirection: "row",
+        alignItems: "center",
         marginBottom: 5,
     },
     profileImage: {
@@ -766,81 +730,73 @@ const styles = StyleSheet.create({
         marginRight: 10,
     },
     username: {
-        color: '#E9E9E9',
+        color: "#E9E9E9",
         fontSize: 32,
-        fontWeight: 'bold',
+        fontWeight: "bold",
         fontFamily: "Alata",
         width: 140,
         // backgroundColor : "red"
-
-
     },
     upvote: {
         marginLeft: "auto",
-        marginRight: -2
+        marginRight: -2,
     },
     followers: {
-        color: '#00DE62',
+        color: "#00DE62",
         marginLeft: -6,
         fontSize: 14,
         top: 19,
         fontFamily: "Roboto",
-
     },
     title: {
-        color: '#B8B8B8',
+        color: "#B8B8B8",
         fontSize: 48,
         marginTop: 20,
         // fontWeight: 'bold',
         marginBottom: 4,
         fontFamily: "Alata",
-
-
     },
     subtitle: {
-        color: '#D9D9D9',
+        color: "#D9D9D9",
         fontSize: 20,
         marginBottom: 4,
-        fontFamily: "Roboto"
+        fontFamily: "Roboto",
     },
     status: {
-        color: '#00DE62',
+        color: "#00DE62",
         fontSize: 20,
         marginBottom: 16,
-        fontFamily: "Roboto"
-
+        fontFamily: "Roboto",
     },
     sectionHeader: {
-        color: '#D9D9D9',
+        color: "#D9D9D9",
         fontSize: 14,
-        fontWeight: 'bold',
+        fontWeight: "bold",
         marginTop: 10,
         // marginTop: 10,
         marginBottom: 4,
-        fontFamily: "Roboto"
+        fontFamily: "Roboto",
     },
     sectionHeader1: {
-        color: '#B8B8B8',
+        color: "#B8B8B8",
         fontSize: 32,
-        fontWeight: 'bold',
+        fontWeight: "bold",
         marginTop: 16,
         marginBottom: 4,
-        fontFamily: "Alata"
+        fontFamily: "Alata",
     },
     text: {
-        color: '#BEBEBE',
+        color: "#BEBEBE",
         fontSize: 14,
         lineHeight: 20,
-        fontFamily: "Roboto"
-
+        fontFamily: "Roboto",
     },
     text1: {
-        color: '#BEBEBE',
+        color: "#BEBEBE",
         fontSize: 14,
         lineHeight: 20,
         fontFamily: "Roboto",
         fontStyle: "italic",
-
     },
     teamCard: {
         // backgroundColor: '#2a2a2a',
@@ -848,17 +804,17 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         marginTop: 8,
         borderWidth: 2,
-        borderColor: "#B8B8B8"
-        , maxWidth: "70%",
+        borderColor: "#B8B8B8",
+        maxWidth: "70%",
         borderRadius: 10,
         // padding : 10
     },
     footer: {
-        color: '#00DE62',
-        textAlign: 'center',
+        color: "#00DE62",
+        textAlign: "center",
         marginTop: 16,
         fontSize: 16,
-        fontStyle: "italic"
+        fontStyle: "italic",
     },
     keys: {
         fontFamily: "Roboto",
@@ -871,26 +827,25 @@ const styles = StyleSheet.create({
         borderLeftColor: "#00DE62",
         paddingLeft: 10,
         marginTop: 10,
-
     },
     s2: {
-        marginTop: 20
-    }
-    , text2: {
+        marginTop: 20,
+    },
+    text2: {
         color: "#B8B8B8",
         borderBottomWidth: 1,
         borderBottomColor: "#B8B8B8",
         marginBottom: 15,
         paddingBottom: 5,
-        fontSize: 14
-    }
-    , username1: {
+        fontSize: 14,
+    },
+    username1: {
         color: "#00DE62",
         borderBottomWidth: 1,
         borderBottomColor: "#B8B8B8",
         marginBottom: 15,
         paddingBottom: 5,
-        fontSize: 14
+        fontSize: 14,
     },
     iconcontainer: {
         position: "absolute",
@@ -906,18 +861,17 @@ const styles = StyleSheet.create({
         marginBottom: 30,
         gap: 80,
         // backgroundColor : "red"
-
     },
     t2: {
-        textAlign: 'Left',
+        textAlign: "Left",
         color: "#94A3B8",
-        fontFamily: 'Roboto',
+        fontFamily: "Roboto",
         fontSize: scalingfactor * 13,
 
         marginBottom: scalingfactor * 8,
         width: "85%",
         alignSelf: "center",
-        lineHeight: scalingfactor * 16
+        lineHeight: scalingfactor * 16,
     },
     count: {
         fontSize: 14,
@@ -925,9 +879,8 @@ const styles = StyleSheet.create({
         bottom: 25,
         right: 25,
         // backgroundColor: "red",
-        width: "auto"
+        width: "auto",
     },
-
 
     input: {
         backgroundColor: "transparent",
@@ -948,9 +901,7 @@ const styles = StyleSheet.create({
         padding: 10,
         textAlignVertical: "top",
         paddingBottom: 30,
-
     },
-
 
     next: {
         backgroundColor: "#00DF60",
@@ -972,7 +923,6 @@ const styles = StyleSheet.create({
         textAlign: "center",
         marginTop: -4,
         textAlign: "right",
-
     },
 
     divider: {
@@ -981,17 +931,16 @@ const styles = StyleSheet.create({
         height: 1,
         marginTop: 5,
         marginBottom: 20,
-        backgroundColor: "#24272A"
+        backgroundColor: "#24272A",
     },
     ReadMore: {
-        color: "#00de62", fontSize: 14,
-        position : "absolute",
-        bottom : 100,
-        alignSelf : "center"
-    }
+        color: "#00de62",
+        fontSize: 14,
+        position: "absolute",
+        bottom: 100,
+        alignSelf: "center",
+    },
 });
-
-
 
 // {async () => {
 //     console.log("start");

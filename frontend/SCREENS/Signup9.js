@@ -2,7 +2,6 @@
 
 import React, { useState, useRef, useEffect } from "react";
 import {
-
     SafeAreaView,
     View,
     Text,
@@ -15,7 +14,7 @@ import {
     Dimensions,
     ScrollView,
     FlatList,
-    TouchableWithoutFeedback
+    TouchableWithoutFeedback,
 } from "react-native";
 // import { FlatList, ScrollView } from 'react-native-gesture-handler';
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
@@ -23,34 +22,27 @@ import { LinearGradient } from "expo-linear-gradient";
 import signup3styles from "../styles/signup3styles.js";
 import Drop from "./dropdown.js";
 import Line2 from "./line2.js";
-import Line from "./line.js"
-import Line3 from "./line3.js"
-import Entypo from '@expo/vector-icons/Entypo';
+import Line from "./line.js";
+import Line3 from "./line3.js";
+import Entypo from "@expo/vector-icons/Entypo";
 // import { FlatList } from "react-native-gesture-handler";
 import { useFocusEffect } from "expo-router";
 
-
-
-
 const Signup9 = ({ navigation, route }) => {
-
     useFocusEffect(() => {
-        StatusBar.setBackgroundColor("#16181a")
-        StatusBar.setBarStyle("light-content")
-    })
-    const [workexperience, setworkexperience] = useState([{ id: Date.now(), name: '', role: '', year: "" }]);
+        StatusBar.setBackgroundColor("#16181a");
+        StatusBar.setBarStyle("light-content");
+    });
+    const [workexperience, setworkexperience] = useState([{ id: Date.now(), name: "", role: "", year: "" }]);
 
-    const { type } = route.params || "Freelancer"
+    const { type } = route.params || "Freelancer";
     const { form, image } = route.params;
 
-    const [skills, setskills] = useState("")
-    const [education1, seteducation] = useState("")
-    const [eduerror, seteduerror] = useState(false)
-
-
+    const [skills, setskills] = useState("");
+    const [education1, seteducation] = useState("");
+    const [eduerror, seteduerror] = useState(false);
 
     function nextpage(navigation, type) {
-
         console.log(education1);
 
         if (education1 == "") {
@@ -58,7 +50,6 @@ const Signup9 = ({ navigation, route }) => {
             seteduerror(true);
             return;
         }
-
 
         for (var i = 0; i < workexperience.length; i++) {
             console.log(i);
@@ -139,29 +130,27 @@ const Signup9 = ({ navigation, route }) => {
             }
         }
 
-
         const final = new FormData();
         for (var items of form["_parts"]) {
-
             if (items[0] == "fullname" || items[0] == "password") continue;
             final.append(items[0], items[1]);
         }
 
-        final.append("education", education1)
-        final.append("skills", skills)
+        final.append("education", education1);
+        final.append("skills", skills);
 
         var array = workexperience.map(({ id, name, ...items }) => {
             return {
                 company: name,
                 role: items.role,
-                year: items.year
-            }
-        })
-        final.append("previousWorkExperience", array)
+                year: items.year,
+            };
+        });
+        final.append("previousWorkExperience", array);
 
         console.log(final);
 
-        navigation.navigate("Signup10", { form: final, image: image })
+        navigation.navigate("Signup10", { form: final, image: image });
     }
     var education = [
         { label: "10th", value: "10TH" },
@@ -169,26 +158,19 @@ const Signup9 = ({ navigation, route }) => {
         { label: "Graduate", value: "Graduate" },
         { label: "Post-Graduate", value: "Post-Graduate" },
         { label: "P.H.D", value: "P.H.D" },
+    ];
 
-
-    ]
-
-    const [open, setOpen] = useState(false)
+    const [open, setOpen] = useState(false);
     const handleOutsideTouch = () => {
         if (open) {
             setOpen(false);
         }
     };
 
-
-    // multiple certificate 
-
-
+    // multiple certificate
 
     function addworkexperience() {
-        setworkexperience(
-            [...workexperience, { id: Date.now(), name: '', role: '', year: '' }]
-        )
+        setworkexperience([...workexperience, { id: Date.now(), name: "", role: "", year: "" }]);
     }
     function deleteworkexperience(index) {
         console.log(index);
@@ -196,24 +178,28 @@ const Signup9 = ({ navigation, route }) => {
         // setworkexperience(
         //     [...workexperience, { id: Date.now(), name: '', role: '', year: '' }]
         // )
-        var update = [...workexperience]
-        update.splice(index, 1)
+        var update = [...workexperience];
+        update.splice(index, 1);
         // var array = workexperience.splice(index, 1);
-        setworkexperience(update)
+        setworkexperience(update);
     }
 
     function handleworkchange(id, field, value) {
         var array = workexperience.map((e) => {
             if (e.id === id) {
-                return { ...e, [field]: value, yearError: false, roleError: false, nameError: false, yearInvalid: false }
-
-            }
-            else return { ...e, yearError: false, roleError: false, nameError: false, yearInvalid: false }
-        })
+                return {
+                    ...e,
+                    [field]: value,
+                    yearError: false,
+                    roleError: false,
+                    nameError: false,
+                    yearInvalid: false,
+                };
+            } else return { ...e, yearError: false, roleError: false, nameError: false, yearInvalid: false };
+        });
         setworkexperience(array);
     }
     return (
-
         <SafeAreaView style={signup3styles.container}>
             <ScrollView nestedScrollEnabled={true}>
                 <TouchableWithoutFeedback onPress={handleOutsideTouch}>
@@ -222,14 +208,15 @@ const Signup9 = ({ navigation, route }) => {
 
                         <View style={signup3styles.top}>
                             <View style={signup3styles.left}>
-                                <Image style={signup3styles.logo} source={require("../assets/images/logo.png")} />
+                                <Image
+                                    style={signup3styles.logo}
+                                    source={require("../assets/images/logo.png")}
+                                />
                             </View>
                             <View style={signup3styles.right}>
                                 <Line progresswidth={"55.5%"} />
                             </View>
                         </View>
-
-
 
                         {/* bottom */}
 
@@ -241,14 +228,32 @@ const Signup9 = ({ navigation, route }) => {
                                 placeholderTextColor="#828282"
                                 style={styles.input}
                                 value={skills}
-                                onChangeText={(text) => { setskills(text) }}
+                                onChangeText={(text) => {
+                                    setskills(text);
+                                }}
                             />
-                            <Text style={[styles.t1, { marginBottom: 5 }]}>Education <Text style={{fontSize:14 ,color: "#828282"}}>*</Text></Text>
-                            <Text style={[styles.t2, { marginBottom: 15 }]}>List your highest degree achieved, which helps to establish your academic background and qualifications.</Text>
-                            <Drop search={false} borderwidth={0} bb={1} width={"97%"}   borderColor={"#ccc"} 
-                             items={education} open={open} setOpen={setOpen} onValueChange={(value) => {
-                                seteduerror(false)
-                                seteducation(value)}} nestedScrollEnabled={true} />
+                            <Text style={[styles.t1, { marginBottom: 5 }]}>
+                                Education <Text style={{ fontSize: 14, color: "#828282" }}>*</Text>
+                            </Text>
+                            <Text style={[styles.t2, { marginBottom: 15 }]}>
+                                List your highest degree achieved, which helps to establish your academic
+                                background and qualifications.
+                            </Text>
+                            <Drop
+                                search={false}
+                                borderwidth={0}
+                                bb={1}
+                                width={"97%"}
+                                borderColor={"#ccc"}
+                                items={education}
+                                open={open}
+                                setOpen={setOpen}
+                                onValueChange={(value) => {
+                                    seteduerror(false);
+                                    seteducation(value);
+                                }}
+                                nestedScrollEnabled={true}
+                            />
 
                             {eduerror && <Text style={styles.err1}>* please select a valid value</Text>}
 
@@ -260,8 +265,11 @@ const Signup9 = ({ navigation, route }) => {
                             {/* </ScrollView> */}
 
                             <Text style={[styles.t1, { marginTop: 20 }]}>Previous Work Experience</Text>
-                            <Text style={[styles.t2, { marginBottom: 20 }]}>Detail any relevant industry experience, particularly if you’ve worked in a specific company or held roles that have prepared you for your current venture.</Text>
-
+                            <Text style={[styles.t2, { marginBottom: 20 }]}>
+                                Detail any relevant industry experience, particularly if you’ve worked in a
+                                specific company or held roles that have prepared you for your current
+                                venture.
+                            </Text>
 
                             {workexperience.map((we, index) => (
                                 <View key={we.id} style={styles.certificate}>
@@ -270,26 +278,46 @@ const Signup9 = ({ navigation, route }) => {
 
                                         {/* <Entypo style={styles.minus} name="plus" size={24} color="#ccc" /> */}
                                     </Pressable>
-                                    {index > 0 && <Pressable onPress={() => { deleteworkexperience(index) }}>
-                                        <FontAwesome6 name="trash" style={styles.minus} size={15} color="#ccc" />
-                                    </Pressable>}
+                                    {index > 0 && (
+                                        <Pressable
+                                            onPress={() => {
+                                                deleteworkexperience(index);
+                                            }}
+                                        >
+                                            <FontAwesome6
+                                                name="trash"
+                                                style={styles.minus}
+                                                size={15}
+                                                color="#ccc"
+                                            />
+                                        </Pressable>
+                                    )}
 
                                     <TextInput
                                         allowFontScaling={false}
                                         placeholder="Company / Oragnisation"
                                         placeholderTextColor="#828282"
-                                        style={[styles.input, { marginTop: 20, backgroundColor: "transparent" }]}
+                                        style={[
+                                            styles.input,
+                                            { marginTop: 20, backgroundColor: "transparent" },
+                                        ]}
                                         value={we.name}
-                                        onChangeText={(text) => { handleworkchange(we.id, "name", text) }}
+                                        onChangeText={(text) => {
+                                            handleworkchange(we.id, "name", text);
+                                        }}
                                     />
-                                    {we.nameError && <Text style={styles.err}>* please enter company name</Text>}
+                                    {we.nameError && (
+                                        <Text style={styles.err}>* please enter company name</Text>
+                                    )}
                                     <TextInput
                                         allowFontScaling={false}
                                         placeholder="Role"
                                         placeholderTextColor="#828282"
-                                        style={[styles.input , {marginTop : -3}]}
+                                        style={[styles.input, { marginTop: -3 }]}
                                         value={we.role}
-                                        onChangeText={(text) => { handleworkchange(we.id, "role", text) }}
+                                        onChangeText={(text) => {
+                                            handleworkchange(we.id, "role", text);
+                                        }}
                                     />
                                     {we.roleError && <Text style={styles.err}>* please enter your role</Text>}
 
@@ -297,70 +325,79 @@ const Signup9 = ({ navigation, route }) => {
                                         allowFontScaling={false}
                                         placeholder="Year"
                                         placeholderTextColor="#828282"
-                                        style={[styles.input , {marginTop : -3}]}
+                                        style={[styles.input, { marginTop: -3 }]}
                                         value={we.year}
-                                        onChangeText={(text) => { handleworkchange(we.id, "year", text) }}
+                                        onChangeText={(text) => {
+                                            handleworkchange(we.id, "year", text);
+                                        }}
                                     />
                                     {we.yearError && <Text style={styles.err}>* please enter year</Text>}
-                                    {we.yearInvalid && <Text style={styles.err}>* please enter valid year</Text>}
-
-
+                                    {we.yearInvalid && (
+                                        <Text style={styles.err}>* please enter valid year</Text>
+                                    )}
                                 </View>
                             ))}
                             <View style={styles.icons} nestedScrollEnabled={true}>
-                                <Pressable onPress={() => {
-                                    navigation.goBack()
-                                    // console.log(workexperience);
-                                }}><FontAwesome6 name="chevron-left" size={25} color="#00DF60" /></Pressable>
-                                <Pressable onPress={() => { nextpage(navigation, type) }}><FontAwesome6 name="chevron-right" size={25} color="#00DF60" /></Pressable>
+                                <Pressable
+                                    onPress={() => {
+                                        navigation.goBack();
+                                        // console.log(workexperience);
+                                    }}
+                                >
+                                    <FontAwesome6 name="chevron-left" size={25} color="#00DF60" />
+                                </Pressable>
+                                <Pressable
+                                    onPress={() => {
+                                        nextpage(navigation, type);
+                                    }}
+                                >
+                                    <FontAwesome6 name="chevron-right" size={25} color="#00DF60" />
+                                </Pressable>
                             </View>
-
                         </View>
                     </View>
                 </TouchableWithoutFeedback>
             </ScrollView>
         </SafeAreaView>
-
-    )
-}
+    );
+};
 
 export default Signup9;
 
-const { height, width } = Dimensions.get("window")
+const { height, width } = Dimensions.get("window");
 
 var a = width / 360;
 var b = height / 800;
 
-
-const scalingfactor = Math.sqrt(a * b)
+const scalingfactor = Math.sqrt(a * b);
 const styles = StyleSheet.create({
     t1: {
-        textAlign: 'Left',
+        textAlign: "Left",
         marginLeft: 10,
         color: "#ccc",
-        fontFamily: 'Alata',
-        fontSize:  24,
+        fontFamily: "Alata",
+        fontSize: 24,
         marginBottom: scalingfactor * 3,
         zIndex: 100,
         // pointerEvents: "none",
         // backgroundColor: 'red',
-        width: "auto"
+        width: "auto",
     },
     t2: {
-        textAlign: 'Left',
+        textAlign: "Left",
         color: "#828282",
-        fontFamily: 'Roboto',
+        fontFamily: "Roboto",
         fontSize: 12,
         zIndex: 100,
         marginBottom: scalingfactor * 8,
         width: "85%",
-        fontSize : 12,
+        fontSize: 12,
         alignSelf: "center",
     },
     bottom: {
         width: "100%",
         // height: height*0.85,
-        backgroundColor : "rgba(33, 34, 35, 0.5)",
+        backgroundColor: "rgba(33, 34, 35, 0.5)",
         // backgroundColor: "red",
         borderTopLeftRadius: 70,
         padding: height * 0.03,
@@ -370,12 +407,8 @@ const styles = StyleSheet.create({
         padding: scalingfactor * 20,
         paddingTop: scalingfactor * 40,
         // overflow : "hidden",
-
     },
-    icons: {
-
-    }
-    ,
+    icons: {},
     btn: {
         width: 168,
         height: 48,
@@ -386,7 +419,7 @@ const styles = StyleSheet.create({
         borderRadius: 20,
         // margin: "auto",
         // marginTop: scalingfactor * 20,
-        shadowColor: 'rgba(0,0,0, 0.5)', // Shadow color
+        shadowColor: "rgba(0,0,0, 0.5)", // Shadow color
         shadowOffset: {
             width: 0, // x offset
             height: 5, // y offset
@@ -394,16 +427,15 @@ const styles = StyleSheet.create({
         shadowOpacity: 1, // Full opacity for shadow effect
         shadowRadius: 1, // Blur radius
         elevation: 5,
-        justifyContent: 'center',
-
-    }, nexttext: {
+        justifyContent: "center",
+    },
+    nexttext: {
         color: "#24272A",
         fontFamily: "Alata",
         fontSize: scalingfactor * 22,
         textAlign: "center",
         // lineHeight : 16
-        marginTop: -4
-
+        marginTop: -4,
     },
     input: {
         backgroundColor: "transparent",
@@ -418,16 +450,16 @@ const styles = StyleSheet.create({
         width: "92%",
         fontFamily: "Alata",
         // lineHeight: scalingfactor * 18,
-        marginBottom: scalingfactor * 20
-    }
-    , icons: {
+        marginBottom: scalingfactor * 20,
+    },
+    icons: {
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
         width: "92%",
         margin: "auto",
         marginTop: 40,
-        marginBottom: 30
+        marginBottom: 30,
     },
     certificate: {
         padding: 4,
@@ -439,19 +471,19 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "#ccc",
         borderRadius: 10,
-        position: "relative"
+        position: "relative",
     },
     plus: {
         position: "absolute",
         right: 5,
         top: -5,
-        zIndex: 100
+        zIndex: 100,
     },
     minus: {
         position: "absolute",
         right: 45,
         top: -3,
-        zIndex: 100
+        zIndex: 100,
     },
     err: {
         marginVertical: 0,
@@ -476,7 +508,5 @@ const styles = StyleSheet.create({
         color: "#E65858",
         fontSize: 12,
         fontFamily: "Roboto",
-    }
-
-
-})
+    },
+});

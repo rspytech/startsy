@@ -1,12 +1,31 @@
 import * as React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
-import { SafeAreaView, Text, Pressable, TextInput, View, Image, StyleSheet, StatusBar, Platform, Animated, Easing, Dimensions, FlatList, ScrollView, Keyboard, KeyboardAvoidingView, TouchableOpacity, Linking } from "react-native";
-import Ionicons from '@expo/vector-icons/Ionicons';
+import {
+    SafeAreaView,
+    Text,
+    Pressable,
+    TextInput,
+    View,
+    Image,
+    StyleSheet,
+    StatusBar,
+    Platform,
+    Animated,
+    Easing,
+    Dimensions,
+    FlatList,
+    ScrollView,
+    Keyboard,
+    KeyboardAvoidingView,
+    TouchableOpacity,
+    Linking,
+} from "react-native";
+import Ionicons from "@expo/vector-icons/Ionicons";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 // import { ScrollView } from "react-native-gesture-handler";
 import { InteractionManager } from "react-native";
 
-import { BackHandler } from 'react-native';
+import { BackHandler } from "react-native";
 import { useFocusEffect } from "@react-navigation/native";
 
 import io from "socket.io-client";
@@ -14,37 +33,23 @@ import { jwtDecode } from "jwt-decode";
 // import styles from "../../styles/post.js"
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 
-import { url } from "../../config.js"
+import { url } from "../../config.js";
 import { useNavigation } from "@react-navigation/native";
 
 const Chat = ({ route }) => {
-
-    const [newtext, setnewtext] = useState("")
+    const [newtext, setnewtext] = useState("");
     const { item, messages, token, photo1, photo2, tabnavigation } = route.params;
     const { extra } = route.params;
-    const itemdummy = route.params.item
+    const itemdummy = route.params.item;
     const navigation = useNavigation();
 
-
-
-
-    const btn11 = useRef(null)
+    const btn11 = useRef(null);
     const [keyboardOffset, setKeyboardOffset] = useState(new Animated.Value(0));
 
-
-
-
-
     function sendmessage() {
-
-
-
-
-
         if (newtext == "") {
-            return
+            return;
         }
-
 
         const finaldata = {
             senderId: id,
@@ -52,48 +57,39 @@ const Chat = ({ route }) => {
             message: newtext,
             updatedAt: new Date(),
             // profilePhoto  : ""
-        }
-        socket.emit("privateMessage", finaldata)
-        setdata((data) => [{ message: newtext, senderId: id, updatedAt: new Date() }, ...data])
+        };
+        socket.emit("privateMessage", finaldata);
+        setdata((data) => [{ message: newtext, senderId: id, updatedAt: new Date() }, ...data]);
 
-
-        setnewtext("")
-
-
+        setnewtext("");
     }
-
 
     useEffect(() => {
         var decode = jwtDecode(token);
         // console.log(decode);
 
         if (extra && extra.status) {
-            setnewtext(`${decode.userName} has considered your application for ${extra.jobrole} Now you can chat for further discussion.`)
+            setnewtext(
+                `${decode.userName} has considered your application for ${extra.jobrole} Now you can chat for further discussion.`
+            );
         }
-
-    }, [extra])
+    }, [extra]);
 
     const jisuserkosendkarnahaiuskiid = item.user._id;
 
-
-    const [data, setdata] = useState([])
+    const [data, setdata] = useState([]);
     const [socket, setSocket] = useState(null);
     const [id, setid] = useState(null);
     const flatListRef = useRef(null);
-    const [keyboardstatus, setkeyboardstatus] = useState(false)
+    const [keyboardstatus, setkeyboardstatus] = useState(false);
     const inputRef = useRef(null);
-    const [offset, setoffset] = useState(300)
-
+    const [offset, setoffset] = useState(300);
 
     const decoded = jwtDecode(token);
 
-
-
-
-
     useEffect(() => {
-        var temp = messages.toReversed()
-        setdata(temp)
+        var temp = messages.toReversed();
+        setdata(temp);
         setTimeout(() => {
             // Ensure we are only scrolling when new messages are added
             // InteractionManager.runAfterInteractions(() => {
@@ -103,25 +99,18 @@ const Chat = ({ route }) => {
             //     });
             // });
         }, 500);
-    }, []);  // This runs only on mount
+    }, []); // This runs only on mount
 
-
-    useEffect(() => {
-
-    }, [])
+    useEffect(() => {}, []);
 
     useFocusEffect(
         useCallback(() => {
             setTimeout(() => {
                 // Ensure we are only scrolling when new messages are added
-                InteractionManager.runAfterInteractions(() => {
-
-                });
+                InteractionManager.runAfterInteractions(() => {});
             }, 500);
         }, [messages])
-    )
-
-
+    );
 
     useEffect(() => {
         const newSocket = io(`${url}`, {
@@ -129,16 +118,12 @@ const Chat = ({ route }) => {
         });
 
         setSocket(newSocket);
-        setid(decoded._id)
-
-
+        setid(decoded._id);
 
         return () => {
             newSocket.disconnect();
         };
     }, []);
-
-
 
     // useEffect(()=>{
     //     const newSocket = io(`${url}/chatScreen`,{
@@ -150,26 +135,20 @@ const Chat = ({ route }) => {
     //     }
     // },[])
 
-
-
-
     useEffect(() => {
-
-
         if (socket) {
             const finaldata = {
                 senderId: id,
                 receiverId: jisuserkosendkarnahaiuskiid,
-                message: newtext
-            }
-            socket.emit("registerUser", finaldata)
+                message: newtext,
+            };
+            socket.emit("registerUser", finaldata);
             // console.log("i am connection socke url, ", url);
             // Listen for incoming private messages
             socket.on("privateMessage", (data1) => {
                 // console.log(data1);
                 setdata((prevMessages) => [data1, ...prevMessages]);
                 function scroll() {
-
                     // if (flatListRef.current) {
                     //     console.log("scroll karne wala hu dusre mobile me");
                     //     flatListRef.current.scrollToOffset({
@@ -177,35 +156,17 @@ const Chat = ({ route }) => {
                     //         animated: true,
                     //     });
                     //     // flatListRef.current?.scrollToEnd({ animated: true });
-
                     // }
-
                 }
-                scroll()
-
+                scroll();
             });
         }
     }, [socket]);
-
-
-
-
-
 
     const urlRegex = /(https?:\/\/[^\s]+)/g;
     const handlePress = (url) => {
         Linking.openURL(url);
     };
-
-
-
-
-
-
-
-
-
-
 
     const renderMessage = (message) => {
         const parts = message.split(urlRegex);
@@ -213,31 +174,39 @@ const Chat = ({ route }) => {
         return parts.map((part, index) => {
             if (part.match(urlRegex)) {
                 return (
-
-                    <Text onPress={() => handlePress(part)} style={{ color: '#000', alignSelf: "flex-start", paddingTop: 0, fontSize: 16, fontWeight: "bold", textDecorationLine: 'underline' }}>
+                    <Text
+                        onPress={() => handlePress(part)}
+                        style={{
+                            color: "#000",
+                            alignSelf: "flex-start",
+                            paddingTop: 0,
+                            fontSize: 16,
+                            fontWeight: "bold",
+                            textDecorationLine: "underline",
+                        }}
+                    >
                         {part}
-
                     </Text>
-
                 );
             }
-            return <Text style={{ backgroundColor: "", marginTop: -10, position: "relative" }} key={index}>{part}
-
-            </Text>;
+            return (
+                <Text style={{ backgroundColor: "", marginTop: -10, position: "relative" }} key={index}>
+                    {part}
+                </Text>
+            );
         });
     };
 
     function messagetime(date) {
-        var date = new Date(date)
-        const options = { hour: 'numeric', minute: 'numeric', hour12: true };
-        const formattedTime = date.toLocaleString('en-US', options);
-        return formattedTime
+        var date = new Date(date);
+        const options = { hour: "numeric", minute: "numeric", hour12: true };
+        const formattedTime = date.toLocaleString("en-US", options);
+        return formattedTime;
     }
 
-
-
     function renderdategap(date, index) {
-        if (index < data.length - 1) {  // Now checking the next message instead of the previous one
+        if (index < data.length - 1) {
+            // Now checking the next message instead of the previous one
             var date1 = new Date(data[index + 1].updatedAt);
             var date2 = new Date(date);
 
@@ -254,30 +223,35 @@ const Chat = ({ route }) => {
 
             if (messageDate1 !== messageDate2) {
                 return (
-                    <View style={{
-                        justifyContent: "center",
-                        textAlign: "center",
-                        marginVertical: 10,
-                        marginBottom: 20,
-                        padding: 10,
-                        width: "auto",
-                        margin: "auto",
-                        borderRadius: 10
-                    }}>
-                        <Text style={{
+                    <View
+                        style={{
+                            justifyContent: "center",
                             textAlign: "center",
-                            backgroundColor: "#363535",
-                            padding: 5,
-                            paddingHorizontal: 10,
+                            marginVertical: 10,
+                            marginBottom: 20,
+                            padding: 10,
+                            width: "auto",
+                            margin: "auto",
                             borderRadius: 10,
-                            color: "#bbbbbb"
-                        }}>
+                        }}
+                    >
+                        <Text
+                            style={{
+                                textAlign: "center",
+                                backgroundColor: "#363535",
+                                padding: 5,
+                                paddingHorizontal: 10,
+                                borderRadius: 10,
+                                color: "#bbbbbb",
+                            }}
+                        >
                             {messageDate2}
                         </Text>
                     </View>
                 );
             }
-        } else if (index === data.length - 1) {  // The first message in the original order is now the last
+        } else if (index === data.length - 1) {
+            // The first message in the original order is now the last
             var date1 = new Date(date);
             const messageDate1 = date1.toLocaleDateString("en-US", {
                 day: "2-digit",
@@ -286,24 +260,28 @@ const Chat = ({ route }) => {
             });
 
             return (
-                <View style={{
-                    justifyContent: "center",
-                    textAlign: "center",
-                    marginVertical: 10,
-                    marginBottom: 20,
-                    padding: 10,
-                    width: "auto",
-                    margin: "auto",
-                    borderRadius: 10
-                }}>
-                    <Text style={{
+                <View
+                    style={{
+                        justifyContent: "center",
                         textAlign: "center",
-                        backgroundColor: "#363535",
-                        padding: 5,
-                        paddingHorizontal: 10,
+                        marginVertical: 10,
+                        marginBottom: 20,
+                        padding: 10,
+                        width: "auto",
+                        margin: "auto",
                         borderRadius: 10,
-                        color: "#bbbbbb"
-                    }}>
+                    }}
+                >
+                    <Text
+                        style={{
+                            textAlign: "center",
+                            backgroundColor: "#363535",
+                            padding: 5,
+                            paddingHorizontal: 10,
+                            borderRadius: 10,
+                            color: "#bbbbbb",
+                        }}
+                    >
                         {messageDate1}
                     </Text>
                 </View>
@@ -311,54 +289,92 @@ const Chat = ({ route }) => {
         }
     }
 
-    const renderItem = React.useMemo(
-        () => ({ item, index }) => {
-            const dataLength = data.length;
-            // console.log(dataLength);
-            // console.log(index);
+    const renderItem = React.useMemo(() => ({ item, index }) => {
+        const dataLength = data.length;
+        // console.log(dataLength);
+        // console.log(index);
 
+        // if(item.message.isNewsLetter == true){
+        //     console.log(item.message);
 
-            // if(item.message.isNewsLetter == true){
-            //     console.log(item.message);
-                
-            // }
+        // }
 
-            if(typeof item.message == "object" ){
-                console.log(item);
-                
-            }
-            return (
-                
-                <>
-
-                    {typeof item.message == "string" && <TouchableOpacity onLongPress={() => {
-                        console.log("long pressed");
-
-                    }}>
+        if (typeof item.message == "object") {
+            console.log(item);
+        }
+        return (
+            <>
+                {typeof item.message == "string" && (
+                    <TouchableOpacity
+                        onLongPress={() => {
+                            console.log("long pressed");
+                        }}
+                    >
                         <View style={{ display: "flex", flex: 1 }}>
                             {/* {index < dataLength - 1 && item.senderId != data[index + 1].senderId && <Image style={item.senderId == jisuserkosendkarnahaiuskiid ? styles.pfpleft : styles.pfpright} source={{ uri: item.senderId == jisuserkosendkarnahaiuskiid ? photo2 : photo1 }} />} */}
 
                             {index > 0 && item.senderId != data[index - 1].senderId && (
                                 <Image
-                                    style={item.senderId == jisuserkosendkarnahaiuskiid ? styles.pfpleft : styles.pfpright}
-                                    source={{ uri: item.senderId == jisuserkosendkarnahaiuskiid ? photo2 : photo1 }}
+                                    style={
+                                        item.senderId == jisuserkosendkarnahaiuskiid
+                                            ? styles.pfpleft
+                                            : styles.pfpright
+                                    }
+                                    source={{
+                                        uri: item.senderId == jisuserkosendkarnahaiuskiid ? photo2 : photo1,
+                                    }}
                                 />
                             )}
-                            {index == 0 && <Image style={item.senderId == jisuserkosendkarnahaiuskiid ? styles.pfpleft : styles.pfpright} source={{ uri: item.senderId == jisuserkosendkarnahaiuskiid ? photo2 : photo1 }} />}
+                            {index == 0 && (
+                                <Image
+                                    style={
+                                        item.senderId == jisuserkosendkarnahaiuskiid
+                                            ? styles.pfpleft
+                                            : styles.pfpright
+                                    }
+                                    source={{
+                                        uri: item.senderId == jisuserkosendkarnahaiuskiid ? photo2 : photo1,
+                                    }}
+                                />
+                            )}
 
+                            <View
+                                style={[
+                                    styles.message,
+                                    item.senderId == jisuserkosendkarnahaiuskiid
+                                        ? styles.received
+                                        : styles.sent,
+                                ]}
+                            >
+                                <View style={{ position: "relative" }} allowFontScaling={false}>
+                                    <Text
+                                        style={[
+                                            {
+                                                position: "absolute",
+                                                bottom: 6,
+                                                zIndex: 10000,
+                                                fontSize: 10,
+                                                color: "#666",
+                                            },
+                                            { right: item.senderId != jisuserkosendkarnahaiuskiid ? 40 : 15 },
+                                        ]}
+                                    >
+                                        {messagetime(item.updatedAt)}
+                                    </Text>
+                                    <Text
+                                        style={[
+                                            item.senderId != jisuserkosendkarnahaiuskiid
+                                                ? styles.senttext
+                                                : styles.receivedtext,
 
+                                            { paddingRight: item.message.length < 20 ? 60 : 15 },
 
-
-                            <View style={[styles.message, (item.senderId == jisuserkosendkarnahaiuskiid) ? styles.received : styles.sent]}>
-                                <View style={{ position: "relative", }} allowFontScaling={false}>
-                                    <Text style={[{ position: "absolute", bottom: 6, zIndex: 10000, fontSize: 10, color: "#666" }, { right: item.senderId != jisuserkosendkarnahaiuskiid ? 40 : 15 }]}>{messagetime(item.updatedAt)}</Text>
-                                    <Text style={[
-                                        (item.senderId != jisuserkosendkarnahaiuskiid) ? styles.senttext : styles.receivedtext,
-
-                                        { paddingRight: item.message.length < 20 ? 60 : 15 },
-
-                                        { paddingBottom: item.message.length > 10 ? 20 : 15 }
-                                    ]}> {renderMessage(item.message)}</Text>
+                                            { paddingBottom: item.message.length > 10 ? 20 : 15 },
+                                        ]}
+                                    >
+                                        {" "}
+                                        {renderMessage(item.message)}
+                                    </Text>
                                 </View>
 
                                 {/* <View style={{ flexDirection: "row", alignSelf: "flex-end", alignItems: "center", marginTop: 5 }}>
@@ -368,56 +384,114 @@ const Chat = ({ route }) => {
                                 {/* </View> */}
                             </View>
                         </View>
-                    </TouchableOpacity>}
-                    {typeof item.message == "object" &&
-                        <View style={[styles.message, (item.senderId == jisuserkosendkarnahaiuskiid) ? styles.received : styles.sent]}>
+                    </TouchableOpacity>
+                )}
+                {typeof item.message == "object" && (
+                    <View
+                        style={[
+                            styles.message,
+                            item.senderId == jisuserkosendkarnahaiuskiid ? styles.received : styles.sent,
+                        ]}
+                    >
+                        {/* {index < dataLength - 1 && item.senderId != data[index + 1].senderId && <Image style={item.senderId == jisuserkosendkarnahaiuskiid ? styles.pfpleft1 : styles.pfpright1} source={{ uri: item.senderId == jisuserkosendkarnahaiuskiid ? photo2 : photo1 }} />} */}
 
-                            {/* {index < dataLength - 1 && item.senderId != data[index + 1].senderId && <Image style={item.senderId == jisuserkosendkarnahaiuskiid ? styles.pfpleft1 : styles.pfpright1} source={{ uri: item.senderId == jisuserkosendkarnahaiuskiid ? photo2 : photo1 }} />} */}
+                        {/* {index == dataLength - 1 && <Image style={item.senderId == jisuserkosendkarnahaiuskiid ? styles.pfpleft1 : styles.pfpright1} source={{ uri: item.senderId == jisuserkosendkarnahaiuskiid ? photo2 : photo1 }} />} */}
 
-                            {/* {index == dataLength - 1 && <Image style={item.senderId == jisuserkosendkarnahaiuskiid ? styles.pfpleft1 : styles.pfpright1} source={{ uri: item.senderId == jisuserkosendkarnahaiuskiid ? photo2 : photo1 }} />} */}
+                        {index > 0 && item.senderId != data[index - 1].senderId && (
+                            <Image
+                                style={
+                                    item.senderId == jisuserkosendkarnahaiuskiid
+                                        ? styles.pfpleft1
+                                        : styles.pfpright1
+                                }
+                                source={{
+                                    uri: item.senderId == jisuserkosendkarnahaiuskiid ? photo2 : photo1,
+                                }}
+                            />
+                        )}
+                        {index == 0 && (
+                            <Image
+                                style={
+                                    item.senderId == jisuserkosendkarnahaiuskiid
+                                        ? styles.pfpleft1
+                                        : styles.pfpright1
+                                }
+                                source={{
+                                    uri: item.senderId == jisuserkosendkarnahaiuskiid ? photo2 : photo1,
+                                }}
+                            />
+                        )}
 
-                            {index > 0 && item.senderId != data[index - 1].senderId && (
-                                <Image
-                                    style={item.senderId == jisuserkosendkarnahaiuskiid ? styles.pfpleft1 : styles.pfpright1}
-                                    source={{ uri: item.senderId == jisuserkosendkarnahaiuskiid ? photo2 : photo1 }}
-                                />
-                            )}
-                            {index == 0 && <Image style={item.senderId == jisuserkosendkarnahaiuskiid ? styles.pfpleft1 : styles.pfpright1} source={{ uri: item.senderId == jisuserkosendkarnahaiuskiid ? photo2 : photo1 }} />}
-
-                            <TouchableOpacity onPress={() => {
-                               item.message.isNewsLetter == true ?  tabnavigation.push("NewsletterPage", { navigation:tabnavigation, item: item.message.NewsletterContent }) :
-                                tabnavigation.navigate("ViewSendedPost", { id: item.message.postShared })
-                            }}>
-
-                                <View style={[styles.box, {
-                                    marginRight: item.senderId != jisuserkosendkarnahaiuskiid ? 25 : 0,
-                                    marginLeft: item.senderId != jisuserkosendkarnahaiuskiid ? 25 : 0
-
-                                }]}>
-                                    <View style={styles.top} >
-                                        {!item.message.isNewsLetter && <Pressable
+                        <TouchableOpacity
+                            onPress={() => {
+                                item.message.isNewsLetter == true
+                                    ? tabnavigation.push("NewsletterPage", {
+                                          navigation: tabnavigation,
+                                          item: item.message.NewsletterContent,
+                                      })
+                                    : tabnavigation.navigate("ViewSendedPost", {
+                                          id: item.message.postShared,
+                                      });
+                            }}
+                        >
+                            <View
+                                style={[
+                                    styles.box,
+                                    {
+                                        marginRight: item.senderId != jisuserkosendkarnahaiuskiid ? 25 : 0,
+                                        marginLeft: item.senderId != jisuserkosendkarnahaiuskiid ? 25 : 0,
+                                    },
+                                ]}
+                            >
+                                <View style={styles.top}>
+                                    {!item.message.isNewsLetter && (
+                                        <Pressable
                                             onPress={() => {
-                                                navigation.navigate("Singleprofilepage", { token: token, id: jisuserkosendkarnahaiuskiid, page: "Chat", item: itemdummy, messages, })
+                                                navigation.navigate("Singleprofilepage", {
+                                                    token: token,
+                                                    id: jisuserkosendkarnahaiuskiid,
+                                                    page: "Chat",
+                                                    item: itemdummy,
+                                                    messages,
+                                                });
                                             }}
-                                            style={{ display: "flex", flexDirection: "row", width: "100%" }}>
-                                            <Image style={styles.userImgPost} source={{ uri: item.message.profilePhoto }} />
+                                            style={{ display: "flex", flexDirection: "row", width: "100%" }}
+                                        >
+                                            <Image
+                                                style={styles.userImgPost}
+                                                source={{ uri: item.message.profilePhoto }}
+                                            />
                                             <View style={styles.userdetail}>
-                                                <Text allowFontScaling={false} style={styles.u1}>{item.message.userName}</Text>
+                                                <Text allowFontScaling={false} style={styles.u1}>
+                                                    {item.message.userName}
+                                                </Text>
                                             </View>
-                                        </Pressable>}
-                                        {item.message.isNewsLetter &&
+                                        </Pressable>
+                                    )}
+                                    {item.message.isNewsLetter && (
+                                        <View style={styles.userdetail}>
+                                            <Text allowFontScaling={false} style={styles.u1}>
+                                                Newsletter
+                                            </Text>
+                                        </View>
+                                    )}
+                                </View>
+                                {item.message.postImage == null && <View style={styles.divider}></View>}
 
-                                            <View style={styles.userdetail}>
-                                                <Text allowFontScaling={false} style={styles.u1}>Newsletter</Text>
-                                            </View>}
-                                    </View>
-                                    {item.message.postImage == null && <View style={styles.divider}></View>
-                                    }
+                                {item.message.postImage != null && (
+                                    <Image
+                                        style={[
+                                            styles.template,
+                                            { aspectRatio: item.aspectRatio ? item.aspectRatio : 1 / 1 },
+                                        ]}
+                                        source={{ uri: item.message.postImage }}
+                                    />
+                                )}
 
-                                    {item.message.postImage != null && <Image style={[styles.template, { aspectRatio: item.aspectRatio ? item.aspectRatio : 1 / 1 }]} source={{ uri: item.message.postImage }} />}
-
-                                    {item.message.postImage == null && <Text style={styles.blogtext}>{item.message.postContent}</Text>}
-                                    {/* {item.type == "video" &&
+                                {item.message.postImage == null && (
+                                    <Text style={styles.blogtext}>{item.message.postContent}</Text>
+                                )}
+                                {/* {item.type == "video" &&
                                     <Video
                                         ref={ref => videoRefs.current[item._id] = ref}
                                         style={[styles.template, { width: newwidth, height: getVideoHeight(item.aspectRatio) }]}
@@ -428,40 +502,32 @@ const Chat = ({ route }) => {
                                         shouldPlay={isVideoPlaying}
                                     />
                                 } */}
-                                    {/* {item.type == "textBlog" && <Text style={styles.blogtext}>{item.content}</Text>} */}
+                                {/* {item.type == "textBlog" && <Text style={styles.blogtext}>{item.content}</Text>} */}
 
-                                    <View style={styles.iconcontainer}>
-                                        <View style={styles.icon2}>
-
-                                        </View>
-                                        {/* <Pressable onPress={() => openshare(item._id)}><Share style={{ marginTop: 5, marginRight: 10, right: 0 }} /></Pressable> */}
-
-
-                                    </View>
-                                    <View style={styles.lower}>
-                                        <Text allowFontScaling={false} style={styles.u3}>{item.message.postCaption != undefined ? item.message.postCaption : "caption"} </Text>
-                                    </View>
-
+                                <View style={styles.iconcontainer}>
+                                    <View style={styles.icon2}></View>
+                                    {/* <Pressable onPress={() => openshare(item._id)}><Share style={{ marginTop: 5, marginRight: 10, right: 0 }} /></Pressable> */}
                                 </View>
-                            </TouchableOpacity>
-                        </View>
-                    }
+                                <View style={styles.lower}>
+                                    <Text allowFontScaling={false} style={styles.u3}>
+                                        {item.message.postCaption != undefined
+                                            ? item.message.postCaption
+                                            : "caption"}{" "}
+                                    </Text>
+                                </View>
+                            </View>
+                        </TouchableOpacity>
+                    </View>
+                )}
 
-                    {renderdategap(item.updatedAt, index)}
-
-
-
-
-
-
-                </>
-            );
-        })
-
+                {renderdategap(item.updatedAt, index)}
+            </>
+        );
+    });
 
     useFocusEffect(
         useCallback(() => {
-            const keyboardDidShowListener = Keyboard.addListener('keyboardDidShow', (event) => {
+            const keyboardDidShowListener = Keyboard.addListener("keyboardDidShow", (event) => {
                 Animated.timing(keyboardOffset, {
                     toValue: 0,
                     duration: 300,
@@ -469,7 +535,7 @@ const Chat = ({ route }) => {
                 }).start();
             });
 
-            const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+            const keyboardDidHideListener = Keyboard.addListener("keyboardDidHide", () => {
                 Animated.timing(keyboardOffset, {
                     toValue: 0,
                     duration: 300,
@@ -484,15 +550,12 @@ const Chat = ({ route }) => {
                 keyboardDidHideListener.remove();
             };
         }, [])
-    )
-
-
-
+    );
 
     useEffect(() => {
-        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
             // navigation.pop(2)
-            navigation.goBack()
+            navigation.goBack();
             // navigation.replace("Main2" , {focus : "Message"})
             if (inputRef.current) {
                 inputRef.current.blur();
@@ -507,52 +570,50 @@ const Chat = ({ route }) => {
     useEffect(() => {
         async function markAsRead() {
             console.log("marking read");
-            var decode = jwtDecode(token)
+            var decode = jwtDecode(token);
             // console.log(decode);
 
             var object = {
                 senderId: decode._id,
                 receiverId: jisuserkosendkarnahaiuskiid,
-            }
+            };
 
             // console.log(object);
             // console.log(`${url}test/markAsRead`);
 
-
             try {
-                const response = await fetch(`${url}test/markAsRead`,
-                    {
-                        method: "POST",
-                        body: JSON.stringify(object),
-                        headers: {
-                            "Content-Type": "application/json",
-                            'Accept': 'application/json',
-                            'Authorization': `Bearer ${token}`
-                        }
-                    }
-                );
+                const response = await fetch(`${url}test/markAsRead`, {
+                    method: "POST",
+                    body: JSON.stringify(object),
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Accept": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                });
                 const result = await response.json();
                 // console.log(response);
                 // console.log(result);
-
-            }
-            catch (e) {
+            } catch (e) {
                 console.log(e);
-
             }
-
         }
-        markAsRead()
+        markAsRead();
     }, []);
 
     function handlenext() {
-        var decode = jwtDecode(token)
+        var decode = jwtDecode(token);
         if (decode.role == "Investor") {
-            return
+            return;
         }
-        navigation.navigate("Singleprofilepage", { token: token, id: item.user._id, page: "Chat", item, messages, })
+        navigation.navigate("Singleprofilepage", {
+            token: token,
+            id: item.user._id,
+            page: "Chat",
+            item,
+            messages,
+        });
     }
-
 
     // useEffect(() => {
     //     if (data.length > 0) {
@@ -564,37 +625,44 @@ const Chat = ({ route }) => {
         // <KeyboardAvoidingView style={{ flex: 1, height: height }} behavior={Platform.OS === 'ios' ? 'padding' : 'height'} keyboardVerticalOffset={Platform.OS === 'ios' ? 64 : 0}>
         <Animated.View style={{ flex: 1, paddingBottom: 10, backgroundColor: "#16181a" }}>
             <View style={{ flex: 1.1, backgroundColor: "#16181a" }}>
-
-
                 <View style={[styles.header]}>
-                    <Pressable style={{ paddingLeft: 10, paddingTop: 7 }} onPress={() => { navigation.goBack() }}>
+                    <Pressable
+                        style={{ paddingLeft: 10, paddingTop: 7 }}
+                        onPress={() => {
+                            navigation.goBack();
+                        }}
+                    >
                         {/* <Ionicons name="arrow-back-circle-outline" size={40} color="#00DE62" /> */}
                         <FontAwesome6 name="chevron-left" size={25} color="#00DF60" />
                     </Pressable>
 
                     <Pressable
-                        onPress={() => { handlenext() }}
+                        onPress={() => {
+                            handlenext();
+                        }}
                     >
                         <View style={styles.details}>
                             <View style={styles.userimg}>
                                 <Image style={styles.image} source={{ uri: item.user.profilePhoto }} />
                             </View>
                             <View style={styles.d2}>
-                                <Text allowFontScaling={false} style={styles.userid}>{item.user.userName}</Text>
-                                <Text allowFontScaling={false} style={styles.username}>{item.user.userName}</Text>
+                                <Text allowFontScaling={false} style={styles.userid}>
+                                    {item.user.userName}
+                                </Text>
+                                <Text allowFontScaling={false} style={styles.username}>
+                                    {item.user.userName}
+                                </Text>
                             </View>
                         </View>
                     </Pressable>
-
-
                 </View>
                 <FlatList
                     // style={{height : 600}}
                     data={data}
                     inverted={true}
                     removeClippedSubview={false}
-                    initialNumToRender={20}  // Only load 20 items initially
-                    maxToRenderPerBatch={10}  // Render only 10 items per batch
+                    initialNumToRender={20} // Only load 20 items initially
+                    maxToRenderPerBatch={10} // Render only 10 items per batch
                     windowSize={21}
                     legacyImplementation={true}
                     bounces={true}
@@ -604,19 +672,13 @@ const Chat = ({ route }) => {
                     keyExtractor={(item, index) => index.toString()}
                     // onContentSizeChange={() => flatListRef.current?.scrollToEnd({ animated: true })}
                     style={{ paddingLeft: 4, paddingRight: 4 }}
-
                     getItemLayout={(data, index) => ({ length: 100, offset: 100 * index, index })}
                     contentContainerStyle={styles.messagesContainer}
-                // onContentSizeChange={() => flatListRef.current?.scrollToOffset({ offset: 0, animated: false })}
-                // onLayout={() => flatListRef.current?.scrollToOffset({ offset: 0, animated: false })}
+                    // onContentSizeChange={() => flatListRef.current?.scrollToOffset({ offset: 0, animated: false })}
+                    // onLayout={() => flatListRef.current?.scrollToOffset({ offset: 0, animated: false })}
                 />
 
-
-
-
-
-
-                <View style={{ zIndex: 100000, bottom: 0 }} >
+                <View style={{ zIndex: 100000, bottom: 0 }}>
                     <Animated.View style={[styles.searchContainer, { marginBottom: keyboardOffset }]}>
                         <TextInput
                             ref={inputRef}
@@ -629,18 +691,17 @@ const Chat = ({ route }) => {
                             // onBlur={() => setkeyboardstatus(false)}
                             onChangeText={(val) => setnewtext(val)}
                             value={newtext}
-
-
                         />
-
-
-
                     </Animated.View>
 
                     <TouchableOpacity
                         ref={btn11}
-                        onTouchStart={() => { inputRef.current.focus(); }}
-                        style={styles.send} onPress={sendmessage}>
+                        onTouchStart={() => {
+                            inputRef.current.focus();
+                        }}
+                        style={styles.send}
+                        onPress={sendmessage}
+                    >
                         <Ionicons name="send" size={24} color="#ccc" />
                     </TouchableOpacity>
                 </View>
@@ -655,27 +716,21 @@ const Chat = ({ route }) => {
                             <Text style={styles.sendButtonText}>Send</Text>
                         </TouchableOpacity>
                     </Animated.View> */}
-
             </View>
         </Animated.View>
 
         // </KeyboardAvoidingView>
-    )
-}
+    );
+};
 
+export default Chat;
 
-export default Chat
-
-
-
-const { height, width } = Dimensions.get("window")
+const { height, width } = Dimensions.get("window");
 
 var a = width / 360;
 var b = height / 800;
 
-
-const scalingfactor = Math.sqrt(a * b)
-
+const scalingfactor = Math.sqrt(a * b);
 
 const styles = StyleSheet.create({
     inputContainer: { flexDirection: "row", padding: 10, borderTopWidth: 1, borderColor: "#ddd", bottom: 0 },
@@ -684,13 +739,12 @@ const styles = StyleSheet.create({
     sendButtonText: { color: "#fff", fontWeight: "bold" },
 
     container: {
-
         flex: 1,
         // height: height,
         backgroundColor: "#16181a",
         // backgroundColor: "yellow",
         marginTop: 0,
-        top: 0
+        top: 0,
     },
 
     searchContainer: {
@@ -710,7 +764,6 @@ const styles = StyleSheet.create({
         borderRadius: 30,
         bottom: 0,
         justifyContent: "flex-start",
-
 
         // position : "absolute",
         // bottom : 0
@@ -734,8 +787,6 @@ const styles = StyleSheet.create({
         maxHeight: 100,
         // backgroundColor: "red",
 
-
-
         // marginBottom  :20
     },
     image: {
@@ -751,7 +802,6 @@ const styles = StyleSheet.create({
         paddingTop: 8,
         color: "#00DE62",
         alignSelf: "flex-start",
-
     },
     username: {
         fontFamily: "Roboto",
@@ -761,7 +811,7 @@ const styles = StyleSheet.create({
     },
     details: {
         display: "flex",
-        flexDirection: "row"
+        flexDirection: "row",
     },
     header: {
         height: 100,
@@ -794,10 +844,8 @@ const styles = StyleSheet.create({
         marginTop: -10,
 
         // marginBottom  :10
-    }
-    ,
+    },
     scroll: {
-
         // backgroundColor: "red",
         // flex: 0.5,
         // height :height/2
@@ -808,7 +856,7 @@ const styles = StyleSheet.create({
         minHeight: 42,
         marginBottom: 10,
         marginTop: 0,
-        marginLeft: 30
+        marginLeft: 30,
     },
     senttext: {
         fontFamily: "Roboto",
@@ -830,8 +878,7 @@ const styles = StyleSheet.create({
         maxWidth: width * 0.6,
         padding: 15,
         paddingVertical: 10,
-        marginRight: 25
-
+        marginRight: 25,
     },
     receivedtext: {
         fontFamily: "Roboto",
@@ -849,15 +896,14 @@ const styles = StyleSheet.create({
         padding: 20,
         paddingLeft: 10,
         paddingVertical: 10,
-
-    }
-    , sent: {
+    },
+    sent: {
         alignItems: "flex-end",
         justifyContent: "center",
         marginVertical: 5,
         marginRight: 5,
-    }
-    , received: {
+    },
+    received: {
         alignItems: "flex-start",
         justifyContent: "center",
         marginVertical: 5,
@@ -912,7 +958,7 @@ const styles = StyleSheet.create({
     // messagesContainer: { flexGrow: 1, padding: 10, paddingBottom: 0, minHeight: 400 },
 
     box: {
-        width: width * 0.70,
+        width: width * 0.7,
         height: "auto",
         // height: 100,
         margin: 10,
@@ -926,7 +972,6 @@ const styles = StyleSheet.create({
         paddingVertical: 0,
         paddingBottom: 20,
         // opacity : 0.5
-
     },
     boxText: {
         fontSize: 18,
@@ -948,7 +993,7 @@ const styles = StyleSheet.create({
         margin: 10,
         marginLeft: 0,
         alignSelf: "flex-start",
-        justifyContent: "flex-start"
+        justifyContent: "flex-start",
     },
     userImgPost: {
         borderRadius: 100,
@@ -958,7 +1003,7 @@ const styles = StyleSheet.create({
         marginLeft: 10,
         marginRight: 5,
         alignSelf: "flex-start",
-        justifyContent: "flex-start"
+        justifyContent: "flex-start",
     },
     userdetail: {
         flex: 1,
@@ -972,17 +1017,17 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         width: "95%",
         marginHorizontal: "auto",
-        marginTop: 10
-    }
-    , top: {
+        marginTop: 10,
+    },
+    top: {
         // backgroundColor: "red",
-        height: 50
+        height: 50,
     },
     u1: {
         fontFamily: "Alata",
         fontSize: 20,
         marginTop: 10,
-        color: "#E9E9E9"
+        color: "#E9E9E9",
     },
     u3: {
         fontFamily: "Roboto",
@@ -1011,7 +1056,6 @@ const styles = StyleSheet.create({
         color: "#B8B8B8",
         fontSize: 20,
         fontFamily: "Roboto",
-
     },
 
     divider: {
@@ -1021,9 +1065,6 @@ const styles = StyleSheet.create({
         marginTop: 5,
         marginHorizontal: "auto",
         // marginBottom: 20,
-        backgroundColor: "#24272A"
+        backgroundColor: "#24272A",
     },
-
-})
-
-
+});

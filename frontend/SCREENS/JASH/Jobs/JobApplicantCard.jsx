@@ -1,9 +1,8 @@
-import React from 'react';
-import { View, Text, Image, Pressable, FlatList, StyleSheet, TouchableOpacity } from 'react-native';
-import { LinearGradient } from 'expo-linear-gradient';
-import { ResizeTextMode, AutoSizeText } from 'react-native-auto-size-text'; // Make sure you have this
-import { MaterialCommunityIcons } from '@expo/vector-icons';
-
+import React from "react";
+import { View, Text, Image, Pressable, FlatList, StyleSheet, TouchableOpacity } from "react-native";
+import { LinearGradient } from "expo-linear-gradient";
+import { ResizeTextMode, AutoSizeText } from "react-native-auto-size-text"; // Make sure you have this
+import { MaterialCommunityIcons } from "@expo/vector-icons";
 
 const time = (dateStr) => {
     const date = new Date(dateStr);
@@ -41,7 +40,6 @@ const time = (dateStr) => {
 const token = "dummy_token";
 
 export default function CardsList({ navigation }) {
-    
     const renderCard = ({ item }) => (
         <LinearGradient
             style={styles.card}
@@ -59,14 +57,11 @@ export default function CardsList({ navigation }) {
                     //         page: "bell",
                     //     });
                     // }}
-                    style={{ display: "flex", flexDirection: "row", }}
+                    style={{ display: "flex", flexDirection: "row" }}
                 >
-                    <Image
-                        source={{ uri: item.investor.profilePhoto }}
-                        style={styles.image}
-                    />
+                    <Image source={{ uri: item.investor.profilePhoto }} style={styles.image} />
 
-                    <View style={{ justifyContent: "center", }}>
+                    <View style={{ justifyContent: "center" }}>
                         <AutoSizeText
                             numberOfLines={1}
                             fontSize={20}
@@ -77,61 +72,41 @@ export default function CardsList({ navigation }) {
                             {item.investor.roleId.fullName}
                         </AutoSizeText>
 
-                        <Text style={{ color: "#00de62", fontSize: 12,fontFamily:'Roboto' }}>
+                        <Text style={{ color: "#00de62", fontSize: 12, fontFamily: "Roboto" }}>
                             {item.investor.roleId.user_id.role === "CommunityMember"
                                 ? "Member"
                                 : item.investor.roleId.user_id.role}
                         </Text>
                     </View>
-
                 </Pressable>
 
                 <Text style={styles.date}>{time(item.requestDate)}</Text>
             </View>
 
-
             <View style={styles.divider}></View>
 
-          
-
-
-
-
-            <Text
-                style={styles.info}
-                numberOfLines={null}
-                ellipsizeMode="tail"
-
-            >
+            <Text style={styles.info} numberOfLines={null} ellipsizeMode="tail">
                 {item.investor.roleId.hiddenInfo.description}
             </Text>
 
-
-            <View style={{ marginTop: 16, paddingHorizontal: 16,}}>
+            <View style={{ marginTop: 16, paddingHorizontal: 16 }}>
                 <MaterialCommunityIcons name="certificate" size={32} color="gray" />
             </View>
-
-
-
-
 
             <View style={styles.contactView}>
                 <TouchableOpacity
                     // onPress={() => open(item.userName, item.email, item.contactInfo)}
-                   
+
                     style={styles.contact}
                 >
-                    <Text style={{ color: "#16181a", fontFamily: "Alata" }}>
-                        Contact
-                    </Text>
+                    <Text style={{ color: "#16181a", fontFamily: "Alata" }}>Contact</Text>
                 </TouchableOpacity>
             </View>
-
         </LinearGradient>
     );
 
     return (
-        <View style={{ backgroundColor: '#16181a', flex: 1 }}>
+        <View style={{ backgroundColor: "#16181a", flex: 1 }}>
             <FlatList
                 data={dummyData}
                 keyExtractor={(item) => item.id}
@@ -142,29 +117,25 @@ export default function CardsList({ navigation }) {
     );
 }
 
-
 const styles = StyleSheet.create({
     card: {
-        backgroundColor: '#1a1a1a',
+        backgroundColor: "#1a1a1a",
         borderRadius: 20,
         // padding: 16,
-        shadowColor: '#000',
+        shadowColor: "#000",
         shadowOffset: { width: 0, height: 4 },
         shadowOpacity: 0.3,
         shadowRadius: 5,
         elevation: 8,
-        width: '100%'
-
+        width: "100%",
     },
     header: {
-        flexDirection: 'row',
-        alignItems: 'center',
-        justifyContent: 'space-between',
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
         // marginBottom: 8,
-        marginHorizontal:16,
-        marginTop:16,
-        
-    
+        marginHorizontal: 16,
+        marginTop: 16,
     },
     image: {
         width: 50,
@@ -174,13 +145,13 @@ const styles = StyleSheet.create({
     },
     role: {
         fontSize: 24,
-        color: '#E9E9E9',
+        color: "#E9E9E9",
         flex: 1,
-        fontFamily: "Roboto"
+        fontFamily: "Roboto",
     },
     date: {
         fontSize: 12,
-        color: '#666',
+        color: "#666",
         // position: "absolute",
         // right: 0,
         // top: 20,
@@ -191,7 +162,7 @@ const styles = StyleSheet.create({
     },
     name: {
         fontSize: 32,
-        color: '#B8B8B8',
+        color: "#B8B8B8",
         // fontWeight: 'bold',
         // marginBottom: 8,
         fontFamily: "Roboto",
@@ -204,20 +175,20 @@ const styles = StyleSheet.create({
         marginTop: 16,
         lineHeight: 20,
         marginHorizontal: 16,
-        fontFamily:'Roboto'
+        fontFamily: "Roboto",
         // textAlign: 'justify'
     },
 
     contactView: {
-        flexDirection: 'row',
-        justifyContent: 'flex-end',
+        flexDirection: "row",
+        justifyContent: "flex-end",
         gap: 30,
         marginTop: 16,
         marginBottom: 16,
-        paddingHorizontal: 16
+        paddingHorizontal: 16,
     },
     buttonAccept: {
-        backgroundColor: 'transparent',
+        backgroundColor: "transparent",
         borderRadius: 30,
         paddingVertical: 0,
         paddingHorizontal: 20,
@@ -227,17 +198,16 @@ const styles = StyleSheet.create({
         borderColor: "#B8B8B8",
         justifyContent: "center",
         alignItems: "center",
-
     },
-  
+
     buttonText: {
         fontSize: 18,
-        color: '#00DE62',
+        color: "#00DE62",
         // fontWeight: 'bold',
         fontFamily: "Alata",
         textAlign: "center",
         textAlignVertical: "center",
-        marginTop: -5
+        marginTop: -5,
     },
     no: {
         textAlign: "center",
@@ -254,20 +224,17 @@ const styles = StyleSheet.create({
     },
     divider: {
         width: "100%",
-     
+
         height: 1,
-     
+
         marginTop: 16,
-        backgroundColor: "#24272A"
+        backgroundColor: "#24272A",
     },
 
     contact: {
-
         paddingVertical: 5,
         paddingHorizontal: 15,
         borderRadius: 5,
-        backgroundColor:'#ccc'
+        backgroundColor: "#ccc",
     },
-
-
 });

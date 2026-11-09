@@ -1,31 +1,33 @@
-import React, { Component, useEffect, useState } from 'react'
-import { FlatList, SafeAreaView, Text, View, TouchableOpacity, StyleSheet, navigation, Image, Pressable, BackHandler } from 'react-native'
-import { url } from '../config.js';
+import React, { Component, useEffect, useState } from "react";
+import {
+    FlatList,
+    SafeAreaView,
+    Text,
+    View,
+    TouchableOpacity,
+    StyleSheet,
+    navigation,
+    Image,
+    Pressable,
+    BackHandler,
+} from "react-native";
+import { url } from "../config.js";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { jwtDecode } from 'jwt-decode';
+import { jwtDecode } from "jwt-decode";
 const Followerpage = ({ navigation, route }) => {
-
-
-
-
-
     var { people, token, stat, tabNavigation } = route.params;
     console.log(stat);
-
-
 
     console.log(people.length, "pams");
     // console.log(token);
 
-    const decoded = jwtDecode(token)
+    const decoded = jwtDecode(token);
 
-    const id = decoded._id
-
-
+    const id = decoded._id;
 
     useEffect(() => {
-        const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-            tabNavigation.navigate("Profile")
+        const backHandler = BackHandler.addEventListener("hardwareBackPress", () => {
+            tabNavigation.navigate("Profile");
 
             return true;
         });
@@ -33,74 +35,49 @@ const Followerpage = ({ navigation, route }) => {
         return () => backHandler.remove();
     }, [token]);
 
-
-
-
-    const [suggestionarray, setsuggestionarray] = useState([])
-
-
+    const [suggestionarray, setsuggestionarray] = useState([]);
 
     useEffect(() => {
         // const filteredPeople = people.filter(person => person.role !== "Investor");
         setsuggestionarray(people);
     }, [people]);
 
-
-
     async function sendfollowrequest(stat, id) {
-
-
         if (stat == "Connected" || stat == "Request Sent") {
-
             // setconnecteddata("Follow")
-
 
             async function makesubmit() {
                 setsuggestionarray((prevArray) =>
-                    prevArray.map((e) =>
-                        e._id === id ? { ...e, status: "Connect" } : e
-                    )
+                    prevArray.map((e) => (e._id === id ? { ...e, status: "Connect" } : e))
                 );
 
                 try {
                     const response = await fetch(`${url}founder/rejectRequest/${id}`, {
-                        method: 'POST',
+                        method: "POST",
                         headers: {
                             Authorization: `Bearer ${token}`,
-                        }
-                    })
+                        },
+                    });
                     const data = await response.json();
                     console.log(data);
-
-
-
-                }
-                catch (err) {
+                } catch (err) {
                     console.log(err);
-
                 }
             }
-            makesubmit()
-            return
+            makesubmit();
+            return;
         }
 
-
         setsuggestionarray((prevArray) =>
-            prevArray.map((e) =>
-                e._id === id ? { ...e, status: "Request Sent" } : e
-            )
+            prevArray.map((e) => (e._id === id ? { ...e, status: "Request Sent" } : e))
         );
 
         // console.log(suggestionarray);
 
-
-
-
         // console.log(id);
         try {
-
             const response = await fetch(`${url}connections/followUser/${id}`, {
-                method: 'POST',
+                method: "POST",
                 body: "",
                 headers: {
                     "Content-Type": "application/json",
@@ -114,82 +91,118 @@ const Followerpage = ({ navigation, route }) => {
 
             // setfollowstatus("request sent")
             // setconnecteddata("Request sent")
-
-        }
-        catch (err) {
+        } catch (err) {
             console.log(err);
-
         }
-
     }
-
 
     // console.log(people);
 
     function renderSuggestion({ item }) {
-        console.log('====================================');
+        console.log("====================================");
         console.log(item);
-        console.log('====================================');
+        console.log("====================================");
         if (stat == true) {
             console.log("hi");
-            if (item.role != "Investor") return
-        }
-        else {
-            if (item.role == "Investor") return
+            if (item.role != "Investor") return;
+        } else {
+            if (item.role == "Investor") return;
         }
 
         return (
             // <Text style={{color : "#fff"}}>hello</Text>
-            <TouchableOpacity onPress={() => {
-                // navigation.navigate("Singleuserpage", { token: token, id: item._id, page: "NewsLetter" })
-
-            }}>
+            <TouchableOpacity
+                onPress={() => {
+                    // navigation.navigate("Singleuserpage", { token: token, id: item._id, page: "NewsLetter" })
+                }}
+            >
                 <View style={[styles.listItem, {}]}>
                     {/* <Image
                                     source={{ uri: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQ8slgZXgqnSIXDS8wF2uDT_SmsYlBe-W1soQ&s" }}
                                     style={styles.avatar} /> */}
-                    {!item.profilePhoto && <Image style={styles.avatar} source={require("../assets/images/blank.png")} />}
+                    {!item.profilePhoto && (
+                        <Image style={styles.avatar} source={require("../assets/images/blank.png")} />
+                    )}
                     {item.profilePhoto && <Image style={styles.avatar} source={{ uri: item.profilePhoto }} />}
 
-
-
-
                     <View style={styles.textContainer}>
-                        <Text numberOfLines={1}
-
-                            allowFontScaling={false} style={styles.username}>{item.userName}</Text>
-                        <Text allowFontScaling={false} style={styles.message}>{item.role == "CommunityMember" ? "Member" : item.role}</Text>
+                        <Text numberOfLines={1} allowFontScaling={false} style={styles.username}>
+                            {item.userName}
+                        </Text>
+                        <Text allowFontScaling={false} style={styles.message}>
+                            {item.role == "CommunityMember" ? "Member" : item.role}
+                        </Text>
                     </View>
 
-                    {
-                        item._id != id ?
-                            <TouchableOpacity
-                                onPress={() => { sendfollowrequest(item.status, item._id) }}
-                                style={item.status != "Connect" ? styles.sendbtn1 : styles.sendbtn}>
+                    {item._id != id ? (
+                        <TouchableOpacity
+                            onPress={() => {
+                                sendfollowrequest(item.status, item._id);
+                            }}
+                            style={item.status != "Connect" ? styles.sendbtn1 : styles.sendbtn}
+                        >
+                            {item.status == "Connect" && (
+                                <Text
+                                    style={{
+                                        color: "#16181a",
+                                        fontFamily: "Alata",
+                                        alignItems: "center",
+                                        textAlign: "center",
+                                        marginTop: -2,
+                                        fontSize: 14,
+                                    }}
+                                >
+                                    {item.status}
+                                </Text>
+                            )}
 
-                                {item.status == "Connect" && <Text style={{ color: "#16181a", fontFamily: "Alata", alignItems: "center", textAlign: "center", marginTop: -2, fontSize: 14, }}>{item.status}</Text>}
+                            {item.status == "Request Sent" && (
+                                <Text
+                                    style={{
+                                        color: "#ccc",
+                                        fontFamily: "Alata",
+                                        alignItems: "center",
+                                        textAlign: "center",
+                                        marginTop: -2,
+                                        fontSize: 14,
+                                    }}
+                                >
+                                    {item.status}
+                                </Text>
+                            )}
 
-                                {item.status == "Request Sent" && <Text style={{ color: "#ccc", fontFamily: "Alata", alignItems: "center", textAlign: "center", marginTop: -2, fontSize: 14, }}>{item.status}</Text>}
-
-                                {item.status == "Connected" && <Text style={{ color: "#ccc", fontFamily: "Alata", alignItems: "center", textAlign: "center", marginTop: -2, fontSize: 14, }}>Connected</Text>}
-                            </TouchableOpacity> :
-                            null
-                    }
+                            {item.status == "Connected" && (
+                                <Text
+                                    style={{
+                                        color: "#ccc",
+                                        fontFamily: "Alata",
+                                        alignItems: "center",
+                                        textAlign: "center",
+                                        marginTop: -2,
+                                        fontSize: 14,
+                                    }}
+                                >
+                                    Connected
+                                </Text>
+                            )}
+                        </TouchableOpacity>
+                    ) : null}
                     {/* <Text allowFontScaling={false} style={styles.time}> "today"}</Text> */}
                 </View>
             </TouchableOpacity>
-        )
+        );
     }
 
     return (
         <SafeAreaView style={{ flex: 1, backgroundColor: "#16181a" }}>
-
             <View style={styles.header}>
                 <View style={styles.headerSide}>
-                    <Pressable onPress={() => {
-                        // tabNavigation.goBack()
-                        tabNavigation.navigate("Profile")
-                    }}>
+                    <Pressable
+                        onPress={() => {
+                            // tabNavigation.goBack()
+                            tabNavigation.navigate("Profile");
+                        }}
+                    >
                         <FontAwesome6 name="chevron-left" size={25} style={styles.backIcon} color="#00DF60" />
                     </Pressable>
                 </View>
@@ -201,25 +214,19 @@ const Followerpage = ({ navigation, route }) => {
                 <View style={styles.headerSide} />
             </View>
 
-
             <FlatList
                 data={suggestionarray}
                 renderItem={renderSuggestion}
                 contentContainerStyle={{ paddingBottom: 200 }}
             />
-
         </SafeAreaView>
-    )
+    );
+};
 
-}
-
-export default Followerpage
-
-
+export default Followerpage;
 
 const styles = StyleSheet.create({
     listItem: {
-
         flexDirection: "row",
         alignItems: "center",
         paddingVertical: 5,
@@ -233,7 +240,7 @@ const styles = StyleSheet.create({
         paddingBottom: 15,
         paddingTop: 5,
         paddingHorizontal: 20,
-        marginHorizontal: "auto"
+        marginHorizontal: "auto",
     },
     avatar: {
         // width: 50,
@@ -249,7 +256,6 @@ const styles = StyleSheet.create({
         borderRadius: 25,
         marginRight: 15,
         marginTop: 0,
-
     },
     title: {
         fontSize: 20,
@@ -265,7 +271,7 @@ const styles = StyleSheet.create({
         paddingHorizontal: 20,
         borderBottomWidth: 1,
         borderBottomColor: "#24272A",
-        marginBottom: 5
+        marginBottom: 5,
     },
 
     headerSide: {
@@ -289,7 +295,7 @@ const styles = StyleSheet.create({
         fontFamily: "Alata",
         alignSelf: "flex-start",
         marginTop: 0,
-        marginBottom: 0
+        marginBottom: 0,
     },
     headerText: {
         fontSize: 35,
@@ -298,10 +304,10 @@ const styles = StyleSheet.create({
         marginBottom: 12,
         fontFamily: "myanmar",
         color: "#00DE62",
-        paddingLeft: 15
+        paddingLeft: 15,
     },
     message: {
-        color: '#00de62'
+        color: "#00de62",
     },
     sendbtn: {
         backgroundColor: "#ccc",
@@ -313,7 +319,6 @@ const styles = StyleSheet.create({
         borderWidth: 2,
         width: 120,
         borderColor: "#ccc",
-
     },
     connectedTextStyle: {
         color: "#16181a",
@@ -330,4 +335,4 @@ const styles = StyleSheet.create({
         borderRadius: 8,
         width: 120,
     },
-})
+});

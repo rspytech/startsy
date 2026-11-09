@@ -54,9 +54,7 @@ import Email from "../../SCREENS/email.js";
 
 import { enableFreeze } from "react-native-screens";
 
-enableFreeze(true); 
-
-
+enableFreeze(true);
 
 import GroudDetailsScreen from "@/SCREENS/JASH/GroupDetailsScreen.js";
 
@@ -73,7 +71,7 @@ import { useEffect, createContext } from "react";
 import { ActivityIndicator, View, Text, StyleSheet } from "react-native";
 // import { setNavigationBarColorAsync } from 'expo-navigation-bar';
 import useLoadFonts from "../../hooks/useLoadFonts.js";
-import * as SystemUI from 'expo-system-ui';
+import * as SystemUI from "expo-system-ui";
 
 // import { StatusBar } from 'expo-status-bar';
 import { GlobalProvider } from "../../Global/globalcontext.js";
@@ -91,221 +89,224 @@ import "react-native-reanimated";
 enableScreens();
 // SystemUI.setBackgroundColorAsync("black");
 
-
 const Stack = createNativeStackNavigator();
 SystemUI.setBackgroundColorAsync("#16181a");
 
 LogBox.ignoreLogs([
-  // "VirtualizedLists should never be nested", // Example warning
-  'Warning: Each child in a list should have a unique "key" prop.',
-  "VirtualizedList: Encountered an error while measuring a list's offset from its containing VirtualizedList.",
+    // "VirtualizedLists should never be nested", // Example warning
+    'Warning: Each child in a list should have a unique "key" prop.',
+    "VirtualizedList: Encountered an error while measuring a list's offset from its containing VirtualizedList.",
 ]);
 
 const originalConsoleWarn = console.warn;
 console.warn = (message, ...args) => {
-  if (
-    // message.includes("VirtualizedLists should never be nested") || // Suppress specific warning
-    message.includes('Each child in a list should have a unique "key" prop.') ||
-    message.includes("Non-serializable") ||
-    message.includes(
-      "Encountered an error while measuring a list's offset from its containing VirtualizedList."
-    ) // Another specific warning
-  ) {
-    return; // Block these warnings
-  }
-  originalConsoleWarn(message, ...args); // Allow other warnings
+    if (
+        // message.includes("VirtualizedLists should never be nested") || // Suppress specific warning
+        message.includes('Each child in a list should have a unique "key" prop.') ||
+        message.includes("Non-serializable") ||
+        message.includes(
+            "Encountered an error while measuring a list's offset from its containing VirtualizedList."
+        ) // Another specific warning
+    ) {
+        return; // Block these warnings
+    }
+    originalConsoleWarn(message, ...args); // Allow other warnings
 };
 // export const Global = createContext("ok");
 
 export default function App() {
-  // <StatusBar style="dark" />
+    // <StatusBar style="dark" />
 
-  useEffect(() => {
-    StatusBar.setBackgroundColor("#16181a");
-    StatusBar.setBarStyle("light-content");
-  }, []);
+    useEffect(() => {
+        StatusBar.setBackgroundColor("#16181a");
+        StatusBar.setBarStyle("light-content");
+    }, []);
 
-  SplashScreen.preventAutoHideAsync();
-  // useEffect(() => {
-  //   setTimeout(() => {
-  //   }, 300);
-  // }, []);
+    SplashScreen.preventAutoHideAsync();
+    // useEffect(() => {
+    //   setTimeout(() => {
+    //   }, 300);
+    // }, []);
 
-  useFocusEffect(() => {
-    StatusBar.setBackgroundColor("#16181a");
-    StatusBar.setBarStyle("light-content");
-  });
+    useFocusEffect(() => {
+        StatusBar.setBackgroundColor("#16181a");
+        StatusBar.setBarStyle("light-content");
+    });
 
-  const fontsLoaded = useLoadFonts();
-  const [appisready, setappisready] = React.useState(false);
+    const fontsLoaded = useLoadFonts();
+    const [appisready, setappisready] = React.useState(false);
 
-  // if (!fontsLoaded) {
-  // }
-  useEffect(() => {
-    if (fontsLoaded) {
-      SplashScreen.hideAsync();
-      setappisready(true);
-    }
-  }, [fontsLoaded]);
+    // if (!fontsLoaded) {
+    // }
+    useEffect(() => {
+        if (fontsLoaded) {
+            SplashScreen.hideAsync();
+            setappisready(true);
+        }
+    }, [fontsLoaded]);
 
-  return (
-    // <NavigationContainer theme={DarkTheme} >
-    <GlobalProvider>
-      {/* <View style={styles.container}> */}
-      <StatusBar backgroundColor="#16181a" barStyle={"light-content"} />
-      {appisready && (
-        <Stack.Navigator
-          initialRouteName="Email"
-          screenOptions={{
-            headerStyle: {
-              backgroundColor: "#16181a",
-            },
-            // cardStyle: {backgroundColor: "red"},
-            keyboardHandlingEnabled: true,
-            
-            headerShown: false,
-            // animationTypeForReplace: "fade",
-            animation: "slide_from_right",
-          }}
-        >
-          <Stack.Screen name="Green" component={Green} />
-          <Stack.Screen name="LoginTrial"  component={Login1} />
-          {/* <Stack.Screen name="ReadMore1" component={ReadMore1} /> */}
+    return (
+        // <NavigationContainer theme={DarkTheme} >
+        <GlobalProvider>
+            {/* <View style={styles.container}> */}
+            <StatusBar backgroundColor="#16181a" barStyle={"light-content"} />
+            {appisready && (
+                <Stack.Navigator
+                    initialRouteName="Email"
+                    screenOptions={{
+                        headerStyle: {
+                            backgroundColor: "#16181a",
+                        },
+                        // cardStyle: {backgroundColor: "red"},
+                        keyboardHandlingEnabled: true,
 
-          <Stack.Screen name="Signup1" component={Signup1} />
-          <Stack.Screen name="Email" component={Email} />
+                        headerShown: false,
+                        // animationTypeForReplace: "fade",
+                        animation: "slide_from_right",
+                    }}
+                >
+                    <Stack.Screen name="Green" component={Green} />
+                    <Stack.Screen name="LoginTrial" component={Login1} />
+                    {/* <Stack.Screen name="ReadMore1" component={ReadMore1} /> */}
 
-          <Stack.Screen name="Signup2" component={Signup2} />
-          <Stack.Screen name="Signup3" component={Signup3} />
-          <Stack.Screen name="Signup4" component={Signup4} />
-          <Stack.Screen name="Signup5" component={Signup5} />
-          <Stack.Screen name="Signup6" component={Signup6} />
-          <Stack.Screen name="Signup7" component={Signup7} />
-          <Stack.Screen name="Signup8" component={Signup8} />
-          <Stack.Screen name="Signup9" component={Signup9} />
-          <Stack.Screen name="Signup10" component={Signup10} />
-          <Stack.Screen name="Signup11" component={Signup11} />
-          <Stack.Screen name="Signup12" component={Signup12} />
-          <Stack.Screen name="Signup13" component={Signup13} />
-          <Stack.Screen name="Wait" component={Wait} />
-          {/* <Stack.Screen name="Connectionscreen" component={ConnectionsScreen} /> */}
-          <Stack.Screen name="Chat" component={Chat} options={{
-              headerShown : false,
-              animation : "none",
-              
-              keyboardHandlingEnabled : true,
-              
-              // headerTitle: "Hello World", // Set the header title
-            }} />
-          <Stack.Screen name="Chat1" component={Chat1} />
-          <Stack.Screen name="Modal1" component={Modal1} />
-          <Stack.Screen name="Skeleton1" component={Skeleton1} />
-          <Stack.Screen name="Groupdescription" component={GroudDetailsScreen} />
-          <Stack.Screen name="Skeleton2" component={Skeleton2} />
-          <Stack.Screen name="PL" 
-          options={{
-            headerShown : true
-          }}
-          component={PL} />
+                    <Stack.Screen name="Signup1" component={Signup1} />
+                    <Stack.Screen name="Email" component={Email} />
 
-          <Stack.Screen
-          
-            name="Ansh"
-            component={Ansh}
-            options={{
-              
-              keyboardHandlingEnabled : true,
-              headerShown : false,
-              
-              headerTitle: "Hello World", // Set the header title
-            }}
-          />
-          {/* <Stack.Screen name="NewsletterPage" component={NewsletterPage} /> */}
+                    <Stack.Screen name="Signup2" component={Signup2} />
+                    <Stack.Screen name="Signup3" component={Signup3} />
+                    <Stack.Screen name="Signup4" component={Signup4} />
+                    <Stack.Screen name="Signup5" component={Signup5} />
+                    <Stack.Screen name="Signup6" component={Signup6} />
+                    <Stack.Screen name="Signup7" component={Signup7} />
+                    <Stack.Screen name="Signup8" component={Signup8} />
+                    <Stack.Screen name="Signup9" component={Signup9} />
+                    <Stack.Screen name="Signup10" component={Signup10} />
+                    <Stack.Screen name="Signup11" component={Signup11} />
+                    <Stack.Screen name="Signup12" component={Signup12} />
+                    <Stack.Screen name="Signup13" component={Signup13} />
+                    <Stack.Screen name="Wait" component={Wait} />
+                    {/* <Stack.Screen name="Connectionscreen" component={ConnectionsScreen} /> */}
+                    <Stack.Screen
+                        name="Chat"
+                        component={Chat}
+                        options={{
+                            headerShown: false,
+                            animation: "none",
 
-          {/* <Stack.Screen name="Main1" component={Main1} /> */}
-          {/* <Stack.Screen name="Main2" component={Main2} /> */}
-          <Stack.Screen name="Login2" component={Login2} />
-          <Stack.Screen
-            name="Card"
-            options={{
-              animation: "none",
-            }}
-            component={Card}
-          />
-          <Stack.Screen
-            name="Main1"
-            options={{
-              keyboardHandlingEnabled : true,
-              animation: "none",
-            }}
-            component={Main1}
-          />
-          <Stack.Screen
-            name="Main2"
-            options={{
-              // keyboardHandlingEnabled:true,
-              animation: "none",
-            }}
-            component={Main2}
-          />
+                            keyboardHandlingEnabled: true,
 
-          <Stack.Screen name="F1" component={F1} />
-          <Stack.Screen name="Ct" component={Ct} />
-          <Stack.Screen name="OK" component={OK} />
+                            // headerTitle: "Hello World", // Set the header title
+                        }}
+                    />
+                    <Stack.Screen name="Chat1" component={Chat1} />
+                    <Stack.Screen name="Modal1" component={Modal1} />
+                    <Stack.Screen name="Skeleton1" component={Skeleton1} />
+                    <Stack.Screen name="Groupdescription" component={GroudDetailsScreen} />
+                    <Stack.Screen name="Skeleton2" component={Skeleton2} />
+                    <Stack.Screen
+                        name="PL"
+                        options={{
+                            headerShown: true,
+                        }}
+                        component={PL}
+                    />
 
-          <Stack.Screen name="FP1" component={FP1} />
-          <Stack.Screen name="FP2" component={FP2} />
-          {/* <Stack.Screen name="FP2" component={ChangePassword1} /> */}
-          <Stack.Screen name="ChangePassword1" component={ChangePassword1} />
-          <Stack.Screen name="ChangePassword2" component={ChangePassword2} />
-          <Stack.Screen name="EditInvestorInfo" component={EditInvestorInfo} />
-          <Stack.Screen name="Founder1" component={Founder1} />
-          <Stack.Screen name="Founder2" component={Founder2} />
-          <Stack.Screen name="Logout" component={Logout} />
-          <Stack.Screen name="Test1" component={Test1} />
-          <Stack.Screen name="Devi" component={Devi} />
-          <Stack.Screen name="Editcommunity" component={Editcommunity} />
-          <Stack.Screen name="RB" component={RB} />
-          <Stack.Screen
-            name="KeyboardAvoidingComponent"
-            component={KeyboardAvoidingComponent}
-            options={{
-              headerTitle: "Your Custom Title", // Custom title for the header
-              headerStyle: {
-                backgroundColor: "blue", // Custom background color
-              },
-              headerTintColor: "white", // Custom color for the title text
-              headerTitleStyle: {
-                fontWeight: "bold", // Make the title text bold
-              },
-            }}
-          />
+                    <Stack.Screen
+                        name="Ansh"
+                        component={Ansh}
+                        options={{
+                            keyboardHandlingEnabled: true,
+                            headerShown: false,
 
-          <Stack.Screen
-            name="Singleuserpage"
-            options={{
-              animation: "fade",
-            }}
-            component={Singleprofilepage}
-          />
-        </Stack.Navigator>
-      )}
-      {/* </View> */}
-    </GlobalProvider>
-    // </NavigationContainer>
-  );
+                            headerTitle: "Hello World", // Set the header title
+                        }}
+                    />
+                    {/* <Stack.Screen name="NewsletterPage" component={NewsletterPage} /> */}
+
+                    {/* <Stack.Screen name="Main1" component={Main1} /> */}
+                    {/* <Stack.Screen name="Main2" component={Main2} /> */}
+                    <Stack.Screen name="Login2" component={Login2} />
+                    <Stack.Screen
+                        name="Card"
+                        options={{
+                            animation: "none",
+                        }}
+                        component={Card}
+                    />
+                    <Stack.Screen
+                        name="Main1"
+                        options={{
+                            keyboardHandlingEnabled: true,
+                            animation: "none",
+                        }}
+                        component={Main1}
+                    />
+                    <Stack.Screen
+                        name="Main2"
+                        options={{
+                            // keyboardHandlingEnabled:true,
+                            animation: "none",
+                        }}
+                        component={Main2}
+                    />
+
+                    <Stack.Screen name="F1" component={F1} />
+                    <Stack.Screen name="Ct" component={Ct} />
+                    <Stack.Screen name="OK" component={OK} />
+
+                    <Stack.Screen name="FP1" component={FP1} />
+                    <Stack.Screen name="FP2" component={FP2} />
+                    {/* <Stack.Screen name="FP2" component={ChangePassword1} /> */}
+                    <Stack.Screen name="ChangePassword1" component={ChangePassword1} />
+                    <Stack.Screen name="ChangePassword2" component={ChangePassword2} />
+                    <Stack.Screen name="EditInvestorInfo" component={EditInvestorInfo} />
+                    <Stack.Screen name="Founder1" component={Founder1} />
+                    <Stack.Screen name="Founder2" component={Founder2} />
+                    <Stack.Screen name="Logout" component={Logout} />
+                    <Stack.Screen name="Test1" component={Test1} />
+                    <Stack.Screen name="Devi" component={Devi} />
+                    <Stack.Screen name="Editcommunity" component={Editcommunity} />
+                    <Stack.Screen name="RB" component={RB} />
+                    <Stack.Screen
+                        name="KeyboardAvoidingComponent"
+                        component={KeyboardAvoidingComponent}
+                        options={{
+                            headerTitle: "Your Custom Title", // Custom title for the header
+                            headerStyle: {
+                                backgroundColor: "blue", // Custom background color
+                            },
+                            headerTintColor: "white", // Custom color for the title text
+                            headerTitleStyle: {
+                                fontWeight: "bold", // Make the title text bold
+                            },
+                        }}
+                    />
+
+                    <Stack.Screen
+                        name="Singleuserpage"
+                        options={{
+                            animation: "fade",
+                        }}
+                        component={Singleprofilepage}
+                    />
+                </Stack.Navigator>
+            )}
+            {/* </View> */}
+        </GlobalProvider>
+        // </NavigationContainer>
+    );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    // zIndex : 1000000,
-    backgroundColor: "#16181a", // Set your desired background color here
-  },
-  loadingContainer: {
-    flex: 1,
-    justifyContent: "center",
-    alignItems: "center",
-    backgroundColor: "#16181a", // Set your desired background color here
-  },
+    container: {
+        flex: 1,
+        // zIndex : 1000000,
+        backgroundColor: "#16181a", // Set your desired background color here
+    },
+    loadingContainer: {
+        flex: 1,
+        justifyContent: "center",
+        alignItems: "center",
+        backgroundColor: "#16181a", // Set your desired background color here
+    },
 });

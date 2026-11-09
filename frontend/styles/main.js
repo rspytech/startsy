@@ -1,19 +1,17 @@
 import React from "react";
-import { Dimensions, StyleSheet, PixelRatio } from "react-native"
+import { Dimensions, StyleSheet, PixelRatio } from "react-native";
 
-
-const { height, width } = Dimensions.get("window")
+const { height, width } = Dimensions.get("window");
 
 var a = width / 360;
 var b = height / 800;
 
-
-const scalingfactor = Math.sqrt(a * b)
+const scalingfactor = Math.sqrt(a * b);
 const main = StyleSheet.create({
     container: {
         flex: 1,
         // backgroundColor: "#16181A"
-        backgroundColor: "red"
+        backgroundColor: "red",
     },
     header: {
         height: 55,
@@ -26,8 +24,6 @@ const main = StyleSheet.create({
         width: "100%",
         zIndex: 1,
         // backgroundColor : "red",
-
-
     },
     header1: {
         height: 55,
@@ -40,8 +36,6 @@ const main = StyleSheet.create({
         width: "100%",
         zIndex: 1,
         // backgroundColor : "red",
-
-
     },
 
     headertext: {
@@ -62,8 +56,7 @@ const main = StyleSheet.create({
         backgroundColor: "#16181a",
 
         color: "#00DE62",
-        paddingLeft: 15
-
+        paddingLeft: 15,
     },
     scroll: {
         paddingTop: 60,
@@ -78,15 +71,12 @@ const main = StyleSheet.create({
     },
     // scroll1: {
 
-
     //     maxHeight: 1 * height,
     //     zIndex : 1,
     //     overflow: "scroll",
     //     backgroundColor: "#16181A",
     // },
     scroll1: {
-
-
         maxHeight: 1 * height,
         zIndex: 2,
         position: "relative",
@@ -94,8 +84,7 @@ const main = StyleSheet.create({
         left: 0,
         overflow: "scroll",
         backgroundColor: "#16181A",
-    }
-})
+    },
+});
 
-
-export default main
+export default main;

@@ -1,36 +1,38 @@
-import React, { useContext, useState } from 'react';
-import { View, Text, ToastAndroid, TextInput, TouchableOpacity, Alert, StyleSheet, Pressable, ScrollView, ActivityIndicator } from 'react-native';
-import { FontAwesome } from '@expo/vector-icons'; // Importing star icons
+import React, { useContext, useState } from "react";
+import {
+    View,
+    Text,
+    ToastAndroid,
+    TextInput,
+    TouchableOpacity,
+    Alert,
+    StyleSheet,
+    Pressable,
+    ScrollView,
+    ActivityIndicator,
+} from "react-native";
+import { FontAwesome } from "@expo/vector-icons"; // Importing star icons
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import { GlobalContext } from '@/Global/globalcontext';
-import { url } from '@/config';
-
+import { GlobalContext } from "@/Global/globalcontext";
+import { url } from "@/config";
 
 const RatingPage = ({ navigation }) => {
-
     const data = useContext(GlobalContext);
     const token = data.globaldata.token;
 
-
     const [rating, setRating] = useState(0);
-    const [description, setDescription] = useState('');
+    const [description, setDescription] = useState("");
     const [loading, setLoading] = useState(false);
 
     const handleStarPress = (star) => {
-        setRating(prevRating => (prevRating === star ? 0 : star));
+        setRating((prevRating) => (prevRating === star ? 0 : star));
     };
 
     const showToastWithGravity = (message) => {
-        ToastAndroid.showWithGravityAndOffset(
-            `${message}`,
-            ToastAndroid.SHORT,
-            ToastAndroid.TOP,
-            100, 100
-        );
+        ToastAndroid.showWithGravityAndOffset(`${message}`, ToastAndroid.SHORT, ToastAndroid.TOP, 100, 100);
     };
 
     const handleSubmit = async () => {
-
         if (rating == 0) {
             Alert.alert("Please select a rating");
             return;
@@ -39,39 +41,31 @@ const RatingPage = ({ navigation }) => {
         var object = {
             ratingText: description,
             ratingStars: rating,
-            version: "v7"
-        }
-        setLoading(true)
+            version: "v7",
+        };
+        setLoading(true);
 
         try {
-
             const response = await fetch(`${url}test/ratingsController`, {
-                method: 'POST',
+                method: "POST",
                 body: JSON.stringify(object),
                 headers: {
-
                     "Content-Type": "application/json",
                     "Authorization": `Bearer ${token}`,
                 },
             });
             const data = await response.json();
-            showToastWithGravity(`Thank You ! `)
+            showToastWithGravity(`Thank You ! `);
 
             // console.log(data);
-
-        }
-        catch (err) {
+        } catch (err) {
             console.log(err);
-
-        }
-        finally {
+        } finally {
             setLoading(false);
             setTimeout(() => {
-                navigation.goBack()
+                navigation.goBack();
             }, 1000);
         }
-
-        
     };
 
     return (
@@ -90,12 +84,8 @@ const RatingPage = ({ navigation }) => {
                 <View style={styles.headerSide} />
             </View>
             <View style={styles.container}>
-
                 <View style={styles.box}>
-
-
                     <Text style={styles.heading}>Rate Us</Text>
-
 
                     <View style={styles.starContainer}>
                         {[1, 2, 3, 4, 5].map((star) => (
@@ -110,34 +100,27 @@ const RatingPage = ({ navigation }) => {
                         ))}
                     </View>
 
-
-                    <View style={{ marginTop: 10, width: '90%' }}>
+                    <View style={{ marginTop: 10, width: "90%" }}>
                         <TextInput
                             style={styles.textArea}
                             value={description}
                             multiline
-                            placeholder='Write Your Feedback'
+                            placeholder="Write Your Feedback"
                             placeholderTextColor={"#ccc"}
-
                             numberOfLines={6}
                             maxLength={1000}
                             onChangeText={setDescription}
                         />
                         <Text style={styles.descriptionLength}> </Text>
-
                     </View>
 
-
                     <TouchableOpacity style={styles.submitButton} onPress={handleSubmit} disabled={loading}>
-                        {
-                            loading ? (
-                                <ActivityIndicator color="#16181a" />
-                            ) : (
-                                <Text style={styles.submitText}>Submit</Text>
-                            )
-                        }
+                        {loading ? (
+                            <ActivityIndicator color="#16181a" />
+                        ) : (
+                            <Text style={styles.submitText}>Submit</Text>
+                        )}
                     </TouchableOpacity>
-
                 </View>
             </View>
         </ScrollView>
@@ -147,7 +130,7 @@ const RatingPage = ({ navigation }) => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#16181A',
+        backgroundColor: "#16181A",
         padding: 20,
     },
     title: {
@@ -190,7 +173,7 @@ const styles = StyleSheet.create({
         color: "#ccc",
     },
     starContainer: {
-        flexDirection: 'row',
+        flexDirection: "row",
         marginBottom: 20,
     },
     star: {
@@ -202,12 +185,11 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderColor: "gray",
         borderRadius: 10,
-        textAlign: 'auto',
+        textAlign: "auto",
         fontSize: 16,
         fontFamily: "Alata",
         backgroundColor: "#16181A",
-        color: "#ccc"
-
+        color: "#ccc",
     },
     submitButton: {
         width: 150,
@@ -233,7 +215,7 @@ const styles = StyleSheet.create({
         fontSize: 16,
         // width:'90%',
         padding: 10,
-        fontFamily: 'Alata',
+        fontFamily: "Alata",
         textAlignVertical: "top",
     },
 });
