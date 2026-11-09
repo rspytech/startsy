@@ -34,7 +34,7 @@ the outside services they use.
 
 | Part | Production branch | Folder on `development` | Runs on |
 |---|---|---|---|
-| Front end (app) | `main` of Anshgala333/Startsy (fork: rspytech/Startsy-production) | `frontend/` | Users' Android phones (APK) |
+| Front end (app) | `main` of Anshgala333/Startsy (fork: rspytech/Startsy-Production_Frontend) | `frontend/` | Users' Android phones (APK) |
 | Back end (server) | `develop/backend` | `backend/` | Render, at `https://startsy.onrender.com` |
 | Database | (not in git) | (not in git) | MongoDB server, address in Render's `MONGODB_URI` setting |
 
