@@ -1,4 +1,5 @@
 # Noticed, not changed
+> **⚠️ Out of date for the front end (2026-11-10):** the front-end parts of this document describe the older `Ansh-Final` code. The live app is built from Anshgala333/Startsy `main` (Expo SDK 52), which is now in `frontend/`. Screen names, files and line numbers below may differ.
 
 Problems found during the cleanup that were deliberately **left as they are** (the cleanup rules
 forbid changing behaviour). Each should be fixed on its own branch, tested, and released on

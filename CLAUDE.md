@@ -7,17 +7,23 @@ The owner is a non-technical founder. Explain everything in plain English.
 | Thing | Branch | Folder |
 |---|---|---|
 | Production back end (Express + MongoDB, hosted on Render at startsy.onrender.com) | `develop/backend` | `backend/` |
-| Production front end (React Native / Expo app, shipped as an APK) | `Ansh-Final` | repo root |
+| Production front end (React Native / Expo SDK 52 app, shipped as an APK) | `main` of the **separate repo** https://github.com/Anshgala333/Startsy (fork: rspytech/Startsy-production) | repo root |
+| Older front end (NOT what the live app runs) | `Ansh-Final` in this repo | repo root |
 | Cleanup work (both halves together) | `development` | `backend/` and `frontend/` |
 
-Snapshots of production taken on 2026-11-07 (local tags):
-- `production-snapshot-2026-11-07` → `develop/backend` @ 0b9f871
-- `production-snapshot-2026-11-07-frontend` → `Ansh-Final` @ ef8d040
+Snapshots of production (local tags):
+- `production-snapshot-2026-11-07` → `develop/backend` @ 0b9f871 (back end)
+- `production-snapshot-2026-11-10-frontend` → Anshgala333/Startsy `main` @ b8f244a (real production front end)
+- `production-snapshot-2026-11-07-frontend` → `Ansh-Final` @ ef8d040 (older front end, superseded)
+
+Since 2026-11-10, `frontend/` on `development` is an exact copy of Anshgala333/Startsy `main`
+(commit fa0eb9a). The earlier front-end cleanup was done on `Ansh-Final` and no longer applies.
 
 ## HARD RULES (never break these)
 
 1. Never commit, merge, rebase, push, force-push, delete or rename anything on production
-   branches (`develop/backend`, `Ansh-Final`, `main`, and anything Render deploys from)
+   branches (`develop/backend`, `Ansh-Final`, `main`, and anything Render deploys from),
+   nor on any branch of Anshgala333/Startsy or rspytech/Startsy-production,
    until the founder explicitly says so.
 2. Every commit goes on the `development` branch only. Before every commit, run
    `git branch --show-current` and confirm it says `development`.

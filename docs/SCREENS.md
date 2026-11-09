@@ -1,4 +1,5 @@
 # App screens
+> **⚠️ Out of date for the front end (2026-11-10):** the front-end parts of this document describe the older `Ansh-Final` code. The live app is built from Anshgala333/Startsy `main` (Expo SDK 52), which is now in `frontend/`. Screen names, files and line numbers below may differ.
 
 Every screen in the Startsy Android app, what it does, and which server endpoints it calls.
 Use it as a checklist: open each screen on a phone and confirm it looks and works as before.
