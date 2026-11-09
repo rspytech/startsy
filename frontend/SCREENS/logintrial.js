@@ -1,14 +1,11 @@
-// Login screen: username/email + password. Saves the returned token on the phone and opens
-// the right home screen for the user's role.
-
 // App.tsx
 
 import * as React from "react";
 import { useState, useEffect, useRef, useContext } from "react";
 import styles from "../styles/l.js"
 // import { StatusBar } from 'expo-status-bar';
-import { SafeAreaView, BackHandler, Text, Pressable, ActivityIndicator, TextInput, View, Image, StyleSheet, Dimensions, StatusBar, Animated, Easing, Platform, KeyboardAvoidingView, ScrollView, Alert, ToastAndroid } from "react-native";
-import { TouchableOpacity } from "react-native-gesture-handler";
+import { SafeAreaView, BackHandler, Text, Pressable, ActivityIndicator, TextInput, Keyboard, View, Image, StyleSheet, Dimensions, StatusBar, Animated, Easing, Platform, KeyboardAvoidingView, ScrollView, Alert, ToastAndroid, TouchableOpacity } from "react-native";
+// import { TouchableOpacity } from "react-native-gesture-handler";
 import ReadMore1 from "./trial-1.js";
 import { useFonts } from 'expo-font';
 import Ionicons from '@expo/vector-icons/Ionicons';
@@ -20,28 +17,14 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { jwtDecode } from "jwt-decode";
 import { GlobalContext } from "@/Global/globalcontext.js";
 import { url } from "../config.js"
-
+import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
+import LottieView from "lottie-react-native";
+import { LinearGradient } from "expo-linear-gradient";
 
 
 // import Toast from 'react-native-toast-message';
 const Login1 = ({ navigation, showtoast, falsetoken }) => {
-  // const navigation = useNavigation();
-  // console.log(navigation);
-
-
-  // const showStyledToast = () => {
-  //   Toast.show({
-  //     type: 'success', // Types: 'success', 'error', 'info'
-  //     text1: 'Notice',
-  //     text2: `You don't have to apply to this community`,
-  //     position: 'top', // Toast appears at the top
-  //     visibilityTime: 3000, // Duration in ms
-  //     topOffset: 50, // Offset from the top
-  //   });
-  // };
-  // console.log(falsetoken, "tmep hai yeh");
-
-  // console.log(showtoast, "toast staus");
+ 
 
 
 
@@ -57,6 +40,8 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
   };
 
 
+
+
   async function deleteuser() {
     try {
       const response = await fetch(`${url}api/deleteUnAuthenticatedUser`, {
@@ -68,9 +53,7 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
         },
       });
       const data = await response.json();
-      // setloading(false)
-      console.log(data);
-      console.log(response.status);
+    
     }
     catch (err) {
       console.log(err);
@@ -101,20 +84,19 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
 
 
   const animation2 = (first) => {
-    console.log(first);
 
 
     setTimeout(() => {
       Animated.timing(heightAnim, {
         // toValue: height * 0.42,
-        toValue: height * 0.42,
+        toValue: height * 0.6,
         duration: (first == undefined) ? 300 : 0,
         useNativeDriver: false,
       }).start();
 
       Animated.timing(bottomanim, {
         // toValue: height * 0.68,
-        toValue: height * 0.58,
+        toValue: height * 0.4,
         duration: (first == undefined) ? 300 : 0,
         useNativeDriver: false,
 
@@ -134,12 +116,10 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
     if (route.params && route.params.isForm1Visible !== undefined) {
       // setForm1Visible(route.params.isForm1Visible);
 
-      // console.log("will change to back");
 
       setinitial(false)
       setForm1Visible(false)
       animation2(first)
-      // console.log(moverfirst, "moverfirst ");
 
 
       // setattop(true)
@@ -169,7 +149,7 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
 
   const handlelogin = async (navigation) => {
 
-    console.log("login route called");
+
 
 
     setemailerror(false)
@@ -192,11 +172,17 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
     // }
 
     setloading(true)
+    var ExistingToken = await AsyncStorage.getItem("notificationToken")
+
+    // return
 
     var final = {
       identifier: email,
       password: password,
+      notificationToken: ExistingToken
+
     }
+
 
 
     try {
@@ -210,14 +196,10 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
         }
       });
       const data = await response.json();
-      console.log(data);
       if (response.status === 200) {
         updateField("token", data.accessToken);
-
-
         try {
           await AsyncStorage.setItem('accessToken', data.accessToken);
-          console.log('Data saved successfully!');
         } catch (error) {
           console.error('Error saving data:', error);
         }
@@ -225,9 +207,18 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
         try {
           const token = data.accessToken;
           const decoded = jwtDecode(token);
-          console.log(decoded);
           if (decoded.role == "Investor") {
-            navigation.navigate("Main1")
+
+            if (decoded.isInvestorVerified == true) {
+              navigation.navigate("Main2")
+            }
+            else if (decoded.investorRejected == true) {
+              navigation.navigate("InvestorNotVerifiedScreen")
+
+            }
+            else {
+              navigation.navigate("InvestorWaitingPage")
+            }
           }
           else {
             navigation.navigate("Main2");
@@ -259,12 +250,14 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
 
   const heightAnim = useRef(new Animated.Value(height)).current;
   const bottomanim = useRef(new Animated.Value(0)).current;
-  const flexanim = useRef(new Animated.Value(0.8)).current;
+  const flexanim = useRef(new Animated.Value(0.5)).current;
+
+  const opacityAnim = useRef(new Animated.Value(0)).current;
 
   const animatedValue = useRef(new Animated.Value(0)).current;
   useEffect(() => {
     // Start the animation
-    console.log(moverfirst, "ok");
+    // console.log(moverfirst, "ok");
 
     Animated.timing(animatedValue, {
       toValue: attop ? height + 10 : -10, // Move to 100 if attop is true, else move to 0
@@ -308,10 +301,20 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
     if (initial) {
       const timer1 = setTimeout(() => {
         Animated.timing(heightAnim, {
-          toValue: height * 0.4,
+          toValue: height * 0.6,
           duration: 400,
           useNativeDriver: false,
           easing: Easing.elastic(0.5),
+        }).start();
+      }, 3000);
+
+      const timer2 = setTimeout(() => {
+        Animated.timing(opacityAnim, {
+          toValue: 1,
+          duration: 3000,
+          useNativeDriver: true,
+          // useNativeDriver: false,
+          easing: Easing.ease
         }).start();
       }, 3000);
 
@@ -328,7 +331,7 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
     if (initial) {
       const timer = setTimeout(() => {
         Animated.timing(bottomanim, {
-          toValue: height * 0.6,
+          toValue: height * 0.4,
           duration: 400,
           useNativeDriver: false,
           easing: Easing.elastic(0.5)
@@ -347,7 +350,7 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
     if (initial == true && first == "") {
       const timer = setTimeout(() => {
         Animated.timing(flexanim, {
-          toValue: 0.9,
+          toValue: 0.5,
           duration: 300,
           useNativeDriver: false,
           easing: Easing.elastic(1)
@@ -366,13 +369,13 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
     // setForm1Visible(true)
     setTimeout(() => {
       Animated.timing(heightAnim, {
-        toValue: height * 0.4,
+        toValue: height * 0.6,
         duration: 300,
         useNativeDriver: false,
         easing: Easing.inOut(Easing.ease),
       }).start();
       Animated.timing(bottomanim, {
-        toValue: height * 0.6,
+        toValue: height * 0.4,
         duration: 300,
         useNativeDriver: false,
         easing: Easing.inOut(Easing.ease),
@@ -436,11 +439,11 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
 
         ]).start();
       }, 3100)
+
     }
   }, [initial]);
 
   function showsignuppage(type, navigation) {
-    console.log(type);
     navigation.navigate("Signup1", { type: type });
 
   }
@@ -448,9 +451,9 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
     React.useCallback(() => {
       // Adding back button handler only when the screen is focused
       const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+        // emailInput.current?.blur()
 
         if (!isForm1Visible) {
-          console.log("ok");
           setForm1Visible(true);
           animation3();
           return true; // Prevent default back action
@@ -464,12 +467,56 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
       };
     }, [isForm1Visible]) // Depend on isForm1Visible to re-run the effect
   );;
+  const scrollContainer = useRef()
+  const emailInput = useRef()
+
+  const [tree, setstatus] = useState(false); // Default 100px
+
+ 
+  useEffect(() => {
+    const keyboardShowListener = Keyboard.addListener("keyboardDidShow", () => {
+      setstatus(true); // Move up
+    });
+
+    const keyboardHideListener = Keyboard.addListener("keyboardDidHide", () => {
+      setstatus(false); // Move up
+    });
+
+    return () => {
+      keyboardShowListener.remove();
+      keyboardHideListener.remove();
+    };
+  }, []);
+
+
   return (
 
 
-    <KeyboardAvoidingView behavior="padding" keyboardVerticalOffset={-100} style={[styles.container]}>
-      <Animated.View style={[{ backgroundColor: "#16181a" }, animatedtop1]}>
+
+
+    <ScrollView
+      style={[{ minHeight: 2000, marginTop: tree ? -75 : 0 }]}
+      ref={scrollContainer}>
+
+      <Animated.View style={[{ backgroundColor: "#16181a", width: "100%", height: "100%", flex: 1 }, animatedtop1]}>
         {/* <Toast /> */}
+        <Animated.View
+          style={{
+            opacity: opacityAnim,
+            // transform: [{ scale: opacityAnim }]
+          }}
+        >
+
+
+          {/* <LottieView
+            source={require("../assets/icons/Animation - 1743765657437.json")}
+            autoPlay={true}
+            loop
+            style={styles.animation}
+          /> */}
+
+          
+        </Animated.View>
         {!isForm1Visible && (
           <Pressable style={[styles.back, { zIndex: (attop) ? 1 : 0 }]} onPress={() => {
             setForm1Visible(true);
@@ -492,66 +539,119 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
           ]}>
             <Animated.Image style={[styles.logo, initial ? styles.initial : styles.updated, { flex: flexanim }]}
               source={require("../assets/images/logo.png")} />
+            {/* <Text>okkkkkkkkkk</Text> */}
           </Animated.View>
         </Animated.View>
         {/* -------------------------------------- top part ------------------------------------------ */}
 
 
         {/* -------------------------------- bottom part ------------------------------------------------- */}
-        <Animated.View style={[styles.bottom, { height: bottomanim }]}>
 
-          {wrongcredential && <Text style={styles.error1}>Invalid credentials</Text>}
+        {/* <LinearGradient
+          colors={["rgba(33, 34, 35, 0.4)", "rgba(25, 26, 27, 0.6)"]}
+          locations={[0, 1]}
+          // style={styles.box}
+         
+          start={{ x: 0, y: 0 }}
+          end={{ x: 0, y: 1 }} > */}
 
-          {isForm1Visible && (<View><Text allowFontScaling={false} style={styles.label}>Email / Username</Text>
-            <TextInput allowFontScaling={false}
-              placeholderTextColor="#828282"
-              style={styles.input}
-              placeholder="xyz@gmail.com"
-              value={email}
-              autoComplete="email"
-              onChangeText={(text) => { setemail(text) }}
+        <Animated.View style={[styles.bottom, { height: bottomanim }]} >
 
-            />
-            {emailerror && <Text style={styles.error}>Please enter email address</Text>}
-            <View style={styles.passwordcontainer}>
-              <TextInput allowFontScaling={false}
-                placeholderTextColor="#828282"
-                style={styles.input2}
-                placeholder="Password"
-                value={password}
-                autoComplete="password"
-                onChangeText={(text) => { setpassword(text) }}
-                secureTextEntry={true}
-              />
+          {/* <Text style={styles.welcome1}>Step into the Startup world</Text> */}
 
-              <Pressable style={styles.forgot}>
-                <Text allowFontScaling={false} style={[styles.white, styles.forgottext]}>Forgot ?</Text>
-              </Pressable>
-            </View>
-            {passworderror && <Text style={styles.error}>Please enter password</Text>}
-            {passworderror1 && <Text style={styles.error}>Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, and one number.</Text>}
+          {isForm1Visible && (<View style={{ flex: 1, paddingTop: 0, marginTop: -10, alignContent: "center" }}>
+            <Text allowFontScaling={false} style={styles.label}></Text>
+            <Pressable
+              onPress={() => {
+                scrollContainer.current?.scrollTo({ y: 100, animate: true })
+              }}
+            >
+              {/* <TextInput allowFontScaling={false}
+      placeholderTextColor="#828282"
+      
+      style={styles.input}
+      ref={emailInput}
+      placeholder="Email / Username"
+      value={email}
+      onFocus={() => {
+        scrollContainer.current?.scrollTo({ y: 100, animate: true });
+      }}
+      autoComplete="email"
+      onChangeText={(text) => { setemail(text) }}
+
+    /> */}
+            </Pressable>
+
+            {/* {emailerror && <Text style={styles.error}>Please enter email address*</Text>} */}
+            {/* <View style={styles.passwordcontainer}>
+    <TextInput allowFontScaling={false}
+      placeholderTextColor="#828282"
+      style={styles.input2}
+      placeholder="Password"
+      value={password}
+      autoComplete="password"
+      onChangeText={(text) => { setpassword(text) }}
+      secureTextEntry={true}
+    />
+
+    <Pressable onPress={() => navigation.navigate("FP1")} style={styles.forgot}>
+      <Text allowFontScaling={false} style={[styles.white, styles.forgottext]}>Forgot ?</Text>
+    </Pressable>
+  </View> */}
+            {/* {passworderror && <Text style={styles.error}>Please enter password*</Text>}
+  {passworderror1 && <Text style={styles.error}>Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, and one number.</Text>} */}
 
             <Pressable style={styles.loginbutton} onPress={() => {
               handlelogin(navigation)
+              navigation.navigate("LoginPage", { navigation: navigation })
             }}>
-              {!loading && <Text allowFontScaling={false} style={[styles.login]}>Login </Text>}
-              {loading && <ActivityIndicator size={24} color="#fff" />}
-            </Pressable>
-            <Text allowFontScaling={false} style={[styles.white, styles.p]}>Or continue with</Text>
-            <Pressable onPress={() => { showToastWithGravity("This functionality is yet to come!") }} style={styles.googlebutton}>
-              <Image
-                source={require("../assets/images/google.png")}
-                style={styles.googleIcon}
-              />
-              <Text allowFontScaling={false} style={[styles.gray, styles.google]}>Google</Text>
+              {!loading && <Text allowFontScaling={false} style={[styles.login]}>Log in </Text>}
+              {loading && <ActivityIndicator size={24} color="#16181a" />}
             </Pressable>
 
-            <Text allowFontScaling={false} style={[styles.gray, styles.p]}>
-              Don't have account? <Text style={styles.green} onPress={() => {
-                setForm1Visible(false)
-                animation2()
-              }}>Create now</Text>
-            </Text>
+            <View style={styles.divider}>
+              <Text style={styles.or}>or</Text>
+            </View>
+
+            <Pressable style={[styles.loginbutton, { marginTop: 10 }]} onPress={() => {
+              showsignuppage("CommunityMember", navigation)
+            }}>
+              {!loading && <Text allowFontScaling={false} style={[styles.login]}>Create account </Text>}
+              {loading && <ActivityIndicator size={24} color="#16181a" />}
+            </Pressable>
+
+
+            {wrongcredential && <Text style={styles.error1}>Invalid credentials</Text>}
+
+            {/* <Text allowFontScaling={false} style={[styles.white, styles.p]}>Or continue with </Text>
+  <Pressable onPress={() => { showToastWithGravity("This functionality is yet to come!") }} style={styles.googlebutton}>
+    <Image
+      source={require("../assets/images/google.png")}
+      style={styles.googleIcon}
+    />
+    <Text allowFontScaling={false} style={[styles.gray, styles.google]}>Google</Text>
+  </Pressable> */}
+
+
+            <View style={{ color: '#ccc', justifyContent: 'center', alignItems: 'center', marginVertical: 0, bottom: 0, marginTop: 50 }}>
+              <Text style={{ color: '#ccc', marginBottom: 2, fontFamily: 'Alata', fontSize: 12 }}>
+                By signing up, you agree to our
+              </Text>
+              <TouchableOpacity onPress={() => navigation.navigate('TermsAndConditions')}>
+                <Text style={{ color: '#00de62', textDecorationLine: 'underline', fontFamily: 'Alata', fontSize: 12, }}>
+                  Terms & Conditions
+                </Text>
+              </TouchableOpacity>
+            </View>
+
+            {/* <Text allowFontScaling={false} style={[styles.gray, styles.p, styles.lastLine]}>
+    Don't have account? <Text style={styles.green} onPress={() => {
+      // setForm1Visible(false)  commented
+      // animation2() commented
+      showsignuppage("CommunityMember", navigation)
+
+    }}>Create now</Text>
+  </Text> */}
           </View>)}
 
           {!isForm1Visible && (
@@ -577,16 +677,19 @@ const Login1 = ({ navigation, showtoast, falsetoken }) => {
 
         </Animated.View>
 
+        {/* </LinearGradient > */}
+
+
+
       </Animated.View>
-      {/* -------------------------------- bottom part ------------------------------------------------- */}
+      {/* <ReadMore1 attop={attop} setattop={setattop} animatedtop={animatedtop} /> */}
+
+    </ScrollView>
 
 
 
-      {/* -------------------------------- Read more ------------------------------------------------- */}
-      <ReadMore1 attop={attop} setattop={setattop} animatedtop={animatedtop} />
-      {/* -------------------------------- Read more ------------------------------------------------- */}
 
-    </KeyboardAvoidingView>
+
 
   );
 };

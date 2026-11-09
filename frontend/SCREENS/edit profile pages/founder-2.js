@@ -1,7 +1,7 @@
 import { useFocusEffect } from "expo-router"
-import { useState, useEffect, useRef, useContext } from "react";
+import { useState, useEffect, useRef, useContext, useCallback } from "react";
 import * as React from "react"
-import { SafeAreaView, ScrollView, ActivityIndicator,StatusBar, Animated, Dimensions, Pressable, TextInput, TouchableWithoutFeedback, Image } from "react-native"
+import { SafeAreaView, ScrollView, ActivityIndicator, StatusBar, Animated, Dimensions, Pressable, TextInput, TouchableWithoutFeedback, Image } from "react-native"
 import { View, Text, StyleSheet } from "react-native"
 import Profile from "../../assets/icons/profile.js"
 import Drop from "../../SCREENS/dropdown.js"
@@ -9,8 +9,9 @@ import Slider from "@react-native-community/slider";
 import styles from "../commonstyles.js"
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Entypo from '@expo/vector-icons/Entypo';
-import {url as url1} from "../../config.js"
+import { url as url1 } from "../../config.js"
 
+import AntDesign from '@expo/vector-icons/AntDesign';
 
 
 import * as ImagePicker from 'expo-image-picker';
@@ -22,8 +23,8 @@ const Founder2 = ({ navigation, route }) => {
     const [token, settoken] = useState("")
 
 
-    console.log(url1 , "route ka url");
-    
+    console.log(url1, "route ka url");
+
     const { globaldata, updateField } = useContext(GlobalContext);
 
     useEffect(() => {
@@ -31,7 +32,7 @@ const Founder2 = ({ navigation, route }) => {
         settoken(globaldata.token)
     }, [])
 
-    const { form, image } = route.params;
+    const { form, image, existingdata } = route.params;
     const final = new FormData();
 
 
@@ -112,19 +113,19 @@ const Founder2 = ({ navigation, route }) => {
 
     ]
 
-    function deletecertificate(index){
+    function deletecertificate(index) {
 
         console.log(index);
-        
+
         var new1 = [...teammember];
         new1.splice(index, 1)
         setteammember(new1)
     }
 
-    function deletecertificate1(index){
+    function deletecertificate1(index) {
 
         console.log(index);
-        
+
         var new1 = [...url];
         new1.splice(index, 1)
         seturl(new1)
@@ -194,15 +195,146 @@ const Founder2 = ({ navigation, route }) => {
     }
 
 
+    const [errors, setErrors] = useState({}); // Error state
 
 
     async function savedata() {
+
+
+
+        const newErrors = {};
+        let cangoahead = true
+
+
+        if (nameOfStartup == "") {
+            newErrors.fullName = "* Startup name is required.";
+            cangoahead = false
+        }
+
+        if (goal == "") {
+            newErrors.goal = "*please enter goal";
+            cangoahead = false
+        }
+        if (sector == "") {
+            newErrors.sector = "*please select a value";
+            cangoahead = false
+        }
+        if (stageOfStartup == "") {
+            newErrors.stage = "*please select a value";
+            cangoahead = false
+        }
+
+
+
+
+        setErrors(newErrors);
+
+        if (cangoahead == false) {
+            console.log("some error");
+
+            setloading(false)
+            return
+
+        }
+
+
+        for (var i = 0; i < teammember.length; i++) {
+            console.log(i);
+
+            var member = teammember[i];
+            console.log(member);
+
+            // Check if all fields are empty
+            if (member.username === "" && member.name === "" && member.role === "") {
+                // Do nothing or handle as needed
+                console.log("All fields are empty for member at index", i);
+                continue;
+            }
+
+            // Check if only `username` is filled
+            if (member.username !== "" && member.name === "" && member.role === "") {
+                var updatedTeam = teammember.map((t, index) => {
+                    if (i === index) {
+                        return { ...t, nameError: true, roleError: true };
+                    } else return t;
+                });
+                console.log(updatedTeam, "Name and Role are missing");
+                setteammember(updatedTeam);
+                return;
+            }
+
+            // Check if only `name` is filled
+            if (member.username === "" && member.name !== "" && member.role === "") {
+                var updatedTeam = teammember.map((t, index) => {
+                    if (i === index) {
+                        return { ...t, usernameError: true, roleError: true };
+                    } else return t;
+                });
+                console.log(updatedTeam, "Username and Role are missing");
+                setteammember(updatedTeam);
+                return;
+            }
+
+            // Check if only `role` is filled
+            if (member.username === "" && member.name === "" && member.role !== "") {
+                var updatedTeam = teammember.map((t, index) => {
+                    if (i === index) {
+                        return { ...t, usernameError: true, nameError: true };
+                    } else return t;
+                });
+                console.log(updatedTeam, "Username and Name are missing");
+                setteammember(updatedTeam);
+                return;
+            }
+
+            // Check if any single field is missing
+            if (member.username === "" || member.name === "" || member.role === "") {
+                var updatedTeam = teammember.map((t, index) => {
+                    if (i === index) {
+                        return {
+                            ...t,
+                            usernameError: member.username === "",
+                            nameError: member.name === "",
+                            roleError: member.role === "",
+                        };
+                    } else return t;
+                });
+                console.log(updatedTeam, "Some fields are missing");
+                setteammember(updatedTeam);
+                return;
+            }
+        }
+
+
+
+        var tosend;
+        if (sliderrange > 1000000) {
+            tosend = sliderrange.toString().substring(0, 2)
+        }
+        else if (sliderrange < 1000000) {
+            tosend = sliderrange.toString()[0]
+
+        }
+
+        tosend = +tosend + 58;
+        if (sliderrange == 0) {
+            tosend = 69
+        }
+        console.log(tosend.toString(), "to send");
+        final.append("fundingStatus", tosend)
         final.append("nameOfStartup", nameOfStartup)
         final.append("goal", goal)
         final.append("description", description)
         final.append("sector", sector)
         final.append("stageOfStartup", stageOfStartup)
-        final.append("fundingStatus", fundingStatus)
+        // final.append("fundingStatus", sliderrange)
+
+        console.log('====================================');
+        console.log(sliderrange , "tarrif");
+        console.log('====================================');
+
+
+
 
         var array = teammember.map(({ id, username, ...rest }) => {
             return {
@@ -214,7 +346,22 @@ const Founder2 = ({ navigation, route }) => {
 
         final.append("teamInfo", JSON.stringify(array));
 
-        var array = url.map(e => e.url)
+        // var array = url.map(e => e.url)
+        // final.append("socialProof", JSON.stringify(array));
+        var array = [
+            {
+                name: "instagram",
+                url: InstagramUrl
+            },
+            {
+                name: "linkedin",
+                url: LinkedinURl
+            },
+            {
+                name: "youtube",
+                url: YTURL
+            }
+        ]
         final.append("socialProof", JSON.stringify(array));
         if (image && image != "") {
             final.append("profilePhoto", {
@@ -225,16 +372,14 @@ const Founder2 = ({ navigation, route }) => {
         }
 
 
-        console.log('====================================');
-        console.log(final);
-        console.log('====================================');
+   
         setloading(true);
 
 
         console.log(`${url}founder/editFounderAccountProfileDetails`);
         try {
 
-            
+
             const response = await fetch(`${url1}founder/editFounderAccountProfileDetails`, {
                 method: 'POST',
                 body: final,
@@ -245,11 +390,21 @@ const Founder2 = ({ navigation, route }) => {
             });
             const data = await response.json();
             if (response.status == 200) {
-                navigation.navigate("Main2")
+
+                // navigation.replace("Main2")
+                navigation.reset({
+                    index: 0,
+                    routes: [{ name: "Main2" }],
+                });
             }
-            console.log('====================================');
-            console.log(data);
-            console.log('====================================');
+            else if (response.status == 555) {
+                for (items of data.invalidTeamMates) {
+                    teammember[items].tagerror = true;
+                    setteammember(teammember)
+                }
+
+            }
+       
 
         }
         catch (err) {
@@ -280,7 +435,7 @@ const Founder2 = ({ navigation, route }) => {
 
     }
 
-    
+
     var stage = [
         { label: "Ideation Stage", value: "Ideation Stage" },
         { label: "Pre-Seed Stage", value: "Pre-Seed Stage" },
@@ -296,15 +451,103 @@ const Founder2 = ({ navigation, route }) => {
         StatusBar.setBackgroundColor("#16181A")
         StatusBar.setBarStyle("light-content")
     })
+    const [InstagramUrl, setInstagramUrl] = useState("")
+    const [YTURL, setYTURL] = useState("")
+    const [LinkedinURl, setLinkedinURl] = useState("")
+
+    // const h1 = useCallback((value) => {
+    //     setsliderrange(value);
+    // }, []);
+    const sliderRef = useRef(null);
+
+    const h1 = (value) => {
+        if (sliderRef.current) {
+            clearTimeout(sliderRef.current);
+        }
+        sliderRef.current = setTimeout(() => {
+            setsliderrange(value);
+        }, 100);
+    };
+
+    useEffect(() => {
+        console.log("hiii");
+        if (existingdata) {
+
+            console.log(existingdata);
+            console.log(existingdata.roleId.hiddenInfo.socialProof[0].url);
+            console.log(existingdata.roleId.hiddenInfo.socialProof[1].url);
+            console.log(existingdata.roleId.hiddenInfo.socialProof[2].url);
+            
+
+         
+            console.log(+existingdata.roleId.hiddenInfo.fundingStatus , "bllll");
+
+
+            if (existingdata.roleId.hiddenInfo.socialProof) {
+                // setLinkedinURl(existingdata.roleId.hiddenInfo.socialProof["name"] )
+            }
+
+
+            setNameOfStartup(existingdata.roleId.nameOfStartup)
+            setGoal(existingdata.roleId.goal)
+            setDescription(existingdata.roleId.description)
+            counttext(existingdata.roleId.description)
+            setSector(existingdata.roleId.hiddenInfo.sector)
+            setStageOfStartup(existingdata.roleId.hiddenInfo.stageOfStartup)
+
+            setInstagramUrl(existingdata.roleId.hiddenInfo.socialProof[0].url)
+            setLinkedinURl(existingdata.roleId.hiddenInfo.socialProof[1].url)
+            setYTURL(existingdata.roleId.hiddenInfo.socialProof[2].url)
+            function getfund(fund) {
+                fund = Number(fund);
+                console.log(fund);
+                
+
+                if (fund == 69) {
+                    return 0
+                }
+                fund = fund - 57
+                // console.log(fund * 10000000);
+                return (fund * 1000000)
+
+                
+
+
+                // (+userdata.hiddenInfo.fundingStatus).toLocaleString("en-IN")
+
+            }
+            // getfund(63)
+            setsliderrange(getfund(existingdata.roleId.hiddenInfo.fundingStatus))
+            // setskills(existingdata.roleId.skills)
+
+            // setcertificate(modified)
+
+
+            // setportfolio(m1)
+
+
+        }
+    }, [existingdata])
     return (
 
         <SafeAreaView style={{ flex: 1, backgroundColor: "#16181a" }}>
-            <ScrollView style={{ flex: 1 }}>
-                <Animated.View style={styles1.header}>
-                    <Text allowFontScaling={false} style={styles1.headertext}>Profile</Text>
-                </Animated.View>
+            <View style={styles1.header}>
+                    <View style={styles1.headerSide}>
+                        <Pressable onPress={() => navigation.goBack()}>
+                            <FontAwesome6 name="" size={34} style={styles1.backIcon} color="#00DF60" />
+                        </Pressable>
+                    </View>
+
+                    <View style={styles1.headerCenter}>
+                        <Text style={styles1.title}>Edit Profile</Text>
+                    </View>
+
+                    <View style={styles1.headerSide} />
+                </View>
+            <ScrollView style={{ flex: 1, paddingTop:20 }}>
+               
                 <View style={{ width: width * 0.98, margin: "auto" }}>
-                    <Text style={styles1.edit}>Edit Profile</Text>
+                    {/* <Text style={styles1.edit}>Edit Profile</Text> */}
 
                     <Text allowFontScaling={false} style={[styles.t1, { marginTop: 0, marginBottom: 0, paddingLeft: 12 }]}>About Startup/Organisation</Text>
 
@@ -314,19 +557,23 @@ const Founder2 = ({ navigation, route }) => {
                         onTouchStart={handleOutsideTouch}
                         allowFontScaling={false}
                         placeholder="Name"
-                        placeholderTextColor="#B8B8B8"
+                        placeholderTextColor="#828282"
                         style={styles1.input}
                         value={nameOfStartup}
                         onChangeText={(text) => { setNameOfStartup(text) }}
                     />
+                    {errors.fullName && <Text style={styles1.err}>{errors.fullName}</Text>}
+
                     <TextInput
                         allowFontScaling={false}
                         placeholder="Goal"
-                        placeholderTextColor="#B8B8B8"
+                        placeholderTextColor="#828282"
                         style={[styles1.input, { marginBottom: 20 }]}
                         value={goal}
                         onChangeText={(text) => { setGoal(text) }}
                     />
+                    {errors.goal && <Text style={styles1.err}>{errors.goal}</Text>}
+
 
                     <Text allowFontScaling={false} style={styles1.des}>Description:</Text>
 
@@ -335,10 +582,11 @@ const Founder2 = ({ navigation, route }) => {
                         <TextInput
                             allowFontScaling={false}
                             placeholder=""
-                            placeholderTextColor="#B8B8B8"
+                            placeholderTextColor="#828282"
                             style={styles1.input11}
                             maxLength={1000}
                             multiline={true}
+                            value={description}
                             onFocus={handleOutsideTouch}
                             onPress={handleOutsideTouch}
                             // value={username}
@@ -362,32 +610,34 @@ const Founder2 = ({ navigation, route }) => {
                     <View style={{ width: width * 0.95, margin: "auto" }}>
 
 
-                        <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginTop: 25, marginBottom: 10, paddingLeft: 7 }]}>Startup sector  </Text>
+                        <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginTop: 15,marginBottom: 10, paddingLeft: 7 }]}>Startup sector  </Text>
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>List your highest degree achieved, which helps to establish your academic background and qualifications. </Text>
-                        <Drop width={"88%"} width1={"86%"} items={areaofinterestlist} onValueChange={(value) => { setSector(value) }} setOpen={t2} open={open2} nestedScrollEnabled={true} />
+                        <Drop borderwidth={0} bb={1} pccolor={"#828282"} borderColor={"#ccc"}  width={"92%"} placeholder={sector} width1={"86%"} items={areaofinterestlist} onValueChange={(value) => { setSector(value) }} setOpen={t2} open={open2} nestedScrollEnabled={true} />
+                        {errors.sector && <Text style={styles1.errnew}>{errors.sector}</Text>}
 
 
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 25, paddingLeft: 7 }]}>Startup stage  </Text>
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>Detail any relevant industry experience, particularly if you’ve worked in a specific company or held roles that have prepared you for your current venture.</Text>
-                        <Drop width={"88%"} width1={"86%"} items={stage} onValueChange={(value) => setStageOfStartup(value)} open={open1} setOpen={t1} />
+                        <Drop borderwidth={0} bb={1} pccolor={"#828282"}   borderColor={"#ccc"} width={"92%"} placeholder={stageOfStartup} width1={"86%"} items={stage} onValueChange={(value) => setStageOfStartup(value)} open={open1} setOpen={t1} />
+                        {errors.stage && <Text style={styles1.errnew}>{errors.stage}</Text>}
 
 
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 25, paddingLeft: 7 }]}>Funding Status</Text>
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>Indicate the amount of funding your startup has received so far. This information will only be visible to verified investors and helps them assess your startup's financial backing and growth potential.</Text>
 
-                        <Pressable onPress={() => { handleOutsideTouch() }} style={[styles.btn1, { backgroundColor: "#24272A", marginBottom: 10, width: 220, height: 52 }]}>
+                        <Pressable onPress={() => { handleOutsideTouch() }} style={[styles.btn1, {  marginBottom: 40, width: 220, height: 40 }]}>
                             <Text allowFontScaling={false} style={styles.nexttext}>{sliderrange.toLocaleString("en-IN")}</Text>
                         </Pressable>
 
                         {/* slider */}
-                        <View style={[styles.box, { left: 20 }]}></View>
-                        <View style={[styles.box1, { left: "95%" }]}></View>
-                        <Slider onTouchStart={handleOutsideTouch} s
+                        {/* <View style={[styles.box, { left: 20 }]}></View> */}
+                        {/* <View style={[styles.box1, { left: "95%" }]}></View> */}
+                        <Slider onTouchStart={handleOutsideTouch} 
                             // style={styles.sliderbox}
                             style={{ marginTop: -7, width: "90%", margin: "auto" }}
                             minimumValue={0}
                             maximumValue={10000000}
-                            value={5000000}
+                            value={sliderrange}
                             step={1000}
                             minimumTrackTintColor="#00DE62"
                             maximumTrackTintColor="#00DE62"
@@ -396,20 +646,21 @@ const Founder2 = ({ navigation, route }) => {
                             // trackImage={require("../assets/images/slider.png")}
                             // trackImage={require("../assets/images/slider3.png")}
                             thumbImage={require("../../assets/images/slider3.png")}
-                            onValueChange={(value) => { setsliderrange(value) }}
+                            // onValueChange={(value) => { setsliderrange(value) }}
+                            onValueChange={h1}
                             hitSlop={{ top: 50, left: 50, right: 50, bottom: 50 }}
                             thumbTouchSize={{ width: 100, height: 100 }}
                         />
 
-                        <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 35, paddingLeft: 10 }]}>Social proof</Text>
-                        {url.map((items ,index) =>
+                        <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 35, paddingLeft: 0 }]}>Social proof</Text>
+                        {/* {url.map((items, index) =>
 
                             <View style={styles1.v1} key={items.id}>
                                 <Pressable onPress={addurl}>
                                     <Entypo style={styles1.plus1} name="plus" size={24} color="#00DE62" />
                                 </Pressable>
 
-                                
+
                                 {index > 0 && <Pressable onPress={() => { deletecertificate1(index) }}>
                                     <FontAwesome6 name="trash" style={styles1.minus1} size={15} color="#00DE62" />
                                 </Pressable>}
@@ -424,45 +675,111 @@ const Founder2 = ({ navigation, route }) => {
                                 />
                             </View>
 
-                        )}
+                        )} */}
+
+
+                        <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 0 }]}>Instagram</Text>
+
+                        <View style={styles1.v1} >
+                            <Pressable onPress={addurl}>
+                                {/* <AntDesign name="instagram" style={styles1.plus1} size={24} color="#828282" /> */}
+                                {/* <Entypo style={styles.plus1} name="plus" size={24} color="#00DE62" /> */}
+                            </Pressable>
+
+                            <TextInput
+
+                                allowFontScaling={false}
+                                placeholder="URL"
+                                numberOfLines={1}
+                                placeholderTextColor="#828282"
+                                style={styles1.inputf}
+                                value={InstagramUrl}
+                                onChangeText={(text) => { setInstagramUrl(text) }}
+                            />
+                        </View>
+                        <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 0 }]}>YouTube</Text>
+
+                        <View style={styles1.v1} >
+                            <Pressable onPress={addurl}>
+                                {/* <Feather name="youtube" style={styles.plus1} size={24} color="#bbbbbb" /> */}
+                                {/* <AntDesign name="youtube" style={styles1.plus1} size={24} color="#828282" /> */}
+                                {/* <Entypo style={styles.plus1} name="plus" size={24} color="#00DE62" /> */}
+                            </Pressable>
+
+                            <TextInput
+
+                                allowFontScaling={false}
+                                placeholder="URL"
+                                numberOfLines={1}
+                                placeholderTextColor="#828282"
+                                style={styles1.inputf}
+                                value={YTURL}
+                                onChangeText={(text) => { setYTURL(text) }}
+                            />
+                        </View>
+                        <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 0 }]}>LinkedIn</Text>
+
+                        <View style={styles1.v1} >
+                            <Pressable onPress={addurl}>
+                                {/* <AntDesign name="linkedin-square" style={styles1.plus1} size={24} color="#828282" /> */}
+                                {/* <Entypo style={styles.plus1} name="plus" size={24} color="#00DE62" /> */}
+                            </Pressable>
+
+                            <TextInput
+
+                                allowFontScaling={false}
+                                placeholder="URL"
+                                numberOfLines={1}
+                                placeholderTextColor="#828282"
+                                style={styles1.inputf}
+                                value={LinkedinURl}
+                                onChangeText={(text) => { setLinkedinURl(text) }}
+                            />
+                        </View>
 
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 35, paddingLeft: 10 }]}>Team Information</Text>
 
 
-                        {teammember.map((we , index) => (
+                        {teammember.map((we, index) => (
                             <View key={we.id} style={styles1.certificate}>
                                 <Pressable onPress={addteammember}>
-                                    <Entypo style={styles1.plus} name="plus" size={24} color="#00DE62" />
+                                    <Entypo style={styles1.plus} name="plus" size={24} color="#ccc" />
                                 </Pressable>
 
                                 {index > 0 && <Pressable onPress={() => { deletecertificate(index) }}>
-                                    <FontAwesome6 name="trash" style={styles1.minus} size={15} color="#00DE62" />
+                                    <FontAwesome6 name="trash" style={styles1.minus} size={15} color="#ccc" />
                                 </Pressable>}
 
                                 <TextInput
                                     allowFontScaling={false}
                                     placeholder="@Username"
-                                    placeholderTextColor="#B8B8B8"
+                                    placeholderTextColor="#828282"
                                     style={[styles1.input1, { marginTop: 20, backgroundColor: "transparent" }]}
                                     value={we.username}
                                     onChangeText={(text) => { handleworkchange(we.id, "username", text) }}
                                 />
+                                {we.usernameError && <Text style={styles1.err}>please enter a valid username</Text>}
+                                {we.tagerror && <Text style={styles1.err}>* user not found</Text>}
                                 <TextInput
                                     allowFontScaling={false}
                                     placeholder="Name"
-                                    placeholderTextColor="#B8B8B8"
+                                    placeholderTextColor="#828282"
                                     style={styles1.input1}
                                     value={we.name}
                                     onChangeText={(text) => { handleworkchange(we.id, "name", text) }}
                                 />
+                                {we.nameError && <Text style={styles1.err}>* please enter name</Text>}
+
                                 <TextInput
                                     allowFontScaling={false}
                                     placeholder="Role"
-                                    placeholderTextColor="#B8B8B8"
+                                    placeholderTextColor="#828282"
                                     style={styles1.input1}
                                     value={we.role}
                                     onChangeText={(text) => { handleworkchange(we.id, "role", text) }}
                                 />
+                                {we.roleError && <Text style={styles1.err}>* please enter role</Text>}
+
 
                             </View>
                         ))}
@@ -480,7 +797,7 @@ const Founder2 = ({ navigation, route }) => {
 
 
                     <View onTouchStart={handleOutsideTouch} s style={styles1.icons}>
-                        <Pressable onPress={() => navigation.goBack()} style={{ alignSelf: "center" }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
+                        <Pressable onPress={() => navigation.goBack()} style={{ alignSelf: "center" }}><FontAwesome6 name="chevron-left" size={25} color="#00DF60" /></Pressable>
                         <Pressable onPress={savedata} style={styles1.btn}>
                             {loading && <ActivityIndicator size={24} color="#16181a" />}
                             {!loading && <Text allowFontScaling={false} style={styles1.nexttext}>Save</Text>}
@@ -508,28 +825,33 @@ var b = height / 800;
 
 const scalingfactor = Math.sqrt(a * b)
 const styles1 = StyleSheet.create({
-    header: {
-        height: 55,
-        textAlign: "left",
-        backgroundColor: "#16181a",
-        // backgroundColor : "transparent",
-        // position : "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        zIndex: 1000,
-        // backgroundColor : "red",
-
-
-    },
-    headertext: {
-        color: "#00DE62",
-        fontSize: scalingfactor * 35,
-        fontFamily: "myanmar",
-        fontWeight: "bold",
-        paddingTop: 5,
+    title: {
+        fontSize: 20,
+        color: "#E9E9E9",
+        fontFamily: "Alata",
+        textAlign: "center",
+      },
+      header: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingVertical: 15,
         paddingHorizontal: 20,
-    },
+        borderBottomWidth: 1,
+        borderBottomColor: "#24272A",
+      },
+    
+      headerSide: {
+        width: 40, // same width as the icon button area
+        alignItems: "flex-start",
+        justifyContent: "center",
+      },
+    
+      headerCenter: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+      },
     edit: {
         color: "#B8B8B8",
         fontFamily: "Alata",
@@ -554,13 +876,13 @@ const styles1 = StyleSheet.create({
         borderBottomWidth: 1,
         // borderRadius : 20,
         paddingLeft: scalingfactor * 10,
-        borderBottomColor: "#AEAFAF",
+        borderBottomColor: "#ccc",
         fontSize: scalingfactor * 20, // Responsive font size
-        color: "#B8B8B8",
+        color: "#ccc",
         paddingBottom: scalingfactor * 7,
         width: "90%",
         marginHorizontal: "auto",
-        fontFamily: "Roboto",
+        fontFamily: "Alata",
         lineHeight: scalingfactor * 18,
         marginBottom: scalingfactor * 15,
         // borderRadius : 20
@@ -581,7 +903,7 @@ const styles1 = StyleSheet.create({
     ,
     btn: {
         width: 120,
-        height: 48,
+        height: 40,
         // height : scalingfactor*48,
         backgroundColor: "#00DF60",
         // padding: scalingfactor * 12,
@@ -602,7 +924,7 @@ const styles1 = StyleSheet.create({
     }, nexttext: {
         color: "#24272A",
         fontFamily: "Alata",
-        fontSize: scalingfactor * 24,
+        fontSize:  20,
         textAlign: "center",
         // lineHeight : 16
         marginTop: -4
@@ -620,10 +942,11 @@ const styles1 = StyleSheet.create({
         marginTop: 10,
         margin: "auto",
         width: "92%",
-        backgroundColor: "#24272A",
-        borderWidth: 3,
-        borderColor: "#16181A",
+        // backgroundColor: "#24272A",
+        borderWidth: 1,
+        borderColor: "#ccc",
         borderRadius: 10,
+        marginTop : 20,
         position: "relative"
     },
     plus: {
@@ -636,21 +959,21 @@ const styles1 = StyleSheet.create({
         backgroundColor: "transparent",
         margin: height * 0.016,
         marginTop: 0,
-        borderBottomWidth: 3,
+        borderBottomWidth: 1,
         paddingLeft: scalingfactor * 10,
-        borderBottomColor: "#16181A",
+        borderBottomColor: "#ccc",
         fontSize: scalingfactor * 20,
         color: "#B8B8B8",
         paddingBottom: scalingfactor * 5,
         width: "92%",
-        fontFamily: "Roboto",
-        lineHeight: scalingfactor * 18,
+        fontFamily: "Alata",
+        // lineHeight: scalingfactor * 18,
         marginBottom: scalingfactor * 25
     },
     t22: {
         textAlign: 'Left',
-        color: "#94A3B8",
-        fontFamily: 'Roboto',
+        color: "#828282",
+        fontFamily: 'Alata',
         fontSize: scalingfactor * 13,
 
         marginBottom: scalingfactor * 8,
@@ -661,7 +984,7 @@ const styles1 = StyleSheet.create({
     count: {
         fontSize: 14,
         position: "absolute",
-        bottom: 30,
+        bottom: 12,
         right: 30,
         // backgroundColor: "red",
         width: "auto"
@@ -670,16 +993,16 @@ const styles1 = StyleSheet.create({
         backgroundColor: "transparent",
         margin: height * 0.016,
         marginTop: -2,
-        borderWidth: 2,
+        borderWidth: 1,
         borderRadius: 20,
-        borderColor: "#828282",
-        fontSize: scalingfactor * 20,
-        color: "#B8B8B8",
+        borderColor: "#ccc",
+        fontSize: scalingfactor * 18,
+        color: "#ccc",
         paddingBottom: scalingfactor * 5,
         width: "90%",
         margin: "auto",
         fontFamily: "Roboto",
-        lineHeight: scalingfactor * 18,
+        lineHeight: scalingfactor * 22,
         marginBottom: scalingfactor * 10,
         height: 220,
         marginTop: 10,
@@ -702,13 +1025,19 @@ const styles1 = StyleSheet.create({
         zIndex: 100
     },
     v1: {
-        borderBottomWidth: 3,
-        borderBottomColor: "#AEAFAF",
+        borderBottomWidth: 1,
+        borderBottomColor: "#ccc",
         width: "90%",
+
         margin: "auto",
         //    backgroundColor :"red",
         paddingBottom: 0,
-        marginTop: 10
+        marginTop: 10,
+        margin: "auto",
+        //     //    backgroundColor :"red",
+        paddingBottom: 0,
+        marginTop: 10,
+        // marginBottom: 20
     },
     input101: {
 
@@ -722,15 +1051,15 @@ const styles1 = StyleSheet.create({
         marginLeft: 0,
         // backgroundColor : "red",
         paddingLeft: 10,
-        fontFamily: "Roboto",
-        lineHeight: scalingfactor * 18,
+        // fontFamily: "Roboto",
+        // lineHeight: scalingfactor * 18,
 
 
     },
     minus: {
         position: "absolute",
         right: 45,
-        top: -3,
+        top: -2,
         zIndex: 100
     },
     minus1: {
@@ -739,6 +1068,78 @@ const styles1 = StyleSheet.create({
         top: 6,
         zIndex: 100
     },
+    err: {
+        color: "#E65858",
+        marginTop: -5,
+        width: "89%",
+        fontSize: 12,
+        marginHorizontal: "auto",
+        // marginBottom : 2
+    },
+    errnew: {
+        color: "#E65858",
+        marginTop: 5,
+        width: "89%",
+        fontSize: 12,
+        marginBottom: -10,
+        marginHorizontal: "auto",
+    }
+    , plus1: {
+        position: "absolute",
+        left: 0,
+        top: 10,
+        zIndex: 100
+    },
+    // v1: {
+    //     borderBottomWidth: 3,
+    //     borderBottomColor: "#bbbbbb",
+    //     width: "90%",
+    //     margin: "auto",
+    //     //    backgroundColor :"red",
+    //     paddingBottom: 0,
+    //     marginTop: 10,
+    //     marginBottom: 20
+    // },
+
+    t1: {
+        textAlign: 'Left',
+        marginLeft: 10,
+        color: "#D9D9D9",
+        fontFamily: 'Alata',
+        fontSize: scalingfactor * 24,
+        // backgroundColor : "red",
+        width: "97%",
+        marginBottom: scalingfactor * 3,
+    },
+    inputf: {
+        // margin: height * 0.016,
+        marginTop: 0,
+        marginBottom : 10,
+
+        fontSize: scalingfactor * 20,
+        color: "#B8B8B8",
+        paddingBottom: scalingfactor * 0,
+        width: "90%",
+        marginLeft: 0,
+        paddingLeft: 0,
+        // marginBottom : 30,
+        // fontFamily: "Roboto",
+        // lineHeight: scalingfactor * 18,
+
+    }
+,
+    err: {
+        marginVertical: 0,
+        marginTop: -20,
+        marginBottom: 10,
+        textAlign: "left",
+        // backgroundColor : "red",
+        width: "90%",
+        marginHorizontal: "auto",
+        color: "#E65858",
+        fontSize: 12,
+        fontFamily: "Roboto",
+    }
 
 
 })

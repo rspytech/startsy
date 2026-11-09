@@ -4,6 +4,8 @@ import { createMaterialTopTabNavigator } from "@react-navigation/material-top-ta
 import { NavigationContainer } from "@react-navigation/native";
 import { Pressable } from "react-native";
 import ConnectionsScreen from "../main-1/connection.js"
+import Search from "../../assets/icons/Search.js";
+
 
 import RequestsScreen from "../main-1/Request.js"
 import { useFocusEffect } from "expo-router";
@@ -18,43 +20,23 @@ const DATA = Array(5).fill({
 const Tab = createMaterialTopTabNavigator();
 
 
-const ChatScreen = ({ navigation , token }) => {
+const ChatScreen = ({ navigation, token }) => {
 
-    console.log(navigation);
-    
+    // console.log(navigation);
 
 
-    console.log("chatscren of investor");
-    console.log("chatscren of investor");
-    console.log("chatscren of investor");
-    console.log("chatscren of investor");
-    console.log("chatscren of investor");
-    console.log("chatscren of investor");
-    console.log("chatscren of investor");
-    console.log("chatscren of investor");
-    console.log("chatscren of investor");
-    console.log("chatscren of investor");
-    console.log("chatscren of investor");
-    console.log("chatscren of investor");
-    console.log("chatscren of investor");
-    console.log("chatscren of investor");
-    console.log("chatscren of investor");
-    console.log("chatscren of investor");
-    console.log("chatscren of investor");
-    console.log("chatscren of investor");
-    console.log("chatscren of investor");
-    
+
+  
+
 
     useFocusEffect(() => {
         StatusBar.setBackgroundColor("#16181a")
     })
-    console.log(navigation , "message")
+    // console.log(navigation , "message")
 
     return (
 
-        <View contentContainerStyle={{
-            height: height
-        }} style={styles.container}>
+        <View  style={styles.container}>
             <Text allowFontScaling={false} style={styles.header}>Chat</Text>
             <View style={styles.searchContainer}>
                 <TextInput
@@ -63,6 +45,8 @@ const ChatScreen = ({ navigation , token }) => {
                     placeholder="Search"
                     placeholderTextColor="#828282"
                 />
+                <Search style={styles.search} />
+
             </View>
 
 
@@ -77,7 +61,7 @@ const ChatScreen = ({ navigation , token }) => {
                         display: "flex",
                         width: width * 0.92,
                         margin: "auto",
-                        elevation : 0
+                        elevation: 0
 
                     },
 
@@ -164,7 +148,7 @@ const styles = StyleSheet.create({
     },
     searchInput: {
         height: 48,
-        borderColor: "#00DE62",
+        borderColor: "#828282",
         borderWidth: 1,
         borderRadius: 30,
         paddingHorizontal: 15,
@@ -317,5 +301,11 @@ const styles = StyleSheet.create({
         borderWidth: 1,
         borderRadius: 30,
         // marginTop : -10
-    }
+    },
+    search: {
+        position: "absolute",
+        right: 12,
+        top: 10,
+        alignSelf: "center",
+    },
 });

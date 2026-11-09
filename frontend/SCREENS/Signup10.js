@@ -19,6 +19,8 @@ import {
     Keyboard
 
 } from "react-native";
+import Feather from '@expo/vector-icons/Feather';
+import AntDesign from '@expo/vector-icons/AntDesign';
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 // import Slider from '@react-native-community/slider';
 import Slider from "@react-native-community/slider";
@@ -38,7 +40,11 @@ const Signup10 = ({ navigation, route }) => {
     const [name, setname] = useState("")
     const [goal, setgoal] = useState("")
     const [description, setdescription] = useState("")
-    const [sliderrange, setsliderrange] = useState(5000000)
+    const [sliderrange, setsliderrange] = useState(0)
+
+    const [InstagramUrl, setInstagramUrl] = useState("")
+    const [YTURL, setYTURL] = useState("")
+    const [LinkedinURl, setLinkedinURl] = useState("")
 
     const [error, seterror] = useState(false)
     const [nameerror, setnameerror] = useState(false)
@@ -46,12 +52,13 @@ const Signup10 = ({ navigation, route }) => {
     const [sserror, setsserror] = useState(false)
     const [stageerror, setstageerror] = useState(false)
     const [fundingstatuserror, setfunderror] = useState(false)
+    const [descriptionError, setdescriptionError] = useState(false)
 
 
 
     const { type } = route.params || "Freelancer"
     const { form, image } = route.params;
-    console.log(form);
+    // console.log(form);
 
 
 
@@ -78,6 +85,10 @@ const Signup10 = ({ navigation, route }) => {
             error = true
 
         }
+        if (description == "") {
+            setdescriptionError(true)
+            error = true
+        }
         // if (sliderrange = ) {
         //     setfunderror(true)
         //     error = true
@@ -100,11 +111,11 @@ const Signup10 = ({ navigation, route }) => {
         final.append("sector", startupsector)
         final.append("stageOfStartup", stage1)
 
-
-        if (sliderrange > 100000000) {
+        var tosend;
+        if (sliderrange > 10000000) {
             tosend = sliderrange.toString().substring(0, 2)
         }
-        else if (sliderrange < 100000000) {
+        else if (sliderrange < 10000000) {
             tosend = sliderrange.toString()[0]
 
         }
@@ -121,8 +132,25 @@ const Signup10 = ({ navigation, route }) => {
         console.log(tosend.toString(), "to send");
 
 
-        var array = url.map(e => e.url)
-        final.append("socialProof", array)
+        // var array = url.map(e => e.url)
+        var array = [
+            {
+                name: "instagram",
+                url: InstagramUrl
+            },
+            {
+                name: "linkedin",
+                url: LinkedinURl
+            },
+            {
+                name: "youtube",
+                url: YTURL
+            }
+        ]
+        final.append("socialProof", JSON.stringify(array))
+
+        console.log(array);
+
 
         console.log(final);
         navigation.navigate("Signup11", { form: final, image: image })
@@ -184,7 +212,8 @@ const Signup10 = ({ navigation, route }) => {
         { label: "FoodTech", value: "FoodTech" },
         { label: "Non-profits", value: "Non-profits" },
         { label: "Impact Investing", value: "Impact Investing" },
-        { label: "Philanthropy", value: "Philanthropy" }
+        { label: "Social Entrepreneurship", value: "Social Entrepreneurship" },
+        { label: "Others", value: "Others" }
     ];
 
     var stage = [
@@ -230,6 +259,16 @@ const Signup10 = ({ navigation, route }) => {
         seturl(new1);
     }
     const sliderImage = require("../assets/images/slider.png");
+    const sliderRef = useRef(null);
+
+    const h1 = (value) => {
+        if (sliderRef.current) {
+            clearTimeout(sliderRef.current);
+        }
+        sliderRef.current = setTimeout(() => {
+            setsliderrange(value);
+        }, 100);
+    };
     return (
 
         < SafeAreaView style={[signup3styles.container, { position: "relative" }]} >
@@ -254,11 +293,12 @@ const Signup10 = ({ navigation, route }) => {
                         {/* bottom */}
 
                         <View style={styles.bottom}>
-                            <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 15 }]}>About Startup/Organisation</Text>
+                            <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 15 }]}>About Startup <Text style={{fontSize : 20}}>*</Text></Text>
+                            
                             <TextInput
                                 allowFontScaling={false}
                                 placeholder="Name"
-                                placeholderTextColor="#B8B8B8"
+                                placeholderTextColor="#828282"
                                 style={styles.input11}
                                 value={name}
                                 onChangeText={(text) => { setname(text) }}
@@ -266,8 +306,8 @@ const Signup10 = ({ navigation, route }) => {
                             {nameerror && <Text style={styles.err}>* please write a startup name</Text>}
                             <TextInput
                                 allowFontScaling={false}
-                                placeholder="Goal"
-                                placeholderTextColor="#B8B8B8"
+                                placeholder="One liner for your startup"
+                                placeholderTextColor="#828282"
                                 style={styles.input11}
                                 value={goal}
                                 onChangeText={(text) => { setgoal(text) }}
@@ -282,7 +322,7 @@ const Signup10 = ({ navigation, route }) => {
                                 <TextInput
                                     allowFontScaling={false}
                                     placeholder=""
-                                    placeholderTextColor="#B8B8B8"
+                                    placeholderTextColor="#828282"
                                     style={styles.input}
                                     maxLength={1000}
                                     multiline={true}
@@ -295,16 +335,21 @@ const Signup10 = ({ navigation, route }) => {
                                     }}
                                 />
                             </View>
+                            {descriptionError && <Text style={[styles.err1, { marginTop: -15 }]}>* please enter a description </Text>}
 
-                            <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 10 }]}>Startup sector </Text>
-                            <Text allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>Define your startup’s focus: horizontal sectors serve multiple industries, while vertical sectors target a specific niche.</Text>
-                            <Drop items={ss} onValueChange={(value) => { setstartupsector(value) }} setOpen={setOpen1} open={open1} nestedScrollEnabled={true} />
+                            <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 10 }]}>Startup sector
+                                {/* <Text style={{ fontSize: 15, color: "#94A3B8" }}>*</Text> */}
+                            </Text>
+                            <Text allowFontScaling={false} style={[styles.t2, { marginBottom: 10 }]}>Define your startup’s focus: horizontal sectors serve multiple industries, while vertical sectors target a specific niche.</Text>
+                            <Drop borderwidth={0} bb={1} borderColor={"#ccc"} width={"97%"} items={ss} onValueChange={(value) => { setstartupsector(value) }} setOpen={setOpen1} open={open1} nestedScrollEnabled={true} />
                             {sserror && <Text style={styles.err1}>* please select a sector </Text>}
 
 
-                            <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 25 }]}>Startup stage </Text>
+                            <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 25 }]}>Startup stage
+                                {/* <Text style={{ fontSize: 15, color: "#94A3B8" }}>*</Text> */}
+                            </Text>
                             <Text allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>Identify where your startup is in its journey—whether you’re in ideation, have a prototype, or are generating revenue.</Text>
-                            <Drop items={stage} onValueChange={(value) => { setsetstartupstage(value) }} setOpen={setOpen2} open={open2} nestedScrollEnabled={true} />
+                            <Drop borderwidth={0} bb={1} borderColor={"#ccc"} width={"97%"} items={stage} onValueChange={(value) => { setsetstartupstage(value) }} setOpen={setOpen2} open={open2} nestedScrollEnabled={true} />
                             {stageerror && <Text style={styles.err1}>* please select your startup stage </Text>}
 
 
@@ -312,29 +357,30 @@ const Signup10 = ({ navigation, route }) => {
                             <Text allowFontScaling={false} style={[styles.t1, { marginTop: 15, marginBottom: 12 }]}>Funding Status</Text>
                             <Text allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>Indicate the amount of funding your startup has received so far. This information will only be visible to verified investors and helps them assess your startup's financial backing and growth potential.</Text>
                             <Pressable onPress={() => { handleOutsideTouch() }} style={styles.btn}>
-                                <Text allowFontScaling={false} style={styles.nexttext}>{sliderrange.toLocaleString("en-IN")}</Text>
+                                <Text allowFontScaling={false} style={styles.nexttext}>₹ {sliderrange.toLocaleString("en-IN")}</Text>
                             </Pressable>
 
                             {/* slider */}
-                            <View style={[styles.box, { left: 10 }]}></View>
-                            <View style={[styles.box1, { right: 10 }]}></View>
+                            {/* <View style={[styles.box, { left: 10 }]}></View> */}
+                            {/* <View style={[styles.box1, { right: 10 }]}></View> */}
                             <Slider
                                 // style={styles.sliderbox}
-                                style={{ marginTop: -7 }}
+                                style={{ marginTop: 15 }}
                                 minimumValue={0}
-                                maximumValue={100000000}
-                                value={5000000}
-                                step={100000}
+                                maximumValue={10000000}
+                                value={sliderrange}
+                                step={200000}
                                 minimumTrackTintColor="#00DE62"
                                 maximumTrackTintColor="#00DE62"
-                                thumbTintColor="#737373"
+                                thumbTintColor="#ccc"
 
                                 // step={100}
                                 // thumbTintColor="#737373" // Color of the slider thumb
                                 // trackImage={require("../assets/images/slider.png")}
                                 // trackImage={require("../assets/images/slider3.png")}
                                 // thumbImage={require("../assets/images/slider3.png")}
-                                onValueChange={(value) => { setsliderrange(value) }}
+                                onValueChange={h1}
+
                                 hitSlop={{ top: 50, left: 50, right: 50, bottom: 50 }}
                                 thumbTouchSize={{ width: 100, height: 100 }}
                             />
@@ -346,7 +392,7 @@ const Signup10 = ({ navigation, route }) => {
 
 
                             <Text allowFontScaling={false} style={[styles.t1, { marginTop: 20, marginBottom: 10 }]}>Social proof</Text>
-                            {url.map((items, index) =>
+                            {/* {url.map((items, index) =>
                                 <View style={styles.v1} key={items.id}>
                                     <Pressable onPress={addurl}>
                                         <Entypo style={styles.plus1} name="plus" size={24} color="#00DE62" />
@@ -361,22 +407,81 @@ const Signup10 = ({ navigation, route }) => {
 
                                         allowFontScaling={false}
                                         placeholder="URL"
-                                        placeholderTextColor="#B8B8B8"
+                                        placeholderTextColor="#828282"
                                         style={styles.input1}
                                         value={items.url}
                                         onChangeText={(text) => { handleurlchange(items.id, "url", text) }}
                                     />
                                 </View>
 
-                            )}
+                            )} */}
+
+                            <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 0 }]}>Instagram</Text>
+
+                            <View style={styles.v1} >
+                                <Pressable onPress={addurl}>
+                                    {/* <AntDesign name="instagram" style={styles.plus1} size={24} color="#828282" /> */}
+                                    {/* <Entypo style={styles.plus1} name="plus" size={24} color="#00DE62" /> */}
+                                </Pressable>
+
+                                <TextInput
+
+                                    allowFontScaling={false}
+                                    placeholder="URL"
+                                    numberOfLines={1}
+                                    placeholderTextColor="#828282"
+                                    style={styles.input1}
+                                    value={InstagramUrl}
+                                    onChangeText={(text) => { setInstagramUrl(text) }}
+                                />
+                            </View>
+                            <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 0 }]}>YouTube</Text>
+
+                            <View style={styles.v1} >
+                                <Pressable onPress={addurl}>
+                                    {/* <Feather name="youtube" style={styles.plus1} size={24} color="#bbbbbb" /> */}
+                                    {/* <AntDesign name="youtube" style={styles.plus1} size={24} color="#828282" /> */}
+                                    {/* <Entypo style={styles.plus1} name="plus" size={24} color="#00DE62" /> */}
+                                </Pressable>
+
+                                <TextInput
+                                    allowFontScaling={false}
+                                    placeholder="URL"
+                                    numberOfLines={1}
+                                    placeholderTextColor="#828282"
+                                    style={styles.input1}
+                                    value={YTURL}
+                                    onChangeText={(text) => { setYTURL(text) }}
+                                />
+                            </View>
+                            <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 0 }]}>LinkedIn</Text>
+
+                            <View style={styles.v1} >
+                                <Pressable onPress={addurl}>
+                                    {/* <AntDesign name="linkedin-square" style={styles.plus1} size={24} color="#828282" /> */}
+                                    {/* <Entypo style={styles.plus1} name="plus" size={24} color="#00DE62" /> */}
+                                </Pressable>
+
+                                <TextInput
+
+                                    allowFontScaling={false}
+                                    placeholder="URL"
+                                    numberOfLines={1}
+                                    placeholderTextColor="#828282"
+                                    style={styles.input1}
+                                    value={LinkedinURl}
+                                    onChangeText={(text) => { setLinkedinURl(text) }}
+                                />
+                            </View>
+
 
 
 
 
 
                             <View style={styles.icons}>
-                                <Pressable style={{ marginTop: 5 }} onPress={() => { navigation.goBack() }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
-                                <Pressable onPress={() => { nextpage(navigation, type) }}><FontAwesome6 name="chevron-right" size={40} color="#00DF60" /></Pressable>
+                                <Pressable style={{ marginTop: 5 }} onPress={() => { navigation.goBack() }}><FontAwesome6 name="chevron-left" size={30} color="#00DF60" /></Pressable>
+                                <Pressable onPress={() => { nextpage(navigation, type) }}><FontAwesome6 name="chevron-right" size={25} color="#00DF60" /></Pressable>
 
                             </View>
 
@@ -402,9 +507,9 @@ const styles = StyleSheet.create({
     t1: {
         textAlign: 'Left',
         marginLeft: 10,
-        color: "#D9D9D9",
+        color: "#ccc",
         fontFamily: 'Alata',
-        fontSize: scalingfactor * 24,
+        fontSize: 24,
         // backgroundColor : "red",
         width: "97%",
         marginBottom: scalingfactor * 3,
@@ -415,10 +520,9 @@ const styles = StyleSheet.create({
     },
     t2: {
         textAlign: 'Left',
-        color: "#94A3B8",
+        color: "#828282",
         fontFamily: 'Roboto',
-        fontSize: scalingfactor * 13,
-
+        fontSize: scalingfactor * 12,
         marginBottom: scalingfactor * 8,
         width: "85%",
         alignSelf: "center",
@@ -427,7 +531,7 @@ const styles = StyleSheet.create({
     bottom: {
         width: "100%",
         // height: height*0.85,
-        backgroundColor: "#24272A",
+        backgroundColor: "rgba(33, 34, 35, 0.5)",
         // backgroundColor: "red",
         borderTopLeftRadius: 70,
         padding: height * 0.03,
@@ -444,11 +548,11 @@ const styles = StyleSheet.create({
         backgroundColor: "transparent",
         margin: height * 0.016,
         marginTop: 0,
-        borderWidth: 3,
+        borderWidth: 1,
         borderRadius: 20,
-        borderColor: "#16181A",
+        borderColor: "#ccc",
         fontSize: scalingfactor * 20,
-        color: "#B8B8B8",
+        color: "#828282",
         paddingBottom: scalingfactor * 5,
         width: "92%",
         fontFamily: "Roboto",
@@ -472,14 +576,14 @@ const styles = StyleSheet.create({
     },
 
     btn: {
-        width: "92%",
+        width: "60%",
         height: 48,
         margin: "auto",
         backgroundColor: "transparent",
         borderRadius: 20,
-        borderWidth: 3,
-        borderColor: "#16181A",
-        borderRadius: 10,
+        borderWidth: 1,
+        borderColor: "#ccc",
+        borderRadius: 20,
         marginBottom: 15,
 
         // elevation: 5,
@@ -513,42 +617,43 @@ const styles = StyleSheet.create({
 
     }
     , input1: {
-        margin: height * 0.016,
+        // margin: height * 0.016,
         marginTop: 0,
-
         fontSize: scalingfactor * 20,
-        color: "#B8B8B8",
+        color: "#ccc",
         paddingBottom: scalingfactor * 0,
         width: "90%",
         marginLeft: 0,
-        paddingLeft: 10,
-        fontFamily: "Roboto",
-        lineHeight: scalingfactor * 18,
+        marginBottom : 10,
+        paddingLeft: 0,
+        // marginBottom : 30,
+        // fontFamily: "Roboto",
+        // lineHeight: scalingfactor * 18,
 
     }
     , input11: {
         backgroundColor: "transparent",
         margin: height * 0.016,
         marginTop: 0,
-        borderBottomWidth: 3,
+        borderBottomWidth: 1,
         paddingLeft: scalingfactor * 10,
-        borderBottomColor: "#16181A",
+        borderBottomColor: "#ccc",
         fontSize: scalingfactor * 20,
-        color: "#B8B8B8",
+        color: "#ccc",
         paddingBottom: scalingfactor * 5,
         width: "92%",
-        fontFamily: "Roboto",
-        lineHeight: scalingfactor * 18,
+        fontFamily: "Alata",
+        // lineHeight: scalingfactor * 18,
         marginBottom: scalingfactor * 25
 
     },
     des: {
         width: "92%",
         paddingLeft: scalingfactor * 10,
-        fontFamily: "Roboto",
+        fontFamily: "Alata",
         textAlign: "left",
-        fontSize: scalingfactor * 20,
-        color: "#B8B8B8",
+        fontSize: 20,
+        color: "#828282",
         alignSelf: "center",
     }, box: {
         // position: "absolute",
@@ -557,7 +662,7 @@ const styles = StyleSheet.create({
         borderRadius: 3,
         backgroundColor: "#00DE62",
         // top: -3,
-        top: 22,
+        top: 23,
         elevation: 10
     },
     box1: {
@@ -588,18 +693,19 @@ const styles = StyleSheet.create({
         // elevation : 10
     }, plus1: {
         position: "absolute",
-        right: 10,
-        top: 2,
+        left: 0,
+        top: 10,
         zIndex: 100
     },
     v1: {
-        borderBottomWidth: 3,
-        borderBottomColor: "#16181A",
+        borderBottomWidth: 1,
+        borderBottomColor: "#ccc",
         width: "90%",
         margin: "auto",
         //    backgroundColor :"red",
         paddingBottom: 0,
-        marginTop: 10
+        marginTop: 10,
+        marginBottom: 20
     },
     err: {
         marginVertical: 0,
@@ -610,7 +716,7 @@ const styles = StyleSheet.create({
         width: "90%",
         marginHorizontal: "auto",
         color: "#E65858",
-        fontSize: 12,
+        fontSize: 10,
         fontFamily: "Roboto",
     },
     err1: {

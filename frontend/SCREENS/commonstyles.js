@@ -1,40 +1,40 @@
 import * as React from "react";
 
-import { Dimensions, StyleSheet, Text } from "react-native";
+import {Dimensions , StyleSheet, Text} from "react-native"
 
-const { height, width } = Dimensions.get("window");
+const { height, width } = Dimensions.get("window")
 var a = width / 360;
 var b = height / 800;
 
-const scalingfactor = Math.sqrt(a * b);
+const scalingfactor = Math.sqrt(a * b)
 
 export default styles = StyleSheet.create({
     t1: {
-        textAlign: "Left",
+        textAlign: 'Left',
         marginLeft: 10,
-        color: "#D9D9D9",
-        fontFamily: "Alata",
-        fontSize: scalingfactor * 24,
+        color: "#ccc",
+        fontFamily: 'Alata',
+        fontSize: 24,
         // backgroundColor : "red",
-        width: "97%",
+        width: "90%",
         marginBottom: scalingfactor * 3,
         pointerEvents: "none",
-        zIndex: -1,
+        zIndex : -1
     },
     thumb: {
         width: 30,
-        height: 30,
+        height: 30
     },
     t2: {
-        textAlign: "Left",
-        color: "#94A3B8",
-        fontFamily: "Roboto",
-        fontSize: scalingfactor * 13,
+        textAlign: 'Left',
+        color: "#828282",
+        fontFamily: 'Roboto',
+        fontSize: scalingfactor * 12,
 
         marginBottom: scalingfactor * 8,
         width: "85%",
         alignSelf: "center",
-        lineHeight: scalingfactor * 16,
+        // lineHeight: scalingfactor * 16
     },
     bottom: {
         width: "100%",
@@ -49,6 +49,7 @@ export default styles = StyleSheet.create({
         padding: scalingfactor * 20,
         paddingTop: scalingfactor * 40,
         // overflow : "hidden",
+
     },
 
     input: {
@@ -63,22 +64,23 @@ export default styles = StyleSheet.create({
         paddingBottom: scalingfactor * 5,
         width: "92%",
         fontFamily: "Roboto",
-        lineHeight: scalingfactor * 18,
+        // lineHeight: scalingfactor * 18,
         marginBottom: scalingfactor * 25,
         height: 190,
         marginTop: 10,
         padding: 10,
         textAlignVertical: "top",
         paddingBottom: 30,
-    },
-    icons: {
+
+    }
+    , icons: {
         display: "flex",
         flexDirection: "row",
         justifyContent: "space-between",
         width: "92%",
         margin: "auto",
         marginTop: 30,
-        marginBottom: 30,
+        marginBottom: 30
     },
 
     btn: {
@@ -91,27 +93,29 @@ export default styles = StyleSheet.create({
         borderColor: "#16181A",
         borderRadius: 10,
         marginBottom: 10,
-        justifyContent: "center",
+        justifyContent: 'center',
+
     },
-    btn1: {
+    btn1 : {
         width: 173,
-        height: 48,
+        height: 40,
         margin: "auto",
         backgroundColor: "transparent",
         borderRadius: 20,
-        borderWidth: 3,
-        borderColor: "#16181A",
+        borderWidth: 1,
+        borderColor: "#ccc",
         borderRadius: 20,
         marginBottom: 0,
         marginTop: 10,
-        justifyContent: "center",
+        justifyContent: 'center',
     },
-    nexttext: {
+     nexttext: {
         color: "#00DE62",
         fontFamily: "Alata",
-        fontSize: scalingfactor * 24,
+        fontSize: 20,
         textAlign: "center",
-        marginTop: -4,
+        marginTop: -4
+
     },
 
     count: {
@@ -120,7 +124,7 @@ export default styles = StyleSheet.create({
         bottom: 25,
         right: 25,
         // backgroundColor: "red",
-        width: "auto",
+        width: "auto"
     },
     modal: {
         width: width,
@@ -130,8 +134,9 @@ export default styles = StyleSheet.create({
         top: 0,
         left: 0,
         zIndex: 1,
-    },
-    input1: {
+
+    }
+    , input1: {
         backgroundColor: "transparent",
         margin: height * 0.016,
         marginTop: 0,
@@ -144,8 +149,8 @@ export default styles = StyleSheet.create({
         paddingBottom: scalingfactor * 5,
         width: "92%",
         fontFamily: "Roboto",
-        lineHeight: scalingfactor * 18,
-        marginBottom: scalingfactor * 25,
+        // lineHeight: scalingfactor * 18,
+        marginBottom: scalingfactor * 25
     },
     des: {
         width: "92%",
@@ -155,8 +160,7 @@ export default styles = StyleSheet.create({
         fontSize: scalingfactor * 20,
         color: "#B8B8B8",
         alignSelf: "center",
-    },
-    box: {
+    }, box: {
         // position: "absolute",
         width: 14,
         height: 14,
@@ -164,11 +168,11 @@ export default styles = StyleSheet.create({
         backgroundColor: "#00DE62",
         // top: -3,
         top: 22,
-        elevation: 10,
+        elevation : 10
     },
     box1: {
         width: 14,
-        elevation: 10,
+        elevation : 10,
         height: 14,
         borderRadius: 3,
         backgroundColor: "#00DE62",
@@ -177,9 +181,9 @@ export default styles = StyleSheet.create({
         backfaceVisibility: "hidden",
 
         left: "98%",
-        marginLeft: -scalingfactor * 20,
-    },
-    sliderbox: {
+        marginLeft: -scalingfactor * 20
+    }
+    , sliderbox: {
         width: "90%",
         marginTop: -1,
         height: 5,
@@ -192,5 +196,6 @@ export default styles = StyleSheet.create({
         borderRadius: 20,
         pointerEvents: "auto",
         // elevation : 10
-    },
-});
+    }
+
+})

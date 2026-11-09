@@ -1,11 +1,5 @@
-// "Apna user" = your own profile: profile details, cover image, your posts, comments and follow lists.
-// Used as the Profile tab on both home screens.
-
-import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
-import { View, Animated, Text, Image, FlatList, StatusBar, RefreshControl, ActivityIndicator, StyleSheet, BackHandler, SafeAreaView, ScrollView, Pressable, Dimensions, TouchableOpacity, Modal, TouchableWithoutFeedback, TextInput } from "react-native";
-import Entypo from '@expo/vector-icons/Entypo';
-import EvilIcons from '@expo/vector-icons/EvilIcons';
-import FontAwesome6 from '@expo/vector-icons/FontAwesome6';
+import React, { useEffect, useState, useRef, useCallback, useMemo, memo } from 'react';
+import { View, Animated, Text, ToastAndroid,Image, Easing, FlatList, StatusBar,Linking, RefreshControl, ActivityIndicator, StyleSheet, BackHandler, SafeAreaView, ScrollView, Pressable, Dimensions, TouchableOpacity, Modal, TouchableWithoutFeedback, TextInput, Vibration } from "react-native";
 import Banner from "../assets/icons/banner.js"
 import Upvote from '@/assets/icons/upvote';
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
@@ -19,33 +13,106 @@ import FontAwesome from '@expo/vector-icons/FontAwesome';
 import Share from "@/assets/icons/share.js";
 import styles from "../styles/post.js"
 import { jwtDecode } from 'jwt-decode';
-import { useFocusEffect } from 'expo-router';
+import { useFocusEffect, useNavigation } from 'expo-router';
 import Logout from "../assets/icons/logout.js"
 import { Alert } from 'react-native';
 import Feather from '@expo/vector-icons/Feather';
 import Delete from "../assets/icons/delete.js"
-import BottomSheet, { BottomSheetView, BottomSheetScrollView, BottomSheetTextInput, BottomSheetDraggableView, BottomSheetFlatList, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
-import Ionicons from '@expo/vector-icons/Ionicons';
+import { Skeleton } from 'moti/skeleton'
+import { MotiView } from 'moti';
+import ReadMore1 from "../SCREENS/trial-1.js";
+import { AnimatedCircularProgress } from 'react-native-circular-progress';
+import Octicons from '@expo/vector-icons/Octicons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+import AntDesign from '@expo/vector-icons/AntDesign';
+// import { Image } from 'expo-image';
+import Settings from "../SCREENS/Settings.js"
 
-const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) => {
-    // console.log(token);
+import BottomSheet, { BottomSheetFlatList, BottomSheetBackdrop } from '@gorhom/bottom-sheet';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import { LinearGradient } from 'expo-linear-gradient';
+
+// import dotenv from 'dotenv/config'
+
+
+const Apnauser = ({ props, token, closeall, openshare , opencomment }) => {
+    // console.log("apnauser re render");
+    
+    // dotenv.config()
     var mypage = true
-    // console.log(mypage);
+    const navigation = useNavigation()
+
     const flatListRef = useRef(null);
     const [commenttext, setcommenttext] = useState("")
+    const [keepSwitchMoreReady,setkeepSwitchMoreReady] = useState(false)
     const [uploadingcomment, setuploadingcomment] = useState(false)
+    const Spacer = ({ height = 16 }) => <View style={{ height }} />;
+
+    useEffect(()=>{
+        setTimeout(() => {
+            setkeepSwitchMoreReady(true)
+        }, 300);
+    },[])
+   
+
+
+
+
+
+    const [attop, setattop] = useState(true);
+
+    const animatedValue = useRef(new Animated.Value(0)).current;
+    useEffect(() => {
+        Animated.timing(animatedValue, {
+            toValue: attop ? height + 10 : -10, // Move to 100 if attop is true, else move to 0
+            //   duration: (moverfirst == undefined) ? 300 : 0,
+            duration: 300,
+            useNativeDriver: false, // Use native driver for better performance
+            easing: Easing.inOut(Easing.ease)
+            //
+        }).start();
+    }, [attop]);
+    const animatedtop = {
+        top: animatedValue, // Bind animated value to top
+    };
+
+    const animatedValue1 = useRef(new Animated.Value(0)).current;
+    const animatedtop1 = {
+        top: animatedValue1, // Bind animated value to top
+    };
+
+
+
+     const showToastWithGravity = (message) => {
+        ToastAndroid.showWithGravityAndOffset(
+          `${message}`,
+          ToastAndroid.LONG,
+          ToastAndroid.TOP,
+          100, 100
+        );
+      };
+    
+    useEffect(() => {
+        // Start the animation
+        Animated.timing(animatedValue1, {
+            toValue: attop ? 0 : -height, // Move to 0 if attop is true, else move to -height
+            duration: 300,
+            useNativeDriver: false, // Use native driver for better performance
+            easing: Easing.inOut(Easing.ease)
+
+
+        }).start();
+    }, [attop]);
+
+
 
 
     const comments = ({ item, index }) => {
 
         function time(time) {
-            // console.log('====================================');
-            // console.log(time);
+
             var data1 = new Date(time)
-            // console.log('====================================');
-            // console.log(data1);
-            // console.log('====================================');
-            // console.log('====================================');
+
             var seconds = Math.floor((new Date() - data1) / 1000);
 
             var interval = seconds / 31536000;
@@ -86,6 +153,7 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
     }
 
     const [visible, setVisible] = useState(false);
+    const [visible1, setVisible1] = useState(false);
     const [isdeleting, setisdeleting] = useState(false);
 
     useFocusEffect(
@@ -99,15 +167,12 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
 
 
     var decode = jwtDecode(token)
-    console.log(decode);
 
     var editprofilepage;
 
 
     async function docomment() {
-        console.log("doing comment");
-        console.log(postid);
-        console.log(commenttext);
+
         setuploadingcomment(true)
 
 
@@ -122,10 +187,9 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                 },
             });
             const data = await response.json();
-            console.log(data);
+
             setemptycomment(false)
 
-            console.log(response.status);
             setcommenttext("");
 
             var object = {
@@ -174,7 +238,7 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
         useFocusEffect(
             useCallback(() => {
 
-                mainpagebottomsheet.current?.close()
+                // mainpagebottomsheet.current?.close()
                 handleTabChange(1)
             })
         )
@@ -194,10 +258,8 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
 
         useFocusEffect(
             useCallback(() => {
-                console.log("post");
-                console.log(posts, "ok");
+                
 
-                // handleTabChange(1)
             })
         )
 
@@ -206,6 +268,7 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
             <View style={{ flex: 1, backgroundColor: "#16181a" }}>
 
                 <CustomAlert visible={visible} onClose={() => setVisible(false)} />
+                <CustomAlert1 visible={visible1} onClose={() => setVisible1(false)} />
 
                 {posts?.length == 0 && <Text style={styles1.no}>You have not posted anything yet</Text>}
 
@@ -232,18 +295,13 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
 
 
     useEffect(() => {
-        console.log(minHeight); // Log after state updates
+
     }, [minHeight]);
 
 
     const handleTabChange = (index) => {
         setTabIndex(index);
-        // Update minHeight based on the active tab
-        // if (index === 0) {
-        //   setMinHeight(200); // About tab active, set minHeight to 200
-        // } else if (index === 1) {
-        //   setMinHeight(1400); // Posts tab active, set minHeight to 1000
-        // }
+        
     };
 
 
@@ -261,9 +319,6 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
 
     }
 
-    // console.log(decode);
-    // console.log(decode._id);
-
     var id = decode._id
 
 
@@ -275,6 +330,24 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
 
     const [userdata, setuserdata] = useState(null)
     const [posts, setPosts] = useState([])
+    const [GeneralModelId, setGeneralModelId] = useState("")
+    const [profilecompletion, setprofilecompletion] = useState()
+    const [instaurl, setinstaurl] = useState("")
+    const [LinkedinURl, setlinkedInUrl] = useState("")
+    const [yturl, setyturl] = useState("")
+
+
+
+    function messagetime(date) {
+        var date1 = new Date(date);
+        const messageDate1 = date1.toLocaleDateString("en-US", {
+            day: "2-digit",
+            month: "long",
+            year: "numeric",
+        });
+        return messageDate1
+    }
+
 
 
     async function getdata(params) {
@@ -289,29 +362,57 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                 },
             });
             const data = await response.json();
+        
+            
+            
 
-            console.log(data.data, "investor ka data");
+            
 
-            // console.log(data.data.chatUsers, "poiuytr");
+            const f2 = new Set()
+            const tree101 = data.data.chatUsers.filter((e) => {
+              if (f2.has(e._id)) {
+                return false
+              }
+              else {
+                f2.add(e._id)
+                return true
+              }
+            })
+            var temp1 = tree101.filter((e) => e.role == "Investor")
 
-            setinvestorarray(data.data.chatUsers.filter((e) => e.role == "Investor"))
-            setnoninvestor(data.data.chatUsers.filter((e) => e.role != "Investor"))
+            console.log(temp1 , "truu");
+            
 
-            // console.log(data.data.posts);
+            setinvestorarray(tree101.filter((e) => e.role == "Investor"))
+            setnoninvestor(tree101.filter((e) => e.role != "Investor"))
 
-            setuserdata(data.data)
+            setGeneralModelId(data.data._id)
+            setemail(data.data.email)
+            setprofilecompletion(data.profileCompletion)
+            var rec1 = data.data.portfolio.filter((e) => e.name != "")
+            var rec2 = data.data.certification.filter((e) => e.name != "")
+            var combined = [...rec1, ...rec2]
+            setCertficate(combined)
 
+            
 
-            if (decode.role != "Investor") {
+            setinstaurl(data.data.hiddenInfo.socialProof[0].url)
+            setlinkedInUrl(data.data.hiddenInfo.socialProof[1].url)
+            setyturl(data.data.hiddenInfo.socialProof[2].url)
+
+            if (true) {
                 var data1 = data.data.posts.map(e => {
 
-                    console.log(e);
+                    // console.log(e);
 
-                    var object = { ...e, isliked: e.likedBy ? e.likedBy.includes(decode._id) : false, Applied: e.communityPost ? e.communityPost.communityMembers.includes(decode._id) : false, Jobapplied: e.jobPosts ? e.jobPosts.jobApplicants.includes(decode._id) : false }
+                    var object = { ...e,
+                         isliked: e.likedBy ? e.likedBy.includes(decode._id) : false, 
+                         Applied: e.communityPost ? e.communityPost.communityMembers.includes(decode._id) : false,
+                          Jobapplied: e.jobPosts ? e.jobPosts.jobApplicants.includes(decode._id) : false }
                     return object
                 })
                 if (data1) {
-                    setPosts(data1)
+                    setPosts(data1.reverse())
                 }
                 else {
                     setPosts([])
@@ -319,17 +420,11 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                 }
             }
             setfollowstatus(data.data.status)
-
-            console.log(data.data.posts.length, "post ka length");
-
             setMinHeight(data.data.posts.length * 700)
-            console.log(data.data.posts.length * 500);
-
             setImage(data.data.user_id.bannerImage)
+            setuserdata(data.data)
 
-            // console.log(data.data);
-            // console.log(data.data.user_id.bannerImage);
-            // console.log(image);
+
 
 
 
@@ -337,7 +432,7 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
 
         }
         catch (err) {
-            console.log(err);
+            console.log(err , "apk erro");
 
         }
     }
@@ -361,25 +456,10 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
 
 
 
-    // useEffect(() => {
-    //     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-    //         // console.log(page);
-
-    //         if (page == "Chat") {
-    //             navigation.navigate(page, { item, messages, token });
-    //         }
-    //         else {
-    //             navigation.navigate(page);
-    //         }
-
-    //         return true; // This prevents the default back action
-    //     });
-
-    //     return () => backHandler.remove();
-    // }, [page]);
-
     const [image, setImage] = useState("")
     const [followstatus, setfollowstatus] = useState("Follow")
+    const [email, setemail] = useState("")
+    const [certficatesAndPortfolio, setCertficate] = useState("")
 
     const CustomAlert = ({ visible, onClose }) => {
         const fadeAnim = useRef(new Animated.Value(0)).current; // Persistent animated value
@@ -400,6 +480,7 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
 
         async function deletepost1() {
             console.log("Deleting post...");
+            Vibration.vibrate(200)
             if (idofposttobedeleetd != null) {
                 setisdeleting(true)
                 try {
@@ -413,7 +494,7 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                     });
 
                     const data = await response.json();
-                    console.log(data);
+                    // console.log(data);
 
                     // Remove the post from the local state
                     const updatedPosts = posts.filter((post) => post._id !== idofposttobedeleetd);
@@ -453,6 +534,39 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
             </Modal>
         );
     };
+    const CustomAlert1 = ({ visible, onClose }) => {
+        const fadeAnim = useRef(new Animated.Value(0)).current; // Persistent animated value
+
+        useEffect(() => {
+            if (visible) {
+                Animated.timing(fadeAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
+            } else {
+                Animated.timing(fadeAnim, { toValue: 0, duration: 300, useNativeDriver: true }).start(() => {
+                    if (typeof onClose === "function") {
+                        onClose(); // Ensure onClose exists before calling
+                    }
+                });
+            }
+        }, [visible]);
+
+        if (!visible) return null; // Prevent rendering when not visible
+
+      
+
+        return (
+            <Modal transparent visible={visible1} animationType="none" onRequestClose={() => onClose?.()}>
+                <TouchableWithoutFeedback onPress={() => onClose?.()}>
+                    <Animated.View style={[styles1.overlay, { opacity: fadeAnim }]}>
+                        <TouchableWithoutFeedback>
+                            <View style={styles1.alertBox}>
+                       
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </Animated.View>
+                </TouchableWithoutFeedback>
+            </Modal>
+        );
+    };
 
     const [idofposttobedeleetd, setidofposttobedeleetd] = useState(null)
 
@@ -465,8 +579,8 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
             setVisible(true)
             setidofposttobedeleetd(postid)
 
-            console.log("hi");
-            console.log(postid);
+            // console.log("hi");
+            // console.log(postid);
 
 
         }
@@ -477,8 +591,7 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
         const isVideoPlaying = videoStates[item._id] || false;
 
         function currency(pay) {
-            // console.log(pay);
-            // console.log(typeof pay);
+          
             pay = Number(pay);
             return pay.toLocaleString("en-IN")
         }
@@ -486,8 +599,14 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
 
         if (item.type == "photo" || item.type == "textBlog" || item.type == "video") {
             return (
-                <View key={index} style={styles.box}>
-                    <View style={[styles.top, { marginBottom: 10 }]} >
+
+                    <LinearGradient
+                        colors={["rgba(33, 34, 35, 0.4)", "rgba(25, 26, 27, 0.6)"]}
+                        locations={[0, 1]}
+                        style={styles.box}
+                        start={{ x: 0, y: 0 }}
+                        end={{ x: 0, y: 1 }} >
+                    <View style={[styles.top, { marginBottom: 0 }]} >
                         <View
                             // onPress={() => { navigation.navigate("Singleuserpage", { token: token, id: item.user_id._id, page: "Startsy" }) }}
                             style={{ display: "flex", flexDirection: "row", width: "100%" }}>
@@ -496,17 +615,19 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                                 <Text allowFontScaling={false} style={styles.u1}>{userdata.user_id.userName == "" ? decode.userName : decode.userName}</Text>
                                 <Text allowFontScaling={false} style={styles.u2}>{userdata.user_id.role == "CommunityMember" ? "Member" : userdata.user_id.role}</Text>
                             </View>
-                            <Pressable style={styles1.minus} onPress={() => deletepost(item._id)}>
-                                {/* <FontAwesome6 name="trash" style={styles1.minus} size={22} color="#00DE62" /> */}
-                                {/* <Feather name="trash-2" style={styles1.minus} size={22} color="#00DE62" /> */}
-
-                                {/* <Text>click me</Text> */}
-                                {/* <Pressable style={styles1.minus}><Delete /></Pressable> */}
+                            <Pressable style={styles1.minus} onPress={() => {
+                                Vibration.vibrate(20)
+                                deletepost(item._id)
+                            }}>
+                                
                                 <Delete />
 
                             </Pressable>
                         </View>
                     </View>
+
+                    {item.type == "textBlog" && <View style={styles.divider}></View>}
+
                     {item.type == "photo" && <Image style={[styles.template, { aspectRatio: item.aspectRatio ? item.aspectRatio : 1 / 1 }]} source={{ uri: item.mediaUrl }} />}
                     {item.type == "video" &&
                         <Video
@@ -522,34 +643,79 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                     }
                     {item.type == "textBlog" && <Text style={styles.blogtext}>{item.content}</Text>}
 
-                    <View style={styles.iconcontainer}>
-                        <View style={styles.icon2}>
-                            <Pressable onPress={() => { upvotepost(item._id, index) }}>
-                                {!item.isliked && <Upvote width={36} height={36} style={{ marginHorizontal: 5 }} />}
-                                {item.isliked && <Upvote width={36} height={36} style={{ marginHorizontal: 5 }} selected={true} />}
-                            </Pressable>
+                                <View style={styles.iconcontainer}>
 
-                            <Text style={{ left: -10, top: 13, color: "#00de62" }}>{item.likedBy.length}</Text>
-                            <Pressable style={{ marginLeft: -5 }} onPress={() => { opencomment(item._id) }}><FontAwesome name="comment-o" size={30} color="#00DE62" /></Pressable>
-                        </View>
-                        <Share style={{ marginTop: 5, marginRight: 10, right: 0 }} />
+                                    <View style={[styles.icon2,]}>
 
 
-                    </View>
-                    <View style={styles.lower}>
-                        <Text allowFontScaling={false} style={styles.u3}>{item.caption != undefined ? item.caption : "caption"} </Text>
-                        <Pressable onPress={() => { opencomment(item._id) }} allowFontScaling={false} style={styles.u4}>
-                            <Text style={styles.u4}>View {item.postComments.length} comments</Text>
-                        </Pressable>
+                                        <View style={{ flexDirection: 'row', gap: 7, marginRight: 4, alignItems: 'center' }}>
+                                            <TouchableOpacity onPress={() => { upvotepost(item._id, index) }}>
 
-                    </View>
+                                                {!item.isliked && <Upvote width={32} height={34} style={{ marginLeft: 5, marginRight: -5, marginTop: 6 }} />}
+                                                {item.isliked && <Upvote width={32} height={34} style={{ marginLeft: 5, marginRight: -5, marginTop: 6 }} selected={true} />}
+                                            </TouchableOpacity>
+                                            <Text style={{ color: "#ccc", fontFamily: 'Roboto', fontSize: 14, top: 3 }}>{item.likedBy.length}</Text>
+                                        </View>
 
-                </View>
+
+                                        {/* comment */}
+
+                                        <View style={{ flexDirection: 'row', gap: 7, marginRight: 4, alignItems: 'center' }}>
+                                            <TouchableOpacity onPress={() => {
+                                                Vibration.vibrate(20)
+                                                opencomment(item._id)
+
+                                            }}
+                                            >
+                                                <FontAwesome name="comment-o" size={28} color="#ccc" />
+
+                                            </TouchableOpacity>
+
+                                            <Text style={{ color: "#ccc", fontFamily: 'Roboto', fontSize: 16, top: 3 }}>{item.postComments.length}</Text>
+                                        </View>
+
+                                      
+
+
+                                        {/* share */}
+
+                                        <Pressable onPress={() => {
+                                            Vibration.vibrate(20)
+                                            openshare(item._id)
+                                        }}>
+                                            <Share style={{ top: 3 }} />
+                                        </Pressable>
+
+
+                                    </View>
+
+
+
+
+
+
+
+                                </View>
+
+                                <View style={styles.lower}>
+                                    {item.type != "textBlog" && <Text allowFontScaling={false} style={styles.u3}>{item.caption != undefined ? item.caption : "caption"} </Text>}
+                                    <Pressable allowFontScaling={false} style={styles.u4}>
+                                        <Text style={styles.u4}>{messagetime(item.createdAt)}</Text>
+                                    </Pressable>
+                               </View>
+                    </LinearGradient>
+
             )
         }
         else if (item.type == "communityPost") {
             return (
-                <View key={index} style={styles.box}>
+                <LinearGradient
+                                                    colors={["rgba(33, 34, 35, 0.4)", "rgba(25, 26, 27, 0.6)"]}
+                                                    locations={[0, 1]}
+                                                    style={styles.box}
+                                                    start={{ x: 0, y: 0 }}
+                                                    end={{ x: 0, y: 1 }} >
+              
 
                     <View style={styles.top} >
                         <View
@@ -562,7 +728,10 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                                     <Text allowFontScaling={false} style={styles.u1}>{decode.userName}</Text>
                                     <Text allowFontScaling={false} style={styles.u2}>Community Member</Text>
                                 </View>
-                                <Pressable style={styles1.minus} onPress={() => deletepost(item._id)}>
+                                <Pressable style={styles1.minus} onPress={() => {
+                                    Vibration.vibrate(20)
+                                    deletepost(item._id)
+                                }}>
                                     {/* <FontAwesome6 name="trash" style={styles1.minus} size={22} color="#00DE62" /> */}
                                     {/* <Feather name="trash-2" style={styles1.minus} size={30} color="#00DE62" /> */}
                                     {/* <Pressable style={styles1.minus}><Delete /></Pressable> */}
@@ -571,6 +740,8 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                             </View>
                         </View>
                     </View>
+                    <View style={styles.divider}></View>
+
                     <View style={styles.lower}>
                         <Text style={styles.com1}>{item.communityPost.communityName}</Text>
                         <Text style={styles.com2}><Text style={styles.desc1}>Community description: </Text>{item.communityPost.communityDescription}</Text>
@@ -578,16 +749,21 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                         <Text allowFontScaling={false} style={styles.u7}>Rules & Guidelines: {item.communityPost.communityRules}</Text>
 
                         <Pressable style={[styles.next]} >
-                            <Text allowFontScaling={false} style={styles.nexttext}>Join Community</Text>
+                            <Text allowFontScaling={false} style={styles.nexttext}>Join Forum</Text>
                         </Pressable>
                     </View>
 
-                </View>
+                </LinearGradient>
             )
         }
         else if (item.type == "jobPost") {
             return (
-                <View key={index} style={styles.box}>
+                <LinearGradient
+                                                    colors={["rgba(33, 34, 35, 0.4)", "rgba(25, 26, 27, 0.6)"]}
+                                                    locations={[0, 1]}
+                                                    style={styles.box}
+                                                    start={{ x: 0, y: 0 }}
+                                                    end={{ x: 0, y: 1 }} >
                     <View style={styles.top} >
 
                         <View
@@ -600,7 +776,10 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                                     <Text allowFontScaling={false} style={styles.u2}>{userdata.user_id.role == "CommunityMember" ? "Member" : userdata.user_id.role}</Text>
                                 </View>
 
-                                <Pressable style={styles1.minus} onPress={() => deletepost(item._id)}>
+                                <Pressable style={styles1.minus} onPress={() => {
+                                    Vibration.vibrate(50)
+                                    deletepost(item._id)
+                                }}>
                                     {/* <FontAwesome6 name="trash" style={styles1.minus} size={22} color="#00DE62" /> */}
                                     {/* <Feather name="trash-2" style={styles1.minus} size={30} color="#00DE62" /> */}
                                     {/* <Pressable style={styles1.minus}><Delete /></Pressable> */}
@@ -615,15 +794,17 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                     <View style={styles.lower}>
                         <Text style={styles.com1}>Role: {item.jobPosts.role}</Text>
                         <Text style={styles.com2}><Text style={styles.desc1}>Community description: </Text>{item.jobPosts.description}</Text>
-                        <Text allowFontScaling={false} style={styles.u8}>Duration: {item.jobPosts.duration} months</Text>
-                        <Text allowFontScaling={false} style={styles.u8}>Pay: {currency(item.jobPosts.pay)} Rs</Text>
+                        <Text allowFontScaling={false} style={styles.u8}><Text style={{ color: "#828282" }}>Duration: {item.jobPosts.duration}</Text></Text>
+                        <Text allowFontScaling={false} style={styles.u8}><Text style={{ color: "#828282" }}>Payment mode: {item.jobPosts.pay} </Text> </Text>
+                        {item.jobPosts.amount != "" && <Text allowFontScaling={false} style={styles.u8}><Text style={{ color: "#00de62" }}>Amount: {item.jobPosts.amount} </Text></Text>}
 
-                        <Pressable onPress={() => { applyjob(item._id) }} style={[styles.next]} >
+
+                        <Pressable onPress={() => { applyjob(item._id) }} style={[styles.job]} >
                             <Text allowFontScaling={false} style={styles.nexttext}>Apply</Text>
                         </Pressable>
                     </View>
 
-                </View>
+                </LinearGradient>
             )
         }
     };
@@ -658,7 +839,7 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
 
             })
 
-            console.log(final);
+            // console.log(final);
 
 
             const response = await fetch(`${url}api/uploadCoverImage`, {
@@ -672,7 +853,7 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
 
             const data = await response.json();
 
-            console.log(data);
+            // console.log(data);
 
         }
 
@@ -681,7 +862,7 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
 
     async function sendfollowrequest(id) {
 
-        console.log(id);
+        // console.log(id);
         try {
 
             const response = await fetch(`${url}connections/followUser/${id}`, {
@@ -695,7 +876,7 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
             });
             const data = await response.json();
             // setloading(false)
-            console.log(response.status);
+            // console.log(response.status);
             setfollowstatus("request sent")
 
         }
@@ -708,39 +889,141 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
     async function logout() {
         try {
             await AsyncStorage.removeItem('accessToken'); // Replace 'token' with your key
-            console.log('Token removed successfully');
+            // console.log('Token removed successfully');
         } catch (error) {
             console.error('Error removing token:', error);
         }
+        console.log("removing");
+        
+        navigation.reset({
+            index: 0,
+            routes: [{ name: "LoginTrial" }],
+        });
 
-        navigation.navigate("LoginTrial")
+        // navigation.navigate("LoginTrial")
 
     }
 
 
     function getfund(fund) {
 
+        
+
         if (fund == 69) {
             return 0
         }
         fund = fund - 57
-        return (fund * 10000000).toLocaleString("en-IN")
+        return (fund * 100000).toLocaleString("en-IN")
 
 
         // (+userdata.hiddenInfo.fundingStatus).toLocaleString("en-IN")
 
     }
+// console.log(token);
+
+
+    async function shownormalconnection(stat) {
+
+        var decoded = jwtDecode(token)
+
+        // console.log(decoded);
+        var route;
+
+        if (decoded.role == "Founder") {
+            route = "founder/getFounderChatUserList"
+        }
+        else if (decoded.role == "Investor") {
+            route = "investor/getInvestorChatUserList"
+        }
+        else  {
+            route = "founder/getFounderChatUserList"
+
+        }
+
+
+        // console.log(token, "second use focus effect");
+        try {
+            // setskeletonloading(true)
+            const response = await fetch(
+                `${url}${route}`,
+                {
+                    method: "GET",
+                    headers: {
+                        accept: "application/json",
+                        Authorization: `Bearer ${token}`,
+                    },
+                }
+            );
+            const result = await response.json();
+            console.log(result.length);
+            
+            // console.log(result,"kwsowusxquqeguiqevuasgofqegfqv8euhjXU   3JYCNHADSHYU");
+            var array = result.map((e) => e.user)
+            const uniqueData = array.filter((item, index, self) =>
+                index === self.findIndex(t => t._id === item._id)
+            );
+
+            const filter2 = uniqueData.map((item)=> {
+                return {...item, status: 'Connected' }
+            }
+            )
+
+
+
+            navigation.navigate("Followerpage", { people: filter2 ,token:token , stat , tabNavigation : navigation})
+
+
+
+
+
+        
+        } catch (err) {
+            console.log(err);
+        } finally {
+            // setskeletonloading(false)
+            // setloading(false); // Set loading to false when done
+        }
+    }
+
+
+    function length1(data) {
+
+        const uniqueData = data.filter((item, index, self) =>
+            index === self.findIndex(t => t._id === item._id)
+        );
+
+        
+
+
+        return uniqueData.length
+
+    }
+
+    const handleswitch = ()=>{
+        // if(profilecompletion < 80){
+        //     showToastWithGravity("Please complete a minimum of 80% of the profile in order to switch role")
+        // }
+        // else{
+        //     setattop(false)
+        // }
+        setattop(false)
+
+       
+    }
 
     const Header = function () {
         return (
-            <View key={1}>
-                <Pressable onPress={logout}>
+            <View style={{ marginTop: 0 }} key={1}>
+                <Pressable onPress={()=>{
+                    navigation.navigate("Settings" , {token : token , tabnavigation : navigation})
+                }}>
                     <View style={styles1.header}>
-                        <Text style={styles1.username}>{userdata.user_id.userName}</Text>
+                        <Text numberOfLines={1} style={styles1.username}>{userdata.user_id.userName}</Text>
                         <View style={styles1.logout}>
-                            <Logout />
+                            {/* <Logout /> */}
+                            <AntDesign name="setting" size={28} color="#ccc" style={{marginRight:10,alignContent:'center'}} />
                         </View>
-                        <Text style={styles1.logoutText}>Logout</Text>
+                        {/* <Text style={styles1.logoutText}>Logout</Text> */}
                         {/* <TouchableOpacity onPress={() => setVisible(true)} style={styles1.showButton}>
                             <Text style={styles1.showButtonText}>Show Alert</Text>
                         </TouchableOpacity> */}
@@ -758,37 +1041,100 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                             </View>}
 
 
-                        {(image != "" && image != undefined) && <Image style={styles1.bimg} source={{ uri: image }} />}
+                        {(image != "" && image != undefined) && <Image   style={styles1.bimg} source={{ uri: image }} />}
                     </Pressable>
                     <View style={styles1.bottom}>
 
                         {/* <Delete /> */}
 
+                        <View style={styles1.parent}>
+                            <AnimatedCircularProgress
+                            style={{
+                                position : "absolute",
+                                top : -60,
+                                left : 0
+                            }}
+                                size={120}
+                                width={3}
+                                fill={profilecompletion}
+                                tintColor="#ccc"
+                                backgroundColor="#16181a"
+                                rotation={0}
+                                lineCap="round"
+                            >
+                                {() => (
+                                    // <View style={styles1.imageContainer}>
+                                        <Image
+                                            source={{uri : userdata.user_id.profilePhoto}} // Replace with your image URL
+                                            style={styles1.img2}
+                                        />
 
-                        <View style={styles1.profilephoto}>
-                            <Image style={styles1.img2} source={{ uri: userdata.user_id.profilePhoto }} />
+                                    // </View>
+
+                                )}
+                            </AnimatedCircularProgress>
+                            <Text style={styles1.progressText}>{`${profilecompletion}%`}</Text>
+                            {/* <MaterialCommunityIcons name="certificate-outline" size={24} color="#ccc" /> */}
+                           
                         </View>
+
+                      
+                        {/* <View style={styles1.profilephoto}>
+                            <Image style={styles1.img2} source={{ uri: userdata.user_id.profilePhoto }} />
+                        </View> */}
                         <View style={styles1.upvote}>
+                        
                             <View style={{ transform: [{ scale: 1.1 }], marginRight: 0 }} >
-                                <Upvote width={decode.role == "Investor" ? 0 : 50} height={44} />
+                                {/* <Upvote width={decode.role == "Investor" ? 0 : 50} height={44} /> */}
+                                {(decode.role == "CommunityMember" || decode.role == "Job seeker" || decode.role == "Founder") && 
+                           <View style={styles1.ss}>
+                            
+                            
+                             {certficatesAndPortfolio.length > 0 &&
+                              <TouchableOpacity onPress={()=>navigation.navigate("CertificatePortfolioPage")}>
+                              <MaterialCommunityIcons name="certificate-outline" size={24} color="#ccc" />
+                           </TouchableOpacity>
+                             }
+                             
+                                    {instaurl != "" && <Pressable onPress={() => Linking.openURL(instaurl)} >
+                                            <AntDesign name="instagram" style={styles.plus1} size={20} color="#bbbbbb" />
+                                        </Pressable>}
+                                     {yturl != "" && <Pressable onPress={() => {Linking.openURL(yturl)}} >
+                                       <AntDesign name="youtube" style={styles.plus1} size={20} color="#bbbbbb" />
+                                     </Pressable>
+                                     }
+                                     {LinkedinURl != "" && <Pressable onPress={() => Linking.openURL(LinkedinURl)} >
+                                       <AntDesign name="linkedin-square" style={styles.plus1} size={20} color="#bbbbbb" />
+                                     </Pressable>}
+
+                           </View>
+                        }
+                        
                             </View>
                             <Text style={styles1.followers}>
-                                {decode.role != "Investor" && (userdata.totalUpvotes || 0)}
+                                {/* {decode.role != "Investor" && (userdata.totalUpvotes || 0)} */}
                             </Text>
                         </View>
 
                         <Text style={styles1.u1}>
-                            {userdata.user_id.userName}  <Text style={styles1.role}>{userdata.user_id.role == "CommunityMember" ? "Member" : userdata.user_id.role}</Text>
+                            {userdata.fullName}  <Text style={styles1.role}>{userdata.user_id.role == "CommunityMember" ? "Member" : userdata.user_id.role}</Text>
 
                         </Text>
 
-                        <Pressable onPress={() => {
-                            navigation.navigate(editprofilepage)
-                        }} style={styles1.f1}><Text style={styles1.ft}>Edit profile</Text></Pressable>
+                      <View style={{display : "flex" , flexDirection : "row" , gap : 0}}>
+                      
+                       {userdata.user_id.role == "CommunityMember" &&  <Pressable style={styles1.f1} onPress={() => handleswitch()}>
+                            <Text style={styles1.ft}>Switch Role </Text>
+                        </Pressable>}
+
+                        {/* <Pressable style={styles1.f1} onPress={() => handleswitch()}>
+                            <Text style={styles1.ft}>Switch Role </Text>
+                        </Pressable> */}
+                      </View>
                         {/* <Text style={styles1.goal}>{userdata.goal}</Text> */}
 
                         {decode.role == "Founder" &&
-                            <Text style={styles1.goal}>Goal : {userdata.goal}</Text>
+                            <Text style={styles1.goal}>{userdata.goal}</Text>
                         }
 
                         {decode.role == "Founder" &&
@@ -806,13 +1152,18 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                         }
 
 
-                        {decode.role == "CommunityMember" &&
+                        {(decode.role == "CommunityMember" || decode.role == "Job seeker") && userdata.tagline != ""&&
                             <Text style={styles1.goal}>{userdata.tagline}</Text>
                         }
 
-                        {decode.role == "CommunityMember" &&
+                        {(decode.role == "CommunityMember"  || decode.role == "Job seeker") && userdata.skills != "" &&
                             <Text style={styles1.fund}>{userdata.skills}</Text>
                         }
+                        
+
+                        {/* <Pressable onPress={() => setattop(false)}>
+                            <Text>press to go up</Text>
+                        </Pressable> */}
 
 
 
@@ -820,9 +1171,8 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                         {userdata.hiddenInfo?.stageOfStartup != undefined && <Text style={styles1.fund}>{userdata.hiddenInfo.stageOfStartup}</Text>} */}
 
                         <View style={styles1.main}>
-                            {decode.role != "Investor" && decode.role != "CommunityMember" && <View style={styles1.connectionContainer}>
-
-
+                            {decode.role != "Investor" && decode.role != "CommunityMember" && decode.role != "Job seeker" &&
+                             <TouchableOpacity onPress={()=>{shownormalconnection(true)}} style={styles1.connectionContainer}>
                                 {Array(3).fill(null).map((_, index) => (
                                     <View key={index} style={styles1.circle}>
                                         <Image
@@ -837,10 +1187,13 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                                     </View>
                                 ))}
 
+                                <Text style={styles1.t6}>{investor.length} investor connections</Text>
+                            </TouchableOpacity>}
+                            <TouchableOpacity onPress={() => {
+                                // console.log("users page");
+                                shownormalconnection()
 
-                                <Text style={styles1.t6}>{userdata.investorConnections} investor connections</Text>
-                            </View>}
-                            <View style={styles1.connectionContainer}>
+                            }} style={styles1.connectionContainer}>
 
                                 {Array(3).fill(null).map((_, index) => (
                                     <View key={index} style={styles1.circle}>
@@ -856,8 +1209,8 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                                     </View>
                                 ))}
 
-                                <Text style={styles1.t6}>{userdata.chatUsers?.length} connections</Text>
-                            </View>
+                                <Text style={styles1.t6}>{noninvestor.length} connections</Text>
+                            </TouchableOpacity>
                         </View>
 
                         <View style={styles1.divider}></View>
@@ -878,7 +1231,7 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
         // console.log(index);
 
         var toset = !posts[index].isliked
-        console.log(toset);
+        // console.log(toset);
 
         var status = toset ? "like" : "unlike"
 
@@ -902,8 +1255,8 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                 },
             });
             const data = await response.json();
-            console.log(data);
-            console.log(response.status);
+            // console.log(data);
+            // console.log(response.status);
 
         }
         catch (err) {
@@ -923,43 +1276,43 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
     const bottomSheetRef5 = useRef(null);
 
 
-    async function opencomment(id) {
-        setcomment(true)
-        bottomSheetRef5.current?.expand();
-        setpostid(id);
-        setiscommentopen(true)
+    // async function opencomment(id) {
+    //     setcomment(true)
+    //     bottomSheetRef5.current?.expand();
+    //     setpostid(id);
+    //     setiscommentopen(true)
 
-        console.log("open comment");
-
-
-        try {
-            console.log(token);
-            const response = await fetch(`${url}posts/getComments/${id}`, {
-                method: 'GET',
-                headers: {
-                    "Authorization": `Bearer ${token}`,
-                },
-            });
-            const data = await response.json();
-            // console.log(response.status);
-            console.log(data.data);
-            setallcomments(data.data)
-            if (data.data.length == 0) {
-                setemptycomment(true)
-            }
-            else {
-                setemptycomment(false)
-
-            }
-
-        }
-        catch (err) {
-            console.log(err);
-        }
+    //     // console.log("open comment");
 
 
+    //     try {
+    //         // console.log(token);
+    //         const response = await fetch(`${url}posts/getComments/${id}`, {
+    //             method: 'GET',
+    //             headers: {
+    //                 "Authorization": `Bearer ${token}`,
+    //             },
+    //         });
+    //         const data = await response.json();
+    //         // console.log(response.status);
+    //         // console.log(data.data);
+    //         setallcomments(data.data)
+    //         if (data.data.length == 0) {
+    //             setemptycomment(true)
+    //         }
+    //         else {
+    //             setemptycomment(false)
 
-    }
+    //         }
+
+    //     }
+    //     catch (err) {
+    //         console.log(err);
+    //     }
+
+
+
+    // }
 
 
 
@@ -974,10 +1327,12 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
 
             {/* Tab Navigation */}
             < View style={styles1.tabContainer} >
-                {decode.role != "Investor" && <Tab.Navigator
+            <PostsTab isLoading={isLoading} posts={posts} setPosts={setPosts} />
+               {/* <Tab.Navigator
                     screenOptions={({ route }) => ({
 
                         tabBarStyle: {
+                            marginBottom: 10,
                             backgroundColor: "#16181a",
                             // backgroundColor: "red",
                             justifyContent: "space-between",
@@ -997,8 +1352,8 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                         },
 
                     })}
-                >
-                    <Tab.Screen
+                > */}
+                    {/* <Tab.Screen
                         name="Connections"
                         component={AboutTab}
                         options={{
@@ -1006,17 +1361,17 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                                 <Text allowFontScaling={false} style={[
                                     styles1.tabbarpill, {
 
-                                        color: focused ? "#16181A" : "#00de62",
-                                        borderColor: focused ? "#00DE62" : "#808080",
-                                        backgroundColor: focused ? "#00DE62" : "transparent",
+                                        color: focused ? "#16181A" : "#ccc",
+                                        borderColor: focused ? "#ccc" : "#ccc",
+                                        backgroundColor: focused ? "#ccc" : "transparent",
                                     }
                                 ]}> Buy Plan
                                 </Text>
                             ),
 
                         }}
-                    />
-                    <Tab.Screen
+                    /> */}
+                    {/* <Tab.Screen
 
                         name="Requests"
                         children={() => <PostsTab isLoading={isLoading} posts={posts} setPosts={setPosts} />}
@@ -1024,19 +1379,19 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
                             tabBarLabel: ({ focused }) => (
                                 <Text allowFontScaling={false} style={[
                                     styles1.tabbarpill, {
-                                        color: focused ? "#16181A" : "#00de62",
-                                        borderColor: focused ? "#00DE62" : "#808080",
-                                        backgroundColor: focused ? "#00DE62" : "transparent",
+                                        color: focused ? "#16181A" : "#ccc",
+                                        borderColor: focused ? "#ccc" : "#ccc",
+                                        backgroundColor: focused ? "#ccc" : "transparent",
                                     }
                                 ]}> Your Posts
                                 </Text>
                             ),
 
                         }}
-                    />
-                </Tab.Navigator>}
+                    /> */}
+                {/* </Tab.Navigator> */}
 
-                {decode.role == "Investor" && <AboutTab />}
+                {/* {decode.role == "Investor" && <AboutTab />} */}
             </ View>
         </View >
 
@@ -1048,8 +1403,7 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
     const videoRefs = useRef({});
     const onViewableItemsChanged = useCallback(({ viewableItems }) => {
         setViewableItems(viewableItems);
-
-        // Update play state for videos based on visibility
+        
         const updatedVideoStates = {};
         viewableItems.forEach(viewableItem => {
             if (viewableItem.isViewable) {
@@ -1070,19 +1424,17 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
 
 
     const viewabilityConfig = {
-        viewAreaCoveragePercentThreshold: 80, // Item is considered viewable if 50% is visible
+        viewAreaCoveragePercentThreshold: 80, 
     };
 
 
 
     const loadMorePosts = () => {
-        console.log(tabIndex);
+        // console.log(tabIndex);
 
         if (isLoading) return;
         if (tabIndex == 0) return;
-        console.log('====================================');
-        console.log("new post will come qlwijwei ");
-        console.log('====================================');
+       
 
         setIsLoading(true);
         setTimeout(() => {
@@ -1092,14 +1444,7 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
             );
             setPosts((prevPosts) => [...prevPosts, ...newPosts]);
             setIsLoading(false);
-            // setMinHeight(minHeight + 300)
-
-            console.log('====================================');
-            console.log(posts);
-            console.log(minHeight);
-
-            console.log('====================================');
-            setMinHeight(minHeight + 300); // Adjust minHeight for new posts
+            setMinHeight(minHeight + 300);
         }, 2000); // Simulate API delay
     };
 
@@ -1118,22 +1463,10 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
 
 
 
+
     async function deletepost(postid) {
 
-        // console.log(postid);
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-        console.log("hioiiiii");
-
-        console.log("hioiiiii");
+       
         // try {
         //     const response = await fetch(`${url}posts/deletepost/${postid}`, {
         //         method: 'POST',
@@ -1167,115 +1500,253 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
 
 
     return (
+        <>
+            <Animated.View style={[{ flex: 1, backgroundColor: "#16181a" }]}>
 
-        <SafeAreaView style={{ flex: 1, backgroundColor: "#16181a" }}>
+                {!userdata && <View style={styles1.header}>
+                    <Text style={styles1.username}>Profile</Text>
+                    <View style={styles1.logout}>
+                        {/* <Logout /> */}
+                    </View>
+                    {/* <Text style={styles1.logoutText}>Logout</Text> */}
+                </View>}
 
-            {!userdata && <View style={styles1.header}>
-                <Text style={styles1.username}>Profile</Text>
-                <View style={styles1.logout}>
-                    <Logout />
-                </View>
-                <Text style={styles1.logoutText}>Logout</Text>
-            </View>}
+                {/* {!userdata && <ActivityIndicator style={{ marginVertical: "auto", top: -50 }} size="large" color="#ccc" />} */}
 
-            {!userdata && <ActivityIndicator style={{ marginVertical: "auto", top: -50 }} size="large" color="#ccc" />}
+                {!userdata &&
+                    <MotiView
+                        transition={{ type: 'timing', duration: 1000, repeatReverse: true }}
+                        // style={[styles.container, styles.padded]}
+                        animate={{ backgroundColor: "#16181a" }}
+                    >
 
+                        <Skeleton
+                            transition={{
+                                // repeat: Infinity,
+                                duration: 10000
+                            }}
+                            colors={["#272a2e", "#1A1D1F", "#272a2e", "#272a2e", "#1A1D1F", "#272a2e"]}
 
-
-            {userdata && <FlatList
-                scrollEnabled={true}
-
-
-                keyExtractor={(item, index) => index.toString()}
-                onViewableItemsChanged={onViewableItemsChanged}
-                viewabilityConfig={viewabilityConfig}
-                contentContainerStyle={{ paddingBottom: 50 }}
-                refreshControl={
-                    <RefreshControl progressViewOffset={0} refreshing={refreshing}
-                        onRefresh={() => {
-                            setRefreshing(true);
-                            getdata()
-
-
-                            setTimeout(() => {
-                                setRefreshing(false); // Stop refreshing after fetching data
-                            }, 2000); // Adjust the delay as needed
-                        }} />}
-
-                data={[1]}
-                // keyExtractor={[1] => item.id.toString()} 
-                style={{ backgroundColor: "#16181a" }}
-                renderItem={render}
-                onEndReachedThreshold={0.1}
-
-            />}
-
-
-
-            {decode.role != "Investor" && <BottomSheet
-
-
-                overlayColor="rgba(0, 0, 0, 0.9)"
-                backdropComponent={renderBackdrop}
-                enablePanDownToClose
-                backgroundStyle={{ backgroundColor: '#1A1D1F', borderRadius: 30 }} // Changes the background of the sheet itself
-                handleIndicatorStyle={{ backgroundColor: '#00de62' }}
-
-                ref={bottomSheetRef5}
-                snapPoints={snapPoints5}
-                onClose={() => {
-                    setcomment(false)
-                    setstatus(false)
-                    setiscommentopen(false);
-                }}
-                index={-1} // Initially closed
-                contentContainerStyle={{ zIndex: 100, elevation: 20, }}
-
-
-            >
-                <View style={{ flex: 0.92 }}>
-
-                    <Text style={styles.comment}>Comments</Text>
-                    {/* <KeyboardAvoidingView behavior="" keyboardVerticalOffset={-100} style={{ flex: 1 }}> */}
-                    {emptycomment && <Text style={styles.no}>No comments yet</Text>}
-                    <BottomSheetFlatList
-                        ref={flatListRef}
-                        data={allcomments}
-                        renderItem={comments}
-                        scrollEnabled={true}
-                        style={{ flex: 0.7, height: "100", overflow: "hidden" }}
-                    // contentContainerStyle={  }}
-
-                    />
-                    {/* </KeyboardAvoidingView> */}
-                    <View
-                        style={styles.sc1}>
-                        <TextInput
-                            placeholder=""
-
-                            placeholderTextColor="#828282"
-                            style={styles.searchInput}
-                            value={commenttext}
-                            multiline={true}
-                            onChangeText={text => setcommenttext(text)}
+                            colorMode='dark'
+                            // opacity={0.1}
+                            // backgroundColor="#595857"
+                            highlightColor="#ccc"
+                            radius={0}
+                            height={100}
+                            width={"100%"}
                         />
-                        <Pressable onPress={docomment} style={styles.send} >
+                        <View style={{ marginTop: -30, marginLeft: 10 }}>
+                            <Skeleton
+                                transition={{
+                                    // repeat: Infinity,
+                                    duration: 10000
+                                }}
+                                colors={["#272a2e", "#1A1D1F", "#272a2e", "#272a2e", "#1A1D1F", "#272a2e"]}
 
-                            {uploadingcomment && <ActivityIndicator size={24} color="#00de62" />}
-                            {!uploadingcomment && <Ionicons name="send" size={24} color="#00DE62" />}
-                        </Pressable>
+                                colorMode='dark'
+                                // opacity={0.1}
+                                // backgroundColor="#595857"
+                                highlightColor="#ccc"
+                                radius={130}
+                                height={130}
+                                width={130}
+                            />
+                        </View>
+                        <Spacer />
+
+                        <Spacer height={8} />
+                        <View style={{ display: "flex", flexDirection: "column", gap: 5, paddingLeft: 10 }}>
+
+                            <Skeleton
+                                transition={{
+                                    // repeat: Infinity,
+                                    duration: 4000
+                                }}
+                                colors={["#272a2e", "#1A1D1F", "#272a2e", "#272a2e", "#1A1D1F", "#272a2e"]}
+
+                                colorMode='dark'
+                                // opacity={0.1}
+                                // backgroundColor="#595857"
+                                highlightColor="#ccc"
+                                radius={20}
+                                height={30}
+                                width={250}
+                            />
+
+                            <Spacer height={0} />
+                            <Skeleton
+                                colors={["#272a2e", "#1A1D1F", "#272a2e", "#272a2e", "#1A1D1F", "#272a2e"]}
+
+                                colorMode="dark"
+                                width={170}
+                                height={18}
+                                // backgroundColor="black"
+                                highlightColor="#333"  // Set highlight color
+                            />
+                            <Spacer height={0} />
+
+                            <Skeleton
+                                colors={["#272a2e", "#1A1D1F", "#272a2e", "#272a2e", "#1A1D1F", "#272a2e"]}
+
+                                colorMode="dark"
+                                width={250}
+                                height={18}
+                                // backgroundColor="black"
+                                highlightColor="#333"  // Set highlight color
+                            />
+                            <Spacer height={0} />
+
+                            <Skeleton
+                                colors={["#272a2e", "#1A1D1F", "#272a2e", "#272a2e", "#1A1D1F", "#272a2e"]}
+
+                                colorMode="dark"
+                                width={200}
+                                height={18}
+                                // backgroundColor="black"
+                                highlightColor="#333"  // Set highlight color
+                            />
+                        </View>
+
+
+                        <View style={{ display: "flex", flexDirection: "row", gap: 40, justifyContent: "center", marginTop: 40 }}>
+
+                            <Skeleton
+                                transition={{
+                                    // repeat: Infinity,
+                                    duration: 10000
+                                }}
+                                colors={["#272a2e", "#1A1D1F", "#272a2e", "#272a2e", "#1A1D1F", "#272a2e"]}
+
+                                colorMode='dark'
+                                // opacity={0.1}
+                                // backgroundColor="#595857"
+                                highlightColor="#ccc"
+                                radius={10}
+                                height={15}
+                                width={140}
+                            />
+
+                            <Skeleton
+                                transition={{
+                                    // repeat: Infinity,
+                                    duration: 10000
+                                }}
+                                colors={["#272a2e", "#1A1D1F", "#272a2e", "#272a2e", "#1A1D1F", "#272a2e"]}
+
+                                colorMode='dark'
+                                // opacity={0.1}
+                                // backgroundColor="#595857"
+                                highlightColor="#ccc"
+                                radius={10}
+                                height={15}
+                                width={140}
+                            />
+
+                        </View>
+                    </MotiView>
+
+                }
+
+
+
+                {userdata && <FlatList
+                    scrollEnabled={true}
+
+
+                    keyExtractor={(item, index) => index.toString()}
+                    onViewableItemsChanged={onViewableItemsChanged}
+                    viewabilityConfig={viewabilityConfig}
+                    contentContainerStyle={{ paddingBottom: 50 }}
+                    refreshControl={
+                        <RefreshControl progressViewOffset={0} refreshing={refreshing} progressBackgroundColor="#16181a"
+                            colors={['#00de62']}
+                            onRefresh={() => {
+                                // setRefreshing(true);
+                                getdata()
+                                Vibration.vibrate(200)
+
+
+                                // setTimeout(() => {
+                                //     setRefreshing(false); // Stop refreshing after fetching data
+                                // }, 2000); // Adjust the delay as needed
+                            }} />}
+
+                    data={[1]}
+                    // keyExtractor={[1] => item.id.toString()} 
+                    style={{ backgroundColor: "#16181a" }}
+                    renderItem={render}
+                    onEndReachedThreshold={0.1}
+
+                />}
+
+
+
+                 <BottomSheet
+
+
+                    overlayColor="rgba(0, 0, 0, 0.9)"
+                    backdropComponent={renderBackdrop}
+                    enablePanDownToClose
+                    backgroundStyle={{ backgroundColor: '#1A1D1F', borderRadius: 30 }} // Changes the background of the sheet itself
+                    handleIndicatorStyle={{ backgroundColor: '#00de62' }}
+
+                    ref={bottomSheetRef5}
+                    snapPoints={snapPoints5}
+                    onClose={() => {
+                        setcomment(false)
+                        setstatus(false)
+                        setiscommentopen(false);
+                    }}
+                    index={-1} // Initially closed
+                    contentContainerStyle={{ zIndex: 100, elevation: 20, }}
+
+
+                >
+                    <View style={{ flex: 0.92 }}>
+
+                        <Text style={styles.comment}>Comments</Text>
+                        {/* <KeyboardAvoidingView behavior="" keyboardVerticalOffset={-100} style={{ flex: 1 }}> */}
+                        {emptycomment && <Text style={styles.no}>No comments yet</Text>}
+                        <BottomSheetFlatList
+                            ref={flatListRef}
+                            data={allcomments}
+                            renderItem={comments}
+                            scrollEnabled={true}
+                            style={{ flex: 0.7, height: "100", overflow: "hidden" }}
+                        // contentContainerStyle={  }}
+
+                        />
+                        {/* </KeyboardAvoidingView> */}
+                        <View
+                            style={styles.sc1}>
+                            <TextInput
+                                placeholder=""
+
+                                placeholderTextColor="#828282"
+                                style={styles.searchInput}
+                                value={commenttext}
+                                multiline={true}
+                                onChangeText={text => setcommenttext(text)}
+                            />
+                            <Pressable onPress={docomment} style={styles.send1} >
+
+                                {uploadingcomment && <ActivityIndicator size={24} color="#00de62" />}
+                                {!uploadingcomment && <Ionicons name="send" size={24} color="#00DE62" />}
+                            </Pressable>
+                        </View>
+
+
+
+
                     </View>
 
+                </BottomSheet>
+                
+            </Animated.View>
+           {keepSwitchMoreReady &&  <ReadMore1 attop={attop} GeneralModelId={GeneralModelId} setattop={setattop} animatedtop={animatedtop} email={email} token={token} />}
 
 
-
-                </View>
-
-            </BottomSheet>
-            }
-
-
-        </SafeAreaView>
+        </>
 
 
 
@@ -1283,7 +1754,9 @@ const Apnauser = ({ navigation, props, token, mainpagebottomsheet, closeall }) =
 
 }
 
-export default Apnauser
+// Apnauser.whyDidYouRender = true;
+
+export default memo(Apnauser)
 
 const { width, height } = Dimensions.get("window");
 
@@ -1295,12 +1768,14 @@ const styles1 = StyleSheet.create({
         backgroundColor: "#16181A",
         paddingHorizontal: 15,
         paddingVertical: 5,
-        justifyContent: "space-between"
+        justifyContent: "space-between",
+        alignItems : "center",
     },
     header1: {
         display: "flex",
         flexDirection: "row",
         height: 55,
+        // alignItems : "center",
         backgroundColor: "#16181A",
         paddingHorizontal: 15,
         // paddingVertical: 5,
@@ -1309,10 +1784,12 @@ const styles1 = StyleSheet.create({
     username: {
         fontFamily: "myanmar",
         fontSize: 24,
+        width: "70%",
         color: "#00DE62",
         fontWeight: "bold",
-        marginLeft: 10,
-        marginTop: 2
+        // marginLeft: 5,
+        marginTop: 5,
+        flex: 1
     },
     logout: {
         fontFamily: "myanmar",
@@ -1320,7 +1797,9 @@ const styles1 = StyleSheet.create({
         color: "#00DE62",
         fontWeight: "bold",
         marginLeft: 10,
-        marginTop: 2
+        marginTop: 5,
+        flexDirection: "row",  // If adding more icons in the future
+        alignItems: "center"
     },
     top: {
         width: "100%",
@@ -1358,7 +1837,7 @@ const styles1 = StyleSheet.create({
     },
     followers: {
         color: '#00de62',
-        fontFamily: "Roboto",
+        // fontFamily: "Roboto",
         alignSelf: "flex-end",
         marginLeft: -10,
         // paddingTop : 20
@@ -1372,27 +1851,28 @@ const styles1 = StyleSheet.create({
         paddingHorizontal: 5,
         width: "100%",
         marginVertical: 10,
-        marginTop: -5
+        marginTop: 20,
         // marginTop: 30
     },
     role: {
         fontFamily: "Roboto",
         fontSize: 14,
-        color: "#00de62",
+        color: "#888",
         marginLeft: 10,
         top: -2
 
     },
 
     f1: {
-        width: 180,
+        // width: 180,
+        paddingHorizontal : 25,
         height: 34,
-        backgroundColor: "#00de62",
+        backgroundColor: "#ccc",
         borderRadius: 20,
         justifyContent: "flex-start",
         alignItems: "center",
         marginVertical: 0,
-        paddingHorizontal: 5,
+        // paddingHorizontal: 5,
         marginHorizontal: 5
 
     },
@@ -1409,13 +1889,14 @@ const styles1 = StyleSheet.create({
         color: "#D9D9D9",
         paddingHorizontal: 5,
         marginVertical: 12,
-        marginBottom: 5
+        marginBottom: 5,
+        // marginTop  : 0
 
     },
     fund: {
         fontFamily: "Roboto",
         fontSize: 15,
-        color: "#00DE62",
+        color: "#00de62",
         paddingHorizontal: 5,
         marginVertical: 0
 
@@ -1432,6 +1913,15 @@ const styles1 = StyleSheet.create({
         borderRadius: 50,
         marginRight: -6,
         overflowY: "hidden",
+    },
+
+    ss :{
+        display : "flex",
+        flexDirection : "row",
+        gap : 10,
+        paddingLeft : 10,
+        marginRight: 18,
+        marginTop : -10
     },
 
     profileImage1: {
@@ -1461,7 +1951,7 @@ const styles1 = StyleSheet.create({
         marginLeft: -20,
         height: 3,
         marginTop: 5,
-        marginBottom: 20,
+        // marginBottom: 20,
         backgroundColor: "#24272A"
     },
 
@@ -1475,8 +1965,8 @@ const styles1 = StyleSheet.create({
         // backgroundColor : "red",
         justifyContent: "center",
         alignItems: "center",
-        borderWidth: 4,
-        borderColor: "#000",
+        // borderWidth: 4,
+        // borderColor: "#000",
         borderRadius: 100,
         overflow: "hidden",
 
@@ -1484,9 +1974,9 @@ const styles1 = StyleSheet.create({
     },
     img2: {
         objectFit: "cover",
-        width: "103%",
+        width: "100%",
         alignSelf: "center",
-        height: "103%",
+        height: "100%",
         // borderRadius: 100,
 
     },
@@ -1498,7 +1988,7 @@ const styles1 = StyleSheet.create({
     },
     buyPlanSection: {
         borderWidth: 2,
-        borderColor: "#00DE62",
+        borderColor: "#ccc",
         borderRadius: 10,
         // minHeight: 400,
         width: width * 0.89,
@@ -1552,12 +2042,12 @@ const styles1 = StyleSheet.create({
     },
     no: {
         textAlign: 'center',
-        fontSize: 20,
+        fontSize: 16,
         marginVertical: "auto",
         alignSelf: "center",
         // flex: 1,
-        color: "#bbbbbb",
-        fontFamily: "Roboto",
+        color: "#666",
+        // fontFamily: "Roboto",
         marginTop: 30,
         // backgroundColor :  "red",
         height: 30
@@ -1565,8 +2055,8 @@ const styles1 = StyleSheet.create({
     logoutText: {
         position: "absolute",
         right: 12,
-        top: 13,
-        color: "#00DE62",
+        top: 16,
+        color: "#ccc",
         fontFamily: "Roboto",
         fontSize: 14
     },
@@ -1592,6 +2082,86 @@ const styles1 = StyleSheet.create({
     buttonText: { color: "#1A1D1F", fontSize: 16, fontFamily: "Roboto", fontWeight: "bold" },
     showButton: { backgroundColor: "#28a745", padding: 10, borderRadius: 5 },
     showButtonText: { color: "#fff", fontSize: 16 },
+    imageContainer: {
+        position: 'absolute',
+        alignItems: 'center',
+        justifyContent: 'center',
+    },
+    profileImage: {
+        width: 80,
+        height: 80,
+        borderRadius: 40,
+    },
+    progressText: {
+        position: 'absolute',
+        textAlign : "center",
+        paddingHorizontal : 10,
+        zIndex: 10,
+        top : 40,
+        left : 40,
+        alignSelf : "center",
+        // width : 80,
+        paddingHorizontal: 10,
+        paddingVertical: 4,
+        color: '#000',
+        backgroundColor: '#00de62',
+        borderRadius: 10
+    },
+    parent : {
+        width : 200,
+        backgroundColor : "red",
+        position : "relative",
+        flex : 1
+    }
+
+
 
 
 })
+
+
+
+
+
+
+
+
+
+
+// const ProfilePage = ({ progress = 0.8 }) => {
+//     return (
+//         <View style={styles.container}>
+//             <AnimatedCircularProgress
+//                 size={100}
+//                 width={7}
+//                 fill={progress * 100}
+//                 tintColor="white"
+//                 backgroundColor="#3d5875"
+//                 rotation={0}
+//                 lineCap="round"
+//             >
+//                 {() => (
+//                     <View style={styles.imageContainer}>
+//                         <Image
+//                             source={require('../../assets/image.png')} // Replace with your image URL
+//                             style={styles.profileImage}
+//                         />
+
+//                     </View>
+
+//                 )}
+//             </AnimatedCircularProgress>
+//             <Text style={styles.progressText}>{`${progress * 100}%`}</Text>
+//         </View>
+//     )
+// }
+
+
+// const styles = StyleSheet.create({
+//     container: {
+//         flex: 1,
+//         alignItems: 'center',
+//         justifyContent: 'center',
+//     },
+    
+// });

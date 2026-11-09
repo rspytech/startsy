@@ -29,7 +29,7 @@ const greenstyle = StyleSheet.create({
         color: "black", // Make sure text is visible on the background
     },
     animatedTextContainer: {
-        overflow: "hidden", // Hide overflow to ensure smooth reveal
+        overflow: 'hidden', // Hide overflow to ensure smooth reveal
     },
 });
 

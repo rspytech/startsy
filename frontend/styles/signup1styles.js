@@ -1,23 +1,27 @@
 import React from "react";
-import { Dimensions, StyleSheet, PixelRatio } from "react-native";
+import { Dimensions, StyleSheet, PixelRatio } from "react-native"
 
 const ratio = PixelRatio.get();
-const { height, width } = Dimensions.get("window");
+const { height, width } = Dimensions.get("window")
 console.log(ratio, "ratio");
 var a = width / 360;
 var b = height / 800;
 // console.log(a, b);
 
-const scalingfactor = Math.sqrt(a * b);
+const scalingfactor = Math.sqrt(a * b)
 
 // console.log(width);
 // console.log(height);
 // console.log(scalingfactor);
 
+
 const signupstyles = StyleSheet.create({
+
     container: {
         flex: 1,
         backgroundColor: "#16181a",
+        minHeight: height,
+
         justifyContent: "center",
         alignContent: "center",
     },
@@ -54,6 +58,8 @@ const signupstyles = StyleSheet.create({
         // justifyContent: "center",
         alignContent: "center",
         alignItems: "center",
+        backgroundColor: "rgba(33, 34, 35, 0.5)",
+
     },
     error: {
         marginVertical: 15,
@@ -63,84 +69,105 @@ const signupstyles = StyleSheet.create({
         width: "85%",
         marginHorizontal: "auto",
         color: "#E65858",
-        fontSize: 15,
+        textAlign: "center",
+        fontSize: 12,
         fontFamily: "Roboto",
+
+    },
+    invalid: {
+        marginVertical: 15,
+        marginTop: -15,
+        textAlign: "center",
+        // backgroundColor : "red",
+        width: "85%",
+        marginHorizontal: "auto",
+        color: "#E65858",
+        textAlign: "center",
+        fontSize: 12,
+        fontFamily: "Roboto",
+
     },
     t1: {
         fontFamily: "Alata",
-        fontSize: scalingfactor * 24,
-        color: "white",
+        fontSize: 24,
+        color: "#ccc",
         textAlign: "center",
         marginBottom: scalingfactor * 8,
+
     },
     t2: {
         fontFamily: "Roboto",
-        fontSize: scalingfactor * 15,
-        color: "#94A3B8",
+        fontSize: 12,
+        color: "#828282",
         textAlign: "center",
         marginBottom: scalingfactor * 30,
+
+
     },
     input: {
-        // height: height * 0.045, // Responsive height
-        backgroundColor: "transparent",
-        margin: height * 0.016,
-        marginTop: 0,
-        borderBottomWidth: 3,
-        // borderRadius : 20,
-        paddingLeft: scalingfactor * 10,
-        borderBottomColor: "#16181A",
-        fontSize: scalingfactor * 20, // Responsive font size
-        color: "#B8B8B8",
-        paddingBottom: scalingfactor * 3,
-        width: "92%",
+
+        width: "75%",
+        fontSize: scalingfactor * 18, // Responsive font size
+        color: "white",
+        padding: 0,
+        // paddingBottom: height * 0.012,
         fontFamily: "Alata",
-        lineHeight: scalingfactor * 18,
+        // lineHeight : scalingfactor * 20
+        //marginBottom:40,
+
     },
     input2: {
-        height: height * 0.045, // Responsive height
         backgroundColor: "transparent",
         margin: height * 0.016,
         marginTop: 0,
-        borderBottomWidth: 3,
+        borderBottomWidth: 1,
         // borderRadius : 20,
         paddingLeft: scalingfactor * 10,
-        borderBottomColor: "#16181A",
+        borderBottomColor: "#ccc",
         fontSize: scalingfactor * 20, // Responsive font size
         color: "#B8B8B8",
         paddingBottom: scalingfactor * 10,
         width: "92%",
+        marginTop: 10,
         fontFamily: "Alata",
-        lineHeight: scalingfactor * 18,
-        marginTop: scalingfactor * 30,
     },
     next: {
         backgroundColor: "#00DF60",
-        width: "92%",
-        padding: height * 0.022,
+        width: "80%",
+        // padding: 10,
         marginVertical: height * 0.018,
         borderRadius: 20,
-        margin: "auto",
-        marginTop: scalingfactor * 20,
-        minHeight: 50,
+        // margin: "auto",
+        // marginTop: scalingfactor * 30,
+        height: 40
     },
     nexttext: {
         color: "#24272A",
         fontFamily: "Alata",
-        fontSize: scalingfactor * 24,
+        fontSize: scalingfactor * 18,
         textAlign: "center",
+        alignSelf: "center",
+        // verticalAlign : "middle",
         // lineHeight : 16
-        marginTop: -4,
+        marginTop: 4
+
     },
     back: {
         position: "absolute",
         top: 20,
         left: 20,
-        zIndex: 20,
+        zIndex: 20
     },
     backicon: {
         transform: [{ scale: 1.1 }],
-        zIndex: 20,
-    },
-});
+        zIndex: 20
+    }
 
-export default signupstyles;
+
+
+
+
+})
+
+
+export default signupstyles

@@ -1,11 +1,14 @@
-import React, { useCallback, useEffect, useState } from "react";
-import { View, Text, StyleSheet, TextInput, BackHandler, FlatList, Image, Dimensions, TouchableOpacity, StatusBar } from "react-native";
+import React, { useCallback, useEffect, useRef, useState } from "react";
+import { View, Text, StyleSheet, TextInput, Keyboard, BackHandler, FlatList, Image, Dimensions, TouchableOpacity, StatusBar } from "react-native";
 import { createMaterialTopTabNavigator } from "@react-navigation/material-top-tabs";
 import { NavigationContainer, useFocusEffect } from "@react-navigation/native";
 import { Pressable } from "react-native";
 import ConnectionsScreen from "../main-1/connection.js"
+import SeperateInvestor from "../main-1/SeperateInvestor.js"
 import Communities from "../main-2/Communities.js"
-
+import { useNavigation } from "expo-router";
+import Search from "../../assets/icons/Search.js";
+import { jwtDecode } from "jwt-decode";
 
 const Tab = createMaterialTopTabNavigator();
 
@@ -40,27 +43,47 @@ const RequestsScreen = () => (
 );
 
 
-const ChatScreen = ({ navigation, token , mainpagebottomsheet , closeall }) => {
+const ChatScreen = ({ token, mainpagebottomsheet, closeall, k, setk }) => {
 
     // console.log(token, "dskljkuyhfdsajjsd");
 
-    
+    const inputref = useRef(null)
 
-   
+    const navigation = useNavigation()
+
+
 
     useFocusEffect(
         useCallback(() => {
+            // StatusBar.setBackgroundColor("#16181a")
             closeall()
+
+            const keyboardDidHideListener = Keyboard.addListener('keyboardDidHide', () => {
+                // console.log('====================================');
+                // console.log("ok");
+                // console.log('====================================');
+                setk(false);
+                inputref.current?.blur()
+            });
             const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
-               
+
+
                 navigation.navigate("Startsy");
+                // setk(false)
+                // inputref.current?.blur()
                 return true;
             });
 
-            return () => backHandler.remove();
+            return () => {
+                backHandler.remove()
 
-        } , [])
+                keyboardDidHideListener.remove();
+            }
+
+        }, [])
     )
+
+    var decode = jwtDecode(token)
 
 
 
@@ -74,21 +97,31 @@ const ChatScreen = ({ navigation, token , mainpagebottomsheet , closeall }) => {
         <View style={styles.container}>
             <Text allowFontScaling={false} style={styles.header}>Chat</Text>
             <View style={styles.searchContainer}>
-                <TextInput
-                    allowFontScaling={false}
-                    style={styles.searchInput}
-                    placeholder="Search"
-                    placeholderTextColor="#828282"
-                    onChangeText={(text) => {
-                        // console.log(text);
-                        setsearch(text)
-                    }}
-                />
+                <Pressable onPress={() => setk(true)}>
+                    <Search style={styles.search} />
+
+                    <TextInput
+                        ref={inputref}
+                        // onFocus={() => setk(true)}
+                        onBlur={() => setk(false)}
+                        allowFontScaling={false}
+                        style={styles.searchInput}
+                        placeholder="Search"
+                        placeholderTextColor="#828282"
+                        onChangeText={(text) => {
+                            // console.log(text);
+                            setsearch(text)
+                        }}
+                    />
+                </Pressable>
             </View>
 
             {/* <NavigationContainer> */}
             <Tab.Navigator
+
                 screenOptions={({ route }) => ({
+
+
 
                     tabBarStyle: {
                         backgroundColor: "#16181a",
@@ -101,7 +134,7 @@ const ChatScreen = ({ navigation, token , mainpagebottomsheet , closeall }) => {
 
                     tabBarIndicatorStyle: {
                         backgroundColor: "#00DE62",
-                        height: 0,
+                        height: 1,
                     },
 
                 })}
@@ -109,8 +142,9 @@ const ChatScreen = ({ navigation, token , mainpagebottomsheet , closeall }) => {
                 <Tab.Screen
                     name="Connections"
                     // component={ConnectionsScreen}
-                    children={(props) => <ConnectionsScreen navigation={navigation} token={token} search={search} />}
+                    children={(props) => <ConnectionsScreen setk={setk} inputref={inputref} navigation={navigation} token={token} search={search} />}
                     options={{
+
                         tabBarLabel: ({ focused }) => (
                             <View>
                                 <Text allowFontScaling={false} style={[
@@ -125,9 +159,35 @@ const ChatScreen = ({ navigation, token , mainpagebottomsheet , closeall }) => {
 
                     }}
                 />
+
+                {decode.role == "Founder" &&
+
+                    <Tab.Screen
+                        name="InvestorConnection"
+                        // component={ConnectionsScreen}
+                        children={(props) => <SeperateInvestor setk={setk} inputref={inputref} navigation={navigation} token={token} search={search} />}
+                        options={{
+
+                            tabBarLabel: ({ focused }) => (
+                                <View>
+                                    <Text allowFontScaling={false} style={[
+                                        styles.tabbarpill, {
+                                            color: focused ? "#00DE62" : "#808080",
+                                            borderColor: focused ? "#00DE62" : "#808080",
+                                        }
+                                    ]}> Investors
+                                    </Text>
+                                </View>
+                            ),
+
+                        }}
+                    />
+                }
+
+
                 <Tab.Screen
 
-                    name="Requests"
+                    name="Communities"
                     // component={Communities}
                     children={(props) => <Communities navigation={navigation} token={token} />}
                     options={{
@@ -137,7 +197,7 @@ const ChatScreen = ({ navigation, token , mainpagebottomsheet , closeall }) => {
                                     color: focused ? "#00DE62" : "#808080",
                                     borderColor: focused ? "#00DE62" : "#808080",
                                 }
-                            ]}> Communities
+                            ]}> Forums
                             </Text>
                         ),
 
@@ -168,12 +228,12 @@ const styles = StyleSheet.create({
         backgroundColor: "#16181a",
     },
     header: {
-        fontSize: 35,
+        fontSize: 30,
         fontWeight: "bold",
         color: "#00DE62",
-        marginVertical: 5,
-        marginBottom : 10,
-        marginLeft: 20,
+        // marginVertical: 5,
+        marginBottom: 10,
+        marginLeft: 15,
         fontFamily: "myanmar",
     },
     searchContainer: {
@@ -181,8 +241,8 @@ const styles = StyleSheet.create({
         marginBottom: 6,
     },
     searchInput: {
-        height: 45,
-        borderColor: "#00DE62",
+        height: 50,
+        borderColor: "#ccc",
         borderWidth: 1,
         borderRadius: 30,
         paddingHorizontal: 15,
@@ -241,22 +301,32 @@ const styles = StyleSheet.create({
 
 
     tabbarpill: {
-        borderWidth: 1,
-        borderRadius: 30,
-        textAlign: "center",
-        height: 50,
-        display: "flex",
-        justifyContent: "center",
-        alignItems: "flex-start",
-        width: width * 0.44,
-        // zIndex: 100,
+        // borderWidth: 1,
+        // borderRadius: 30,
+        // textAlign: "center",
+        // height: 50,
+        // display: "flex",
+        // justifyContent: "center",
+        // alignItems: "flex-start",
+        // width: width * 0.44,
+        // // zIndex: 100,
+        // fontFamily: "Alata",
+        // fontSize: 20,
+        // textAlign: "center",
+        // textAlignVertical: "center",
+        // // paddingTop : 4,
+        // textTransform: "capitalize",
+        // borderWidth: 1,
+        // borderRadius: 30,
+
+        fontSize: 16,
         fontFamily: "Alata",
-        fontSize: 20,
-        textAlign: "center",
-        textAlignVertical: "center",
-        // paddingTop : 4,
-        textTransform: "capitalize",
-        borderWidth: 1,
-        borderRadius: 30,
-    }
+
+    },
+    search: {
+        position: "absolute",
+        right: 12,
+        top: 10,
+        alignSelf: "center",
+    },
 });

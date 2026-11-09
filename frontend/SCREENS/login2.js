@@ -47,7 +47,7 @@ const Login2 = ({ navigation }) => {
     };
 
     function showsignuppage(type, navigation) {
-        console.log(type);
+        // console.log(type);
         navigation.navigate("Signup1", { type: type });
 
     }

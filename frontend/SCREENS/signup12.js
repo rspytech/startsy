@@ -1,6 +1,6 @@
 
 // 2.5 second last  of startup founder
-import React, { useState, useRef, useEffect, useContext } from "react";
+import React, { useState, useRef, useEffect, useContext, useCallback } from "react";
 import {
 
     SafeAreaView,
@@ -43,7 +43,7 @@ const Signup12 = ({ navigation, route }) => {
 
     const validateInputs = () => {
         const newErrors = {};
-        if (!sliderrange1) newErrors.years = "Please select the years of experience.";
+        if (sliderrange1 < 0) newErrors.years = "Please select the years of experience.";
         // if (!areaofinterest) newErrors.areaOfInterest = "Please select an area of interest.";
         if (!startupstage) newErrors.startupStage = "Please select a startup stage.";
         if (!sector) newErrors.sector = "Please select a preferred sector.";
@@ -67,7 +67,8 @@ const Signup12 = ({ navigation, route }) => {
         final.append("preferredSector", sector);
         final.append("investmentRange", sliderrange);
 
-        navigation.navigate("Signup13", { form: final, image });
+        // navigation.navigate("Signup13", { form: final, image });
+        navigation.navigate("SelectInvestor", { form: final, image });
     };
 
 
@@ -84,7 +85,7 @@ const Signup12 = ({ navigation, route }) => {
     const [open3, setOpen3] = useState(false);
 
 
-    const [sliderrange, setsliderrange] = useState(5000000)
+    const [sliderrange, setsliderrange] = useState(0)
     const [sliderrange1, setsliderrange1] = useState(0)
 
     const [areaofinterest, setareafofinterest] = useState("")
@@ -214,6 +215,27 @@ const Signup12 = ({ navigation, route }) => {
     function counttext(text) {
         settextlength(text.length)
     }
+
+
+    const sliderRef = useRef(null);
+
+    const h1 = (value) => {
+        if (sliderRef.current) {
+            clearTimeout(sliderRef.current);
+        }
+        sliderRef.current = setTimeout(() => {
+            setsliderrange(value);
+        }, 100);
+    };
+    const h2= (value) => {
+        if (sliderRef.current) {
+            clearTimeout(sliderRef.current);
+        }
+        sliderRef.current = setTimeout(() => {
+            setsliderrange1(value);
+        }, 100);
+    };
+
     const sliderImage = require("../assets/images/slider.png");
     return (
 
@@ -239,19 +261,19 @@ const Signup12 = ({ navigation, route }) => {
                         {/* bottom */}
 
                         <View style={styles.bottom}>
-                            <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 15 }]}>Investing experience</Text>
+                            <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 15 }]}>Investing experience <Text style={{fontSize:15 ,color: "#94A3B8"}}>*</Text></Text>
                             <Pressable onPress={() => { handleOutsideTouch() }} style={styles.btn1}>
                                 <Text allowFontScaling={false} style={styles.nexttext}>{sliderrange1.toLocaleString("en-IN")} {sliderrange1 > 1 ? "years" : "year"}</Text>
                             </Pressable>
-                            <View style={[styles.box, { left: 10 }]}></View>
-                            <View style={[styles.box1, { right: 10 }]}></View>
+                            {/* <View style={[styles.box, { left: 10 }]}></View>
+                            <View style={[styles.box1, { right: 10 }]}></View> */}
 
                             <Slider
                                 // style={styles.sliderbox}
-                                style={{ marginTop: -7 }}
+                                style={{ marginTop: 25 }}
                                 minimumValue={0}
-                                maximumValue={20}
-                                value={2}
+                                maximumValue={50}
+                                value={sliderrange1}
                                 step={1}
                                 minimumTrackTintColor="#00DE62"
                                 maximumTrackTintColor="#00DE62"
@@ -261,7 +283,8 @@ const Signup12 = ({ navigation, route }) => {
                                 // trackImage={require("../assets/images/slider.png")}
                                 // trackImage={require("../assets/images/slider3.png")}
                                 // thumbImage={require("../assets/images/slider3.png")}
-                                onValueChange={(value) => { setsliderrange1(value) }}
+                                // onValueChange={(value) => { setsliderrange1(value) }}
+                                onValueChange={h2}
                             // hitSlop={{ top: 50, left: 50, right: 50, bottom: 50 }}
                             // thumbTouchSize={{ width: 100, height: 100 }}
                             />
@@ -276,48 +299,40 @@ const Signup12 = ({ navigation, route }) => {
                             )} */}
 
 
-                            <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 25 }]}>Preferred startup stage </Text>
+                            <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 15 }]}>Preferred startup stage <Text style={{fontSize:15 ,color: "#94A3B8"}}>*</Text></Text>
                             <Text allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>Indicate the stages of development at which you prefer to invest.</Text>
-                            <Drop items={stage} onValueChange={(value) => { setsetstartupstage(value) }} setOpen={setOpen2} open={open2} nestedScrollEnabled={true} />
+                            <Drop borderwidth={0} bb={1} width={"97%"} borderColor={"#ccc"} items={stage} onValueChange={(value) => { setsetstartupstage(value) }} setOpen={setOpen2} open={open2} nestedScrollEnabled={true} />
                             {errors.startupStage && (
                                 <Text style={signup3styles.errorText}>{errors.startupStage}</Text>
                             )}
 
-                            <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 25 }]}>Preferred startup sector  </Text>
+                            <Text allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 25 }]}>Preferred startup sector <Text style={{fontSize:15 ,color: "#94A3B8"}}>*</Text></Text>
                             <Text allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>This distinction helps founders understand the scope and nature of your investment interests, ensuring that you receive opportunities that align with your strategic preferences and expertise.
                             </Text>
-                            <Drop items={sectorlist} onValueChange={(value) => { setsector(value) }} setOpen={setOpen3} open={open3} nestedScrollEnabled={true} />
+                            <Drop borderwidth={0} bb={1} width={"97%"} borderColor={"#ccc"} items={sectorlist} onValueChange={(value) => { setsector(value) }} setOpen={setOpen3} open={open3} nestedScrollEnabled={true} />
                             {errors.sector && (
                                 <Text style={signup3styles.errorText}>{errors.sector}</Text>
                             )}
 
 
-                            <Text allowFontScaling={false} style={[styles.t1, { marginTop: 20, marginBottom: 25 }]}>Investment capacity</Text>
+                            <Text allowFontScaling={false} style={[styles.t1, { marginTop: 20, marginBottom: 25 }]}>Investment capacity <Text style={{fontSize:15 ,color: "#94A3B8"}}>*</Text></Text>
 
 
                             <Pressable onPress={() => { handleOutsideTouch() }} style={styles.btn}>
-                                <Text allowFontScaling={false} style={styles.nexttext}>{sliderrange.toLocaleString("en-IN")}</Text>
-                                {/* <TextInput
-                                    style={signup3styles.input}
-                                    keyboardType="numeric"
-                                    value={sliderrange.toLocaleString("en-IN")}
-                                    onChangeText={(text) => {
-                                        
-                                        setsliderrange(text);
-                                    }}
-                                /> */}
+                                <Text allowFontScaling={false} style={styles.nexttext}>₹ {sliderrange.toLocaleString("en-IN")}</Text>
+
                             </Pressable>
 
                             {/* slider */}
-                            <View style={[styles.box, { left: 10 }]}></View>
-                            <View style={[styles.box1, { right: 10 }]}></View>
+                            {/* <View style={[styles.box, { left: 10 }]}></View>
+                            <View style={[styles.box1, { right: 10 }]}></View> */}
                             <Slider
                                 // style={styles.sliderbox}
-                                style={{ marginTop: -7 }}
+                                style={{ marginTop: 22 }}
                                 minimumValue={0}
                                 maximumValue={10000000}
                                 value={sliderrange}
-                                step={1000}
+                                step={100000}
                                 minimumTrackTintColor="#00DE62"
                                 maximumTrackTintColor="#00DE62"
                                 // step={100}
@@ -327,7 +342,8 @@ const Signup12 = ({ navigation, route }) => {
                                 thumbTintColor="#737373"
 
                                 // thumbImage={require("../assets/images/slider3.png")}
-                                onValueChange={(value) => { setsliderrange(value) }}
+                                // onValueChange={(value) => { setsliderrange(value) }}
+                                onValueChange={h1}
                             // hitSlop={{ top: 50, left: 50, right: 50, bottom: 50 }}
                             // thumbTouchSize={{ width: 100, height: 100 }}
                             />
@@ -340,8 +356,8 @@ const Signup12 = ({ navigation, route }) => {
 
 
                             <View style={styles.icons}>
-                                <Pressable style={{ marginTop: 5 }} onPress={() => { navigation.goBack() }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
-                                <Pressable onPress={() => { nextPage() }}><FontAwesome6 name="chevron-right" size={40} color="#00DF60" /></Pressable>
+                                <Pressable style={{ marginTop: 5 }} onPress={() => { navigation.goBack() }}><FontAwesome6 name="chevron-left" size={25} color="#00DF60" /></Pressable>
+                                <Pressable onPress={() => { nextPage() }}><FontAwesome6 name="chevron-right" size={25} color="#00DF60" /></Pressable>
 
                             </View>
 
@@ -367,9 +383,9 @@ const styles = StyleSheet.create({
     t1: {
         textAlign: 'Left',
         marginLeft: 10,
-        color: "#D9D9D9",
+        color: "#ccc",
         fontFamily: 'Alata',
-        fontSize: scalingfactor * 24,
+        fontSize: 24,
         // backgroundColor : "red",
         width: "97%",
         marginBottom: scalingfactor * 3,
@@ -380,9 +396,9 @@ const styles = StyleSheet.create({
     },
     t2: {
         textAlign: 'Left',
-        color: "#94A3B8",
+        color: "#828282",
         fontFamily: 'Roboto',
-        fontSize: scalingfactor * 13,
+        fontSize: 12,
 
         marginBottom: scalingfactor * 8,
         width: "85%",
@@ -401,6 +417,8 @@ const styles = StyleSheet.create({
         alignContent: "center",
         padding: scalingfactor * 20,
         paddingTop: scalingfactor * 40,
+        backgroundColor : "rgba(33, 34, 35, 0.5)",
+
         // overflow : "hidden",
 
     },
@@ -409,14 +427,14 @@ const styles = StyleSheet.create({
         backgroundColor: "transparent",
         margin: height * 0.016,
         marginTop: 0,
-        borderWidth: 3,
+        borderWidth: 1,
         borderRadius: 20,
-        borderColor: "#16181A",
+        borderColor: "#ccc",
         fontSize: scalingfactor * 20,
-        color: "#B8B8B8",
+        color: "#ccc",
         paddingBottom: scalingfactor * 5,
         width: "92%",
-        fontFamily: "Roboto",
+        fontFamily: "Alata",
         lineHeight: scalingfactor * 18,
         marginBottom: scalingfactor * 25,
         height: 190,
@@ -432,31 +450,30 @@ const styles = StyleSheet.create({
         justifyContent: "space-between",
         width: "92%",
         margin: "auto",
-        marginTop: 30,
+        marginTop: 40,
         marginBottom: 30
     },
 
     btn: {
-        width: "92%",
-        height: 48,
+        width: "60%",
+        height: 46,
         margin: "auto",
         backgroundColor: "transparent",
+        borderWidth: 1,
+        borderColor: "#ccc",
         borderRadius: 20,
-        borderWidth: 3,
-        borderColor: "#16181A",
-        borderRadius: 10,
         marginBottom: 10,
         justifyContent: 'center',
 
     },
     btn1: {
-        width: 173,
-        height: 48,
+        width: "60%",
+        height: 46,
         margin: "auto",
         backgroundColor: "transparent",
         borderRadius: 20,
-        borderWidth: 3,
-        borderColor: "#16181A",
+        borderWidth: 1,
+        borderColor: "#ccc",
         borderRadius: 20,
         marginBottom: 0,
         marginTop: 10,

@@ -1,6 +1,3 @@
-// Sign-up: upload a profile picture, then continue to the form for the chosen account type.
-// Note: the picture upload goes to a developer's local address (see docs/NOTICED_NOT_CHANGED.md).
-
 import React, { useState, useRef, useEffect, useContext } from "react";
 import {
     ScrollView,
@@ -16,52 +13,79 @@ import {
     StatusBar,
     TouchableWithoutFeedback,
     KeyboardAvoidingView,
+    BackHandler
+
 } from "react-native";
-import Profile from "../assets/icons/profile.js";
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { url } from "../config.js"
+
+import Profile from "../assets/icons/profile.js"
 import Drop from "./dropdown.js";
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 // import { LinearGradient } from "expo-linear-gradient";
 import signup3styles from "../styles/signup3styles.js";
 import s5 from "../styles/s5.js";
 import { BlurView } from "expo-blur";
-import { LinearGradient } from "expo-linear-gradient";
+import { LinearGradient } from 'expo-linear-gradient';
 import Line from "./line.js";
 // import Line2 from "./line2.js";
 import Line3 from "./line3.js";
 import Line2 from "./line2.js";
+import Devi from "./Devi.js"
 
-import * as DocumentPicker from "expo-document-picker";
 
-import * as ImagePicker from "expo-image-picker";
+import * as DocumentPicker from 'expo-document-picker';
+
+import * as ImagePicker from 'expo-image-picker';
 import { useFocusEffect } from "expo-router";
 import { KeyboardAwareScrollView } from "react-native-keyboard-aware-scroll-view";
 import { GlobalContext } from "@/Global/globalcontext.js";
-import AsyncStorage from "@react-native-async-storage/async-storage";
+import AsyncStorage from '@react-native-async-storage/async-storage';
 const Signup5 = ({ navigation, route }) => {
-    const [token, settoken] = useState("");
+
+
+
+    const [token, settoken] = useState("")
     const { globaldata, updateField } = useContext(GlobalContext);
 
+    // useEffect(() => {
+    //     console.log(globaldata, "global data");
+    //     settoken(globaldata.token)
+    // }, [])
     useEffect(() => {
         async function getToken() {
             const temp = await AsyncStorage.getItem("accessToken");
             updateField("token", temp);
-
-            console.log(temp, "yeh temp hai");
+            settoken(temp);
+            // console.log(temp, "yeh temp hai from signup 5");
             // console.log(globaldata.token, "yeh globally saved me se aa raah");
-            console.log(globaldata.token, "yeh globally saved me se aa raah");
+            // console.log(globaldata.token, "yeh globally saved me se aa raah");
+
         }
         getToken();
     }, []);
 
-    const { type, username, password } = route.params;
-    console.log(route.params);
 
-    const [fullname, setfullname] = useState("");
-    const [email, setemail] = useState("");
-    const [country, setcountry] = useState("");
-    const [number, setnumber] = useState("");
-    const [age, setage] = useState("");
-    const [gender, setgender] = useState("");
+    const { type, id, useremail , email } = route.params
+    // const { type, id, useremail , email } = {"type" : 1 , "id" : 2 , "useremail" : 3 , "email" :4}
+
+    // console.log(route.params);
+    // console.log('====================================');
+    // console.log(type);
+    // console.log(id);
+    // console.log('====================================');
+
+    const [date, setDate] = useState(new Date());
+    const [show, setShow] = useState(false);
+    const [skip, setSkip] = useState(false);
+    const [filtereddate, setfiltereddate] = useState("");
+
+    const [fullname, setfullname] = useState("")
+    // const [email, setemail] = useState("")
+    const [country, setcountry] = useState("")
+    const [number, setnumber] = useState("")
+    const [age, setage] = useState("")
+    const [gender, setgender] = useState("")
     const [image, setImage] = useState("xyz");
 
     const [errors, setErrors] = useState({}); // Error state
@@ -75,17 +99,17 @@ const Signup5 = ({ navigation, route }) => {
         }
 
         // Email validation
-        const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        if (!email.trim()) {
-            newErrors.email = "* Email is required.";
-        } else if (!emailRegex.test(email)) {
-            newErrors.email = "* Enter a valid email address.";
-        }
+        // const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        // if (!email.trim()) {
+        //     newErrors.email = "* Email is required.";
+        // } else if (!emailRegex.test(email)) {
+        //     newErrors.email = "* Enter a valid email address.";
+        // }
 
         // Country validation
-        if (!country.trim()) {
-            newErrors.country = "* Please select a country.";
-        }
+        // if (!country.trim()) {
+        //     newErrors.country = "* Please select a country.";
+        // }
 
         // Phone number validation (10 digits only)
         const numberRegex = /^\d{10}$/;
@@ -96,26 +120,27 @@ const Signup5 = ({ navigation, route }) => {
         }
 
         // Age validation (must be between 18 and 100)
-        const ageNumber = parseInt(age, 10);
-        if (!age.trim()) {
-            newErrors.age = "* Age is required.";
-        } else if (isNaN(ageNumber) || ageNumber < 18 || ageNumber > 100) {
-            newErrors.age = "* Age must be between 18 and 100.";
-        }
+        // const ageNumber = parseInt(age, 10);
+        // if (!age.trim()) {
+        //     newErrors.age = "* Age is required.";
+        // } else if (isNaN(ageNumber) || ageNumber < 18 || ageNumber > 100) {
+        //     newErrors.age = "* Age must be between 18 and 100.";
+        // }
 
         // Gender validation
-        if (!gender.trim()) {
-            newErrors.gender = "* Gender is required.";
-        }
+        // if (!gender.trim()) {
+        //     newErrors.gender = "* Gender is required.";
+        // }
 
         // Image validation
-        if (image === "xyz") {
-            newErrors.image = "* Profile picture is required.";
-        }
+        // if (image === "xyz") {
+        //     newErrors.image = "* Profile picture is required.";
+        // }
 
         setErrors(newErrors);
         return Object.keys(newErrors).length === 0;
     };
+
 
     const handleSubmit = () => {
         if (validateForm()) {
@@ -124,36 +149,46 @@ const Signup5 = ({ navigation, route }) => {
         }
 
         // nextpage(navigation, type);
+
     };
 
+
+
+
+
     const formData = new FormData();
-    formData.append("fullName", fullname);
-    formData.append("password", password);
-    formData.append("fullname", fullname);
-    formData.append("email", email);
-    formData.append("country", country);
-    formData.append("contactInfo", number);
-    formData.append("age", age);
-    formData.append("gender", gender);
+    formData.append("generalModelId", id)
+    formData.append("fullName", fullname)
+    // formData.append("password", password)
+    formData.append("fullname", fullname)
+    formData.append("email", email)
+    formData.append("country", country)
+    formData.append("contactInfo", number)
+    formData.append("age", JSON.stringify(date))
+    formData.append("gender", gender)
+
+
 
     const rotateValue = useRef(new Animated.Value(0)).current;
     const [rotated, setRotated] = useState(true);
     const [inputLayout, setInputLayout] = useState({ height: 0, y: 0 });
     const [dropdownVisible, setDropdownVisible] = useState(false);
-    const [afterinput, setafterinput] = useState(0);
-    const [message, setmessage] = useState("");
-    const [error, seterror] = useState(false);
-    const [loading, setloading] = useState(false);
+    const [afterinput, setafterinput] = useState(0)
+    const [message, setmessage] = useState("")
+    const [error, seterror] = useState(false)
+    const [loading, setloading] = useState(false)
+
+
 
     const countries = ["United States", "Canada", "Australia", "India", "Japan"];
     const myElementRef = useRef(null);
     const handleRotate = () => {
         myElementRef.current.measure((x, y, width, height, pageX, pageY) => {
-            console.log(x, y, width, height, pageX, pageY);
-            const value = pageY;
-            setafterinput(value);
+            // console.log(x, y, width, height, pageX, pageY);
+            const value = pageY
+            setafterinput(value)
             setDropdownVisible(!dropdownVisible);
-            console.log(afterinput);
+            // console.log(afterinput);
             setRotated(!rotated);
         });
     };
@@ -164,7 +199,7 @@ const Signup5 = ({ navigation, route }) => {
             duration: 200,
             useNativeDriver: true,
         }).start();
-    }, [rotated]);
+    }, [rotated])
 
     const rotation = rotateValue.interpolate({
         inputRange: [0, 1],
@@ -172,12 +207,15 @@ const Signup5 = ({ navigation, route }) => {
     });
 
     const handleCountrySelect = (country) => {
-        setcountry(country);
+        setcountry(country)
         setRotated(!rotated);
         setDropdownVisible(false);
     };
 
+
+
     const fileupload = async () => {
+
         const permissionResult = await ImagePicker.requestMediaLibraryPermissionsAsync();
         if (permissionResult.granted === false) {
             alert("Permission to access camera roll is required!");
@@ -188,25 +226,31 @@ const Signup5 = ({ navigation, route }) => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images, // Allow all media types
             allowsEditing: true, // Allows cropping the image
-            aspect: [4, 3], // Aspect ratio of the image
+            aspect: [1, 1], // Aspect ratio of the image
             quality: 1, // Image quality (0 to 1)
+
         });
+
 
         if (!result.canceled) {
             const imageUri = result.assets[0].uri;
             setImage(imageUri);
+
         }
-    };
+
+    }
+
 
     async function sendtobackend() {
         try {
-            const response = await fetch("http://192.168.1.7:9000/userimg", {
-                method: "POST",
+
+            const response = await fetch('http://192.168.1.7:9000/userimg', {
+                method: 'POST',
                 body: formData,
                 headers: {
-                    accept: "application/json",
-                    "Content-Type": "multipart/form-data",
-                },
+                    accept: 'application/json',
+                    'Content-Type': 'multipart/form-data',
+                }
             });
 
             // Check if the response is okay
@@ -215,11 +259,12 @@ const Signup5 = ({ navigation, route }) => {
             }
 
             const data = await response.json();
-            console.log(data); // Log the response from the server
+            // console.log(data); // Log the response from the server
         } catch (error) {
-            console.error("Error uploading image:", error); // Handle the error
+            console.error('Error uploading image:', error); // Handle the error
         }
     }
+
 
     function renderline() {
         if (type === "Investor" || type === "Founder") {
@@ -238,69 +283,165 @@ const Signup5 = ({ navigation, route }) => {
     //         StatusBar.setBarStyle("light-content");
     //     };
 
+
     //     setStatusBar();
     //     setTimeout(() => {
     //         setStatusBar()
     //     }, 0);
     // }, [])
 
+
+
+    // useEffect(() => {
+    //     const backHandler = BackHandler.addEventListener('hardwareBackPress', () => {
+    //         // navigation.pop(2)
+    //         // navigation.goBack()
+    //         // navigation.replace("Main2" , {focus : "Message"})
+    //         BackHandler.exitApp()
+
+
+    //         return true;
+    //     });
+
+    //     return () => backHandler.remove();
+    // }, []);
+
+    async function getdata() {
+        try {
+            const response = await fetch(`${url}api/getProfiledetailForSwitch`, {
+                method: 'GET',
+                headers: {
+                    accept: "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+            // console.log(data.data.age , "ikkkkkk");
+            // console.log(JSON.parse(data.data.age));
+            var tempdate = new Date(JSON.parse(data.data.age)).toLocaleDateString("en-US", {
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+            })
+            // console.log(tempdate);
+
+
+
+            setfullname(data.data.fullName)
+            // setemail(data.data.email)
+            setcountry(data.data.country)
+            setnumber(data.data.contactInfo)
+            // setDate(tempdate)
+            setfiltereddate(tempdate)
+            setgender(data.data.gender)
+            setImage(data.profilePhoto)
+        }
+        catch (err) {
+            console.log(err);
+        }
+    }
+
+
+    useEffect(() => {
+        getdata()
+    }, [token])
+
+
+
+
+
     async function nextpage(navigation, type) {
-        console.log(type);
+        // console.log(type);
 
-        // setloading(true)
-        // const response = await fetch('http://192.168.1.3:9000/api/checkemail', {
-        //     method: 'POST',
-        //     body: { email },
-        //     headers: {
-        //         accept: 'application/json',
-        //         "content": "application/json"
-        //     }
-        // });
-        // const data = await response.json();
-        // setloading(false)
-        // console.log(data);
-        // if (data.status === 200) {
-        //     if (type === "Community member") {
-        //         console.log(formData);
-        //         // navigation.navigate("Signup6" , {form : formData});
-        //         navigation.navigate("Signup6", { form: formData });
-        //     }
-        //     else if (type == "Freelancer") {
-        //         navigation.navigate("Signup7", { type: type })
-        //     }
-        //     else if (type == "Founder") {
-        //         navigation.navigate("Signup9", { type: type })
-        //     }
-        //     else if (type == "Investor") {
-        //         navigation.navigate("Signup12", { type: type })
-        //     }
-        // }
-        // else if (data.status === 400) {
-        //     setmessage("email already taken")
+        // console.log(token);
 
-        // }
+        // console.log(formData, "final");
+        // console.log(date);
+
+        // setDate(JSON.stringify(date)) 
+        // console.log(typeof date);
+
+
+
+
+        if (email == useremail) {
+
+        }
+        else {
+
+
+            // try {
+            //     const response = await fetch(`${url}api/checkemail`, {
+            //         method: 'POST',
+            //         body: JSON.stringify({ "email": email }),
+            //         headers: {
+            //             "Content-Type": "application/json",
+            //             accept: "application/json",
+            //             "Authorization": `Bearer ${token}`,
+            //         },
+            //     });
+            //     const data = await response.json();
+            //     // setloading(false)
+            //     // console.log(data);
+            //     // console.log(response.status);
+
+            //     if (response.status === 400) {
+            //         setEmailUniqueError(true);
+            //         return
+            //     }
+            // }
+            // catch (err) {
+
+            // }
+            // finally {
+
+            // }
+
+        }
+
+   
+        if(image == "xyz"){
+            console.log("no image ");
+            
+            
+        }
+        
+
+
+
 
         if (type === "CommunityMember") {
             // console.log(formData, "signup 6 pe ja raha hu");
             // sendtobackend()
-            navigation.navigate("Signup6", { form: formData, image: image });
+            navigation.navigate("Signup6", { form: formData, image: image })
             // navigation.navigate("Signup6", { form: formData , image });
-        } else if (type == "Freelancer") {
-            navigation.navigate("Signup7", { form: formData, image: image });
-        } else if (type == "Founder") {
-            navigation.navigate("Signup9", { form: formData, image: image });
-        } else if (type == "Investor") {
-            navigation.navigate("Signup12", { form: formData, image: image });
         }
+        else if (type == "Freelancer") {
+            navigation.navigate("Signup7", { form: formData, image: image })
+        }
+        else if (type == "Founder") {
+            navigation.navigate("Signup9", { form: formData, image: image })
+        }
+        else if (type == "Investor") {
+            navigation.navigate("Signup12", { form: formData, image: image })
+        }
+
+
+
+
+
     }
 
     // const [open, setOpen] = useState(false);
     const [open11, setOpen11] = useState(false);
+    const [EmailUniqueError, setEmailUniqueError] = useState(false);
+
 
     const handleOutsideTouch = () => {
         if (dropdownVisible) {
             setDropdownVisible(false);
         }
+
     };
 
     var country1 = [
@@ -321,81 +462,138 @@ const Signup5 = ({ navigation, route }) => {
         { label: "Brazil", value: "BRAZIL" },
         { label: "Mexico", value: "MEXICO" },
         { label: "Others (Type)", value: "OTHERS" },
-    ];
+
+    ]
+    // const onChange = (event, selectedDate) => {
+    //     setShow(Platform.OS === 'ios'); // For iOS, keep picker open
+    //     if (selectedDate) {
+    //         setDate(selectedDate);
+
+    //     }
+    // };
 
     const genderlist = [
         { label: "Male", value: "Male" },
         { label: "Female", value: "Female" },
         { label: "Other", value: "Other" },
-    ];
+    ]
     // const [open , setOpen] = useState(true)
-    function seteducation() {
-        console.log("education");
-    }
+    // function seteducation() {
+    //     // console.log("education");
+    // }
 
     useFocusEffect(() => {
-        StatusBar.setBackgroundColor("#16181a");
-        StatusBar.setBarStyle("light-content");
-    });
-    const [open, setOpen] = useState(false);
+        StatusBar.setBackgroundColor("#16181a")
+        StatusBar.setBarStyle("light-content")
+    })
+    const [open, setOpen] = useState(false)
+
+
+    function givemedate(date) {
+        // console.log(date);
+        // console.log(date == new Date());
+        if (typeof date == "string") {
+            // console.log("date hi nai hai");
+            return "Enter your DOB"
+        }
+
+
+        // console.log("transfrom");
+        if (typeof date == "object") {
+            const messageDate1 = date.toLocaleDateString("en-US", {
+                day: "2-digit",
+                month: "long",
+                year: "numeric",
+            });
+
+            // console.log(messageDate1);
+            return messageDate1
+        }
+
+
+    }
+
+    function check() {
+        if (fullname == "" && email == "" && number == "" && image == "xyz" && gender == "" && age == "") {
+            setSkip(false)
+        }
+        else if (fullname != "" && email != "" && number != "" && image != "xyz") {
+            setSkip(true)
+        }
+        else setSkip(false)
+    }
+    const {height} = Dimensions.get("window")
+
     return (
+
+
+        // <TouchableWithoutFeedback onPress={()=>{
+        //     setOpen(false)
+        // }}>
         <SafeAreaView style={{ flex: 1, backgroundColor: "#16181a" }}>
-            <ScrollView
-                nestedScrollEnabled={true}
-                style={[
-                    { flex: 1, backgroundColor: "#16181a", paddingBottom: 50, paddingBottom: 50 },
-                    signup3styles.container,
-                ]}
-            >
+            <ScrollView nestedScrollEnabled={true} style={[{  flex :1,backgroundColor: "#16181a", paddingBottom: 0, paddingBottom: 0 }, signup3styles.container]}>
                 {/* <KeyboardAwareScrollView enableOnAndroid={true} extraHeight={0} extraScrollHeight={0} enableAutomaticScroll={true} style={signup3styles.container}> */}
                 {/* <ScrollView style={signup3styles.row}> */}
+                <Devi show={show} setShow={setShow} date={date} setDate={setDate} filtereddate={filtereddate} setfiltereddate={setfiltereddate} />
+
 
                 {/* Top Section */}
                 <View style={signup3styles.top}>
                     <View style={signup3styles.left}>
                         <Image style={signup3styles.logo} source={require("../assets/images/logo.png")} />
                     </View>
-                    <View style={signup3styles.right}>{renderline()}</View>
+                    <View style={signup3styles.right}>
+                        {renderline()}
+                    </View>
                 </View>
+
+
+
 
                 {/* Bottom Section */}
                 <ScrollView nestedScrollEnabled={true} style={s5.bottom}>
-                    <View style={{ paddingBottom: 10, flex: 1, borderTopLeftRadius: 100 }}>
-                        <Pressable onPress={fileupload}>
+                    <View
+                     style={{ paddingBottom: 10, borderTopLeftRadius: 100 , paddingTop : 10 , height : height * 0.84 , }}>
+
+                        <Pressable style={{width : "100%" , height  :130  , justifyContent : "center" , alignContent : "center"}} onPress={fileupload}>
                             {image != "xyz" ? (
+                                
                                 <Image style={styles.img} source={{ uri: image }} />
                             ) : (
                                 // <Image style={styles.img1} source={require("../assets/images/User_light.png")} />
                                 <Profile />
                             )}
                         </Pressable>
-                        <Text style={s5.t1}>Upload a profile picture</Text>
-                        {errors.image && (
-                            <Text style={[styles.errorText, { textAlign: "center" }]}>{errors.image}</Text>
-                        )}
-                        <View style={{ marginTop: 30 }}>
+                        <Text style={s5.t1}>Upload a profile picture </Text>
+                        {errors.image && <Text style={[styles.errorText, { textAlign: "center" }]}>{errors.image}</Text>}
+                        <View style={{ marginTop: 20 , flex : 1 }}>
                             <TextInput
                                 allowFontScaling={false}
-                                placeholder="Full name"
-                                placeholderTextColor="#B8B8B8"
-                                style={s5.input}
+                                placeholder="Full name *"
+                                placeholderTextColor="#828282"
+                                style={[s5.input , {paddingLeft : 3 , marginBottom : 14}]}
                                 value={fullname}
                                 onChangeText={(text) => {
-                                    setfullname(text);
+                                    check()
+                                    setfullname(text)
                                 }}
                             />
                             {errors.fullname && <Text style={styles.errorText}>{errors.fullname}</Text>}
-                            <TextInput
+                            {/* <TextInput
                                 allowFontScaling={false}
-                                placeholder="Email address"
+                                placeholder="Email address *"
                                 placeholderTextColor="#B8B8B8"
-                                style={[s5.input, { marginBottom: 12 }]}
+                                style={[s5.input, { marginBottom: 12, marginTop: 0 }]}
                                 value={email}
                                 onChangeText={(text) => {
-                                    setemail(text);
+                                    check()
+                                    setemail(text)
                                 }}
-                            />
+                            /> */}
+                            {/* <CalendarPicker  /> */}
                             {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+                            {EmailUniqueError && <Text style={styles.errorText}>*Email ID already registered.</Text>}
+
                             {/* <View>
                                         <Pressable onPress={handleRotate}>
                                             <TextInput
@@ -427,37 +625,54 @@ const Signup5 = ({ navigation, route }) => {
                                         </Pressable>
                                     </View> */}
 
-                            <Drop
-                                items={country1}
-                                open={open}
-                                setOpen={setOpen}
-                                onValueChange={setcountry}
-                                nestedScrollEnabled={true}
-                                extra={true}
-                            />
+                            <Drop bb={1} borderColor={"#ccc"} bradius={0} items={country1} pccolor={"#828282"} width={"97%"} open={open} placeholder={country} setOpen={setOpen} onValueChange={(e) => {
+                                check()
+                                setcountry(e)
+                            }} nestedScrollEnabled={true} extra={true} />
                             {errors.country && <Text style={styles.errorText}>{errors.country}</Text>}
 
+
+
                             <TextInput
+
+
                                 allowFontScaling={false}
-                                placeholder="Phone number"
-                                placeholderTextColor="#B8B8B8"
-                                style={[s5.input, { marginTop: 20 }]}
+                                placeholder="Phone number *"
+                                placeholderTextColor="#828282"
+
+                                style={[s5.input, { marginTop: 16 , paddingLeft : 3 , marginBottom : 14}]}
                                 value={number}
                                 onChangeText={(text) => {
-                                    setnumber(text);
+                                    check()
+                                    setnumber(text)
                                 }}
                             />
                             {errors.number && <Text style={styles.errorText}>{errors.number}</Text>}
-                            <TextInput
-                                allowFontScaling={false}
-                                placeholder="Age (Years)"
-                                placeholderTextColor="#B8B8B8"
-                                style={s5.input}
-                                value={age}
-                                onChangeText={(text) => {
-                                    setage(text);
-                                }}
-                            />
+                            <Pressable onPress={() => {
+                                console.log("opening date");
+                                setShow(true)
+                                setShow(true)
+                                setShow(true)
+                                setShow(true)
+                            }}>
+                                {/* <Text> {JSON.stringify(date)}</Text> */}
+                                <TextInput
+                                    readOnly={true}
+
+                                    allowFontScaling={false}
+                                    placeholder="Enter your DOB "
+                                    placeholderTextColor="#828282"
+                                    style={[s5.input, { marginBottom: 14, marginTop: 0 , paddingLeft : 5 }]}
+                                    value={filtereddate}
+                                    onChangeText={(text) => {
+                                        check()
+                                        setage(text)
+                                    }}
+                                />
+                            </Pressable>
+
+
+
                             {errors.age && <Text style={styles.errorText}>{errors.age}</Text>}
                             {/* <TextInput
                                 allowFontScaling={false}
@@ -467,45 +682,51 @@ const Signup5 = ({ navigation, route }) => {
                                 value={gender}
                                 onChangeText={(text) => { setgender(text) }}
                             /> */}
-                            <Drop
-                                up={true}
-                                items={genderlist}
-                                open={open11}
-                                setOpen={setOpen11}
-                                onValueChange={(e) => setgender(e)}
-                                nestedScrollEnabled={true}
-                                extra={true}
-                                gender={true}
-                            />
+                            <Drop bb={1} borderColor={"#ccc"} bradius={0} pccolor={"#828282"} width={"97%"} up={true} placeholder={gender} items={genderlist} open={open11} setOpen={setOpen11}
+                                onValueChange={(e) => {
+                                    check()
+                                    setgender(e)
+                                }} nestedScrollEnabled={true} extra={true} gender={true} />
 
                             {errors.gender && <Text style={styles.errorText}>{errors.gender}</Text>}
 
                             <View style={s5.icons}>
-                                <Pressable
-                                    onPress={() => {
-                                        navigation.goBack();
-                                    }}
-                                >
-                                    <FontAwesome6 name="chevron-left" size={40} color="#00DF60" />
-                                </Pressable>
-                                <Pressable
-                                    onPress={() => {
-                                        handleSubmit();
-                                    }}
-                                >
-                                    <FontAwesome6 name="chevron-right" size={40} color="#00DF60" />
-                                </Pressable>
+                                <Pressable onPress={() => {
+                                    // BackHandler.exitApp()
+                                    // navigation.goBack()
+
+                                }}><FontAwesome6 name="chevron-left" size={25} color="#00DF60" /></Pressable>
+                                {skip && <Pressable style={s5.btn} onPress={() => { handleSubmit() }}>
+                                    <Text allowFontScaling={false} style={styles.nexttext}>Skip</Text>
+                                    {/* <FontAwesome6 name="chevron-right" size={40} color="#00DF60" /> */}
+                                </Pressable>}
+                                {!skip && <Pressable onPress={() => { handleSubmit() }}>
+                                    {/* <Text allowFontScaling={false} style={styles.nexttext}>Skip</Text> */}
+                                    <FontAwesome6 name="chevron-right" size={25} color="#00DF60" />
+                                </Pressable>}
+
                             </View>
+
                         </View>
                     </View>
+
                 </ScrollView>
 
                 {/* </ScrollView> */}
                 {/* </KeyboardAwareScrollView> */}
             </ScrollView>
         </SafeAreaView>
+        // </TouchableWithoutFeedback>
+
+
     );
+
+
 };
+
+
+
+
 
 export default Signup5;
 
@@ -528,20 +749,35 @@ const styles = StyleSheet.create({
         margin: "auto",
         width: 113,
         height: 120,
-        borderRadius: 100,
+        borderRadius: 100
     },
     img: {
         margin: "auto",
         width: 113,
         height: 113,
-        borderRadius: 100,
+        marginHorizontal : "auto",
+        alignSelf : "center",
+
+        resizeMode : "cover",
+        // marginTop : 0,
+        // marginBottom :-100,
+        borderRadius: 100
     },
     errorText: {
         color: "#E65858",
         fontFamily: "Roboto",
         fontSize: 12,
-        marginTop: -2,
+        marginTop: -8,
         width: "92%",
-        marginHorizontal: "auto",
+        marginHorizontal: "auto"
+    },
+    nexttext: {
+        color: "#24272A",
+        fontFamily: "Alata",
+        fontSize: 18,
+        textAlign: "center",
+        // lineHeight : 16
+        marginTop: -4
+
     },
 });

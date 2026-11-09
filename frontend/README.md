@@ -1,80 +1,50 @@
-# Startsy mobile app (front end)
+# Welcome to your Expo app 👋
 
-The Android app users install as an APK. Built with **React Native** using **Expo** (SDK 51,
-React Native 0.74.5). Android package name: `com.rspytech.startsy`.
+This is an [Expo](https://expo.dev) project created with [`create-expo-app`](https://www.npmjs.com/package/create-expo-app).
 
-It talks to the back end at the address in `config.js` (`https://startsy.onrender.com/`) and uses
-a live Socket.IO connection to the same address for chat.
+## Get started
 
-## How to run it on your computer
+1. Install dependencies
 
-1. Install [Node.js](https://nodejs.org) (version 18 or newer) and the **Expo Go** app on an Android phone,
-   or an Android emulator from Android Studio.
-2. In this `frontend/` folder, install the exact package versions from the lock file:
    ```bash
-   npm ci
+   npm install
    ```
-3. Start the development server:
+
+2. Start the app
+
    ```bash
-   npx expo start
+    npx expo start
    ```
-   Scan the QR code with Expo Go, or press `a` to open the Android emulator.
 
-> **Careful:** a locally running app still talks to the **live** server and database by default
-> (see `config.js`). Anything you post, upvote or delete while testing is real. To test safely,
-> point `config.js` at a test copy of the back end on your own machine (and don't commit that change).
+In the output, you'll find options to open the app in a
 
-Some native libraries used by the app may not run inside Expo Go; in that case use a development
-build (`eas build --profile development`).
+- [development build](https://docs.expo.dev/develop/development-builds/introduction/)
+- [Android emulator](https://docs.expo.dev/workflow/android-studio-emulator/)
+- [iOS simulator](https://docs.expo.dev/workflow/ios-simulator/)
+- [Expo Go](https://expo.dev/go), a limited sandbox for trying out app development with Expo
 
-## How the APK is built
+You can start developing by editing the files inside the **app** directory. This project uses [file-based routing](https://docs.expo.dev/router/introduction).
 
-Builds use Expo's cloud build service (EAS). Settings are in `app.json` and `eas.json`.
-**Do not change those files as part of cleanup.**
+## Get a fresh project
 
-- `eas.json` has three profiles: `development`, `preview` and `production`. None of them sets
-  `buildType: "apk"`, so EAS would produce an `.aab` (Play Store format) by default. How the
-  current APK was produced is not recorded in this repository; check the builds list on expo.dev.
-- `requireCommit: true`: EAS refuses to build with uncommitted changes.
-- The app includes **expo-updates** with a `runtimeVersion` and `updates` settings in `app.json`,
-  which means JavaScript changes can be pushed to installed apps "over the air" with `eas update`.
-  Treat `eas update` like a production release.
+When you're ready, run:
 
-## How the code is organised
-
-```
-frontend/
-├── app/(tabs)/index.tsx   START HERE: the list of every screen (navigation stack)
-├── config.js              server address
-├── .env                   API_URL setting read at build time (react-native-dotenv)
-├── SCREENS/               every screen (see docs/SCREENS.md for what each one does)
-│   ├── Main1.js           investor home (bottom tabs)
-│   ├── Main2.js           founder / community / job-seeker home (bottom tabs)
-│   ├── main-1/            tabs and chat screens used mostly by Main1
-│   ├── main-2/            tabs used mostly by Main2
-│   └── edit profile pages/  editing profiles
-├── Global/globalcontext.js  app-wide shared data (the login token)
-├── components/            reusable pieces (Post, back button, button) + Expo template examples
-├── styles/                shared style sheets
-├── assets/                fonts, images, SVG icons
-├── hooks/useLoadFonts.js  loads the custom fonts
-└── app.json, eas.json, babel.config.js, react-native.config.js, withAndroidSoftInputMode.js
-                           build configuration: do not touch during cleanup
+```bash
+npm run reset-project
 ```
 
-The files in `components/` named `Themed*`, `HelloWave`, `ParallaxScrollView`, `Collapsible`,
-`ExternalLink`, `navigation/TabBarIcon`, plus `constants/Colors.ts` and `hooks/useColorScheme*`,
-come from Expo's starter template. The app does not use them; only the template test in
-`components/__tests__` does.
+This command will move the starter code to the **app-example** directory and create a blank **app** directory where you can start developing.
 
-## Formatting
+## Learn more
 
-Style settings are in `.prettierrc.json`. Some screens were deliberately **not** auto-formatted
-because the formatter would re-wrap on-screen text (see docs/CLEANUP_LOG.md). Before formatting
-a screen, check that it still builds to the same program.
+To learn more about developing your project with Expo, look at the following resources:
 
-## More documentation
+- [Expo documentation](https://docs.expo.dev/): Learn fundamentals, or go into advanced topics with our [guides](https://docs.expo.dev/guides).
+- [Learn Expo tutorial](https://docs.expo.dev/tutorial/introduction/): Follow a step-by-step tutorial where you'll create a project that runs on Android, iOS, and the web.
 
-- `docs/SCREENS.md`: every screen, what it does and which server endpoints it calls
-- `docs/ENDPOINTS.md`: every server endpoint
-- `CLAUDE.md`: working rules for this repository
+## Join the community
+
+Join our community of developers creating universal apps.
+
+- [Expo on GitHub](https://github.com/expo/expo): View our open source platform and contribute.
+- [Discord community](https://chat.expo.dev): Chat with Expo users and ask questions.

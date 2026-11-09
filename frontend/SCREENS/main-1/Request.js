@@ -1,6 +1,6 @@
 import { useFocusEffect } from "expo-router";
 import React, { useState, useContext, useCallback, useEffect } from "react";
-import { View, Text, StyleSheet, Image, Dimensions, ScrollView, RefreshControl } from "react-native";
+import { View, Text, StyleSheet, Image, Dimensions, ScrollView, RefreshControl, Vibration } from "react-native";
 import { url } from "../../config.js"
 import { GlobalContext } from "@/Global/globalcontext.js";
 import { ActivityIndicator } from "react-native";
@@ -54,7 +54,7 @@ const RequestsScreen = () => {
         }
         interval = seconds / 60;
         if (interval > 1) {
-            return Math.floor(interval) + " minutes ago";
+            return Math.floor(interval) + " mins ago";
         }
         return Math.floor(seconds) + " seconds ago";
     }
@@ -74,7 +74,7 @@ const RequestsScreen = () => {
                 }
             );
             const result = await response.json();
-            console.log(result.requestedFounders, "investor");
+            console.log(result, "investor");
 
             if (response.status == 200) {
                 var datatobesaved = Object.entries(result.requestedFounders.requestedFounders)
@@ -103,9 +103,11 @@ const RequestsScreen = () => {
     const onRefresh = () => {
         console.log('====================================');
         console.log("refrshing");
+         Vibration.vibrate(200)
         console.log('====================================');
         // setRefreshing(true);
         getData();
+        //  Vibration.vibrate(200)
 
         // Simulate a network request or data update
         // setTimeout(() => {
@@ -132,9 +134,11 @@ const RequestsScreen = () => {
             style={{ flex: 1, backgroundColor: "#16181a", paddingBottom: 0 }}
             refreshControl={
                 <RefreshControl
+                progressBackgroundColor="#16181a"
+                colors={['#00de62']}
                     refreshing={refreshing}
                     onRefresh={onRefresh}
-                    colors={['#16181a']} // Android loading spinner color
+                     // Android loading spinner color
                     tintColor="#00DE62" // iOS loading spinner color
                 />
             }

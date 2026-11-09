@@ -1,5 +1,5 @@
 import { useFocusEffect } from "expo-router"
-import { useState, useEffect, useRef } from "react";
+import { useState, useEffect, useRef, useContext } from "react";
 import * as React from "react"
 import { SafeAreaView, ScrollView, StatusBar, Animated, TouchableOpacity, Dimensions, BackHandler, Pressable, TextInput, TouchableWithoutFeedback, Image } from "react-native"
 import { View, Text, StyleSheet } from "react-native"
@@ -11,6 +11,9 @@ import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
 import Entypo from '@expo/vector-icons/Entypo';
 
 import * as ImagePicker from 'expo-image-picker';
+import { url } from "../../config.js"
+import { GlobalContext } from "@/Global/globalcontext.js";
+
 
 
 const Founder1 = ({ navigation }) => {
@@ -20,6 +23,18 @@ const Founder1 = ({ navigation }) => {
         navigation.navigate("ChangePassword1")
     }
     const [sliderrange, setsliderrange] = useState(5000000)
+
+    const [token, settoken] = useState("")
+
+
+
+    const { globaldata, updateField } = useContext(GlobalContext);
+
+    useEffect(() => {
+        console.log(globaldata, "global data from founde rpage");
+        settoken(globaldata.token)
+    }, [])
+
 
 
     const [areaofinterest, setareafofinterest] = useState("")
@@ -44,6 +59,105 @@ const Founder1 = ({ navigation }) => {
         return () => backHandler.remove();
     }, []);
 
+    // const [existingdata, setexistingdata] = useState()
+
+    const [existingdata, setexistingdata] = useState()
+
+    async function getdata() {
+        try {
+            const response = await fetch(`${url}api/getProfileDetailsForEditProfile`, {
+                method: 'GET',
+                headers: {
+                    accept: "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+
+
+
+            setexistingdata(data.data)
+
+
+        }
+        catch (err) {
+            // setloading(false)
+            console.log(err);
+
+        }
+    }
+
+
+    useEffect(() => {
+        console.log("hiii");
+        if (existingdata) {
+
+            console.log(existingdata.roleId.previousWorkExperience);
+            console.log(existingdata.roleId.country);
+            var First = existingdata.roleId.country[0];
+            var Second = existingdata.roleId.country.substring(1,);
+            // console.log(First);
+            // console.log(Second);
+            // var Country1 = First+  Second;
+            // console.log(Country1);
+            
+            
+
+            setImage(existingdata.profilePhoto)
+
+            setfullname(existingdata.roleId.fullName)
+            setcountry(existingdata.roleId.country)
+            setphone(existingdata.roleId.contactInfo)
+            setskills(existingdata.roleId.skills)
+
+            var m1 = existingdata.roleId.previousWorkExperience.filter((e) => e.year != null)
+            console.log(m1);
+
+            if (m1.length > 0) {
+                setworkexperience(m1)
+            }
+            seteducation(existingdata.roleId.education)
+            // setsliderrange(existingdata.roleId.investmentRange)
+            // setsetstartupstage(existingdata.roleId.startupStage)
+            // setsector(existingdata.roleId.preferredSector)
+            // settagline(existingdata.roleId.tagline)
+            // setskills(existingdata.roleId.skills)
+            // var modified = existingdata.roleId.certification.map((e)=>
+            // {
+            //     return {
+            //         id : e._id,
+            //         cname : e.name,
+            //         curl : e.url
+            //     }
+            // })
+            // setcertificate(modified)
+
+            // var m1 = existingdata.roleId.portfolio.map((e)=>{
+            //     return {
+            //         id : e._id,
+            //         url : e.url
+
+            //     }
+            // })
+            // setportfolio(m1)
+
+
+        }
+    }, [existingdata])
+
+
+
+    useEffect(() => {
+        getdata()
+    }, [token])
+
+
+
+
+    useEffect(() => {
+        getdata()
+    }, [token])
+
 
 
     const [open1, setOpen1] = React.useState(false)
@@ -66,7 +180,7 @@ const Founder1 = ({ navigation }) => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [1, 1],
             quality: 1,
 
         });
@@ -82,15 +196,142 @@ const Founder1 = ({ navigation }) => {
 
     }
 
+    const [errors, setErrors] = useState({}); // Error state
 
     function nextpage() {
+
+        const newErrors = {};
+
+        let cangoahead = true
+
+
+        if (fullName == "") {
+            console.log("full name nai hai");
+            newErrors.fullName = "* Full name is required.";
+            cangoahead = false
+        }
+        if (country == "") {
+            console.log("country nai hai");
+
+            newErrors.country = "* Please select a country.";
+            cangoahead = false
+        }
+        const numberRegex = /^\d{10}$/;
+
+        if (!phone.trim()) {
+            newErrors.number = "* Phone number is required.";
+            cangoahead = false
+
+        } else if (!numberRegex.test(phone)) {
+            newErrors.number = "* Phone number must be 10 digits.";
+            cangoahead = false
+
+        }
+
+        if (education == "") {
+            newErrors.education = "*please select a value";
+            cangoahead = false
+        }
+
+        setErrors(newErrors);
+
+        if (cangoahead == false) {
+            // setloading(false)
+            return
+        }
+
+
+
+        for (var i = 0; i < workexperience.length; i++) {
+            console.log(i);
+
+            var items = workexperience[i];
+            console.log(items);
+
+            // Check if all fields are empty
+            if (items.name == "" && items.role == "" && items.year == "") {
+                // Do nothing or handle if needed
+            }
+            // Check if only `name` is filled
+            else if (items.name != "" && items.role == "" && items.year == "") {
+                var array = workexperience.map((w, index) => {
+                    if (i == index) {
+                        return { ...w, roleError: true, yearError: true };
+                    } else return w;
+                });
+                console.log(array, "Role and Year missing");
+                setworkexperience(array);
+                return;
+            }
+            // Check if only `role` is filled
+            else if (items.name == "" && items.role != "" && items.year == "") {
+                var array = workexperience.map((w, index) => {
+                    if (i == index) {
+                        return { ...w, nameError: true, yearError: true };
+                    } else return w;
+                });
+                console.log(array, "Name and Year missing");
+                setworkexperience(array);
+                return;
+            }
+            // Check if only `year` is filled
+            else if (items.name == "" && items.role == "" && items.year != "") {
+                if (isNaN(items.year) || items.year < 1950 || items.year > 2025) {
+                    var array = workexperience.map((w, index) => {
+                        if (i == index) {
+                            return { ...w, yearError: true, yearInvalid: true };
+                        } else return w;
+                    });
+                    console.log(array, "Year must be a number between 1950 and 2025");
+                    setworkexperience(array);
+                    return;
+                }
+                var array = workexperience.map((w, index) => {
+                    if (i == index) {
+                        return { ...w, nameError: true, roleError: true };
+                    } else return w;
+                });
+                console.log(array, "Name and Role missing");
+                setworkexperience(array);
+                return;
+            }
+            // Check if any single field is missing or year is invalid
+            else if (
+                items.name == "" ||
+                items.role == "" ||
+                items.year == "" ||
+                isNaN(items.year) ||
+                items.year < 1950 ||
+                items.year > 2025
+            ) {
+                var array = workexperience.map((w, index) => {
+                    if (i == index) {
+                        return {
+                            ...w,
+                            nameError: items.name == "",
+                            roleError: items.role == "",
+                            yearError: items.year == "",
+                            yearInvalid: isNaN(items.year) || items.year < 1950 || items.year > 2025,
+                        };
+                    } else return w;
+                });
+                console.log(array, "Some fields missing or year invalid");
+                setworkexperience(array);
+                return;
+            }
+        }
+
+
+
+
         var formData = new FormData();
+        formData.append("fullName", fullName);
+        formData.append("email", email);
         formData.append("country", country);
         formData.append("contactInfo", phone);
-        formData.append("fullName", fullName);
         formData.append("education", education);
+
         formData.append("skills", skills);
-        formData.append("email", email);
 
         var array = workexperience.map(({ id, name, ...items }) => {
             return {
@@ -102,7 +343,7 @@ const Founder1 = ({ navigation }) => {
         formData.append("previousWorkExperience", JSON.stringify(array));
 
 
-        navigation.navigate("Founder2", { form: formData, image: image });
+        navigation.navigate("Founder2", { form: formData, image: image, existingdata: existingdata });
 
 
 
@@ -199,16 +440,18 @@ const Founder1 = ({ navigation }) => {
 
     function handleworkchange(id, field, value) {
         var array = workexperience.map((e) => {
+
+
             if (e.id === id) {
-                return { ...e, [field]: value }
+                return { ...e, [field]: value, yearError: false, roleError: false, nameError: false, yearInvalid: false }
 
             }
-            else return e
+            else return { ...e, yearError: false, roleError: false, nameError: false, yearInvalid: false }
         })
         setworkexperience(array);
     }
 
-    function deletecertificate(index){
+    function deletecertificate(index) {
         var new1 = [...workexperience];
         new1.splice(index, 1)
         setworkexperience(new1)
@@ -222,12 +465,23 @@ const Founder1 = ({ navigation }) => {
     return (
 
         <SafeAreaView style={{ flex: 1, backgroundColor: "#16181a" }}>
-            <ScrollView style={{ flex: 1 }}>
-                <Animated.View style={styles1.header}>
-                    <Text allowFontScaling={false} style={styles1.headertext}>Profile</Text>
-                </Animated.View>
+            <View style={styles1.header}>
+                    <View style={styles1.headerSide}>
+                        <Pressable onPress={() => navigation.goBack()}>
+                            <FontAwesome6 name="chevron-left" size={25} style={styles1.backIcon} color="#00DF60" />
+                        </Pressable>
+                    </View>
+
+                    <View style={styles1.headerCenter}>
+                        <Text style={styles1.title}>Edit Profile</Text>
+                    </View>
+
+                    <View style={styles1.headerSide} />
+                </View>
+            <ScrollView style={{ flex: 1,paddingTop:20 }}>
+                
                 <View style={{ width: width * 0.98, margin: "auto" }}>
-                    <Text style={styles1.edit}>Edit Profile</Text>
+                    {/* <Text style={styles1.edit}>Edit Profile</Text> */}
                     {/* <Profile /> */}
                     <Pressable onPress={fileupload}>
                         {image != "" ? (
@@ -245,28 +499,34 @@ const Founder1 = ({ navigation }) => {
                         onTouchStart={handleOutsideTouch}
                         allowFontScaling={false}
                         placeholder="Full Name"
-                        placeholderTextColor="#B8B8B8"
-                        style={styles1.input}
+                        placeholderTextColor="#828282"
+                        style={[styles1.input, {width:"89%"}]}
                         value={fullName}
                         onChangeText={(text) => { setfullname(text) }}
                     />
-                    <TextInput
+                    {errors.fullName && <Text style={styles1.err}>{errors.fullName}</Text>}
+
+                    {/* <TextInput
                         allowFontScaling={false}
                         placeholder="Email address"
-                        placeholderTextColor="#B8B8B8"
+                        placeholderTextColor="#828282"
                         style={[styles1.input, { marginBottom: 18 }]}
                         value={email}
                         onChangeText={(text) => { setemail(text) }}
-                    />
-                    <Drop items={country1} onValueChange={handlerole} open={open1} setOpen={t1} extra={true} edit />
+                    /> */}
+                    <Drop   borderwidth={0} bb={1} borderColor={"#ccc"}  pccolor={"#828282"}  items={country1} placeholder={"India"} width={"93%"} onValueChange={(value) => setcountry(value)} open={open1} setOpen={t1} extra={true} edit />
+                    {errors.country && <Text style={styles1.errnew}>{errors.country}</Text>}
+
                     <TextInput
                         allowFontScaling={false}
                         placeholder="Phone number"
-                        placeholderTextColor="#B8B8B8"
-                        style={[styles1.input, { marginTop: 28 }]}
+                        placeholderTextColor="#828282"
+                        style={[styles1.input, { marginTop: 16 , width:"89%"} ]}
                         value={phone}
                         onChangeText={(text) => { setphone(text) }}
                     />
+                    {errors.number && <Text style={styles1.err}>{errors.number}</Text>}
+
 
 
 
@@ -279,57 +539,69 @@ const Founder1 = ({ navigation }) => {
 
                     <View style={{ width: width * 0.95, margin: "auto" }}>
 
-                        <Text allowFontScaling={false} style={[styles.t1, { marginTop: 15, marginBottom: -10, paddingLeft: 7 }]}>Skills</Text>
+                        <Text allowFontScaling={false} style={[styles.t1, { marginTop: 15, marginBottom: 0, paddingLeft: 7 }]}>Area of Expertise / Interest</Text>
                         <TextInput
                             allowFontScaling={false}
                             placeholder="Write any Top 3"
-                            placeholderTextColor="#B8B8B8"
-                            style={[styles1.input, { marginTop: 25 }]}
+                            placeholderTextColor="#828282"
+                            style={[styles1.input, { marginTop: 15 }]}
                             value={skills}
                             onChangeText={(text) => { setskills(text) }}
                         />
-                        <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginTop: 25, marginBottom: 10, paddingLeft: 7 }]}>Education </Text>
+                        <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginTop: 15, marginBottom: 10, paddingLeft: 7 }]}>Education </Text>
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>List your highest degree achieved, which helps to establish your academic background and qualifications. </Text>
-                        <Drop items={edulist} onValueChange={(value) => { seteducation(value) }} setOpen={t2} open={open2} nestedScrollEnabled={true} />
+                        <Drop bl={0} bt={0} borderwidth={0} bb={1} borderColor={"#ccc"} pccolor={"#828282"} width={"95%"} items={edulist} placeholder={education} onValueChange={(value) => { seteducation(value) }} setOpen={t2} open={open2} nestedScrollEnabled={true} />
+                        {errors.education && <Text style={styles1.errnew}>{errors.education}</Text>}
 
 
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 25, paddingLeft: 7 }]}>Previous Work Experience </Text>
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>Detail any relevant industry experience, particularly if you’ve worked in a specific company or held roles that have prepared you for your current venture.</Text>
+                        {/* <Text>{JSON.stringify(workexperience)}</Text> */}
 
                         {workexperience.map((we, index) => (
                             <View onTouchStart={handleOutsideTouch} key={we.id} style={styles1.certificate}>
                                 <Pressable onPress={addworkexperience}>
-                                    <Entypo style={styles1.plus} name="plus" size={24} color="#00DE62" />
+                                    <Entypo style={styles1.plus} name="plus" size={24} color="#ccc" />
                                 </Pressable>
+                                {/* <Text>{JSON.stringify(we.company)}</Text>
+                            <Text>{JSON.stringify(we.role)}</Text>
+                            <Text>{JSON.stringify(we.year)}</Text> */}
+
 
                                 {index > 0 && <Pressable onPress={() => { deletecertificate(index) }}>
-                                    <FontAwesome6 name="trash" style={styles1.minus} size={15} color="#00DE62" />
+                                    <FontAwesome6 name="trash" style={styles1.minus} size={15} color="#ccc" />
                                 </Pressable>}
 
                                 <TextInput
                                     allowFontScaling={false}
-                                    placeholder="Company / Oragnisation"
-                                    placeholderTextColor="#B8B8B8"
+                                    placeholder="Company / Organisation"
+                                    placeholderTextColor="#828282"
                                     style={[styles1.input1, { marginTop: 20, backgroundColor: "transparent" }]}
-                                    value={we.name}
+                                    value={we.company}
                                     onChangeText={(text) => { handleworkchange(we.id, "name", text) }}
                                 />
+                                {we.nameError && <Text style={styles1.err101}>* please enter company name</Text>}
+
                                 <TextInput
                                     allowFontScaling={false}
                                     placeholder="Role"
-                                    placeholderTextColor="#B8B8B8"
+                                    placeholderTextColor="#828282"
                                     style={styles1.input1}
                                     value={we.role}
                                     onChangeText={(text) => { handleworkchange(we.id, "role", text) }}
                                 />
+                                {we.roleError && <Text style={styles1.err101}>* please enter your role</Text>}
+
                                 <TextInput
                                     allowFontScaling={false}
                                     placeholder="Year"
-                                    placeholderTextColor="#B8B8B8"
+                                    placeholderTextColor="#828282"
                                     style={styles1.input1}
-                                    value={we.year}
+                                    value={we.year?.toString()}
                                     onChangeText={(text) => { handleworkchange(we.id, "year", text) }}
                                 />
+                                {we.yearError && <Text style={styles1.err101}>* please enter year</Text>}
+                                {we.yearInvalid && <Text style={styles1.err101}>* please enter valid year</Text>}
 
                             </View>
                         ))}
@@ -343,8 +615,8 @@ const Founder1 = ({ navigation }) => {
 
 
                     <View onTouchStart={handleOutsideTouch} style={styles1.icons}>
-                        <Pressable onPress={() => { navigation.goBack() }} style={{ alignSelf: "center" }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
-                        <Pressable onPress={nextpage} style={{ alignSelf: "center" }}><FontAwesome6 name="chevron-right" size={40} color="#00DF60" /></Pressable>
+                        <Pressable onPress={() => { navigation.goBack() }} style={{ alignSelf: "center" }}><FontAwesome6 name="chevron-left" size={25} color="#00DF60" /></Pressable>
+                        <Pressable onPress={nextpage} style={{ alignSelf: "center" }}><FontAwesome6 name="chevron-right" size={25} color="#00DF60" /></Pressable>
 
                     </View>
 
@@ -368,30 +640,35 @@ var b = height / 800;
 
 const scalingfactor = Math.sqrt(a * b)
 const styles1 = StyleSheet.create({
-    header: {
-        height: 55,
-        textAlign: "left",
-        backgroundColor: "#16181a",
-        // backgroundColor : "transparent",
-        // position : "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        zIndex: 1000,
-        // backgroundColor : "red",
-
-
-    },
-    headertext: {
-        color: "#00DE62",
-        fontSize: scalingfactor * 35,
-        fontFamily: "myanmar",
-        fontWeight: "bold",
-        paddingTop: 5,
+    title: {
+        fontSize: 20,
+        color: "#E9E9E9",
+        fontFamily: "Alata",
+        textAlign: "center",
+      },
+      header: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingVertical: 15,
         paddingHorizontal: 20,
-    },
+        borderBottomWidth: 1,
+        borderBottomColor: "#24272A",
+      },
+    
+      headerSide: {
+        width: 40, // same width as the icon button area
+        alignItems: "flex-start",
+        justifyContent: "center",
+      },
+    
+      headerCenter: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+      },
     edit: {
-        color: "#B8B8B8",
+        color: "#828282",
         fontFamily: "Alata",
         textAlign: "center",
         fontSize: 20,
@@ -400,7 +677,7 @@ const styles1 = StyleSheet.create({
 
     },
     t2: {
-        color: "#94A3B8",
+        color: "#828282",
         fontFamily: "Roboto",
         textAlign: "center",
         fontSize: 14,
@@ -410,18 +687,17 @@ const styles1 = StyleSheet.create({
     input: {
         backgroundColor: "transparent",
         margin: height * 0.016,
-        // marginTop: 40,
         borderBottomWidth: 1,
         // borderRadius : 20,
-        paddingLeft: scalingfactor * 10,
-        borderBottomColor: "#AEAFAF",
+        paddingLeft: scalingfactor * 3,
+        borderBottomColor: "#ccc",
         fontSize: scalingfactor * 20, // Responsive font size
-        color: "#B8B8B8",
+        color: "#ccc",
         paddingBottom: scalingfactor * 7,
-        width: "90%",
+        width: "92%",
         marginHorizontal: "auto",
-        fontFamily: "Roboto",
-        lineHeight: scalingfactor * 18,
+        fontFamily: "Alata",
+        // lineHeight: scalingfactor * 18,
         marginBottom: scalingfactor * 15,
         // borderRadius : 20
     },
@@ -452,9 +728,9 @@ const styles1 = StyleSheet.create({
         marginTop: 10,
         margin: "auto",
         width: "92%",
-        backgroundColor: "#24272A",
-        borderWidth: 3,
-        borderColor: "#16181A",
+        backgroundColor: "transparent",
+        borderWidth: 1,
+        borderColor: "#ccc",
         borderRadius: 10,
         position: "relative"
     },
@@ -468,15 +744,15 @@ const styles1 = StyleSheet.create({
         backgroundColor: "transparent",
         margin: height * 0.016,
         marginTop: 0,
-        borderBottomWidth: 3,
+        borderBottomWidth: 1,
         paddingLeft: scalingfactor * 10,
-        borderBottomColor: "#16181A",
+        borderBottomColor: "#ccc",
         fontSize: scalingfactor * 20,
-        color: "#B8B8B8",
+        color: "#ccc",
         paddingBottom: scalingfactor * 5,
         width: "92%",
-        fontFamily: "Roboto",
-        lineHeight: scalingfactor * 18,
+        fontFamily: "Alata",
+        // lineHeight: scalingfactor * 18,
         marginBottom: scalingfactor * 25
     },
     editButton1: {
@@ -493,7 +769,7 @@ const styles1 = StyleSheet.create({
         width: 182,
         height: 40,
         alignSelf: "center",
-        marginVertical: 12
+        marginVertical: 2
 
 
     },
@@ -510,6 +786,34 @@ const styles1 = StyleSheet.create({
         right: 45,
         top: -3,
         zIndex: 100
+    },
+    err: {
+        color: "#E65858",
+        marginTop: -5,
+        width: "89%",
+        fontSize: 12,
+        marginHorizontal: "auto",
+        // marginBottom : 2
+    },
+    errnew: {
+        color: "#E65858",
+        marginTop: 5,
+        width: "89%",
+        fontSize: 12,
+        marginBottom: -10,
+        marginHorizontal: "auto",
+    },
+    err101: {
+        marginVertical: 0,
+        marginTop: -20,
+        marginBottom: 10,
+        textAlign: "left",
+        // backgroundColor : "red",
+        width: "90%",
+        marginHorizontal: "auto",
+        color: "#E65858",
+        fontSize: 12,
+        fontFamily: "Roboto",
     },
 
 

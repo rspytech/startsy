@@ -8,7 +8,7 @@ import Drop from "../../SCREENS/dropdown.js"
 import Slider from "@react-native-community/slider";
 import styles from "../commonstyles.js"
 import FontAwesome6 from "@expo/vector-icons/FontAwesome6";
-import {url} from "../../config.js"
+import { url } from "../../config.js"
 import * as ImagePicker from 'expo-image-picker';
 import { GlobalContext } from "../../Global/globalcontext.js";
 
@@ -21,8 +21,8 @@ const EditInvestorInfo = ({ navigation }) => {
         // StatusBar.setBackgroundColor("red")
         // StatusBar.setBarStyle("light-content")
     })
-    const [sliderrange1, setsliderrange1] = useState(5)
-    const [sliderrange, setsliderrange] = useState(5000000)
+    const [sliderrange1, setsliderrange1] = useState(0)
+    const [sliderrange, setsliderrange] = useState(0)
     const [fullName, setfullname] = useState("")
     const [contactInfo, setcontactInfo] = useState("")
     const [country, setcountry] = React.useState("")
@@ -32,7 +32,16 @@ const EditInvestorInfo = ({ navigation }) => {
     const [investmentvalue, setinvestmentvalue] = useState(0)
     const [loading, setloading] = useState(false)
     const [token, settoken] = useState("")
+    const sliderRef = useRef(null);
 
+    const h1 = (value) => {
+        if (sliderRef.current) {
+            clearTimeout(sliderRef.current);
+        }
+        sliderRef.current = setTimeout(() => {
+            setsliderrange(value);
+        }, 100);
+    };
 
     const [image, setImage] = useState(null);
 
@@ -75,7 +84,7 @@ const EditInvestorInfo = ({ navigation }) => {
         const result = await ImagePicker.launchImageLibraryAsync({
             mediaTypes: ImagePicker.MediaTypeOptions.Images,
             allowsEditing: true,
-            aspect: [4, 3],
+            aspect: [1, 1],
             quality: 1,
 
         });
@@ -133,8 +142,8 @@ const EditInvestorInfo = ({ navigation }) => {
         { label: "Impact Investing", value: "Impact Investing" },
         { label: "Philanthropy", value: "Philanthropy" }
     ];
-    
- 
+
+
     var stage = [
         { label: "Ideation Stage", value: "Ideation Stage" },
         { label: "Pre-Seed Stage", value: "Pre-Seed Stage" },
@@ -241,11 +250,137 @@ const EditInvestorInfo = ({ navigation }) => {
         if (open1) setOpen1(false);
         setOpen4(!open4);
     }
+    const [errors, setErrors] = useState({}); // Error state
+
+    async function getdata() {
+        try {
+            const response = await fetch(`${url}api/getProfileDetailsForEditProfile`, {
+                method: 'GET',
+                headers: {
+                    accept: "application/json",
+                    "Authorization": `Bearer ${token}`,
+                },
+            });
+            const data = await response.json();
+
+            setexistingdata(data.data)
+
+            console.log(response.status);
+
+        }
+        catch (err) {
+            // setloading(false)
+            console.log(err);
+
+        }
+    }
+    const [existingdata, setexistingdata] = useState()
+
+
+
+    useEffect(() => {
+        getdata()
+    }, [token])
+
+    useEffect(() => {
+        console.log("hiii");
+        if (existingdata) {
+
+            console.log(existingdata.roleId.fullName);
+            console.log(existingdata.roleId.country);
+
+            setImage(existingdata.profilePhoto)
+
+            setfullname(existingdata.roleId.fullName)
+            setcountry(existingdata.roleId.country)
+            setcontactInfo(existingdata.roleId.contactInfo)
+            setsliderrange1(existingdata.roleId.previousExperience)
+            setsliderrange(existingdata.roleId.investmentRange)
+            setsetstartupstage(existingdata.roleId.startupStage)
+            setsector(existingdata.roleId.preferredSector)
+            // settagline(existingdata.roleId.tagline)
+            // setskills(existingdata.roleId.skills)
+            // seteducation(existingdata.roleId.education)
+            // var modified = existingdata.roleId.certification.map((e)=>
+            // {
+            //     return {
+            //         id : e._id,
+            //         cname : e.name,
+            //         curl : e.url
+            //     }
+            // })
+            // setcertificate(modified)
+
+            // var m1 = existingdata.roleId.portfolio.map((e)=>{
+            //     return {
+            //         id : e._id,
+            //         url : e.url
+
+            //     }
+            // })
+            // setportfolio(m1)
+
+
+        }
+    }, [existingdata])
 
 
     async function savedata() {
 
         setloading(true);
+
+
+
+        const newErrors = {};
+
+        let cangoahead = true
+
+
+        if (fullName == "") {
+            console.log("full name nai hai");
+            newErrors.fullName = "* Full name is required.";
+            cangoahead = false
+        }
+        if (country == "") {
+            console.log("country nai hai");
+
+            newErrors.country = "* Please select a country.";
+            cangoahead = false
+        }
+        const numberRegex = /^\d{10}$/;
+
+        if (!contactInfo.trim()) {
+            newErrors.number = "* Phone number is required.";
+        } else if (!numberRegex.test(contactInfo)) {
+            newErrors.number = "* Phone number must be 10 digits.";
+        }
+
+
+
+        if (sliderrange1 == "" && sliderrange1 != 0) {
+            newErrors.role1 = "*please enter your experience";
+            cangoahead = false
+        }
+        if (startupStage == "") {
+            newErrors.role2 = "*please select a value";
+            cangoahead = false
+        }
+        if (preferredSector == "") {
+            newErrors.role3 = "*please select a value";
+            cangoahead = false
+        }
+        // if (sliderrange == "") {
+        //     newErrors.role4 = "*please select a value";
+        //     cangoahead = false
+        // }
+
+        setErrors(newErrors);
+
+        if (cangoahead == false) {
+            setloading(false)
+            return
+
+        }
 
 
         var formData = new FormData()
@@ -269,7 +404,7 @@ const EditInvestorInfo = ({ navigation }) => {
 
 
 
-        // console.log(formData);
+        // console.log(formData["_parts"][6]);
 
 
         try {
@@ -284,6 +419,9 @@ const EditInvestorInfo = ({ navigation }) => {
             const data = await response.json();
             setloading(false)
             console.log(data);
+            if (response.status == 200) {
+                navigation.goBack()
+            }
         }
         catch (err) {
             setloading(false)
@@ -304,12 +442,23 @@ const EditInvestorInfo = ({ navigation }) => {
     return (
 
         <SafeAreaView style={{ flex: 1, backgroundColor: "#16181a" }}>
-            <ScrollView style={{ flex: 1 }}>
-                <Animated.View style={styles1.header}>
-                    <Text allowFontScaling={false} style={styles1.headertext}>Profile</Text>
-                </Animated.View>
+            <View style={styles1.header}>
+                    <View style={styles1.headerSide}>
+                        <Pressable onPress={() => navigation.goBack()}>
+                            <FontAwesome6 name="chevron-left" size={25} style={styles1.backIcon} color="#00DF60" />
+                        </Pressable>
+                    </View>
+
+                    <View style={styles1.headerCenter}>
+                        <Text style={styles1.title}>Edit Profile</Text>
+                    </View>
+
+                    <View style={styles1.headerSide} />
+                </View>
+            <ScrollView style={{ flex: 1,paddingTop:20 }}>
+                
                 <View style={{ width: width * 0.98, margin: "auto" }}>
-                    <Text style={styles1.edit}>Edit Profile</Text>
+                    {/* <Text style={styles1.edit}>Edit Profile</Text> */}
                     {/* <Profile /> */}
                     <Pressable onPress={fileupload}>
                         {image != null ? (
@@ -329,37 +478,45 @@ const EditInvestorInfo = ({ navigation }) => {
                         onTouchStart={handleOutsideTouch}
                         allowFontScaling={false}
                         placeholder="Full Name"
-                        placeholderTextColor="#B8B8B8"
+                        placeholderTextColor="#828282"
                         style={styles1.input}
                         value={fullName}
                         onChangeText={(text) => { setfullname(text) }}
                     />
-                    <TextInput
+                    {errors.fullName && <Text style={styles1.err}>{errors.fullName}</Text>}
+
+                    {/* <TextInput
                         allowFontScaling={false}
                         placeholder="Email address"
                         placeholderTextColor="#B8B8B8"
                         style={[styles1.input, { marginBottom: 18 }]}
                     // value={username}
                     // onChangeText={(text) => { setusername(text) }}
-                    />
-                    <Drop items={country1} onValueChange={handlerole} open={open1} setOpen={t1} extra={true} edit />
+                    /> */}
+                    <Drop width={"96%"} borderColor={"#ccc"} bb={1} pccolor={"#828282"} bradius={0} bottomsheet={true} items={country1} placeholder={"India"}  onValueChange={handlerole} open={open1} setOpen={t1} extra={true} />
+
+                    {/* <Drop items={country1} width={"95%"} open={open1} setOpen={t1} onValueChange={handlerole} nestedScrollEnabled={true} extra={true} /> */}
+                    {errors.country && <Text style={styles1.errnew}>{errors.country}</Text>}
+
                     <TextInput
                         allowFontScaling={false}
                         placeholder="Phone number"
-                        placeholderTextColor="#B8B8B8"
-                        style={[styles1.input, { marginTop: 28 }]}
+                        placeholderTextColor="#828282"
+                        style={[styles1.input, { marginTop: 15 }]}
                         value={contactInfo}
                         onChangeText={(text) => { setcontactInfo(text) }}
                     />
+                    {errors.number && <Text style={styles1.err}>{errors.number}</Text>}
+
 
 
 
                     <Text allowFontScaling={false} style={[styles.t1, { marginTop: 15, marginBottom: 20, paddingLeft: 7 }]}>Investing experience</Text>
-                    <Pressable onPress={() => { handleOutsideTouch() }} style={[styles.btn1, { marginTop: 0, backgroundColor: "#24272A" }]}>
+                    <Pressable onPress={() => { handleOutsideTouch() }} style={[styles.btn1, { marginTop:0, marginBottom:40}]}>
                         <Text allowFontScaling={false} style={styles.nexttext}>{sliderrange1.toLocaleString("en-IN")} {sliderrange1 > 1 ? "years" : "year"}</Text>
                     </Pressable>
-                    <View style={[styles.box, { left: 20 }]}></View>
-                    <View style={[styles.box1, { left: "95%" }]}></View>
+                    {/* <View style={[styles.box, { left: 20 }]}></View>
+                    <View style={[styles.box1, { left: "95%" }]}></View> */}
 
                     <Slider
                         // style={styles.sliderbox}
@@ -377,6 +534,8 @@ const EditInvestorInfo = ({ navigation }) => {
                         hitSlop={{ top: 50, left: 50, right: 50, bottom: 50 }}
                         thumbTouchSize={{ width: 100, height: 100 }}
                     />
+                    {errors.role1 && <Text style={styles1.err}>{errors.role1}</Text>}
+
 
 
                     <View style={{ width: width * 0.95, margin: "auto" }}>
@@ -387,48 +546,51 @@ const EditInvestorInfo = ({ navigation }) => {
 
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 25, paddingLeft: 7 }]}>Preferred startup stage </Text>
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>Indicate the stages of development at which you prefer to invest.</Text>
-                        <Drop items={stage} onValueChange={(value) => { setsetstartupstage(value) }} setOpen={t3} open={open3} nestedScrollEnabled={true} />
+                        <Drop bb={1} bradius={0} items={stage} placeholder={startupStage} onValueChange={(value) => { setsetstartupstage(value) }} setOpen={t3} open={open3} nestedScrollEnabled={true} />
+                        {errors.role2 && <Text style={styles1.errnew}>{errors.role2}</Text>}
 
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t1, { marginBottom: 10, marginTop: 25, paddingLeft: 7 }]}>Preferred startup sector  </Text>
                         <Text onTouchStart={handleOutsideTouch} allowFontScaling={false} style={[styles.t2, { marginBottom: 15 }]}>This distinction helps founders understand the scope and nature of your investment interests, ensuring that you receive opportunities that align with your strategic preferences and expertise.
                         </Text>
-                        <Drop items={sectorlist} onValueChange={(value) => { setsector(value) }} setOpen={t4} open={open4} nestedScrollEnabled={true} />
+                        <Drop bb={1} bradius={0} items={sectorlist} placeholder={preferredSector} onValueChange={(value) => { setsector(value) }} setOpen={t4} open={open4} nestedScrollEnabled={true} />
+                        {errors.role3 && <Text style={styles1.errnew}>{errors.role3}</Text>}
 
 
                         <Text allowFontScaling={false} style={[styles.t1, { marginTop: 20, marginBottom: 10, paddingLeft: 7 }]}>Investment capacity</Text>
-                        <Pressable onPress={() => { handleOutsideTouch() }} style={[styles.btn1, { backgroundColor: "#24272A", marginBottom: 10 }]}>
-                            <Text allowFontScaling={false} style={styles.nexttext}>{sliderrange.toLocaleString("en-IN")}</Text>
+                        <Pressable onPress={() => { handleOutsideTouch() }} style={[styles.btn1, {   marginBottom: 40}]}>
+                            <Text allowFontScaling={false} style={styles.nexttext}>{sliderrange.toLocaleString("en-IN")} </Text>
                         </Pressable>
 
                         {/* slider */}
-                        <View style={[styles.box, { left: 20 }]}></View>
-                        <View style={[styles.box1, { left: "95%" }]}></View>
-                        <Slider onTouchStart={handleOutsideTouch} s
+                        {/* <View style={[styles.box, { left: 20 }]}></View> */}
+                        {/* <View style={[styles.box1, { left: "95%" }]}></View> */}
+                        <Slider onTouchStart={handleOutsideTouch}
                             // style={styles.sliderbox}
                             style={{ marginTop: -7, width: "90%", margin: "auto" }}
                             minimumValue={0}
-                            maximumValue={100000000}
-                            value={10000000}
-                            step={100000}
+                            maximumValue={10000000}
+
+                            value={sliderrange}
+                            step={200000}
                             minimumTrackTintColor="#00DE62"
                             maximumTrackTintColor="#00DE62"
                             thumbTintColor="#737373"
-                            
+                            thumbImage={require("../../assets/images/slider3.png")}
                             // step={100}
                             // thumbTintColor="#737373" // Color of the slider thumb
                             // trackImage={require("../assets/images/slider.png")}
                             // trackImage={require("../assets/images/slider3.png")}
                             // thumbImage={require("../../assets/images/slider3.png")}
-                            onValueChange={(value) => { setsliderrange(value) }}
-                            // hitSlop={{ top: 50, left: 50, right: 50, bottom: 50 }}
-                            // thumbTouchSize={{ width: 100, height: 100 }}
+                            onValueChange={h1}
+                        // hitSlop={{ top: 50, left: 50, right: 50, bottom: 50 }}
+                        // thumbTouchSize={{ width: 100, height: 100 }}
                         />
 
                     </View>
 
 
                     <View onTouchStart={handleOutsideTouch} s style={styles1.icons}>
-                        <Pressable onPress={()=>{navigation.goBack()}} style={{ alignSelf: "center" }}><FontAwesome6 name="chevron-left" size={40} color="#00DF60" /></Pressable>
+                        <Pressable onPress={() => { navigation.goBack() }} style={{ alignSelf: "center" }}><FontAwesome6 name="chevron-left" size={25} color="#00DF60" /></Pressable>
                         <Pressable onPress={savedata} style={styles1.btn}>
                             {loading && <ActivityIndicator size={24} color="#16181a" />}
                             {!loading && <Text allowFontScaling={false} style={styles1.nexttext}>Save</Text>}
@@ -455,28 +617,33 @@ var b = height / 800;
 
 const scalingfactor = Math.sqrt(a * b)
 const styles1 = StyleSheet.create({
-    header: {
-        height: 55,
-        textAlign: "left",
-        backgroundColor: "#16181a",
-        // backgroundColor : "transparent",
-        // position : "absolute",
-        top: 0,
-        left: 0,
-        width: "100%",
-        zIndex: 1000,
-        // backgroundColor : "red",
-
-
-    },
-    headertext: {
-        color: "#00DE62",
-        fontSize: scalingfactor * 35,
-        fontFamily: "myanmar",
-        fontWeight: "bold",
-        paddingTop: 5,
+    title: {
+        fontSize: 20,
+        color: "#E9E9E9",
+        fontFamily: "Alata",
+        textAlign: "center",
+      },
+      header: {
+        flexDirection: "row",
+        alignItems: "center",
+        justifyContent: "space-between",
+        paddingVertical: 15,
         paddingHorizontal: 20,
-    },
+        borderBottomWidth: 1,
+        borderBottomColor: "#24272A",
+      },
+    
+      headerSide: {
+        width: 40, // same width as the icon button area
+        alignItems: "flex-start",
+        justifyContent: "center",
+      },
+    
+      headerCenter: {
+        flex: 1,
+        alignItems: "center",
+        justifyContent: "center",
+      },
     edit: {
         color: "#B8B8B8",
         fontFamily: "Alata",
@@ -500,15 +667,15 @@ const styles1 = StyleSheet.create({
         // marginTop: 40,
         borderBottomWidth: 1,
         // borderRadius : 20,
-        paddingLeft: scalingfactor * 10,
-        borderBottomColor: "#AEAFAF",
+        paddingLeft: scalingfactor * 8,
+        borderBottomColor: "#ccc",
         fontSize: scalingfactor * 20, // Responsive font size
         color: "#B8B8B8",
         paddingBottom: scalingfactor * 7,
-        width: "90%",
+        width: "89%",
         marginHorizontal: "auto",
-        fontFamily: "Roboto",
-        lineHeight: scalingfactor * 18,
+      fontFamily: "Alata",
+        // lineHeight: scalingfactor * 18,
         marginBottom: scalingfactor * 15,
         // borderRadius : 20
     },
@@ -528,7 +695,7 @@ const styles1 = StyleSheet.create({
     ,
     btn: {
         width: 120,
-        height: 48,
+        height: 40,
         // height : scalingfactor*48,
         backgroundColor: "#00DF60",
         // padding: scalingfactor * 12,
@@ -549,7 +716,7 @@ const styles1 = StyleSheet.create({
     }, nexttext: {
         color: "#24272A",
         fontFamily: "Alata",
-        fontSize: scalingfactor * 24,
+        fontSize: 20,
         textAlign: "center",
         // lineHeight : 16
         marginTop: -4
@@ -586,6 +753,23 @@ const styles1 = StyleSheet.create({
         textAlign: "center",
         marginLeft: -1,
         marginTop: -3
+    },
+
+    err: {
+        color: "#E65858",
+        marginTop: -5,
+        width: "89%",
+        fontSize: 12,
+        marginHorizontal: "auto",
+        // marginBottom : 2
+    },
+    errnew: {
+        color: "#E65858",
+        marginTop: 5,
+        width: "89%",
+        fontSize: 12,
+        marginBottom: -10,
+        marginHorizontal: "auto",
     },
 
 

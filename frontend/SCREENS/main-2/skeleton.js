@@ -1,70 +1,85 @@
-// Loading animation (grey placeholder blocks). Configured as the app's first screen in
-// app/(tabs)/index.tsx; it has no code of its own that moves to another screen.
-
-import React from "react";
-import { Skeleton } from "moti/skeleton";
-import { MotiView } from "moti";
-import { View, StyleSheet } from "react-native";
+import React, { useRef, useState } from 'react';
+import {
+    Button,
+    DrawerLayoutAndroid,
+    Text,
+    StyleSheet,
+    View
+} from 'react-native';
+import { BlurView } from "expo-blur";
+import { SafeAreaView, SafeAreaProvider } from 'react-native-safe-area-context';
 
 const Skeleton1 = () => {
-    const Spacer = ({ height = 16 }) => <View style={{ height }} />;
+    const drawer = useRef(null);
+    const [drawerPosition, setDrawerPosition] = useState('left');
+    const [isDrawerOpen, setIsDrawerOpen] = useState(false);
+
+    const changeDrawerPosition = () => {
+        setDrawerPosition(prev => (prev === 'left' ? 'right' : 'left'));
+    };
+
+    const navigationView = () => (
+        <SafeAreaView style={[styles.container, styles.navigationContainer]}>
+            <Text style={styles.paragraph}>I'm in the Drawer!</Text>
+            <Button
+                title="Close drawer"
+                onPress={() => {
+                    drawer.current.closeDrawer();
+                    setIsDrawerOpen(false);
+                }}
+            />
+        </SafeAreaView>
+    );
 
     return (
-        <View style={{ flex: 1, backgroundColor: "#16181a" }}>
-            <View style={{ flex: 1, backgroundColor: "#16181a", width: 300, margin: 20 }}>
-                <MotiView
-                    transition={{ type: "spring", duration: 10000, damping: 100, repeatReverse: false }}
-                    style={[styles.container, styles.padded]}
-                    animate={{ backgroundColor: "#16181a" }}
-                >
-                    {/* Apply background and highlightColor directly on Skeleton */}
-                    <Skeleton
-                        backgroundColor="black"
-                        highlightColor="#444" // Set highlight color here
-                        radius={20}
-                        height={200}
-                        width={"100%"}
-                    />
-                    <Spacer />
-                    <Skeleton
-                        colorMode="dark"
-                        radius={30}
-                        width={"100%"}
-                        height={15}
-                        backgroundColor="black"
-                        highlightColor="#666" // Set highlight color for this skeleton
-                    />
-                    <Spacer height={8} />
-                    <View style={{ display: "flex", flexDirection: "row", gap: 5 }}>
-                        <Skeleton
-                            colorMode="dark"
-                            width={20}
-                            height={20}
-                            radius={"round"}
-                            backgroundColor="black"
-                            highlightColor="#333" // Set highlight color
+        <SafeAreaProvider>
+            <DrawerLayoutAndroid
+                ref={drawer}
+                drawerWidth={300}
+                drawerPosition={drawerPosition}
+                onDrawerOpen={() => setIsDrawerOpen(true)}
+                onDrawerClose={() => setIsDrawerOpen(false)}
+                renderNavigationView={navigationView}
+            >
+                <SafeAreaView style={styles.container}>
+                    {isDrawerOpen && (
+                        <BlurView style={styles.blurOverlay} blurType="light" blurAmount={32} experimentalBlurMethod="dimezisBlurView"
                         />
-                        <Spacer height={8} />
-                        <Skeleton
-                            colorMode="dark"
-                            width={"92%"}
-                            height={18}
-                            backgroundColor="black"
-                            highlightColor="#333" // Set highlight color
-                        />
-                    </View>
-                </MotiView>
-            </View>
-        </View>
+                    )}
+                    <Text style={styles.paragraph}>Drawer on the {drawerPosition}!</Text>
+                    <Text style={styles.paragraph}>
+                        Swipe from the side or press button below to see it!
+                    </Text>
+                    <Button
+                        title="Open drawer"
+                        onPress={() => {
+                            drawer.current.openDrawer();
+                            setIsDrawerOpen(true);
+                        }}
+                    />
+                </SafeAreaView>
+            </DrawerLayoutAndroid>
+        </SafeAreaProvider>
     );
 };
 
-export default Skeleton1;
-
 const styles = StyleSheet.create({
     container: {
-        // backgroundColor: "black",
-        paddingVertical: 20,
-        paddingBottom: 100,
+        flex: 1,
+        paddingHorizontal: 16,
+    },
+    navigationContainer: {
+        backgroundColor: '#ecf0f1',
+    },
+    paragraph: {
+        padding: 16,
+        fontSize: 15,
+        textAlign: 'center',
+    },
+    blurOverlay: {
+        ...StyleSheet.absoluteFillObject,
+        zIndex: 1,
     },
 });
+
+export default Skeleton1;

@@ -1,7 +1,5 @@
-// Investor "Startsy" tab: swipe through recommended founder cards and send connection requests.
-
 import React, { useState, useEffect, useCallback, useRef, useContext } from 'react';
-import { Animated, Pressable, FlatList, RefreshControl, SafeAreaView, StatusBar, TouchableWithoutFeedback } from 'react-native';
+import { Animated, Pressable, Modal, TouchableOpacity, FlatList, RefreshControl, SafeAreaView, StatusBar, TouchableWithoutFeedback, TextInput, KeyboardAvoidingView, Vibration } from 'react-native';
 import { ScrollView, View, Text, StyleSheet, Image } from 'react-native';
 import { Dimensions, PixelRatio } from "react-native"
 import Swiper from 'react-native-deck-swiper';
@@ -17,6 +15,15 @@ import Upvote from "../../assets/icons/upvote.js"
 import Up1 from "../../assets/icons/Up1.js"
 import { AutoSizeText, ResizeTextMode } from 'react-native-auto-size-text';
 import { url } from "../../config.js"
+import FontAwesome from '@expo/vector-icons/FontAwesome';
+import { LinearGradient } from 'expo-linear-gradient';
+import Idea from "../../assets/icons/idea1.js"
+import styles1 from '@/styles/Alert.js';
+import Ionicons from '@expo/vector-icons/Ionicons';
+import MaterialCommunityIcons from '@expo/vector-icons/MaterialCommunityIcons';
+
+import { BlurView } from 'expo-blur';
+
 
 
 const { height, width } = Dimensions.get("window")
@@ -28,7 +35,7 @@ var b = height / 800;
 const scalingfactor = Math.sqrt(a * b)
 
 
-export default function Startsy({ navigation, token }) {
+export default function Startsy({ navigation, route, token }) {
     const [cardIndex, setCardIndex] = React.useState(0);
     const [data, setData] = useState([])
     const [swipeInProgress, setSwipeInProgress] = useState(false);
@@ -40,20 +47,11 @@ export default function Startsy({ navigation, token }) {
 
 
     // console.log(token, "iniitla");
+    // const {token} = route.params
+
+    // const token = "abs"
 
 
-
-
-
-    useFocusEffect(() => {
-        StatusBar.setBackgroundColor("#16181a")
-    })
-
-    const [dataFetched, setDataFetched] = useState(false);
-
-    // useEffect(() => {
-    //     console.log("Current Active Card Index:", cardIndex);
-    // }, [cardIndex]);
 
 
     async function getData() {
@@ -71,16 +69,113 @@ export default function Startsy({ navigation, token }) {
                 }
             );
             const result = await response.json();
-            console.log(result);
-            setData(result.data);
+            // console.log("reached here");
+            console.log(result.data);
+
+
+
+            if (result.data && result.data?.length > 0) {
+                var data1 = result.data.map((e) => {
+
+                    var isThereTeam
+
+                    if (e.teamInfo?.length == 0) {
+                        isThereTeam = false
+                    }
+                    else {
+                        isThereTeam = true
+                    }
+
+                    var obj = { ...e, isliked: false, isThereTeam: isThereTeam }
+                    return obj
+                })
+                console.log(data1.length, "suoer");
+                setData(data1);
+            }
+
+            // if (result.data.teamInfo && result.data.teamInfo[0]["name"] == "" && result.data.teamInfo[0]["name"] == "" && result.data.teamInfo[0]["role"] == "") {
+            //     result.data.isThereTeam = false;
+
+            // }
+            // else {
+            //     result.data.isThereTeam = true;
+
+            // }
             setloading(false);
-            setDataFetched(true);
         } catch (err) {
             console.log(err, "eror");
         }
         finally {
         }
     }
+
+
+
+
+
+    useFocusEffect(() => {
+        StatusBar.setBackgroundColor("#16181a")
+    })
+
+    const [dataFetched, setDataFetched] = useState(false);
+
+    // useEffect(() => {
+    //     console.log("Current Active Card Index:", cardIndex);
+    // }, [cardIndex]);
+
+
+    // async function getData() {
+    //     try {
+    //         console.log(`${url}investor/recommendation/getFounderProfile`);
+
+    //         const response = await fetch(
+    //             `${url}investor/recommendation/getFounderProfile`,
+    //             {
+    //                 method: "GET",
+    //                 headers: {
+    //                     accept: "application/json",
+    //                     Authorization: `Bearer ${token}`,
+    //                 },
+    //             }
+    //         );
+    //         const result = await response.json();
+    //         console.log(result.length);
+
+    //         console.log("reached here");
+
+
+
+    //         if (result.data && result.data.length > 0) {
+    //             var data1 = result.data.map((e) => {
+
+    //                 var isThereTeam
+
+    //                 if (e.teamInfo?.length == 0) {
+    //                     isThereTeam = false
+    //                 }
+    //                 else {
+    //                     isThereTeam = true
+    //                 }
+
+    //                 var obj = { ...e, isliked: false, isThereTeam: isThereTeam }
+    //                 return obj
+    //             })
+    //             console.log(data1 , "data1 filtered team");
+    //             setData(data1)
+
+    //             // setData(result.data);
+    //         }
+    //         // setData(result.data);
+    //         setloading(false);
+    //         setDataFetched(true);
+
+
+    //     } catch (err) {
+    //         console.log(err, "eror");
+    //     }
+    //     finally {
+    //     }
+    // }
 
     useEffect(() => {
         if (token != null && token !== undefined && token != "") {
@@ -93,35 +188,52 @@ export default function Startsy({ navigation, token }) {
     function showbigcard(item) {
         console.log(item, "yeh show bigg card wala function ka hai ");
 
-        navigation.navigate("Card", { item, navigation })
+        navigation.navigate("Card", { item: item, navigation })
         console.log("hi");
 
     }
 
-    function getfund(fund){
+    function getfund(fund) {
         if (fund == 69) {
             return 0
         }
         fund = fund - 57
-        return (fund * 10000000).toLocaleString("en-IN")
+        return (fund * 1000000).toLocaleString("en-IN")
     }
 
     function renderCard(item, index) {
 
+        // console.log("render hu mai");
+        // console.log('====================================');
+        // console.log(item);
+        // console.log('====================================');
+        if (item == null) return
 
-        if(item.user_id == null || item.user_id == undefined){
-            return
-        }
 
+        // if (item.user_id == null || item.user_id == undefined) {
+        //     return
+        // }
+
+        // ......................................................................
         return (
-            <TouchableWithoutFeedback key={item._id} onPress={() => {
+            <Pressable onPress={() => {
+                console.log("showing big");
                 showbigcard(item)
-            }} style={{ flex: 1, height: 300 }}>
-                <View nestedScrollEnabled={true} bounces={false} style={[styles.container]} contentContainerStyle={styles.contentContainer}>
+            }} style={{ flexShrink: 1, alignSelf: 'stretch' }}>
+
+                <LinearGradient
+                    colors={["rgba(33, 34, 35, 1)", "rgba(22, 24, 26 , 1)"]}
+                    locations={[0, 1]}
+                    style={[styles.container]} contentContainerStyle={styles.contentContainer}
+                    // style={styles.box}
+                    start={{ x: 0, y: 0 }}
+                    end={{ x: 0, y: 1 }} >
+
+                    {/* <View nestedScrollEnabled={true} bounces={false} > */}
                     {/* Header Section */}
                     <View style={styles.header}>
                         <Image
-                            source={{ uri: item.user_id.profilePhoto }}
+                            source={{ uri: item?.user_id.profilePhoto }}
                             style={styles.profileImage}
                         />
 
@@ -139,15 +251,18 @@ export default function Startsy({ navigation, token }) {
                             flexDirection: "row",
                             gap: 0
                         }}>
-                            <View ><Upvote width={40} height={40} /></View>
-                            <Text style={styles.followers}>{item.totalUpvotes}</Text>
+                            {/* <View ><Upvote color='#00de62' width={40} height={40} /></View> */}
+                            {/* <Text style={styles.followers}>{item.totalUpvotes}</Text> */}
                         </View>
                     </View>
+                    <View style={styles.divider}></View>
+
 
                     {/* Startup Info */}
                     <Text style={styles.title}>{item.nameOfStartup}</Text>
                     <Text style={styles.subtitle}>Revolutionizing startup ecosystem.</Text>
-                    <Text style={styles.status}>{item.hiddenInfo.stageOfStartup} - {getfund(item.hiddenInfo.fundingStatus)}</Text>
+                    <Text style={styles.status}>{item.hiddenInfo.stageOfStartup} - ₹ {getfund(item.hiddenInfo.fundingStatus)}</Text>
+
 
                     {/* Goal Section */}
                     <Text style={styles.sectionHeader}>Goal: <Text style={styles.text}>
@@ -156,18 +271,41 @@ export default function Startsy({ navigation, token }) {
 
 
                     {/* Description Section */}
-                    <Text style={styles.sectionHeader}>Description:</Text>
+                    {/* <Text style={styles.sectionHeader}>Description:</Text>
                     <Text style={styles.text}>
-                        {item.description}
-                    </Text>
+                        {item.description.split(" ").slice(0, 36).join(" ")}
+                        {item.description.split(" ").length > 36 && (
+                            <Text style={{ color: "#00de62" }}> ...Read more</Text>
+                        )}
+                    </Text> */}
 
-                    {/* About Founder Section */}
-                    <Text style={styles.sectionHeader1}>About Founder</Text>
+                    <Text style={styles.ReadMore}> Read more</Text>
+
+
+
+                    {/* 
+                    <BlurView
+                        intensity={100}
+                        tint="dark"
+                        style={{
+                            ...StyleSheet.absoluteFillObject,
+                            borderTopLeftRadius: 12,
+                            borderTopRightRadius: 12,
+                            position: 'absolute', height: '300', zIndex: 10000, justifyContent: 'center', width: '110%', alignItems: 'center', top: '60%', 
+                        }}
+                    >
+                        <View style={{}} >
+                            <Text style={{color:'#00de62',fontFamily:'Alata',fontSize:18,elevation:4.0}}>Read more</Text>
+                        </View>
+                    </BlurView> */}
+
+
+                    {/* <Text style={styles.sectionHeader1}>About Founder</Text>
                     <Text style={styles.text}><Text style={styles.keys}>Name :</Text> {item.fullName}</Text>
                     <Text style={styles.text}><Text style={styles.keys}>Education :</Text>  {item.education}</Text>
                     <Text style={styles.text}><Text style={styles.keys}>Skills :</Text> {item.skills}</Text>
 
-                    {/* Work Experience */}
+                    
                     <Text style={styles.sectionHeader}> <Text style={styles.keys}>Work Experience :</Text> </Text>
                     <View style={styles.workexp}>
                         {item.previousWorkExperience && item.previousWorkExperience.map((work, index) => {
@@ -192,12 +330,11 @@ export default function Startsy({ navigation, token }) {
                     </View>
 
 
-                    {/* About Team Section */}
                     <Text style={styles.sectionHeader1}>About Team</Text>
 
 
 
-                    {item.teamInfo && item.teamInfo.map((work, index) => {
+                    {item.teamInfo && item.teamInfo?.map((work, index) => {
                         return (
                             <View style={styles.teamCard}>
                                 <Text style={styles.username1}>{work.name}</Text>
@@ -207,14 +344,17 @@ export default function Startsy({ navigation, token }) {
                         )
                     })}
 
-                    {/* Footer */}
-                    <Text style={styles.footer}>startsy.com</Text>
-                </View>
-            </TouchableWithoutFeedback>
+            
+                    <Text style={styles.footer}>startsy.com</Text> */}
+
+
+
+                </LinearGradient>
+
+            </Pressable>
         )
     }
-
-
+    // ...................................................................
     function check() {
         if (swipeDistance < 50) {
             console.log("hi");
@@ -244,7 +384,7 @@ export default function Startsy({ navigation, token }) {
     }
     async function handlerightswipe(index) {
         const id = data[index].user_id._id;
-        // console.log(id);
+        console.log(id);
 
         try {
             const response = await fetch(`${url}investor/addFounderProfile/${id}`, {
@@ -254,11 +394,11 @@ export default function Startsy({ navigation, token }) {
                 }
             })
             const data = await response.json();
-            // console.log(data);
+            console.log(data);
 
         }
         catch (err) {
-            // console.log(err);
+            console.log(err);
 
         }
         // console.log(index, "right swiped function index wala");
@@ -267,170 +407,352 @@ export default function Startsy({ navigation, token }) {
 
     async function incrementupvote() {
 
+        console.log("clikded");
+
         const currentIndex = swiperRef.current.state.firstCardIndex;
-        console.log(currentIndex);
         const id = data[currentIndex].user_id._id
 
-        try {
 
-            const response = await fetch(
-                `${url}investor/updateFounderUpvoteCounter/${id}`,
-                {
-                    method: "POST",
-                    headers: {
-                        accept: "application/json",
-                        Authorization: `Bearer ${token}`,
-                    },
-                }
-            );
-            const result = await response.json();
-            console.log(result);
-            setloading(false);
-        } catch (err) {
-            console.log(err, "eror");
-        }
-        finally {
-        }
 
 
 
     }
 
-    return (
-        <ScrollView
-            refreshControl={<RefreshControl progressViewOffset={0} refreshing={refreshing}
-                onRefresh={async () => {
-                    console.log("start");
-                    setRefreshing(true);
-                    if (token) {
-                        setloading(true)
-                        async function getData() {
-                            try {
-                                console.log(`${url}investor/recommendation/getFounderProfile`);
 
-                                const response = await fetch(
-                                    `${url}investor/recommendation/getFounderProfile`,
-                                    {
-                                        method: "GET",
-                                        headers: {
-                                            accept: "application/json",
-                                            Authorization: `Bearer ${token}`,
-                                        },
-                                    }
-                                );
-                                const result = await response.json();
-                                console.log(result);
-                                if (result.data && result.data.length > 0) {
-                                    var data1 = result.data.map((e) => {
-                                        var obj = { ...e, isliked: false }
-                                        return obj
-                                    })
-                                    console.log(data1);
+    const [visible, setVisible] = useState(false);
 
-                                    setData(result.data);
-                                }
-                                setloading(false);
-                            } catch (err) {
-                                console.log(err, "eror");
-                            }
-                            finally {
-                            }
-                        }
-                        getData();
+
+    const CustomAlert = ({ visible, onClose }) => {
+
+        const [textlength, settextlength] = useState(0);
+
+        const [suggestion, setsuggestion] = useState("");
+        const [ups, setpostingsuggestion] = useState(false);
+
+
+        function counttext(text) {
+
+
+            settextlength(text.length)
+
+        }
+
+
+
+        async function docomment() {
+            // console.log(suggestion, "inn");
+            const currentIndex = swiperRef.current.state.firstCardIndex;
+            const id = data[currentIndex].user_id._id
+            // console.log(id, "id");
+
+
+            // setuploadingcomment(true);
+
+            try {
+
+                setpostingsuggestion(true)
+                const response = await fetch(`${url}investor/postSuggestions/${id}`, {
+                    method: 'POST',
+                    body: JSON.stringify({ suggestion: suggestion }),
+                    headers: {
+                        "Content-Type": "application/json",
+                        "Authorization": `Bearer ${token}`,
+                    },
+                });
+                const data = await response.json();
+                console.log(data);
+                console.log(response);
+
+                if (response.status === 200) {
+                    setVisible(false)
+                }
+
+                // setemptycomment(false);
+                // setcommenttext("");
+
+                // var object = {
+                //     comment: commenttext,
+                //     createdAt: new Date(),
+                //     userId: {
+                //         profilePhoto: data.profilePhoto,
+                //         userName: data.userName,
+                //     }
+                // };
+
+                // console.log(object)
+                // var newarray = [...allcomments];
+                // newarray.unshift(object);
+                // setallcomments(newarray);
+
+
+            } catch (err) {
+                console.log(err);
+            } finally {
+                setuploadingcomment(false);
+                setpostingsuggestion(false)
+            }
+        }
+
+        const fadeAnim = useRef(new Animated.Value(0)).current;
+        // Persistent animated value
+
+        useEffect(() => {
+            if (visible) {
+                Animated.timing(fadeAnim, { toValue: 1, duration: 300, useNativeDriver: true }).start();
+            } else {
+                Animated.timing(fadeAnim, { toValue: 0, duration: 300, useNativeDriver: true }).start(() => {
+                    if (typeof onClose === "function") {
+                        onClose(); // Ensure onClose exists before calling
                     }
-                    setTimeout(() => {
-                        setRefreshing(false);
-                    }, 2000);
-                }} />}
-            style={{ flex: 1, width: width, paddingVertical: 0, backgroundColor: "#16181a" }}>
-            <SafeAreaView style={{ flex: 1, width: width, height: height, paddingVertical: 15, backgroundColor: "#16181a" }}>
+                });
+            }
+        }, [visible]);
 
-                <Animated.View
-                    style={main.header1}>
-                    <Text allowFontScaling={false} style={main.headertext}>For you</Text>
-                </Animated.View>
+        if (!visible) return null; // Prevent rendering when not visible
 
-                {data && data.length == 0 && <Text></Text>}
+        async function deletepost1() {
+            // console.log("Deleting post...");
+            if (idofposttobedeleetd != null) {
+                // setisdeleting(true)
+                try {
+                    const response = await fetch(`${url}posts/deletepost/${idofposttobedeleetd}`, {
+                        method: 'POST',
+                        body: "",
+                        headers: {
+                            accept: "application/json",
+                            "Authorization": `Bearer ${token}`,
+                        },
+                    });
 
-                {data && data.length>0 && <Swiper
-                    ref={swiperRef}
-                    nestedScrollEnabled={true}
-                    backgroundColor='#16181a'
-                    horizontalThreshold={50}
-                    secondCardZoom={1000}
-                    infinite={true}
-                    showSecondCard={true}
-                    style={{
-                        width: width,
-                        margin: "auto",
-                    }}
-                    // infinite={true}
-                    stackSeparation={10}
-                    animateCardOpacity={true}
-                    swipeAnimationDuration={350}
-                    cards={data}
-                    // stackScale={2}
-                    renderCard={renderCard}
+                    const data = await response.json();
+                    console.log(data);
 
-                    onSwipedLeft={(index) => {
-                        handleleftswipe(index)
-                    }}
-                    onSwipedRight={(index) => {
-                        // setCardIndex(index)
-                        handlerightswipe(index)
-                    }}
-                    cardIndex={cardIndex}
-                    stackSize={3}
-                    verticalSwipe={false}
-                    onSwiped={(index) => {
-                        setselected(false)
-                        setCardIndex(index)
-                    }}
-                />}
-                {loading && <ActivityIndicator color={"#fff"} size={'large'} />}
+                    // Remove the post from the local state
+                    const updatedPosts = posts.filter((post) => post._id !== idofposttobedeleetd);
+                    setPosts(updatedPosts);
+                    setVisible(false)
+                } catch (err) {
+                    console.log(err);
+                }
+                finally {
+                    // setisdeleting(false)
+                }
+            }
+        }
 
-                <View style={styles.iconcontainer}>
-                    
-                    <Pressable onPress={swipeLeft} style={{ width: 80, height: 80, backgroundColor: "transparent" }}><Trash /></Pressable>
-                    <Pressable onPress={() => {
-                        setselected(true)
-                        incrementupvote()
-                    }}
-                        style={{ transform: [{ scale: 1 }], paddingTop: 5, width: 80, height: 80, backgroundColor: "transparent" }}>
-                        {!selected && <Up1 />}
-                        {selected && <Up1 selected={true} />}
+        return (
+            <Modal transparent visible={visible} animationType="none" onRequestClose={() => onClose?.()}>
+                <TouchableWithoutFeedback onPress={() => onClose?.()}>
+                    <Animated.View style={[styles1.overlay, { opacity: fadeAnim }]}>
+                        <TouchableWithoutFeedback>
+                            <View style={styles1.alertBox}>
+                                <Text style={styles1.title}>Send a suggestion</Text>
 
-                    </Pressable>
-                    <Pressable onPress={swipeRight} style={{ width: 80, height: 80, backgroundColor: "transparent" }}><Addicon /></Pressable>
-                </View>
+                                <View style={{ position: "relative" }}>
+                                    <Text style={[styles.t2, styles.count]}>{textlength}/300</Text>
+                                    <TextInput
+                                        allowFontScaling={false}
+                                        placeholder=""
+                                        placeholderTextColor="#B8B8B8"
+                                        style={styles.input}
+                                        maxLength={300}
+                                        // value={suggestion}
+                                        multiline={true}
+                                        // onFocus={handleOutsideTouch}
+                                        // onPress={handleOutsideTouch}
+                                        // value={username}
+                                        onChangeText={(text) => {
+                                            setsuggestion(text)
+                                            counttext(text)
+                                        }}
+                                    />
+                                </View>
 
-            </SafeAreaView>
-        </ScrollView>
+                                <TouchableOpacity onPress={docomment} style={styles.next}  >
+                                    {/* <Text allowFontScaling={false} style={styles.nexttext}>Send</Text> */}
+
+                                    {ups && <ActivityIndicator size={24} color="#16181a" />}
+                                    {!ups && <Text allowFontScaling={false} style={styles.nexttext}>Send</Text>}
+                                </TouchableOpacity>
+
+
+                                {/* <Text style={styles1.message}>Click confirm to .</Text> */}
+                                <View style={{ display: "flex", flexDirection: "row", gap: 10 }}>
+
+
+                                </View>
+                            </View>
+                        </TouchableWithoutFeedback>
+                    </Animated.View>
+                </TouchableWithoutFeedback>
+            </Modal>
+        );
+    };
+
+    return (
+
+
+
+        <KeyboardAvoidingView style={{ flex: 1, backgroundColor: "#16181a" }} behavior='padding' keyboardVerticalOffset={-100}>
+
+            <CustomAlert visible={visible} onClose={() => setVisible(false)} />
+            <ScrollView
+                keyboardShouldPersistTaps='handled'
+                refreshControl={<RefreshControl progressViewOffset={100} refreshing={refreshing}
+                    progressBackgroundColor="#16181a"
+                    colors={['#00de62']}
+                    onRefresh={async () => {
+                        console.log("start");
+                        Vibration.vibrate(200)
+                        setRefreshing(true);
+                        if (token) {
+                            setloading(true)
+
+                            getData();
+                        }
+                        setTimeout(() => {
+                            setRefreshing(false);
+                        }, 2000);
+                    }} />}
+                style={{ flex: 1, width: width, paddingVertical: 0, backgroundColor: "#16181a" }}>
+                <SafeAreaView style={{ flex: 1, width: width, height: height * 0.93, marginTop: 50, paddingVertical: 15, backgroundColor: "#16181a" }}>
+
+                    {/* <Animated.View
+                        style={main.header1}>
+                        <Text allowFontScaling={false} style={main.headertext}>For you</Text>
+                    </Animated.View> */}
+
+                    {data && data.length == 0 && <Text></Text>}
+                    <CustomAlert visible={visible} onClose={() => setVisible(false)} />
+
+
+                    <Swiper
+                        ref={swiperRef}
+                        keyExtractor={(item, index) => { index }}
+                        nestedScrollEnabled={true}
+                        backgroundColor='#16181a'
+                        horizontalThreshold={50}
+                        // secondCardZoom={1000}
+                        infinite={true}
+
+                        showSecondCard={true}
+                        style={{
+                            width: width,
+                            // height : 100,
+                            margin: "auto",
+                        }}
+                        // keyExtractor={(index) => {return index} }
+                        // infinite={true}
+                        // stackSeparation={10}
+                        animateCardOpacity={true}
+                        swipeAnimationDuration={350}
+                        cards={data}
+                        // stackScale={2}
+                        renderCard={renderCard}
+
+                        onSwipedLeft={(index) => {
+                            handleleftswipe(index)
+                        }}
+                        onSwipedRight={(index) => {
+                            // setCardIndex(index)
+                            handlerightswipe(index)
+                        }}
+                        cardIndex={cardIndex}
+                        stackSize={3}
+                        verticalSwipe={false}
+                        onSwiped={(index) => {
+                            setselected(false)
+                            setCardIndex(index)
+                        }}
+                    />
+
+
+                    {/* {loading && <ActivityIndicator color={"#fff"} size={'large'} />} */}
+
+                    <View style={styles.iconcontainer}>
+
+                        <View style={styles.iconWithText}>
+                            <Pressable onPress={swipeLeft}>
+                                <Ionicons name="return-up-back" size={42} color="#ccc" />
+                            </Pressable>
+                            <Text style={styles.iconLabel}>Reject</Text>
+                        </View>
+
+                        <Pressable
+                            onPress={() => {
+                                setselected(true);
+                                setVisible(true);
+                                incrementupvote();
+                            }}
+                            style={{ alignItems: 'center' , marginLeft : 5 }}
+                        >
+                            <MaterialCommunityIcons name="message-processing-outline" size={41} color="#ccc" />
+                            <Text style={styles.iconLabel}>Suggest</Text>
+                        </Pressable>
+
+                        <View style={styles.iconWithText}>
+                            <Pressable onPress={swipeRight}>
+                                <Ionicons name="return-up-forward" size={42} color="#ccc" />
+                            </Pressable>
+                            <Text style={styles.iconLabel}>Connect</Text>
+                        </View>
+
+                    </View>
+
+
+                </SafeAreaView>
+            </ScrollView>
+        </KeyboardAvoidingView>
+
     );
 }
 
 const styles = StyleSheet.create({
     container: {
-        flex: 1,
-        backgroundColor: '#24272A',
-        paddingHorizontal: 16,
-        maxWidth: width - 30,
-        width: "99%",
-        // height : 100,
-        maxHeight: height * 0.78,
+        // flex: 1,
+        // paddingHorizontal: 16,
+        // maxWidth: width - 30,
+        // width: "99%",
+        // maxHeight: height * 0.7,
+        // verticalpadding: 8,
+        // marginHorizontal: "auto",
+        // borderRadius: 10,
+        // paddingTop: 20,
+        // overflow: "scroll",
 
-        marginHorizontal: "auto",
-        // marginHorizontal: 10,
-        // maxHeight: height - 100,
-        borderRadius: 10,
-        paddingTop: 20,
-        overflow: "scroll"
+        paddingVertical: 10,
+        paddingHorizontal: 14,
+        borderRadius: 12,
+        marginVertical: 8,
+        height: height - 195, // <--- ADD THIS
+        overflow: 'scroll',
+
+
+
     },
+    iconcontainer: {
+        flexDirection: 'row',
+        justifyContent: 'space-around',
+        alignItems: 'center',
+        paddingHorizontal: 20,
+    },
+
+    iconWithText: {
+        alignItems: 'center',
+    },
+
+    iconLabel: {
+        marginTop: 4,
+        fontSize: 14,
+        color: '#828282',
+        fontFamily: 'Alata',
+    },
+
     contentContainer: {
         paddingBottom: 80,
         // maxWidth: width,
         // height : height,
-        // backgroundColor: "red"
+        backgroundColor: "#16181a"
     },
     header: {
         flexDirection: 'row',
@@ -438,8 +760,8 @@ const styles = StyleSheet.create({
         marginBottom: 5,
     },
     profileImage: {
-        width: 50,
-        height: 50,
+        width: 45,
+        height: 45,
         borderRadius: 25,
         marginRight: 10,
     },
@@ -468,6 +790,7 @@ const styles = StyleSheet.create({
     title: {
         color: '#B8B8B8',
         fontSize: 48,
+        marginTop: 20,
         // fontWeight: 'bold',
         marginBottom: 4,
         fontFamily: "Alata",
@@ -476,13 +799,13 @@ const styles = StyleSheet.create({
     },
     subtitle: {
         color: '#D9D9D9',
-        fontSize: 14,
+        fontSize: 20,
         marginBottom: 4,
         fontFamily: "Roboto"
     },
     status: {
         color: '#00DE62',
-        fontSize: 15,
+        fontSize: 20,
         marginBottom: 16,
         fontFamily: "Roboto"
 
@@ -491,7 +814,8 @@ const styles = StyleSheet.create({
         color: '#D9D9D9',
         fontSize: 14,
         fontWeight: 'bold',
-        marginTop: 16,
+        marginTop: 10,
+        // marginTop: 10,
         marginBottom: 4,
         fontFamily: "Roboto"
     },
@@ -570,13 +894,115 @@ const styles = StyleSheet.create({
     },
     iconcontainer: {
         position: "absolute",
-        bottom: 60,
+        bottom: 40,
+        zIndex: 1000,
         display: "flex",
         flexDirection: "row",
+        alignItems: "center",
         width: width,
+        justifyContent: "center",
         backgroundColor: "transparent",
         paddingHorizontal: 10,
-        justifyContent: "space-between"
-        // zIndex : 100
+        marginBottom: 30,
+        gap: 80,
+        // backgroundColor : "red"
+
+    },
+    t2: {
+        textAlign: 'Left',
+        color: "#94A3B8",
+        fontFamily: 'Roboto',
+        fontSize: scalingfactor * 13,
+
+        marginBottom: scalingfactor * 8,
+        width: "85%",
+        alignSelf: "center",
+        lineHeight: scalingfactor * 16
+    },
+    count: {
+        fontSize: 14,
+        position: "absolute",
+        bottom: 25,
+        right: 25,
+        // backgroundColor: "red",
+        width: "auto"
+    },
+
+
+    input: {
+        backgroundColor: "transparent",
+        margin: height * 0.016,
+        marginTop: 0,
+        borderWidth: 1,
+        borderRadius: 20,
+        borderColor: "#bbb",
+        fontSize: scalingfactor * 20,
+        color: "#B8B8B8",
+        paddingBottom: scalingfactor * 5,
+        width: 260,
+        // fontFamily: "Roboto",
+        lineHeight: scalingfactor * 18,
+        marginBottom: scalingfactor * 25,
+        height: 190,
+        marginTop: 10,
+        padding: 10,
+        textAlignVertical: "top",
+        paddingBottom: 30,
+
+    },
+
+
+    next: {
+        backgroundColor: "#00DF60",
+        borderRadius: 30,
+        margin: "auto",
+        // padding : 10,
+        paddingHorizontal: 20,
+        height: 35,
+        // marginRight  : 20,
+        // marginBottom: 20,
+        marginTop: -5,
+        alignSelf: "flex-end",
+        justifyContent: "center",
+    },
+    nexttext: {
+        color: "#24272A",
+        fontFamily: "Alata",
+        fontSize: scalingfactor * 16,
+        textAlign: "center",
+        marginTop: -4,
+        textAlign: "right",
+
+    },
+
+    divider: {
+        width: "110%",
+        marginLeft: -20,
+        height: 1,
+        marginTop: 5,
+        marginBottom: 20,
+        backgroundColor: "#24272A"
+    },
+    ReadMore: {
+        color: "#00de62", fontSize: 14,
+        position : "absolute",
+        bottom : 100,
+        alignSelf : "center"
     }
 });
+
+
+
+// {async () => {
+//     console.log("start");
+//     Vibration.vibrate(200)
+//     setRefreshing(true);
+//     if (token) {
+//         setloading(true)
+
+//         getData();
+//     }
+//     setTimeout(() => {
+//         setRefreshing(false);
+//     }, 2000);
+// }}

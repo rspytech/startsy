@@ -1,9 +1,17 @@
 import React, { useState } from "react";
-import { Pressable, TextInput } from "react-native";
+import { ActivityIndicator, Pressable, TextInput, TouchableOpacity } from "react-native";
 import { View, Text, StyleSheet, StatusBar, Dimensions, SafeAreaView } from "react-native";
-import { url } from "../config.js";
+import { url } from "../config.js"
+import signupstyles from "@/styles/signup1styles.js";
+import { Entypo } from "@expo/vector-icons";
 const ChangePassword2 = ({ navigation, route }) => {
+
     const { token } = route.params;
+    const isforgot = route.params.isforgot
+    const email = route.params.email
+    const epassword = route.params.password
+
+
 
     const [password, setPassword] = useState("");
     const [success, setsuccess] = useState("");
@@ -11,13 +19,14 @@ const ChangePassword2 = ({ navigation, route }) => {
     const [passwordError, setPasswordError] = useState("");
     const [confirmPasswordError, setConfirmPasswordError] = useState("");
     const [error, seterror] = useState(false);
+    const [showPassword, setShowPassword] = useState(true);
+    const [showConfirmPassword, setShowConfirmPassword] = useState(true);
+    const [loading, setloading] = useState(false);
 
     const validatePassword = () => {
         const passwordRegex = /^(?=.*[a-z])(?=.*[A-Z])(?=.*\d).{8,}$/;
         if (!passwordRegex.test(password)) {
-            setPasswordError(
-                "Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, and one number."
-            );
+            setPasswordError("Password must be at least 8 characters long, contain one uppercase letter, one lowercase letter, and one number.");
             return false;
         }
         setPasswordError(""); // Clear error if validation passes
@@ -38,12 +47,22 @@ const ChangePassword2 = ({ navigation, route }) => {
             return; // Prevent submission if validation fails
         }
         // Proceed with saving the password
+        setloading(true)
         try {
-            console.log(token);
 
-            const response = await fetch(`${url}api/changePassword`, {
-                method: "POST",
-                body: JSON.stringify({ newPassword: password, confirmPassword: confirmPassword }),
+            var route = isforgot ? "forgotPassword" : "changePassword"
+            console.log(route);
+
+            var object = isforgot ? { password: password, confirmPassword: confirmPassword, email: email } :
+                { newPassword: password, confirmPassword: confirmPassword }
+
+            // console.log(object);
+            // return
+
+
+            const response = await fetch(`${url}api/${route}`, {
+                method: 'POST',
+                body: JSON.stringify(object),
                 headers: {
                     "Content-Type": "application/json",
                     accept: "application/json",
@@ -51,22 +70,27 @@ const ChangePassword2 = ({ navigation, route }) => {
                 },
             });
             const data = await response.json();
-            // setloading(false)
-            console.log(data);
-            console.log(response.status);
+
+
             if (response.status === 400) {
-                // setmessage("* entered password does not match with your current password")
-                // seterror(true)
-            } else if (response.status === 200) {
-                console.log("success");
-                seterror(false);
-                setsuccess(true);
-                navigation.navigate("Profile");
-                // navigation.navigate("ChangePassword2")
+
             }
-        } catch (err) {
-            // setloading(false)
+            else if (response.status === 200) {
+
+                seterror(false);
+                setsuccess(true)
+                navigation.navigate("Green");
+                // navigation.navigate("ChangePassword2")
+
+            }
+        }
+        catch (err) {
+
             console.log(err);
+
+        }
+        finally {
+            setloading(false)
         }
     };
 
@@ -79,6 +103,7 @@ const ChangePassword2 = ({ navigation, route }) => {
         container: {
             flex: 1,
             backgroundColor: "#16181a",
+            alignItems: 'center'
         },
         headerText: {
             fontSize: 35,
@@ -88,10 +113,11 @@ const ChangePassword2 = ({ navigation, route }) => {
             paddingHorizontal: 20,
         },
         t1: {
-            color: "#ffffff",
+            color: "#ccc",
             fontSize: 24,
+            fontFamily: "Alata",
             textAlign: "center",
-            marginTop: 5,
+            marginTop: 20,
         },
         t11: {
             color: "#ffffff",
@@ -101,15 +127,15 @@ const ChangePassword2 = ({ navigation, route }) => {
         },
         t2: {
             color: "#94A3B8",
-            fontSize: 15,
+            fontSize: 12,
             textAlign: "center",
             marginTop: 10,
         },
         input: {
             margin: height * 0.016,
             marginTop: 35,
-            borderBottomWidth: 3,
-            borderBottomColor: "#AEAFAF",
+            borderBottomWidth: 1,
+            borderBottomColor: "#ccc",
             fontSize: scalingFactor * 20,
             color: "#B8B8B8",
             fontFamily: "Alata",
@@ -126,51 +152,105 @@ const ChangePassword2 = ({ navigation, route }) => {
         },
         btn: {
             borderRadius: 20,
-            height: 45,
+            height: 40,
             justifyContent: "center",
             alignItems: "center",
-            width: "70%",
+            width: "50%",
             alignSelf: "center",
             marginVertical: 20,
             backgroundColor: "#00DF60",
         },
         btntext: {
-            color: "#24272A",
-            fontSize: 22,
+            color: "#16181a",
+            fontSize: 20,
+            marginTop: -3,
+            fontFamily: "Alata",
         },
     });
 
     return (
         <SafeAreaView style={styles.container}>
             <StatusBar backgroundColor="#16181a" barStyle={"light-content"} />
-            <Text allowFontScaling={false} style={styles.headerText}>
-                Profile
-            </Text>
             <Text style={styles.t1}>Create a password</Text>
             <Text style={styles.t2}>Use a strong password</Text>
-            <TextInput
-                allowFontScaling={false}
-                placeholder="Password"
-                placeholderTextColor="#B8B8B8"
-                style={styles.input}
-                value={password}
-                secureTextEntry={true}
-                onChangeText={(text) => setPassword(text)}
-            />
-            {passwordError ? <Text style={styles.error}>{passwordError}</Text> : null}
-            <TextInput
-                allowFontScaling={false}
-                placeholder="Confirm password"
-                placeholderTextColor="#B8B8B8"
-                style={styles.input}
-                value={confirmPassword}
-                secureTextEntry={true}
-                onChangeText={(text) => setConfirmPassword(text)}
-            />
+
+            <View style={{
+                position: "relative",
+                padding: 0,
+                borderBottomColor: "white",
+                borderBottomWidth: 1,
+                width: "95%",
+                paddingBottom: 8,
+                paddingStart: 8,
+                marginTop: 30,
+            }}>
+                <TextInput
+                    allowFontScaling={false}
+                    placeholder="Password"
+                    placeholderTextColor="#828282"
+                    style={signupstyles.input}
+                    value={password}
+                    secureTextEntry={showPassword}
+                    onChangeText={(text) => {
+                        setPasswordError("")
+                        setConfirmPasswordError("")
+                        setPassword(text)
+                    }}
+                />
+                <TouchableOpacity style={{ position: 'absolute', marginRight: 10, right: 0, bottom: 0, marginBottom: 10 }}
+                    onPress={() => setShowPassword(prev => !prev)}
+                >
+                    {showPassword ?
+                        <Entypo name="eye-with-line" size={24} color="#828282" />
+                        :
+                        <Entypo name="eye" size={24} color="#828282" />
+
+                    }
+                </TouchableOpacity>
+            </View>
+            {passwordError ? (
+                <Text style={signupstyles.error}>{passwordError}</Text>
+            ) : null}
+
+            <View style={{
+                position: "relative",
+                padding: 0,
+                borderBottomColor: "white",
+                borderBottomWidth: 1,
+                width: "95%",
+                paddingBottom: 8,
+                paddingStart: 8,
+                marginTop: 30,
+            }}>
+                <TextInput
+                    allowFontScaling={false}
+                    placeholder="Confirm Password"
+                    placeholderTextColor="#828282"
+                    style={signupstyles.input}
+                    value={confirmPassword}
+                    secureTextEntry={showConfirmPassword}
+                    onChangeText={(text) => {
+                        setPasswordError("")
+                        setConfirmPasswordError("")
+                        setConfirmPassword(text)
+                    }}
+                />
+                <TouchableOpacity style={{ position: 'absolute', marginRight: 10, right: 0, bottom: 0, marginBottom: 10 }}
+                    onPress={() => setShowConfirmPassword(prev => !prev)}
+                >
+                    {showConfirmPassword ?
+                        <Entypo name="eye-with-line" size={24} color="#828282" />
+                        :
+                        <Entypo name="eye" size={24} color="#828282" />
+
+                    }
+                </TouchableOpacity>
+            </View>
             {confirmPasswordError ? <Text style={styles.error}>{confirmPasswordError}</Text> : null}
             {success && <Text style={styles.t11}>password changes successfully</Text>}
             <Pressable onPress={handleSave} style={styles.btn}>
-                <Text style={styles.btntext}>Save</Text>
+                {loading && <ActivityIndicator style={{ marginTop: -2 }} size={24} color="#16181a" />}
+                {!loading && <Text style={styles.btntext}>Save</Text>}
             </Pressable>
         </SafeAreaView>
     );

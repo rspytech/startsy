@@ -1,19 +1,20 @@
-import React from "react";
-import { Pressable } from "react-native";
-import { View, TextInput, StyleSheet, KeyboardAvoidingView, Platform } from "react-native";
+import React from 'react';
+import { Pressable } from 'react-native';
+import { View, TextInput, StyleSheet, KeyboardAvoidingView, Platform } from 'react-native';
 
 const KeyboardAvoidingComponent = () => {
+
     function key1() {
-        console.log("====================================");
-        console.log("hi");
-        console.log("====================================");
+        
     }
     return (
         <KeyboardAvoidingView
-            behavior={Platform.OS === "ios" ? "padding" : undefined}
+            behavior={Platform.OS === 'ios' ? 'padding' : undefined}
             style={styles.container}
         >
-            <View onPress={key1} style={styles.content}>
+            <View
+                onPress={key1}
+                style={styles.content}>
                 <TextInput onFocus={key1} placeholder="Type here..." style={styles.input} />
             </View>
         </KeyboardAvoidingView>
@@ -26,12 +27,12 @@ const styles = StyleSheet.create({
     },
     content: {
         flex: 1,
-        justifyContent: "flex-end",
+        justifyContent: 'flex-end',
         padding: 16,
     },
     input: {
         height: 40,
-        borderColor: "gray",
+        borderColor: 'gray',
         borderWidth: 1,
         paddingLeft: 8,
     },
