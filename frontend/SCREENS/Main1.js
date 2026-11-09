@@ -1,3 +1,6 @@
+// Older investor home screen (bottom tabs For You, Newsletter, Startsy founder cards, Messages, Profile).
+// It is still registered, but no code opens it any more: in the live app investors also use Main2.
+
 import React, { useState, useRef, useEffect, useCallback, useContext, useMemo } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import {

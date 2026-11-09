@@ -1,3 +1,7 @@
+// App entry point (the live app starts here). Lists every full-screen page in one navigation stack
+// (see docs/SCREENS.md), starts on the Green screen, loads fonts, and sets up push notifications
+// (asks permission, gets the phone's Expo push token and saves it via POST /api/updateNotificationToken).
+
 import React, { useState, useRef } from "react";
 
 import AsyncStorage from "@react-native-async-storage/async-storage";

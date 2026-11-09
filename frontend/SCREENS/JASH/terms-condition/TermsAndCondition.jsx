@@ -1,3 +1,5 @@
+// The Terms & Conditions page, opened from the link on the welcome screen.
+
 import React from 'react';
 import { View, Text, ScrollView, StyleSheet, TouchableOpacity ,Linking, Pressable} from 'react-native';
 import { useFonts } from 'expo-font';

@@ -1,3 +1,5 @@
+// Settings: app update link, Edit Profile, Saved Posts, Switch Account, Beta Feedback.
+
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import { jwtDecode } from "jwt-decode";
 import React, { useEffect, useState } from "react";

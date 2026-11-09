@@ -1,3 +1,7 @@
+// First screen. Not logged in: it shows the welcome / login screen (logintrial.js) inside itself.
+// Logged in: everyone goes to the Main2 home screen; investors are first checked for verification
+// and, if not yet verified, go to the waiting or not-verified screens instead.
+
 import * as React from "react";
 import { useState, useEffect, useRef, useContext } from "react";
 import {

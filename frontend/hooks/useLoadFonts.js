@@ -1,3 +1,5 @@
+// Loads the app's custom fonts. The app waits until this reports true before showing screens.
+
 // src/hooks/useLoadFonts.js
 import { useFonts } from "expo-font";
 

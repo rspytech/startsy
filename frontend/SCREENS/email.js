@@ -1,3 +1,5 @@
+// Sign-up step: enter your email, receive a one-time code (OTP) and confirm it.
+
 import React, { useEffect, useState, useContext } from "react";
 import {
     SafeAreaView,

@@ -1,3 +1,5 @@
+// Leftover sample screen ("I'm in the Drawer!"); registered as Skeleton1 but not the start screen.
+
 import React, { useRef, useState } from "react";
 import { Button, DrawerLayoutAndroid, Text, StyleSheet, View } from "react-native";
 import { BlurView } from "expo-blur";

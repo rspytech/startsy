@@ -6,9 +6,9 @@ open each screen on a phone and confirm it looks and works as before.
 Endpoint details (inputs/outputs) are in [ENDPOINTS.md](ENDPOINTS.md).
 
 How navigation works: the app's real entry file is `frontend/app/index.tsx`. It lists every full-screen
-page in one navigation stack and starts on **Green**. (`frontend/app/(tabs)/index.tsx` is an older entry
-file that is still in the project.) Two pages are the **home screens** with a bottom tab bar:
-**Main1** (investors) and **Main2** (everyone else). Most screens are loaded only when first opened.
+page in one navigation stack and starts on **Green**, which shows the welcome / login screen when nobody is logged in. (`frontend/app/(tabs)/index.tsx` is an older entry
+file that is still in the project.) The home screen with the bottom tab bar is **Main2**, used by everyone (founders, investors,
+community members, job seekers). **Main1**, an older investor home, is still registered but nothing opens it. Most screens are loaded only when first opened.
 
 All paths below are under `frontend/`. "Calls" lists `METHOD /path`; `:id` means a value filled in by the app.
 The server address comes from `frontend/config.js` (`https://startsy.onrender.com/`).
@@ -17,7 +17,7 @@ The server address comes from `frontend/config.js` (`https://startsy.onrender.co
 
 | Screen (name in code) | File | What it does | Calls | Goes to |
 |---|---|---|---|---|
-| Green (first screen) | `SCREENS/greenscreen.js` | Checks for a saved login; investors are checked for verification first | `GET /test/getInvestorStatus` | Main2, InvestorWaitingPage, InvestorNotVerifiedScreen |
+| Green (first screen) | `SCREENS/greenscreen.js` | Not logged in: shows the welcome / login screen (LoginTrial) inside itself. Logged in: goes to Main2; investors are checked for verification first | `GET /test/getInvestorStatus` | Main2, InvestorWaitingPage, InvestorNotVerifiedScreen |
 | LoginTrial | `SCREENS/logintrial.js` | Welcome screen with the logo, **Log in** / **Create account** and the **Terms & Conditions** link; also the email + password login form | `POST /api/authenticate`, `POST /api/deleteUnAuthenticatedUser` | LoginPage, Signup1, TermsAndConditions, Main2, investor waiting screens |
 | LoginPage | `SCREENS/LoginPage.js` | "Welcome Back!" email + password login | `POST /api/authenticate` | FP1 (forgot password), investor waiting screens |
 | TermsAndConditions | `SCREENS/JASH/terms-condition/TermsAndCondition.jsx` | The Terms & Conditions text | — | — |
@@ -44,7 +44,7 @@ The server address comes from `frontend/config.js` (`https://startsy.onrender.co
 | InvestorNotVerifiedScreen | `SCREENS/NotVerified.js` | Investor was not verified; continue as a community member | `GET /test/convertInvestorToCommunity` | Main2 |
 | Wait | `SCREENS/Wait.js` | Information page | — | — |
 
-## 3. Investor home: Main1 (`SCREENS/Main1.js`)
+## 3. Older investor home: Main1 (`SCREENS/Main1.js`) — not opened anywhere in the live app
 
 Main1 itself also calls `POST /chats/sendMessage/:id` and `POST /investor/postSuggestions/:id`.
 
@@ -58,7 +58,7 @@ Main1 itself also calls `POST /chats/sendMessage/:id` and `POST /investor/postSu
 
 Also: `SCREENS/main-1/Card.js` (stack screen "Card": a founder's startup details), `SCREENS/main-1/Profile.js` (→ ChangePassword1, EditInvestorInfo).
 
-## 4. Founder / community / job-seeker home: Main2 (`SCREENS/Main2.js`)
+## 4. Home screen for everyone: Main2 (`SCREENS/Main2.js`)
 
 Main2 itself calls `GET /api/PFP`, `GET /posts/getComments/:id`, `POST /posts/createComment/:id`, `POST /posts/deletePost/:id`, `POST /chats/sendMessage/:id` and opens the create pages (Blogpage, CommunityPage, Jobpost).
 

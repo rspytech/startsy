@@ -1,3 +1,6 @@
+// "Apna user" = your own profile: details, cover image, posts, comments and follow lists.
+// Used as the Profile tab on both home screens.
+
 import React, { useEffect, useState, useRef, useCallback, useMemo, memo } from 'react';
 import { View, Animated, Text, ToastAndroid,Image, Easing, FlatList, StatusBar,Linking, RefreshControl, ActivityIndicator, StyleSheet, BackHandler, SafeAreaView, ScrollView, Pressable, Dimensions, TouchableOpacity, Modal, TouchableWithoutFeedback, TextInput, Vibration } from "react-native";
 import Banner from "../assets/icons/banner.js"

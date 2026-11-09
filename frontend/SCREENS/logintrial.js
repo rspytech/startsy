@@ -1,3 +1,6 @@
+// Welcome screen with the logo, "Log in" / "Create account" and the Terms & Conditions link,
+// plus the email + password login form.
+
 // App.tsx
 
 import * as React from "react";

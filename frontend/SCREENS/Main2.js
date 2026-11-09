@@ -1,3 +1,7 @@
+// Home screen for founders, community members and job seekers: bottom tabs Newsletter,
+// Notifications, the main feed, Messages and Profile, plus the create-post and comments sheets.
+// See docs/SCREENS.md section 4.
+
 import React, {
     useState,
     useRef,

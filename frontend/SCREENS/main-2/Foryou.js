@@ -1,3 +1,6 @@
+// Main feed for founders / community members / job seekers. Each item is drawn by a helper file
+// (Scroll.js, SeperatePost.js, JobPost.js, SeperateCommunity.js, Question.js, SuggestedUser.js).
+
 
 
 

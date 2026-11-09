@@ -1,3 +1,5 @@
+// Another user's profile page: their details and posts, with follow, upvote, comment and job-apply actions.
+
 import React, { useEffect, useState, useRef, useCallback, useMemo } from 'react';
 import { View, Text, Linking, FlatList, StatusBar, Image, ActivityIndicator, RefreshControl, StyleSheet, BackHandler, SafeAreaView, ScrollView, Pressable, TextInput, Vibration, TouchableOpacity } from "react-native";
 import Entypo from '@expo/vector-icons/Entypo';

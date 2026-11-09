@@ -1,3 +1,5 @@
+// Investor "Startsy" tab: swipe through recommended founder cards and send requests or suggestions.
+
 import React, { useState, useEffect, useCallback, useRef, useContext } from "react";
 import {
     Animated,

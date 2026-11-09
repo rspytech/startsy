@@ -1,3 +1,5 @@
+// App-wide shared data (for example the login token) that every screen can read through GlobalContext.
+
 // GlobalContext.js
 import React, { createContext, useState, useEffect } from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";

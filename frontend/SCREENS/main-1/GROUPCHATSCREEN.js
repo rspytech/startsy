@@ -1,3 +1,5 @@
+// Community group chat screen. Joins the group over a live Socket.IO connection.
+
 import * as React from "react";
 import { useState, useEffect, useRef, useCallback } from "react";
 import {

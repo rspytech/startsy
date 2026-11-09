@@ -1,3 +1,5 @@
+// Older entry file kept from a previous version of the app. The live app's entry is app/index.tsx.
+
 import * as React from "react";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as SplashScreen from "expo-splash-screen";

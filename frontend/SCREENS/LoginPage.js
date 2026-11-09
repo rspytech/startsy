@@ -1,3 +1,5 @@
+// "Welcome Back!" login screen (email + password), with a link to Forgot Password.
+
 import React, { useContext } from "react";
 import { useState, useEffect, useRef } from "react";
 import { useFocusEffect } from "expo-router";

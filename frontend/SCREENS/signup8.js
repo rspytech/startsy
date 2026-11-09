@@ -1,3 +1,6 @@
+// Sign-up: freelancer / job-seeker profile form. Note: it calls /freelancerInfo, but the server's
+// address is /api/freelancerInfo (see docs/NOTICED_NOT_CHANGED.md).
+
 // 3.5 last of free lancer
 import React, { useState, useRef, useEffect, useContext } from "react";
 import {

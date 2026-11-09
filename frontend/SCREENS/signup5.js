@@ -1,3 +1,6 @@
+// Sign-up: profile picture, then the form for the chosen account type.
+// Note: the picture upload goes to a developer's local address (see docs/NOTICED_NOT_CHANGED.md).
+
 import React, { useState, useRef, useEffect, useContext } from "react";
 import {
     ScrollView,
