@@ -16,8 +16,12 @@ Snapshots of production (local tags):
 - `production-snapshot-2026-11-10-frontend` → Anshgala333/Startsy `main` @ b8f244a (real production front end, = `production/frontend`)
 - `production-snapshot-2026-11-07-frontend` → `Ansh-Final` @ ef8d040 (older front end, superseded)
 
-Since 2026-11-10, `frontend/` on `development` is an exact copy of Anshgala333/Startsy `main`
-(commit fa0eb9a). The earlier front-end cleanup was done on `Ansh-Final` and no longer applies.
+`frontend/` on `development` = production front end (`production/frontend` @ b8f244a, copied in
+commit fa0eb9a) **plus a behaviour-identical cleanup** (commits 76c3372..dc3c251: 26 unused files
+removed, 129 files formatted, comments, README; the Android bundle was proven program-identical).
+`backend/` on `development` = `develop/backend` plus its cleanup (all 102 endpoints proven identical).
+Full history and proofs: `docs/CLEANUP_LOG.md`. The earlier front-end cleanup of `Ansh-Final` no longer applies.
+New Claude session? Also read `docs/SESSION_HANDOFF.md`.
 
 ## HARD RULES (never break these)
 
@@ -63,8 +67,35 @@ Forbidden:
 
 Front end, additionally:
 - No visible changes to screens, text, styling or navigation
-- Do not upgrade Expo, React Native or any package
-- Do not touch `app.json`, `eas.json`, signing or build config
+- Do not upgrade Expo (SDK 52), React Native (0.76) or any package
+- Do not touch `app.json`, `eas.json`, `google-services.json`, `babel.config.js`, signing or build config
+- Prove every front-end change with a before/after Android bundle build (`npx expo export --platform android
+  --no-bytecode`): byte-identical, or program-identical when only quote style differs.
+- Prettier can re-wrap on-screen JSX text: keep formatting only on files that compile to the identical
+  program (24 screens were deliberately left unformatted; see `docs/CLEANUP_LOG.md`).
+
+## Front-end facts (production code in `frontend/`)
+
+- Real entry file: `frontend/app/index.tsx` (registers every screen, starts on `Green`, sets up push
+  notifications). `app/(tabs)/index.tsx` is an older leftover entry file; `Main1.js` is never opened;
+  everyone uses `Main2`. Screens and their server calls: `docs/SCREENS.md`.
+- Imports use the `@/` shortcut (= the `frontend/` folder). Any "is this file used?" check must follow it.
+- `npm ci` fails (production's `package-lock.json` is out of sync). Use `npm install`, then
+  `git checkout -- frontend/package-lock.json` so the lock file stays identical to production.
+- Test on a phone with **Expo Go for SDK 52**. On this Windows PC start Expo with
+  `$env:REACT_NATIVE_PACKAGER_HOSTNAME='<PC Wi-Fi IP>'; $env:EXPO_NO_TYPESCRIPT_SETUP='1'; npx expo start --offline --clear`.
+
+## Local testing setup (founder's PC: `C:\Users\rajas\OneDrive\Desktop\startsy`)
+
+- `frontend/config.js` is changed locally to point at the PC's back end and is hidden from git with
+  `git update-index --skip-worktree`. It must never be committed; undo with `--no-skip-worktree` and
+  `git checkout -- frontend/config.js` when testing ends.
+- `backend/.env` (git-ignored) currently holds the **live production settings**: the founder explicitly
+  chose (2026-11-07) to test locally against the live database. This is the only exception to rule 4;
+  do not widen it, never print its values, and remind the founder that a separate test database is the
+  priority. Start the back end with
+  `$env:NODE_OPTIONS='--require C:\Users\rajas\code\local-dev\use-router-dns.cjs'; npm run dev`
+  (fixes Node's broken DNS on this PC for the Atlas `mongodb+srv` address).
 
 Method:
 - One small concern per commit, with clear messages (e.g. `refactor: split user routes into controller`).
