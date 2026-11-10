@@ -5,7 +5,8 @@ checked. Production itself was **not** changed.
 
 - **Production back end:** `develop/backend` @ `0b9f871` (local tag `production-snapshot-2026-11-07`).
 - **Production front end:** Anshgala333/Startsy `main` @ `b8f244a` (Expo SDK 52), forked to
-  rspytech/Startsy-Production_Frontend (local tag `production-snapshot-2026-11-10-frontend`).
+  rspytech/Startsy-Production_Frontend and copied into this repo as branch `production/frontend`
+  (local tag `production-snapshot-2026-11-10-frontend`).
   An earlier cleanup was done on the older `Ansh-Final` branch by mistake; it was replaced on
   2026-11-10 when the real production front end was found (commits 1, 10–14 below are superseded).
 - **Goal:** same behaviour, easier to understand. No fixes, upgrades or new features.

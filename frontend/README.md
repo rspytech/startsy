@@ -4,7 +4,8 @@ The Android app users install as an APK. Built with **React Native** using **Exp
 (React Native 0.76). Android package name: `com.rspytech.startsy`.
 
 Source of truth: this folder is an exact copy of https://github.com/Anshgala333/Startsy (`main`,
-commit b8f244a), forked to rspytech/Startsy-Production_Frontend, plus cleanup that keeps the app's
+commit b8f244a), forked to rspytech/Startsy-Production_Frontend and kept in this repo as branch
+`production/frontend`, plus cleanup that keeps the app's
 behaviour identical (see `docs/CLEANUP_LOG.md`).
 
 The app talks to the back end at the address in `config.js` (`https://startsy.onrender.com/`) and
